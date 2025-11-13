@@ -1,0 +1,277 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: var(--tw-font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F0F2F5;
+    color: #111827;
+  }
+}
+
+@layer components {
+  /* Neumorphism scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #E4E7EB;
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(145deg, #D1D5DB, #9CA3AF);
+    border-radius: 6px;
+    box-shadow: 2px 2px 4px rgba(163, 177, 198, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(145deg, #9CA3AF, #6B7280);
+  }
+
+  /* Neumorphism animations */
+  @keyframes neuPress {
+    from {
+      box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.5);
+    }
+    to {
+      box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  @keyframes neuFloat {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* SVG Self-Drawing Animations */
+  @keyframes drawCircle {
+    from {
+      stroke-dashoffset: 440;
+    }
+    to {
+      stroke-dashoffset: var(--final-offset, 0);
+    }
+  }
+
+  @keyframes fillRisk {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 var(--final-clip, 0%) 0 0);
+    }
+  }
+
+  @keyframes slideIndicator {
+    from {
+      left: 0;
+      opacity: 0;
+    }
+    to {
+      left: var(--final-position, 50%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes countUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-neu-press {
+    animation: neuPress 0.2s ease-in-out;
+  }
+
+  .animate-neu-float {
+    animation: neuFloat 3s ease-in-out infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  /* Neumorphism components */
+  .btn-neu {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 1rem; /* Adjust as per your rounded-neu */
+    font-weight: 500;
+    color: #374151; /* Adjust as per your text-neu-700 */
+    background-color: #F3F4F6; /* Adjust as per your bg-neu-100 */
+    box-shadow: 2px 2px 6px 0 rgba(163, 177, 198, 0.15), -2px -2px 6px 0 rgba(255,255,255,0.7); /* Approximate shadow-neu */
+    transition: all 0.2s;
+    outline: none;
+  }
+  .btn-neu:hover {
+    box-shadow: 1px 1px 3px 0 rgba(163, 177, 198, 0.10), -1px -1px 3px 0 rgba(255,255,255,0.5); /* Approximate shadow-neu-sm */
+  }
+  .btn-neu:active {
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5); /* Approximate shadow-neu-inset */
+  }
+  .btn-neu:focus {
+    outline: none;
+  }
+
+  .btn-neu-primary {
+    padding-left: 1.5rem; /* px-6 */
+    padding-right: 1.5rem;
+    padding-top: 0.75rem; /* py-3 */
+    padding-bottom: 0.75rem;
+    border-radius: 1rem; /* rounded-neu, adjust as needed */
+    font-weight: 500; /* font-medium */
+    color: #fff; /* text-white */
+    background-image: linear-gradient(to bottom right, #a7d7ff, #2563eb); /* bg-gradient-to-br from-liberal-light to-liberal */
+    box-shadow: 2px 2px 6px 0 rgba(163, 177, 198, 0.15), -2px -2px 6px 0 rgba(255,255,255,0.7); /* shadow-neu */
+    transition: all 0.2s;
+    outline: none;
+  }
+  .btn-neu-primary:hover {
+    box-shadow: 4px 4px 16px 0 rgba(163, 177, 198, 0.20), -4px -4px 16px 0 rgba(255,255,255,0.8); /* shadow-neu-lg */
+  }
+  .btn-neu-primary:active {
+    box-shadow: 1px 1px 3px 0 rgba(163, 177, 198, 0.10), -1px -1px 3px 0 rgba(255,255,255,0.5); /* shadow-neu-sm */
+  }
+  .btn-neu-primary:focus {
+    outline: none;
+  }
+
+  .card-neu {
+    background-color: #F3F4F6; /* bg-neu-100 */
+    border-radius: 1rem; /* rounded-neu-lg, adjust as needed */
+    padding: 1.5rem; /* p-6 */
+  }
+
+  .card-neu-flat {
+    background-color: #F3F4F6; /* bg-neu-100 */
+    border-radius: 1rem; /* rounded-neu-lg, adjust as needed */
+    padding: 1.5rem; /* p-6 */
+  }
+
+  .input-neu {
+    width: 100%; /* w-full */
+    padding-left: 1.25rem; /* px-5 */
+    padding-right: 1.25rem;
+    padding-top: 0.75rem; /* py-3 */
+    padding-bottom: 0.75rem;
+    border-radius: 0.75rem; /* rounded-neu, adjust as needed */
+    background-color: #F3F4F6; /* bg-neu-100 */
+    color: #1F2937; /* text-neu-800 */
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5); /* shadow-neu-inset */
+    transition: box-shadow 0.2s, background-color 0.2s;
+    outline: none;
+  }
+  .input-neu::placeholder {
+    color: #9CA3AF; /* placeholder-neu-400 */
+  }
+  .input-neu:focus {
+    outline: none;
+    box-shadow: inset 1px 1px 2px rgba(163, 177, 198, 0.3), inset -1px -1px 2px rgba(255, 255, 255, 0.3); /* shadow-neu-inset-sm */
+  }
+
+  .card-neu:hover {
+    box-shadow: 4px 4px 16px 0 rgba(163, 177, 198, 0.20), -4px -4px 16px 0 rgba(255,255,255,0.8); /* shadow-neu-lg */
+  }
+
+  .badge-conservative {
+    background-image: linear-gradient(to bottom right, #fcd34d, #b91c1c); /* Replace with your conservative-light and conservative colors */
+    color: #fff;
+  }
+
+  .badge-neutral {
+    background-color: #D1D5DB; /* bg-neu-300 */
+    color: #374151; /* text-neu-700 */
+  }
+
+  .badge-neu {
+    padding-right: 0.75rem;
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px 0 rgba(163, 177, 198, 0.05); /* Approximate shadow-neu-sm */
+  }
+
+  .neu-raised {
+    box-shadow: 2px 2px 6px 0 rgba(163, 177, 198, 0.15), -2px -2px 6px 0 rgba(255,255,255,0.7); /* shadow-neu */
+  }
+
+  .badge-liberal {
+    background-image: linear-gradient(to bottom right, #a7d7ff, #2563eb); /* Replace with your liberal-light and liberal colors */
+    color: #fff;
+  }
+
+  .badge-conservative {
+    background-image: linear-gradient(to bottom right, #fcd34d, #b91c1c); /* Replace with your conservative-light and conservative colors */
+    color: #fff;
+  }
+
+  .badge-neutral {
+    background-color: #D1D5DB; /* bg-neu-300 */
+    color: #374151; /* text-neu-700 */
+  }
+
+  .neu-pressed {
+    /* Equivalent to shadow-neu-inset */
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  .neu-raised {
+    box-shadow: 2px 2px 6px 0 rgba(163, 177, 198, 0.15), -2px -2px 6px 0 rgba(255,255,255,0.7); /* shadow-neu */
+  }
+
+  .neu-floating {
+    /* Equivalent to shadow-neu-lg */
+    box-shadow: 4px 4px 16px 0 rgba(163, 177, 198, 0.20), -4px -4px 16px 0 rgba(255,255,255,0.8);
+  }
+}
