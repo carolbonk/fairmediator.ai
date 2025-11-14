@@ -325,6 +325,29 @@ xl: 1280px
 
 ---
 
+## Authentication Components
+
+FairMediator includes a comprehensive set of authentication UI components following neomorphic design principles. See detailed specifications in:
+
+**[AUTH_COMPONENTS_DESIGN.md](/docs/AUTH_COMPONENTS_DESIGN.md)**
+
+Components include:
+- **LoginForm** - Email/password authentication with Remember Me
+- **RegisterForm** - Account creation with password strength indicator
+- **SubscriptionCard** - Tier comparison cards (Free vs Premium)
+- **UpgradePrompt** - Modal and banner variants for upgrade CTAs
+- **UsageIndicator** - Daily usage tracking with progress visualization
+
+All components maintain:
+- Neomorphic visual language (soft shadows, subtle depth)
+- WCAG AA accessibility standards
+- Keyboard navigation support
+- Responsive design (mobile-first)
+- Loading and error states
+- High contrast mode support
+
+---
+
 ## References
 
 This design system is inspired by:
@@ -337,3 +360,7 @@ This design system is inspired by:
 - [Apple HIG](https://developer.apple.com/design/human-interface-guidelines/)
 - [SF Pro Font](https://developer.apple.com/fonts/)
 - [Apple Design Resources](https://developer.apple.com/design/resources/)
+
+**FairMediator Design Documentation:**
+- [Neumorphism & Free Stack Guide](/docs/NEUMORPHISM_FREE_DESIGN.md)
+- [Authentication Components Specification](/docs/AUTH_COMPONENTS_DESIGN.md)
