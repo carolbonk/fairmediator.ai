@@ -132,7 +132,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }) {
           <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '1rem' }}>
             We've sent a verification email to <strong>{formData.email}</strong>
           </p>
-          <p style={{ fontSize: '0.875rem', color: #6B7280' }}>
+          <p style={{ fontSize: '0.875rem', color: '#6B7280' }}>
             Please check your inbox and click the verification link to activate your account.
           </p>
         </div>
