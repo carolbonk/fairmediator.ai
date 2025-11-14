@@ -1,17 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
+import { FaPaperPlane } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import ChatMessage from './chat/ChatMessage';
+import TypingIndicator from './chat/TypingIndicator';
+import UsageLimitBanner from './usage/UsageLimitBanner';
 
 const ChatPanel = ({ onResponse, parties, setParties }) => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your AI assistant powered by Meta Llama. I can help you find the right mediator for your case. Just describe your needs in natural language, and I\'ll search our database for the best matches.'
+      content: 'Hello! I\'m your AI assistant powered by Meta Llama. I can help you find the right mediator for your case. Just describe your needs in natural language, and I\'ll search our database for the best matches.',
+      emotion: { sentiment: 'neutral', emotion: 'neutral', confidence: 0 }
     }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [partyInput, setPartyInput] = useState('');
+  const [usage, setUsage] = useState({ aiCallsToday: 0, aiCallLimit: 20 });
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -32,19 +39,28 @@ const ChatPanel = ({ onResponse, parties, setParties }) => {
 
     try {
       const response = await sendChatMessage(input, messages);
-      
+
+      // Update usage stats
+      if (response.usage) {
+        setUsage(response.usage);
+      }
+
       const assistantMessage = {
         role: 'assistant',
-        content: response.message
+        content: response.message,
+        emotion: response.emotion?.assistant || { sentiment: 'neutral', emotion: 'neutral', confidence: 0 }
       };
-      
+
       setMessages(prev => [...prev, assistantMessage]);
       onResponse(response);
     } catch (error) {
       console.error('Chat error:', error);
+      const errorMessage = error.response?.data?.error || 'Sorry, I encountered an error. Please try again.';
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: errorMessage,
+        emotion: { sentiment: 'negative', emotion: 'sadness', confidence: 0 }
       }]);
     } finally {
       setLoading(false);
@@ -123,34 +139,25 @@ const ChatPanel = ({ onResponse, parties, setParties }) => {
         </div>
       </div>
 
-      {/* Messages - Neumorphism bubbles */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
+      {/* Usage Limit Banner */}
+      <div className="px-6 pt-4">
+        <UsageLimitBanner
+          type="aiCall"
+          current={usage.aiCallsToday}
+          limit={usage.aiCallLimit}
+          onUpgrade={() => console.log('Navigate to upgrade page')}
+        />
+      </div>
+
+      {/* Messages - DRY ChatMessage components */}
+      <div className="flex-1 overflow-y-auto px-6 py-6">
         {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-          >
-            <div
-              className={`max-w-[75%] px-4 py-3 rounded-2xl ${
-                msg.role === 'user'
-                  ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-neu'
-                  : 'bg-neu-100 text-neu-800 shadow-neu'
-              }`}
-            >
-              <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                {msg.content}
-              </p>
-            </div>
+          <div key={idx} className="animate-fade-in">
+            <ChatMessage message={msg} emotion={msg.emotion} />
           </div>
         ))}
-        
-        {loading && (
-          <div className="flex justify-start animate-fade-in">
-            <div className="bg-neu-100 px-4 py-3 rounded-2xl shadow-neu">
-              <FaSpinner className="animate-spin text-blue-500 text-lg" />
-            </div>
-          </div>
-        )}
+
+        {loading && <TypingIndicator />}
         
         <div ref={messagesEndRef} />
       </div>

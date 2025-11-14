@@ -87,6 +87,18 @@ export const analyzeMediatorIdeology = async (id) => {
   return response.data;
 };
 
+/**
+ * Check for affiliation conflicts
+ * Returns detailed conflict analysis with usage tracking
+ */
+export const checkMediatorConflicts = async (mediatorIds, parties) => {
+  const response = await api.post('/mediators/check-conflicts', {
+    mediatorIds,
+    parties
+  });
+  return response.data;
+};
+
 // Affiliations API
 export const checkAffiliations = async (mediatorIds, parties) => {
   const response = await api.post('/affiliations/check', {

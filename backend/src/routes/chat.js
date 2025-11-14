@@ -1,38 +1,66 @@
 /**
  * Chat Routes
- * Handles natural language chat interactions for mediator search
+ * Handles natural language chat interactions for mediator search with authentication
  * Now using FREE Hugging Face models!
+ *
+ * DRY: Reuses auth middleware and usage tracking patterns
  */
 
 const express = require('express');
 const router = express.Router();
 const chatService = require('../services/huggingface/chatService');
+const UsageLog = require('../models/UsageLog');
+const { authenticate, checkUsageLimit } = require('../middleware/auth');
 
 /**
  * POST /api/chat
  * Process a user chat message and return mediator recommendations
+ * DRY: Reuses authentication and usage tracking middleware
+ *
+ * Free tier: 20 AI calls/day
+ * Premium: Unlimited
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, checkUsageLimit('aiCall'), async (req, res) => {
   try {
     const { message, history = [] } = req.body;
-    
+
     if (!message || typeof message !== 'string') {
-      return res.status(400).json({ 
-        error: 'Message is required and must be a string' 
+      return res.status(400).json({
+        error: 'Message is required and must be a string'
       });
     }
-    
+
+    // Process chat with AI
     const result = await chatService.processQuery(message, history);
-    
+
+    // Increment AI call counter
+    await req.user.incrementAICall();
+
+    // Log usage for analytics
+    await UsageLog.create({
+      user: req.user._id,
+      eventType: 'ai_call',
+      metadata: {
+        messageLength: message.length,
+        historyLength: history.length,
+        model: result.model,
+        responseLength: result.message?.length || 0
+      }
+    });
+
     res.json({
       success: true,
-      ...result
+      ...result,
+      usage: {
+        aiCallsToday: req.user.usageStats.aiCallsToday,
+        aiCallLimit: req.user.subscriptionTier === 'premium' ? 'unlimited' : 20
+      }
     });
   } catch (error) {
     console.error('Chat route error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to process chat message',
-      message: error.message 
+      message: error.message
     });
   }
 });

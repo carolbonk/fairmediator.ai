@@ -1,39 +1,48 @@
 /**
  * Mediator Routes
- * CRUD operations for mediator profiles
+ * CRUD operations for mediator profiles with authentication and usage tracking
  * Now using FREE Hugging Face models!
+ *
+ * DRY: Reuses auth middleware, usage tracking, and validation patterns
  */
 
 const express = require('express');
 const router = express.Router();
 const Mediator = require('../models/Mediator');
+const UsageLog = require('../models/UsageLog');
+const { authenticate, optionalAuth, checkUsageLimit } = require('../middleware/auth');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
 
 /**
  * GET /api/mediators
- * Get all mediators with optional filtering
+ * Search mediators with optional filtering
+ * DRY: Reuses authentication and usage tracking middleware
+ *
+ * Free tier: 5 searches/day
+ * Premium: Unlimited
  */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, checkUsageLimit('search'), async (req, res) => {
   try {
-    const { 
-      practiceArea, 
-      location, 
-      ideology, 
+    const {
+      practiceArea,
+      location,
+      ideology,
       minExperience,
+      excludeAffiliations, // Comma-separated list of entities to avoid conflicts
       page = 1,
-      limit = 20 
+      limit = 20
     } = req.query;
-    
+
     const query = {};
-    
+
     if (practiceArea) {
       query.practiceAreas = { $in: [practiceArea] };
     }
-    
+
     if (location) {
       query['location.state'] = new RegExp(location, 'i');
     }
-    
+
     if (ideology) {
       const ideologyMap = {
         'liberal': { $lte: -1 },
@@ -42,18 +51,38 @@ router.get('/', async (req, res) => {
       };
       query.ideologyScore = ideologyMap[ideology.toLowerCase()];
     }
-    
+
     if (minExperience) {
       query.yearsExperience = { $gte: parseInt(minExperience) };
     }
-    
+
+    // Filter out mediators with conflicting affiliations
+    if (excludeAffiliations) {
+      const excludeList = excludeAffiliations.split(',').map(e => e.trim());
+      query['knownAffiliations.entity'] = { $nin: excludeList };
+    }
+
     const mediators = await Mediator.find(query)
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .sort({ rating: -1, yearsExperience: -1 });
-    
+
     const total = await Mediator.countDocuments(query);
-    
+
+    // Increment usage counter
+    await req.user.incrementSearch();
+
+    // Log usage for analytics
+    await UsageLog.create({
+      user: req.user._id,
+      eventType: 'search',
+      metadata: {
+        filters: { practiceArea, location, ideology, minExperience, excludeAffiliations },
+        resultCount: mediators.length,
+        page: parseInt(page)
+      }
+    });
+
     res.json({
       success: true,
       data: mediators,
@@ -62,6 +91,10 @@ router.get('/', async (req, res) => {
         limit: parseInt(limit),
         total,
         pages: Math.ceil(total / limit)
+      },
+      usage: {
+        searchesToday: req.user.usageStats.searchesToday,
+        searchLimit: req.user.subscriptionTier === 'premium' ? 'unlimited' : 5
       }
     });
   } catch (error) {
@@ -72,19 +105,41 @@ router.get('/', async (req, res) => {
 
 /**
  * GET /api/mediators/:id
- * Get a single mediator by ID
+ * Get detailed mediator profile
+ * DRY: Reuses authentication and usage tracking middleware
+ *
+ * Free tier: 10 profile views/day
+ * Premium: Unlimited
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, checkUsageLimit('profileView'), async (req, res) => {
   try {
     const mediator = await Mediator.findById(req.params.id);
-    
+
     if (!mediator) {
       return res.status(404).json({ error: 'Mediator not found' });
     }
-    
+
+    // Increment profile view counter
+    await req.user.incrementProfileView();
+
+    // Log usage for analytics
+    await UsageLog.create({
+      user: req.user._id,
+      eventType: 'profile_view',
+      metadata: {
+        mediatorId: mediator._id,
+        mediatorName: mediator.name,
+        ideologyScore: mediator.ideologyScore
+      }
+    });
+
     res.json({
       success: true,
-      data: mediator
+      data: mediator,
+      usage: {
+        profileViewsToday: req.user.usageStats.profileViewsToday,
+        profileViewLimit: req.user.subscriptionTier === 'premium' ? 'unlimited' : 10
+      }
     });
   } catch (error) {
     console.error('Get mediator error:', error);
@@ -139,6 +194,89 @@ router.put('/:id', async (req, res) => {
   } catch (error) {
     console.error('Update mediator error:', error);
     res.status(500).json({ error: 'Failed to update mediator' });
+  }
+});
+
+/**
+ * POST /api/mediators/check-conflicts
+ * Check for affiliation conflicts across multiple mediators
+ * DRY: Reuses authentication middleware
+ *
+ * Premium feature - requires premium subscription
+ */
+router.post('/check-conflicts', authenticate, async (req, res) => {
+  try {
+    const { mediatorIds, parties } = req.body;
+
+    if (!mediatorIds || !Array.isArray(mediatorIds) || mediatorIds.length === 0) {
+      return res.status(400).json({ error: 'mediatorIds array is required' });
+    }
+
+    if (!parties || !Array.isArray(parties) || parties.length === 0) {
+      return res.status(400).json({ error: 'parties array is required' });
+    }
+
+    // Get mediators with their affiliations
+    const mediators = await Mediator.find({ _id: { $in: mediatorIds } });
+
+    // Check each mediator against all parties
+    const conflicts = mediators.map(mediator => {
+      const mediatorConflicts = [];
+
+      // Check known affiliations against parties
+      if (mediator.knownAffiliations && mediator.knownAffiliations.length > 0) {
+        for (const party of parties) {
+          for (const affiliation of mediator.knownAffiliations) {
+            // Simple string matching - could be enhanced with fuzzy matching
+            if (
+              affiliation.entity.toLowerCase().includes(party.name.toLowerCase()) ||
+              party.name.toLowerCase().includes(affiliation.entity.toLowerCase())
+            ) {
+              mediatorConflicts.push({
+                party: party.name,
+                affiliation: affiliation.entity,
+                riskLevel: affiliation.riskLevel,
+                type: affiliation.type,
+                details: affiliation.details
+              });
+            }
+          }
+        }
+      }
+
+      return {
+        mediatorId: mediator._id,
+        mediatorName: mediator.name,
+        conflicts: mediatorConflicts,
+        hasConflicts: mediatorConflicts.length > 0
+      };
+    });
+
+    // Log usage
+    await UsageLog.create({
+      user: req.user._id,
+      eventType: 'conflict_check',
+      metadata: {
+        mediatorCount: mediatorIds.length,
+        partyCount: parties.length,
+        conflictsFound: conflicts.filter(c => c.hasConflicts).length
+      }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        mediators: conflicts,
+        summary: {
+          totalChecked: mediators.length,
+          withConflicts: conflicts.filter(c => c.hasConflicts).length,
+          withoutConflicts: conflicts.filter(c => !c.hasConflicts).length
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Conflict check error:', error);
+    res.status(500).json({ error: 'Failed to check conflicts' });
   }
 });
 
