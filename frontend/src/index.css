@@ -1,5 +1,5 @@
 
-/* Removed Tailwind directives because build process does not support them */
+/* Removed Tailwind directives due to unknown at-rule error */
 
 @layer base {
   body {
@@ -272,4 +272,251 @@
     /* Equivalent to shadow-neu-lg */
     box-shadow: 4px 4px 16px 0 rgba(163, 177, 198, 0.20), -4px -4px 16px 0 rgba(255,255,255,0.8);
   }
+
+  /* Auth Form Styles */
+  .auth-container {
+    max-width: 448px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    background: #F0F2F5;
+  }
+
+  .auth-card {
+    background: #F0F2F5;
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.5);
+  }
+
+  .form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 0.75rem;
+    background: #F0F2F5;
+    color: #1F2937;
+    border: none;
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .form-input::placeholder {
+    color: #9CA3AF;
+  }
+
+  .form-input:focus {
+    box-shadow: inset 1px 1px 3px rgba(163, 177, 198, 0.3), inset -1px -1px 3px rgba(255, 255, 255, 0.3), 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+
+  .form-input-error {
+    box-shadow: inset 2px 2px 4px rgba(239, 68, 68, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.5), 0 0 0 2px rgba(239, 68, 68, 0.2);
+  }
+
+  .form-error {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #EF4444;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .form-button {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .form-button-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 4px 4px 12px rgba(102, 126, 234, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.3);
+  }
+
+  .form-button-primary:hover {
+    box-shadow: 6px 6px 16px rgba(102, 126, 234, 0.5), -3px -3px 10px rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .form-button-primary:active {
+    box-shadow: 2px 2px 6px rgba(102, 126, 234, 0.3), -1px -1px 4px rgba(255, 255, 255, 0.2);
+    transform: translateY(0);
+  }
+
+  .form-button-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-button-secondary {
+    background: #F0F2F5;
+    color: #374151;
+    box-shadow: 2px 2px 6px rgba(163, 177, 198, 0.15), -2px -2px 6px rgba(255, 255, 255, 0.7);
+  }
+
+  .form-button-secondary:hover {
+    box-shadow: 1px 1px 3px rgba(163, 177, 198, 0.10), -1px -1px 3px rgba(255, 255, 255, 0.5);
+  }
+
+  .form-button-secondary:active {
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  .form-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .form-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  .form-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .form-divider::before,
+  .form-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #D1D5DB;
+  }
+
+  .form-divider span {
+    padding: 0 0.75rem;
+    color: #6B7280;
+    font-size: 0.875rem;
+  }
+
+  /* Password Strength Indicator */
+  .password-strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    background: #E5E7EB;
+    overflow: hidden;
+  }
+
+  .password-strength-fill {
+    height: 100%;
+    transition: all 0.3s;
+    border-radius: 2px;
+  }
+
+  .password-strength-weak {
+    width: 25%;
+    background: linear-gradient(90deg, #EF4444, #F87171);
+  }
+
+  .password-strength-fair {
+    width: 50%;
+    background: linear-gradient(90deg, #F59E0B, #FBBF24);
+  }
+
+  .password-strength-good {
+    width: 75%;
+    background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  }
+
+  .password-strength-strong {
+    width: 100%;
+    background: linear-gradient(90deg, #10B981, #34D399);
+  }
+
+  /* Checkbox Styles */
+  .form-checkbox {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.375rem;
+    background: #F0F2F5;
+    box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .form-checkbox:checked {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 2px 2px 6px rgba(102, 126, 234, 0.4), -1px -1px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  .form-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .form-checkbox:focus {
+    outline: 2px solid rgba(102, 126, 234, 0.2);
+    outline-offset: 2px;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 1.25rem;
+    height: 1.25rem;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Success State */
+  .success-checkmark {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    box-shadow: 4px 4px 12px rgba(16, 185, 129, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    animation: scaleIn 0.4s ease-out;
+  }
+
+  .success-checkmark::after {
+    content: '✓';
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+  }
 }
+
