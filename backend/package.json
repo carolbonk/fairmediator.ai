@@ -21,7 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "node-cron": "^3.0.3",
-    "playwright": "^1.56.1"
+    "playwright": "^1.56.1",
+    "stripe": "^19.3.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",

@@ -14,6 +14,8 @@ const mongoose = require('mongoose');
 const mediatorRoutes = require('./routes/mediators');
 const chatRoutes = require('./routes/chat');
 const affiliationRoutes = require('./routes/affiliations');
+const subscriptionRoutes = require('./routes/subscription');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -32,15 +34,13 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ MongoDB connected successfully'))
 .catch(err => {
   console.error('❌ MongoDB connection error:', err);
@@ -49,10 +49,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
+  res.json({
+    status: 'healthy',
     timestamp: new Date().toISOString(),
-    llama: process.env.LLAMA_API_KEY ? 'configured' : 'not configured'
+    ai: process.env.HUGGINGFACE_API_KEY ? 'configured' : 'not configured'
   });
 });
 
@@ -60,6 +60,8 @@ app.get('/health', (req, res) => {
 app.use('/api/mediators', mediatorRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/affiliations', affiliationRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -81,7 +83,7 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 FairMediator backend running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🤖 Llama Model: ${process.env.LLAMA_MODEL || 'not configured'}`);
+  console.log(`🤖 AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
 });
 
 module.exports = app;

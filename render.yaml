@@ -1,0 +1,44 @@
+# Render Deployment Configuration
+# Documentation: https://render.com/docs/yaml-spec
+
+services:
+  # Backend API Service
+  - type: web
+    name: fairmediator-backend
+    runtime: node
+    env: node
+    region: oregon # or "ohio" if you're on the east coast
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: CORS_ORIGIN
+        sync: false # Set this in Render dashboard to your frontend URL
+      - key: MONGODB_URI
+        sync: false # Set this in Render dashboard from MongoDB Atlas
+      - key: HUGGINGFACE_API_KEY
+        sync: false # Get free key from https://huggingface.co/settings/tokens
+      - key: JWT_SECRET
+        generateValue: true # Render will auto-generate a secure secret
+      - key: JWT_REFRESH_SECRET
+        generateValue: true # Render will auto-generate a secure secret
+      - key: SESSION_SECRET
+        generateValue: true # Render will auto-generate a secure secret
+      - key: FRONTEND_URL
+        sync: false # Set this to your frontend URL (e.g., https://fairmediator.com)
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+      # Optional Stripe keys (only if you enable payments)
+      # - key: STRIPE_SECRET_KEY
+      #   sync: false
+      # - key: STRIPE_WEBHOOK_SECRET
+      #   sync: false
+      # - key: STRIPE_PREMIUM_PRICE_ID
+      #   sync: false

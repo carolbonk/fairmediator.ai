@@ -56,4 +56,91 @@ export const getMediatorAffiliations = async (id) => {
   return response.data;
 };
 
+export const checkEnhancedAffiliations = async (mediatorId, parties, caseDescription) => {
+  const response = await api.post('/affiliations/enhanced-check', {
+    mediatorId,
+    parties,
+    caseDescription
+  });
+  return response.data;
+};
+
+// Subscription API
+export const getSubscription = async () => {
+  const response = await api.get('/subscription');
+  return response.data;
+};
+
+export const createCheckoutSession = async (priceId) => {
+  const response = await api.post('/subscription/checkout', {
+    priceId,
+    successUrl: window.location.origin + '/dashboard?upgrade=success',
+    cancelUrl: window.location.origin + '/upgrade'
+  });
+  return response.data;
+};
+
+export const getBillingPortal = async () => {
+  const response = await api.post('/subscription/portal', {
+    returnUrl: window.location.origin + '/dashboard'
+  });
+  return response.data;
+};
+
+export const cancelSubscription = async () => {
+  const response = await api.post('/subscription/cancel');
+  return response.data;
+};
+
+// Dashboard & Analytics API
+export const getUserStats = async (days = 30) => {
+  const response = await api.get(`/dashboard/stats?days=${days}`);
+  return response.data;
+};
+
+export const getSearchTrends = async (days = 30) => {
+  const response = await api.get(`/dashboard/trends?days=${days}`);
+  return response.data;
+};
+
+export const getPopularMediators = async (days = 30, limit = 10) => {
+  const response = await api.get(`/dashboard/popular-mediators?days=${days}&limit=${limit}`);
+  return response.data;
+};
+
+export const getPlatformStats = async (days = 30) => {
+  const response = await api.get(`/dashboard/platform?days=${days}`);
+  return response.data;
+};
+
+export const getConversionFunnel = async (days = 30) => {
+  const response = await api.get(`/dashboard/conversion-funnel?days=${days}`);
+  return response.data;
+};
+
+// Multi-Perspective AI Chat
+export const getMultiPerspectiveChat = async (message, history = []) => {
+  const response = await api.post('/chat/multi-perspective', {
+    message,
+    history: history.map(msg => ({ role: msg.role, content: msg.content }))
+  });
+  return response.data;
+};
+
+// Recommendation Scoring
+export const scoreMediator = async (mediatorId, caseContext) => {
+  const response = await api.post(`/mediators/${mediatorId}/score`, {
+    caseContext
+  });
+  return response.data;
+};
+
+export const getRecommendations = async (caseContext, limit = 10) => {
+  const response = await api.post('/mediators/recommendations', {
+    caseContext,
+    limit
+  });
+  return response.data;
+};
+
 export default api;
