@@ -106,6 +106,10 @@ export default {
         'neu-xl': '20px 20px 40px rgba(163, 177, 198, 0.6), -20px -20px 40px rgba(255, 255, 255, 0.5)',
         'neu-inset': 'inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.5)',
         'neu-inset-sm': 'inset 2px 2px 4px rgba(163, 177, 198, 0.5), inset -2px -2px 4px rgba(255, 255, 255, 0.5)',
+        // Neumorphic shadow variants for auth components
+        'neumorphic': '8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.5)',
+        'neumorphic-hover': '12px 12px 24px rgba(163, 177, 198, 0.7), -12px -12px 24px rgba(255, 255, 255, 0.6)',
+        'neumorphic-inset': 'inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.5)',
         // Chat panel specific shadows
         'chat-neu': '12px 12px 24px rgba(108, 141, 194, 0.5), -12px -12px 24px rgba(108, 141, 194, 0.8)',
         'chat-neu-sm': '6px 6px 12px rgba(108, 141, 194, 0.5), -6px -6px 12px rgba(108, 141, 194, 0.8)',

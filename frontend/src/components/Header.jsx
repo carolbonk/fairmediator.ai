@@ -17,10 +17,10 @@ const Header = () => {
             
             {/* Text with graffiti styling */}
             <div>
-              <h1 className="text-2xl lg:text-3xl font-black text-blue-900 tracking-tight drop-shadow-md">
+              <h1 className="text-2xl lg:text-3xl font-gray text-white-900 tracking-tight drop-shadow-md">
                 FairMediator
               </h1>
-              <p className="text-sm text-dark-neu-50 font-semibold mt-1 tracking-wide opacity-80">
+              <p className="text-sm text-white font-semibold mt-1 tracking-wide opacity-80">
                 Intelligent Mediator Matching & Screening Platform
               </p>
             </div>

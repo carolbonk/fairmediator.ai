@@ -14,7 +14,19 @@ const usageLogSchema = new mongoose.Schema({
   },
   eventType: {
     type: String,
-    enum: ['search', 'profileView', 'aiCall', 'upgrade', 'registration'],
+    enum: [
+      'search',
+      'profileView',
+      'aiCall',
+      'upgrade',
+      'registration',
+      'user_registered',
+      'user_login',
+      'user_logout',
+      'password_reset_requested',
+      'password_reset_completed',
+      'subscription_check'
+    ],
     required: true,
     index: true
   },
