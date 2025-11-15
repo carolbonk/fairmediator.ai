@@ -27,6 +27,8 @@ const authRoutes = require('./routes/auth');
 const mediatorRoutes = require('./routes/mediators');
 const chatRoutes = require('./routes/chat');
 const affiliationRoutes = require('./routes/affiliations');
+const subscriptionRoutes = require('./routes/subscription');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -111,6 +113,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/mediators', mediatorRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/affiliations', affiliationRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Sentry error handler (must be before other error handlers)
 app.use(sentryErrorHandler);

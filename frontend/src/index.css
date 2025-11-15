@@ -1,5 +1,6 @@
-
-/* Removed Tailwind directives due to unknown at-rule error */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   body {
