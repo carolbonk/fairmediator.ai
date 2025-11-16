@@ -37,9 +37,9 @@ const StatisticsPanel = () => {
   };
 
   return (
-    <div className="h-full flex flex-col gap-6">
+    <div className="h-full flex flex-col gap-4 lg:gap-6">
       {/* AI/Human Toggle - Compact */}
-      <div className="card-neu p-6">
+      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="text-neu-600 font-medium text-sm">Human</div>
@@ -77,13 +77,13 @@ const StatisticsPanel = () => {
       </div>
 
       {/* Political Mindset Statistics - Compact */}
-      <div className="card-neu p-6">
+      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-neu-800">Political Balance</h3>
         </div>
 
         {/* Circular Chart - Animated Self-Drawing SVG */}
-        <div className="relative w-40 h-40 mx-auto mb-6">
+        <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6">
           {/* Outer ring - convex */}
           <div className="absolute inset-0 rounded-full shadow-neu bg-neu-100"></div>
           
@@ -210,7 +210,7 @@ const StatisticsPanel = () => {
       </div>
 
       {/* Affiliation Conflict Risk - Animated SVG */}
-      <div className="card-neu p-6">
+      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <h3 className="text-lg font-semibold text-neu-800 mb-5">Conflict Risk</h3>
         
         <div className="relative h-20 flex items-center justify-center mb-4">
@@ -319,7 +319,7 @@ const StatisticsPanel = () => {
       </div>
 
       {/* Filter Buttons - Compact Grid */}
-      <div className="card-neu p-6">
+      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <h3 className="text-lg font-semibold text-neu-800 mb-5">Filter by Ideology</h3>
         
         <div className="grid grid-cols-2 gap-3">
