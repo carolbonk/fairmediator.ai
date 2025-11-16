@@ -116,7 +116,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
       </div>
 
       {/* Mediator Lists - Neumorphism */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div className="flex-1 px-6 py-6 flex flex-col">
         {loading && (
           <div className="text-center py-8 text-sm text-neu-600 font-medium">
             Checking affiliations...

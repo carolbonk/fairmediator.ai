@@ -17,6 +17,10 @@ const chatRoutes = require('./routes/chat');
 const affiliationRoutes = require('./routes/affiliations');
 const subscriptionRoutes = require('./routes/subscription');
 const dashboardRoutes = require('./routes/dashboard');
+const scrapingRoutes = require('./routes/scraping');
+
+// Import cron scheduler
+const cronScheduler = require('./services/scraping/cronScheduler');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -65,6 +69,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/affiliations', affiliationRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/scraping', scrapingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -87,6 +92,13 @@ app.listen(PORT, () => {
   console.log(`🚀 FairMediator backend running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🤖 AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
+
+  // Start cron jobs in production
+  if (process.env.NODE_ENV === 'production') {
+    cronScheduler.startAll();
+  } else {
+    console.log('⏸️  Cron jobs disabled in development mode');
+  }
 });
 
 module.exports = app;
