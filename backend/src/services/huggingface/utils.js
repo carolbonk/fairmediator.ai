@@ -8,12 +8,21 @@ const config = require('./config');
 
 /**
  * Call Hugging Face API with retry logic (DRY)
+ * UPDATED: Uses new router endpoint for chat completions
  */
 async function callAPI(model, payload, retryCount = 0) {
   try {
+    // Use OpenAI-compatible chat completions API with new router
     const response = await axios.post(
-      `${config.baseURL}/${model}`,
-      payload,
+      `${config.routerURL}/chat/completions`,
+      {
+        model: model,
+        messages: payload.messages,
+        max_tokens: payload.parameters?.max_new_tokens || config.defaults.maxTokens,
+        temperature: payload.parameters?.temperature ?? config.defaults.temperature,
+        top_p: payload.parameters?.top_p || config.defaults.topP,
+        stream: false
+      },
       {
         headers: {
           'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
@@ -30,13 +39,15 @@ async function callAPI(model, payload, retryCount = 0) {
       await new Promise(resolve => setTimeout(resolve, config.retry.retryDelay));
       return callAPI(model, payload, retryCount + 1);
     }
-    
+
     // Handle rate limiting (429)
     if (error.response?.status === 429) {
       throw new Error(config.errors.rateLimited);
     }
-    
-    throw new Error(config.errors.requestFailed(error.message));
+
+    // Log the actual error for debugging
+    console.error('HF API Error:', error.response?.data || error.message);
+    throw new Error(config.errors.requestFailed(error.response?.data?.error || error.message));
   }
 }
 

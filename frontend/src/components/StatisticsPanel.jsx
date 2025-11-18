@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Tooltip from './Tooltip';
 
-const StatisticsPanel = () => {
-  const [selectedFilter, setSelectedFilter] = useState('all');
+const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
+  const [selectedIdeology, setSelectedIdeology] = useState('all');
   const [aiMediatorsEnabled, setAiMediatorsEnabled] = useState(false);
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [waitlistForm, setWaitlistForm] = useState({
@@ -10,14 +11,47 @@ const StatisticsPanel = () => {
     deadline: ''
   });
 
-  // Sample data - replace with real data from your API
+  // Sample data - in production this should come from chat analysis
   const politicalDistribution = {
-    liberal: 35,
-    conservative: 25,
-    neutral: 40
+    liberal: caseData?.political?.liberal || 35,
+    conservative: caseData?.political?.conservative || 25,
+    neutral: caseData?.political?.neutral || 40
   };
 
-  const conflictRisk = 15; // percentage
+  // Calculate conflict risk based on ideology mismatch with political balance
+  const calculateConflictRisk = (ideology) => {
+    const baseRisk = caseData?.baseConflictRisk || 15;
+
+    // If no ideology selected, use base risk
+    if (ideology === 'all') return baseRisk;
+
+    // Calculate mismatch penalty
+    const balance = politicalDistribution;
+    let mismatchPenalty = 0;
+
+    if (ideology === 'liberal' && balance.conservative > 40) {
+      mismatchPenalty = 20;
+    } else if (ideology === 'conservative' && balance.liberal > 40) {
+      mismatchPenalty = 20;
+    } else if (ideology === 'liberal' && balance.conservative > 25) {
+      mismatchPenalty = 10;
+    } else if (ideology === 'conservative' && balance.liberal > 25) {
+      mismatchPenalty = 10;
+    } else if (ideology === 'neutral') {
+      mismatchPenalty = -5; // Neutral mediators reduce risk
+    }
+
+    return Math.min(Math.max(baseRisk + mismatchPenalty, 0), 100);
+  };
+
+  const conflictRisk = calculateConflictRisk(selectedIdeology);
+
+  // Notify parent component when ideology changes
+  useEffect(() => {
+    if (onIdeologyChange) {
+      onIdeologyChange(selectedIdeology);
+    }
+  }, [selectedIdeology, onIdeologyChange]);
 
   const handleAiToggle = () => {
     if (!aiMediatorsEnabled) {
@@ -79,7 +113,10 @@ const StatisticsPanel = () => {
       {/* Political Mindset Statistics - Compact */}
       <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg font-semibold text-neu-800">Political Balance</h3>
+          <h3 className="text-lg font-semibold text-neu-800 flex items-center gap-2">
+            Political Balance
+            <Tooltip text="Analyzes the political leanings of both sides in your case based on your chat description. This estimation helps match you with mediators whose ideology aligns with achieving a balanced resolution." />
+          </h3>
         </div>
 
         {/* Circular Chart - Animated Self-Drawing SVG */}
@@ -209,10 +246,109 @@ const StatisticsPanel = () => {
         </div>
       </div>
 
-      {/* Affiliation Conflict Risk - Animated SVG */}
+      {/* Affiliation Conflict Risk with Ideology Filter - Animated SVG */}
       <div className="card-neu p-4 sm:p-6 flex-shrink-0">
-        <h3 className="text-lg font-semibold text-neu-800 mb-5">Conflict Risk</h3>
-        
+        <h3 className="text-lg font-semibold text-neu-800 mb-3 flex items-center gap-2">
+          Conflict Risk
+          <Tooltip text="Estimates potential conflicts based on party affiliations and mediator ideology. The risk changes when you select different mediator ideologies below. Lower scores indicate better compatibility. This is an estimation." />
+        </h3>
+
+        {/* Ideology Filter integrated into Conflict Risk */}
+        <div className="mb-5">
+          <label className="block text-sm font-semibold text-neu-700 mb-3 flex items-center gap-1.5">
+            Filter by Mediator Ideology
+            <Tooltip text="Select a mediator ideology to see how it affects conflict risk. Neutral mediators typically reduce risk, while ideologically mismatched mediators may increase it." position="right" />
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {/* All */}
+            <button
+              onClick={() => setSelectedIdeology('all')}
+              className={`py-3 px-3 rounded-xl text-xs font-medium transition-all duration-300 ${
+                selectedIdeology === 'all'
+                  ? 'shadow-neu-inset bg-neu-200 text-neu-800'
+                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1.5">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                  selectedIdeology === 'all'
+                    ? 'shadow-neu-inset bg-neu-200'
+                    : 'shadow-neu bg-gradient-to-br from-neu-50 to-neu-100'
+                }`}>
+                  <svg className="w-3.5 h-3.5 text-neu-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
+                  </svg>
+                </div>
+                <span className="text-xs">All</span>
+              </div>
+            </button>
+
+            {/* Liberal */}
+            <button
+              onClick={() => setSelectedIdeology('liberal')}
+              className={`py-3 px-3 rounded-xl text-xs font-medium transition-all duration-300 ${
+                selectedIdeology === 'liberal'
+                  ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
+                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1.5">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                  selectedIdeology === 'liberal'
+                    ? 'shadow-neu-inset bg-blue-200'
+                    : 'shadow-neu bg-gradient-to-br from-blue-300 to-blue-500'
+                }`}>
+                  <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+                </div>
+                <span className="text-xs">Liberal</span>
+              </div>
+            </button>
+
+            {/* Neutral */}
+            <button
+              onClick={() => setSelectedIdeology('neutral')}
+              className={`py-3 px-3 rounded-xl text-xs font-medium transition-all duration-300 ${
+                selectedIdeology === 'neutral'
+                  ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
+                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1.5">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                  selectedIdeology === 'neutral'
+                    ? 'shadow-neu-inset bg-gray-200'
+                    : 'shadow-neu bg-gradient-to-br from-gray-300 to-gray-500'
+                }`}>
+                  <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+                </div>
+                <span className="text-xs">Neutral</span>
+              </div>
+            </button>
+
+            {/* Conservative */}
+            <button
+              onClick={() => setSelectedIdeology('conservative')}
+              className={`py-3 px-3 rounded-xl text-xs font-medium transition-all duration-300 ${
+                selectedIdeology === 'conservative'
+                  ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
+                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1.5">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                  selectedIdeology === 'conservative'
+                    ? 'shadow-neu-inset bg-red-200'
+                    : 'shadow-neu bg-gradient-to-br from-red-300 to-red-500'
+                }`}>
+                  <div className="w-2 h-2 rounded-full bg-red-600"></div>
+                </div>
+                <span className="text-xs">Conservative</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Risk Meter */}
         <div className="relative h-20 flex items-center justify-center mb-4">
           {/* Gauge background - concave */}
           <div className="absolute inset-0 rounded-xl shadow-neu-inset bg-neu-100"></div>
@@ -315,99 +451,6 @@ const StatisticsPanel = () => {
             </span>
           </div>
           <span className="text-neu-600">High</span>
-        </div>
-      </div>
-
-      {/* Filter Buttons - Compact Grid */}
-      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
-        <h3 className="text-lg font-semibold text-neu-800 mb-5">Filter by Ideology</h3>
-        
-        <div className="grid grid-cols-2 gap-3">
-          {/* All */}
-          <button
-            onClick={() => setSelectedFilter('all')}
-            className={`py-4 px-4 rounded-xl font-medium transition-all duration-300 ${
-              selectedFilter === 'all'
-                ? 'shadow-neu-inset bg-neu-200 text-neu-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                selectedFilter === 'all' 
-                  ? 'shadow-neu-inset bg-neu-200' 
-                  : 'shadow-neu bg-gradient-to-br from-neu-50 to-neu-100'
-              }`}>
-                <svg className="w-4 h-4 text-neu-700" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
-                </svg>
-              </div>
-              <span className="text-sm">All</span>
-            </div>
-          </button>
-
-          {/* Liberal */}
-          <button
-            onClick={() => setSelectedFilter('liberal')}
-            className={`py-4 px-4 rounded-xl font-medium transition-all duration-300 ${
-              selectedFilter === 'liberal'
-                ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                selectedFilter === 'liberal' 
-                  ? 'shadow-neu-inset bg-blue-200' 
-                  : 'shadow-neu bg-gradient-to-br from-blue-300 to-blue-500'
-              }`}>
-                <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
-              </div>
-              <span className="text-sm">Liberal</span>
-            </div>
-          </button>
-
-          {/* Neutral */}
-          <button
-            onClick={() => setSelectedFilter('neutral')}
-            className={`py-4 px-4 rounded-xl font-medium transition-all duration-300 ${
-              selectedFilter === 'neutral'
-                ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                selectedFilter === 'neutral' 
-                  ? 'shadow-neu-inset bg-gray-200' 
-                  : 'shadow-neu bg-gradient-to-br from-gray-300 to-gray-500'
-              }`}>
-                <div className="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
-              </div>
-              <span className="text-sm">Neutral</span>
-            </div>
-          </button>
-
-          {/* Conservative */}
-          <button
-            onClick={() => setSelectedFilter('conservative')}
-            className={`py-4 px-4 rounded-xl font-medium transition-all duration-300 ${
-              selectedFilter === 'conservative'
-                ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                selectedFilter === 'conservative' 
-                  ? 'shadow-neu-inset bg-red-200' 
-                  : 'shadow-neu bg-gradient-to-br from-red-300 to-red-500'
-              }`}>
-                <div className="w-2.5 h-2.5 rounded-full bg-red-600"></div>
-              </div>
-              <span className="text-sm">Conservative</span>
-            </div>
-          </button>
         </div>
       </div>
 

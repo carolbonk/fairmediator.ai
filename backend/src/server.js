@@ -18,6 +18,7 @@ const affiliationRoutes = require('./routes/affiliations');
 const subscriptionRoutes = require('./routes/subscription');
 const dashboardRoutes = require('./routes/dashboard');
 const scrapingRoutes = require('./routes/scraping');
+const matchingRoutes = require('./routes/matching');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -70,6 +71,7 @@ app.use('/api/affiliations', affiliationRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/scraping', scrapingRoutes);
+app.use('/api/matching', matchingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

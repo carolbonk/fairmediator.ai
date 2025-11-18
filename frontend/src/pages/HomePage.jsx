@@ -12,12 +12,33 @@ const HomePage = () => {
   });
   const [parties, setParties] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [caseData, setCaseData] = useState({
+    political: {
+      liberal: 35,
+      conservative: 25,
+      neutral: 40
+    },
+    baseConflictRisk: 15,
+    emotion: 'neutral'
+  });
 
   const handleChatResponse = (response) => {
     if (response.mediators) {
       setMediators(response.mediators);
-      setHasSearched(true); // Mark that a search has been performed
+      setHasSearched(true);
     }
+
+    // Update case data from chat analysis
+    if (response.caseAnalysis) {
+      setCaseData(prev => ({
+        ...prev,
+        ...response.caseAnalysis
+      }));
+    }
+  };
+
+  const handleIdeologyChange = (ideology) => {
+    setFilters(prev => ({ ...prev, ideology }));
   };
 
   const filteredMediators = {
@@ -61,7 +82,10 @@ const HomePage = () => {
 
           {/* Right Column - Statistics & Filters */}
           <div className="min-h-[400px] lg:h-full lg:min-h-0 flex flex-col">
-            <StatisticsPanel />
+            <StatisticsPanel
+              caseData={caseData}
+              onIdeologyChange={handleIdeologyChange}
+            />
           </div>
         </div>
       </main>

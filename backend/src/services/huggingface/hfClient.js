@@ -3,7 +3,7 @@
  * Single, clean client using shared utilities
  */
 
-const { callAPI, formatMessages, extractText, createPayload, validateApiKey, config } = require('./utils');
+const { callAPI, validateApiKey, config } = require('./utils');
 
 class HuggingFaceClient {
   constructor() {
@@ -12,19 +12,29 @@ class HuggingFaceClient {
   }
 
   async chat(messages, options = {}) {
-    const prompt = formatMessages(messages);
-    const payload = createPayload(prompt, options);
+    // UPDATED: Use new OpenAI-compatible chat API format
+    const payload = {
+      messages: messages, // Pass messages directly instead of formatting
+      parameters: {
+        max_new_tokens: options.maxTokens || config.defaults.maxTokens,
+        temperature: options.temperature ?? config.defaults.temperature,
+        top_p: config.defaults.topP
+      }
+    };
+
     const result = await callAPI(this.model, payload);
-    const content = extractText(result).trim();
+
+    // Extract content from OpenAI-compatible response format
+    const content = result.choices?.[0]?.message?.content || '';
 
     return {
-      content,
+      content: content.trim(),
       role: 'assistant',
       model: this.model,
-      usage: {
-        prompt_tokens: Math.floor(prompt.length / 4),
-        completion_tokens: Math.floor(content.length / 4),
-        total_tokens: Math.floor((prompt.length + content.length) / 4)
+      usage: result.usage || {
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0
       }
     };
   }
