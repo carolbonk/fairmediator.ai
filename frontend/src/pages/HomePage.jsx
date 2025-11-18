@@ -41,6 +41,24 @@ const HomePage = () => {
     setFilters(prev => ({ ...prev, ideology }));
   };
 
+  const handleDocumentAnalysis = (analysis) => {
+    // Update case data based on document analysis
+    if (analysis) {
+      setCaseData(prev => ({
+        ...prev,
+        caseType: analysis.caseType,
+        jurisdiction: analysis.jurisdiction,
+        opposingParties: analysis.opposingParties,
+        sentiment: analysis.sentiment
+      }));
+
+      // Update parties list if opposing parties found
+      if (analysis.opposingParties && analysis.opposingParties.length > 0) {
+        setParties(analysis.opposingParties);
+      }
+    }
+  };
+
   const filteredMediators = {
     liberal: mediators.filter(m => m.ideologyScore <= -1),
     conservative: mediators.filter(m => m.ideologyScore >= 1),
@@ -66,6 +84,7 @@ const HomePage = () => {
                 onResponse={handleChatResponse}
                 parties={parties}
                 setParties={setParties}
+                onDocumentAnalysis={handleDocumentAnalysis}
               />
             </div>
 
@@ -80,8 +99,8 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Right Column - Statistics & Filters */}
-          <div className="min-h-[400px] lg:h-full lg:min-h-0 flex flex-col">
+          {/* Right Column - Statistics Panel (with integrated Bulk Conflict Checker) */}
+          <div className="min-h-[400px] lg:h-full lg:min-h-0 overflow-y-auto">
             <StatisticsPanel
               caseData={caseData}
               onIdeologyChange={handleIdeologyChange}

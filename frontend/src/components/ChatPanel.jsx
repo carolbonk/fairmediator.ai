@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
+import FileUpload from './FileUpload';
 
-const ChatPanel = ({ onResponse, parties, setParties }) => {
+const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -120,6 +121,28 @@ const ChatPanel = ({ onResponse, parties, setParties }) => {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Document Analyzer - Integrated with Chat */}
+        <div className="mt-5 pt-5 border-t border-neu-200">
+          <FileUpload onAnalysisComplete={(analysis) => {
+            // Update parties from document analysis
+            if (analysis.opposingParties && analysis.opposingParties.length > 0) {
+              const newParties = [...new Set([...parties, ...analysis.opposingParties])];
+              setParties(newParties);
+            }
+            // Send analysis to parent component
+            if (onDocumentAnalysis) {
+              onDocumentAnalysis(analysis);
+            }
+            // Auto-populate chat with case details
+            const caseTypeText = analysis.caseType ? `Case Type: ${analysis.caseType.replace(/_/g, ' ')}` : '';
+            const jurisdictionText = analysis.jurisdiction
+              ? `\nJurisdiction: ${analysis.jurisdiction.city ? analysis.jurisdiction.city + ', ' : ''}${analysis.jurisdiction.state}`
+              : '';
+            const autoMessage = `I've uploaded a document. ${caseTypeText}${jurisdictionText}\n\nCan you recommend suitable mediators?`;
+            setInput(autoMessage);
+          }} />
         </div>
       </div>
 
