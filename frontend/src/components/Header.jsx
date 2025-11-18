@@ -73,21 +73,13 @@ const Header = () => {
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="flex items-center gap-2 px-4 py-2 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
-                  >
-                    <FaUser className="text-blue-400" />
-                    <span className="font-medium">Login</span>
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 font-medium"
-                  >
-                    Sign Up
-                  </Link>
-                </>
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 px-4 py-2 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+                >
+                  <FaUser className="text-blue-400" />
+                  <span className="font-medium">Login</span>
+                </Link>
               )}
             </div>
           </div>

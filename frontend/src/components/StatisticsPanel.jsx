@@ -3,7 +3,7 @@ import Tooltip from './Tooltip';
 import BulkConflictChecker from './BulkConflictChecker';
 
 const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
-  const [selectedIdeology, setSelectedIdeology] = useState('all');
+  const [selectedIdeology, setSelectedIdeology] = useState('neutral');
   const [aiMediatorsEnabled, setAiMediatorsEnabled] = useState(false);
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [waitlistForm, setWaitlistForm] = useState({
@@ -37,9 +37,6 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
         bulkConflictPenalty = Math.min(bulkConflictPenalty, 30);
       }
     }
-
-    // If no ideology selected, use base risk + bulk conflicts
-    if (ideology === 'all') return Math.min(baseRisk + bulkConflictPenalty, 100);
 
     // Calculate mismatch penalty
     const balance = politicalDistribution;
@@ -275,30 +272,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             Filter by Mediator Ideology
             <Tooltip text="Select a mediator ideology to see how it affects conflict risk. Neutral mediators typically reduce risk, while ideologically mismatched mediators may increase it." position="right" />
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            {/* All */}
-            <button
-              onClick={() => setSelectedIdeology('all')}
-              className={`py-3 px-3 rounded-xl text-xs font-medium transition-all duration-300 ${
-                selectedIdeology === 'all'
-                  ? 'shadow-neu-inset bg-neu-200 text-neu-800'
-                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1.5">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
-                  selectedIdeology === 'all'
-                    ? 'shadow-neu-inset bg-neu-200'
-                    : 'shadow-neu bg-gradient-to-br from-neu-50 to-neu-100'
-                }`}>
-                  <svg className="w-3.5 h-3.5 text-neu-700" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
-                  </svg>
-                </div>
-                <span className="text-xs">All</span>
-              </div>
-            </button>
-
+          <div className="grid grid-cols-3 gap-2">
             {/* Liberal */}
             <button
               onClick={() => setSelectedIdeology('liberal')}

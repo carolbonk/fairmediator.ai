@@ -20,6 +20,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
   const [loading, setLoading] = useState(false);
   const [lowBudget, setLowBudget] = useState(false);
   const [selectedState, setSelectedState] = useState('all');
+  const [showStateDropdown, setShowStateDropdown] = useState(false);
 
   // Check affiliations when parties change
   useEffect(() => {
@@ -114,70 +115,101 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
           <Tooltip text="AI-powered suggestions based on your case details, party affiliations, and mediator ideology. Results prioritize neutral options and flag potential conflicts of interest. This is an estimation." />
         </div>
 
-        {/* Filters Row */}
-        <div className="flex flex-wrap items-center gap-4 mb-5">
-          {/* State Selector - Neumorphism */}
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold text-neu-700 flex items-center gap-2">
+        {/* Filters Row - All in one line */}
+        <div className="flex items-center gap-3">
+          {/* State Selector - Custom Neumorphism Dropdown */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-neu bg-neu-100">
+            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
               State
               <Tooltip text="Filter mediators by location. Select a specific state to find mediators practicing in that jurisdiction." position="top" />
             </label>
-            <div className="relative min-w-[160px]">
-              <select
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                style={{
-                  appearance: 'none',
-                  WebkitAppearance: 'none',
-                  MozAppearance: 'none'
-                }}
-                className="w-full bg-neu-100 shadow-neu-inset rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-neu-800 cursor-pointer hover:shadow-neu-inset-sm transition-all duration-200 focus:outline-none focus:shadow-neu-inset-sm border-0"
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowStateDropdown(!showStateDropdown)}
+                className="flex items-center gap-2 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 pr-1 pl-1"
               >
-                <option value="all">All States</option>
-                {US_STATES.map(state => (
-                  <option key={state} value={state}>{state}</option>
-                ))}
-              </select>
-              {/* Custom dropdown arrow */}
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg className="w-4 h-4 text-neu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span>{selectedState === 'all' ? 'All' : selectedState}</span>
+                <svg className={`w-3 h-3 text-neu-600 transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </div>
+              </button>
+
+              {/* Custom Dropdown Menu */}
+              {showStateDropdown && (
+                <>
+                  {/* Backdrop to close dropdown */}
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowStateDropdown(false)}
+                  />
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute top-full mt-2 left-0 w-48 max-h-64 overflow-y-auto bg-neu-100 rounded-xl shadow-neu-lg border border-neu-200 z-20 animate-fade-in">
+                    <button
+                      onClick={() => {
+                        setSelectedState('all');
+                        setShowStateDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
+                        selectedState === 'all'
+                          ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 shadow-neu-inset'
+                          : 'text-neu-700 hover:bg-neu-200'
+                      }`}
+                    >
+                      All States
+                    </button>
+                    {US_STATES.map(state => (
+                      <button
+                        key={state}
+                        onClick={() => {
+                          setSelectedState(state);
+                          setShowStateDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
+                          selectedState === state
+                            ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 shadow-neu-inset'
+                            : 'text-neu-700 hover:bg-neu-200'
+                        }`}
+                      >
+                        {state}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Low Budget Toggle - Neumorphism */}
-          <div className="flex items-center gap-3 px-5 py-2.5 rounded-xl shadow-neu bg-neu-100">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <span className="text-sm font-semibold text-neu-700">Low Budget</span>
+          {/* Low Budget Toggle - Compact */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-neu bg-neu-100">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Low Budget</span>
               <Tooltip text="Filters for mediators with hourly rates under $300. Budget-friendly options for cost-conscious clients." position="top" />
               <button
                 type="button"
                 onClick={() => setLowBudget(!lowBudget)}
-                className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                className={`relative w-10 h-5 rounded-full transition-all duration-300 ${
                   lowBudget
                     ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
                     : 'bg-neu-200 shadow-neu-inset'
                 }`}
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all duration-300 ${
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-all duration-300 ${
                     lowBudget
-                      ? 'translate-x-6 bg-white shadow-neu-lg'
+                      ? 'translate-x-5 bg-white shadow-neu-lg'
                       : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
                   }`}
                 />
               </button>
             </label>
           </div>
-        </div>
 
-        {/* Ideology Tabs */}
-        <div className="flex gap-2 flex-wrap">
+          {/* Ideology Tabs - Compact */}
           <button
             onClick={() => setActiveTab('all')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'all'
                 ? 'shadow-neu-inset bg-neu-200 text-neu-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -187,7 +219,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
           </button>
           <button
             onClick={() => setActiveTab('liberal')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'liberal'
                 ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -197,7 +229,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
           </button>
           <button
             onClick={() => setActiveTab('neutral')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'neutral'
                 ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -207,7 +239,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
           </button>
           <button
             onClick={() => setActiveTab('conservative')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'conservative'
                 ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
