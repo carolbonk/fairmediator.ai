@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
+import { FaPaperPlane, FaSpinner, FaStar, FaMapMarkerAlt, FaBriefcase } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
 import FileUpload from './FileUpload';
 
@@ -13,6 +13,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [partyInput, setPartyInput] = useState('');
+  const [suggestedMediators, setSuggestedMediators] = useState([]);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -38,8 +39,14 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
         role: 'assistant',
         content: response.message
       };
-      
+
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Store suggested mediators if available
+      if (response.mediators && response.mediators.length > 0) {
+        setSuggestedMediators(response.mediators);
+      }
+
       onResponse(response);
     } catch (error) {
       console.error('Chat error:', error);
@@ -174,7 +181,66 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             </div>
           </div>
         )}
-        
+
+        {/* Mediator Suggestions */}
+        {suggestedMediators.length > 0 && (
+          <div className="mt-4 space-y-2 animate-fade-in">
+            <div className="text-xs font-semibold text-neu-600 mb-2">Suggested Mediators:</div>
+            {suggestedMediators.slice(0, 3).map((mediator, idx) => (
+              <div key={idx} className="bg-neu-50 rounded-xl p-3 shadow-neu-inset">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-neu-800 mb-1">{mediator.name}</h4>
+
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-neu-600 mb-2">
+                      {mediator.location && (
+                        <span className="flex items-center gap-1">
+                          <FaMapMarkerAlt className="text-neu-400" />
+                          {mediator.location.city}, {mediator.location.state}
+                        </span>
+                      )}
+                      {mediator.yearsExperience && (
+                        <span className="flex items-center gap-1">
+                          <FaBriefcase className="text-neu-400" />
+                          {mediator.yearsExperience} years
+                        </span>
+                      )}
+                      {mediator.rating > 0 && (
+                        <span className="flex items-center gap-1">
+                          <FaStar className="text-yellow-500" />
+                          {mediator.rating.toFixed(1)}
+                        </span>
+                      )}
+                    </div>
+
+                    {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {mediator.practiceAreas.slice(0, 3).map((area, i) => (
+                          <span key={i} className="px-2 py-0.5 text-xs bg-neu-200 text-neu-700 rounded-full shadow-neu-inset">
+                            {area}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {mediator.ideologyScore !== undefined && (
+                    <div className={`px-2 py-1 text-xs font-semibold rounded-lg ${
+                      mediator.ideologyScore <= -1 ? 'bg-blue-100 text-blue-700' :
+                      mediator.ideologyScore >= 1 ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {mediator.ideologyScore <= -1 ? 'Liberal' :
+                       mediator.ideologyScore >= 1 ? 'Conservative' :
+                       'Neutral'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
