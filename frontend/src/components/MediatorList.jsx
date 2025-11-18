@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import MediatorCard from './MediatorCard';
+import Tooltip from './Tooltip';
 import { checkAffiliationsQuick } from '../services/api';
+
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+  'Wisconsin', 'Wyoming'
+];
 
 const MediatorList = ({ liberal, conservative, neutral, parties }) => {
   const [activeTab, setActiveTab] = useState('all');
   const [affiliationFlags, setAffiliationFlags] = useState({});
   const [loading, setLoading] = useState(false);
+  const [lowBudget, setLowBudget] = useState(false);
+  const [selectedState, setSelectedState] = useState('all');
 
   // Check affiliations when parties change
   useEffect(() => {
@@ -36,18 +50,40 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
     }
   };
 
+  // Apply filters
+  const applyFilters = (mediators) => {
+    let filtered = [...mediators];
+
+    // Filter by state
+    if (selectedState !== 'all') {
+      filtered = filtered.filter(m => m.location?.state === selectedState);
+    }
+
+    // Filter by budget (assume mediators have a hourlyRate property)
+    if (lowBudget) {
+      filtered = filtered.filter(m => !m.hourlyRate || m.hourlyRate <= 300);
+    }
+
+    return filtered;
+  };
+
   const renderList = (mediators, title, color) => {
-    if (mediators.length === 0) {
+    const filteredMediators = applyFilters(mediators);
+
+    if (filteredMediators.length === 0) {
       return (
         <div className="text-center py-8 text-gray-400">
           <p>No {title.toLowerCase()} mediators found</p>
+          {(selectedState !== 'all' || lowBudget) && (
+            <p className="text-xs mt-2">Try adjusting your filters</p>
+          )}
         </div>
       );
     }
 
     return (
       <div className="space-y-3">
-        {mediators.map(mediator => (
+        {filteredMediators.map(mediator => (
           <MediatorCard
             key={mediator._id}
             mediator={mediator}
@@ -59,18 +95,85 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
   };
 
   const allMediators = [...liberal, ...conservative, ...neutral];
+  const filteredAllCount = applyFilters(allMediators).length;
+  const filteredLiberalCount = applyFilters(liberal).length;
+  const filteredNeutralCount = applyFilters(neutral).length;
+  const filteredConservativeCount = applyFilters(conservative).length;
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header with Tabs - Neumorphism */}
+      {/* Header with Filters - Neumorphism */}
       <div className="border-b border-neu-200 px-6 py-5 bg-neu-100">
-        <h2 className="text-xl font-semibold text-neu-800 mb-4">
-          Mediator Results
-          <span className="ml-2 text-base font-medium text-neu-600">
-            ({allMediators.length})
-          </span>
-        </h2>
-        
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-xl font-semibold text-neu-800">
+            Mediator Suggestions
+            <span className="ml-2 text-base font-medium text-neu-600">
+              ({filteredAllCount})
+            </span>
+          </h2>
+          <Tooltip text="AI-powered suggestions based on your case details, party affiliations, and mediator ideology. Results prioritize neutral options and flag potential conflicts of interest. This is an estimation." />
+        </div>
+
+        {/* Filters Row */}
+        <div className="flex flex-wrap items-center gap-4 mb-5">
+          {/* State Selector - Neumorphism */}
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-semibold text-neu-700 flex items-center gap-2">
+              State
+              <Tooltip text="Filter mediators by location. Select a specific state to find mediators practicing in that jurisdiction." position="top" />
+            </label>
+            <div className="relative min-w-[160px]">
+              <select
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                style={{
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none'
+                }}
+                className="w-full bg-neu-100 shadow-neu-inset rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-neu-800 cursor-pointer hover:shadow-neu-inset-sm transition-all duration-200 focus:outline-none focus:shadow-neu-inset-sm border-0"
+              >
+                <option value="all">All States</option>
+                {US_STATES.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+              {/* Custom dropdown arrow */}
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-4 h-4 text-neu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Low Budget Toggle - Neumorphism */}
+          <div className="flex items-center gap-3 px-5 py-2.5 rounded-xl shadow-neu bg-neu-100">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <span className="text-sm font-semibold text-neu-700">Low Budget</span>
+              <Tooltip text="Filters for mediators with hourly rates under $300. Budget-friendly options for cost-conscious clients." position="top" />
+              <button
+                type="button"
+                onClick={() => setLowBudget(!lowBudget)}
+                className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                  lowBudget
+                    ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
+                    : 'bg-neu-200 shadow-neu-inset'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-all duration-300 ${
+                    lowBudget
+                      ? 'translate-x-6 bg-white shadow-neu-lg'
+                      : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
+                  }`}
+                />
+              </button>
+            </label>
+          </div>
+        </div>
+
+        {/* Ideology Tabs */}
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setActiveTab('all')}
@@ -80,7 +183,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            All <span className="ml-1 opacity-75">({allMediators.length})</span>
+            All <span className="ml-1 opacity-75">({filteredAllCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('liberal')}
@@ -90,7 +193,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Liberal <span className="ml-1 opacity-75">({liberal.length})</span>
+            Liberal <span className="ml-1 opacity-75">({filteredLiberalCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('neutral')}
@@ -100,7 +203,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Neutral <span className="ml-1 opacity-75">({neutral.length})</span>
+            Neutral <span className="ml-1 opacity-75">({filteredNeutralCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('conservative')}
@@ -110,7 +213,7 @@ const MediatorList = ({ liberal, conservative, neutral, parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Conservative <span className="ml-1 opacity-75">({conservative.length})</span>
+            Conservative <span className="ml-1 opacity-75">({filteredConservativeCount})</span>
           </button>
         </div>
       </div>

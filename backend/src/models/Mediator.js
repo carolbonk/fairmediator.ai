@@ -176,7 +176,7 @@ mediatorSchema.methods.detectConflicts = async function(parties) {
       conflicts.push({
         entity: matchingParties.join(', '),
         entityType: 'case',
-        relationship: \`Previous \${case_.role} in \${case_.caseName}\`,
+        relationship: `Previous ${case_.role} in ${case_.caseName}`,
         riskLevel: 'medium',
         lastChecked: new Date()
       });

@@ -6,7 +6,7 @@ const ChatPanel = ({ onResponse, parties, setParties }) => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your AI assistant powered by Meta Llama. I can help you find the right mediator for your case. Just describe your needs in natural language, and I\'ll search our database for the best matches.'
+      content: 'Hello! I\'m your AI assistant. I can help you find the right mediator for your case. Just describe your needs in natural language, and I\'ll search our database for the best matches.'
     }
   ]);
   const [input, setInput] = useState('');

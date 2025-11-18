@@ -4,16 +4,19 @@
  */
 
 module.exports = {
-  // API Configuration
+  // API Configuration - UPDATED for 2025 Hugging Face changes
   baseURL: 'https://api-inference.huggingface.co/models',
-  
-  // Free Models (all 100% free)
+  routerURL: 'https://router.huggingface.co/v1',
+
+  // Models - Using providers that still work with free tier
   models: {
-    primary: process.env.HF_MODEL_CHAT || 'meta-llama/Meta-Llama-3-8B-Instruct',
+    // For chat: use Groq (free), SambaNova, or Together AI through HF router
+    // For now, using meta-llama/Llama-3.2-1B-Instruct which is smaller and more likely available
+    primary: process.env.HF_MODEL_CHAT || 'meta-llama/Llama-3.2-1B-Instruct',
     alternatives: [
-      'microsoft/DialoGPT-large',
-      'facebook/blenderbot-400M-distill',
-      'TinyLlama/TinyLlama-1.1B-Chat-v1.0'
+      'meta-llama/Llama-3.2-3B-Instruct',
+      'mistralai/Mixtral-8x7B-Instruct-v0.1',
+      'google/gemma-2-2b-it'
     ]
   },
   
