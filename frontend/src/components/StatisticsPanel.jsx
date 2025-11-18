@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Tooltip from './Tooltip';
+import BulkConflictChecker from './BulkConflictChecker';
 
 const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
   const [selectedIdeology, setSelectedIdeology] = useState('all');
@@ -10,6 +11,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
     email: '',
     deadline: ''
   });
+  const [bulkConflictResults, setBulkConflictResults] = useState(null);
 
   // Sample data - in production this should come from chat analysis
   const politicalDistribution = {
@@ -18,12 +20,26 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
     neutral: caseData?.political?.neutral || 40
   };
 
-  // Calculate conflict risk based on ideology mismatch with political balance
+  // Calculate conflict risk based on ideology mismatch with political balance AND bulk conflicts
   const calculateConflictRisk = (ideology) => {
     const baseRisk = caseData?.baseConflictRisk || 15;
 
-    // If no ideology selected, use base risk
-    if (ideology === 'all') return baseRisk;
+    // Add penalty from bulk conflict checker results
+    let bulkConflictPenalty = 0;
+    if (bulkConflictResults) {
+      const { summary } = bulkConflictResults;
+      if (summary) {
+        // High severity conflicts add significant risk
+        bulkConflictPenalty += (summary.highSeverity || 0) * 10;
+        // Medium severity conflicts add moderate risk
+        bulkConflictPenalty += (summary.mediumSeverity || 0) * 5;
+        // Cap bulk conflict penalty at 30
+        bulkConflictPenalty = Math.min(bulkConflictPenalty, 30);
+      }
+    }
+
+    // If no ideology selected, use base risk + bulk conflicts
+    if (ideology === 'all') return Math.min(baseRisk + bulkConflictPenalty, 100);
 
     // Calculate mismatch penalty
     const balance = politicalDistribution;
@@ -41,7 +57,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
       mismatchPenalty = -5; // Neutral mediators reduce risk
     }
 
-    return Math.min(Math.max(baseRisk + mismatchPenalty, 0), 100);
+    return Math.min(Math.max(baseRisk + mismatchPenalty + bulkConflictPenalty, 0), 100);
   };
 
   const conflictRisk = calculateConflictRisk(selectedIdeology);
@@ -441,7 +457,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
         <div className="flex items-center justify-between text-sm">
           <span className="text-neu-600">Low</span>
           <div className="flex items-center gap-1.5">
-            <span 
+            <span
               className="text-2xl font-bold text-neu-800"
               style={{
                 animation: 'countUp 2s ease-out forwards'
@@ -451,6 +467,32 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             </span>
           </div>
           <span className="text-neu-600">High</span>
+        </div>
+
+        {/* Bulk Conflict Status Summary */}
+        {bulkConflictResults && (
+          <div className="mt-4 pt-4 border-t border-neu-200">
+            <div className="text-xs font-semibold text-neu-700 mb-2">Bulk Conflict Check Results</div>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center p-2 bg-neu-50 rounded-lg shadow-neu-inset">
+                <div className="text-xs text-neu-600">Parties</div>
+                <div className="text-lg font-bold text-neu-800">{bulkConflictResults.totalParties}</div>
+              </div>
+              <div className="text-center p-2 bg-red-50 rounded-lg shadow-neu-inset">
+                <div className="text-xs text-red-600">Conflicts</div>
+                <div className="text-lg font-bold text-red-700">{bulkConflictResults.totalConflicts}</div>
+              </div>
+              <div className="text-center p-2 bg-yellow-50 rounded-lg shadow-neu-inset">
+                <div className="text-xs text-yellow-600">High Risk</div>
+                <div className="text-lg font-bold text-yellow-700">{bulkConflictResults.summary?.highSeverity || 0}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Conflict Checker - Integrated */}
+        <div className="mt-4 pt-4 border-t border-neu-200">
+          <BulkConflictChecker onResultsUpdate={setBulkConflictResults} compact />
         </div>
       </div>
 
