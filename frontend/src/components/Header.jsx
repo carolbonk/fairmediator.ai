@@ -23,6 +23,7 @@ const Header = () => {
               src={logoBlue}
               alt="Fair Mediator"
               className="h-22 w-auto drop-shadow-lg"
+              
             />
 
             {/* Tagline */}

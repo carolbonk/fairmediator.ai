@@ -80,47 +80,47 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   return (
     <div className="flex flex-col h-full">
       {/* Header - Neumorphism */}
-      <div className="px-6 py-5 bg-neu-100 border-b border-neu-200">
-        <h2 className="text-xl font-semibold text-neu-800">
+      <div className="px-4 py-3 bg-neu-100 border-b border-neu-200">
+        <h2 className="text-base font-semibold text-neu-800">
           AI Chat Assistant
         </h2>
-        <p className="text-sm text-neu-600 mt-1">
+        <p className="text-xs text-neu-600 mt-0.5">
           Powered by Hugging Face (100% FREE)
         </p>
-        
+
         {/* Parties Input - Neumorphism */}
-        <div className="mt-5">
-          <label className="block text-xs font-semibold text-neu-700 mb-2 uppercase tracking-wide">
+        <div className="mt-3">
+          <label className="block text-[10px] font-semibold text-neu-700 mb-1 uppercase tracking-wide">
             Parties/Firms to Check for Conflicts:
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <input
               type="text"
               value={partyInput}
               onChange={(e) => setPartyInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addParty()}
               placeholder="e.g., BigLaw LLC"
-              className="input-neu flex-1 text-sm"
+              className="input-neu flex-1 text-xs py-1.5"
             />
             <button
               onClick={addParty}
-              className="btn-neu text-sm px-4 whitespace-nowrap"
+              className="btn-neu text-xs px-3 py-1.5 whitespace-nowrap"
             >
               Add
             </button>
           </div>
-          
+
           {parties.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               {parties.map((party, idx) => (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-full shadow-neu-sm"
+                  className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-blue-100 text-blue-800 rounded-full shadow-neu-sm"
                 >
                   {party}
                   <button
                     onClick={() => removeParty(party)}
-                    className="hover:text-blue-600 transition-colors ml-0.5 w-4 h-4 flex items-center justify-center rounded-full hover:bg-blue-200"
+                    className="hover:text-blue-600 transition-colors w-3 h-3 flex items-center justify-center rounded-full hover:bg-blue-200"
                   >
                     ×
                   </button>
@@ -131,7 +131,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
         </div>
 
         {/* Document Analyzer - Integrated with Chat */}
-        <div className="mt-5 pt-5 border-t border-neu-200">
+        <div className="mt-3 pt-3 border-t border-neu-200">
           <FileUpload onAnalysisComplete={(analysis) => {
             // Update parties from document analysis
             if (analysis.opposingParties && analysis.opposingParties.length > 0) {
@@ -154,90 +154,31 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       </div>
 
       {/* Messages - Neumorphism bubbles */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 space-y-2">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
           >
             <div
-              className={`max-w-[75%] px-4 py-3 rounded-2xl ${
+              className={`max-w-[75%] px-3 py-2 rounded-xl break-words ${
                 msg.role === 'user'
                   ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-neu'
                   : 'bg-neu-100 text-neu-800 shadow-neu'
               }`}
             >
-              <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+              <p className="text-xs leading-relaxed whitespace-pre-wrap break-words">
                 {msg.content}
               </p>
             </div>
           </div>
         ))}
-        
+
         {loading && (
           <div className="flex justify-start animate-fade-in">
-            <div className="bg-neu-100 px-4 py-3 rounded-2xl shadow-neu">
-              <FaSpinner className="animate-spin text-blue-500 text-lg" />
+            <div className="bg-neu-100 px-3 py-2 rounded-xl shadow-neu">
+              <FaSpinner className="animate-spin text-blue-500 text-sm" />
             </div>
-          </div>
-        )}
-
-        {/* Mediator Suggestions */}
-        {suggestedMediators.length > 0 && (
-          <div className="mt-4 space-y-2 animate-fade-in">
-            <div className="text-xs font-semibold text-neu-600 mb-2">Suggested Mediators:</div>
-            {suggestedMediators.slice(0, 3).map((mediator, idx) => (
-              <div key={idx} className="bg-neu-50 rounded-xl p-3 shadow-neu-inset">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-neu-800 mb-1">{mediator.name}</h4>
-
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-neu-600 mb-2">
-                      {mediator.location && (
-                        <span className="flex items-center gap-1">
-                          <FaMapMarkerAlt className="text-neu-400" />
-                          {mediator.location.city}, {mediator.location.state}
-                        </span>
-                      )}
-                      {mediator.yearsExperience && (
-                        <span className="flex items-center gap-1">
-                          <FaBriefcase className="text-neu-400" />
-                          {mediator.yearsExperience} years
-                        </span>
-                      )}
-                      {mediator.rating > 0 && (
-                        <span className="flex items-center gap-1">
-                          <FaStar className="text-yellow-500" />
-                          {mediator.rating.toFixed(1)}
-                        </span>
-                      )}
-                    </div>
-
-                    {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {mediator.practiceAreas.slice(0, 3).map((area, i) => (
-                          <span key={i} className="px-2 py-0.5 text-xs bg-neu-200 text-neu-700 rounded-full shadow-neu-inset">
-                            {area}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {mediator.ideologyScore !== undefined && (
-                    <div className={`px-2 py-1 text-xs font-semibold rounded-lg ${
-                      mediator.ideologyScore <= -1 ? 'bg-blue-100 text-blue-700' :
-                      mediator.ideologyScore >= 1 ? 'bg-red-100 text-red-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
-                      {mediator.ideologyScore <= -1 ? 'Liberal' :
-                       mediator.ideologyScore >= 1 ? 'Conservative' :
-                       'Neutral'}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         )}
 
@@ -245,27 +186,27 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       </div>
 
       {/* Input - Neumorphism */}
-      <div className="border-t border-neu-200 px-6 py-5 bg-neu-100">
-        <div className="flex gap-3">
+      <div className="border-t border-neu-200 px-4 py-3 bg-neu-100">
+        <div className="flex gap-2">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute, neutral stance')"
-            className="input-neu flex-1 resize-none text-[15px] leading-relaxed min-h-[80px]"
-            rows="3"
+            className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[60px]"
+            rows="2"
             disabled={loading}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="btn-neu-primary self-end px-5 py-3 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-neu-primary self-end px-3 py-2 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <FaPaperPlane className="text-lg" />
+            <FaPaperPlane className="text-sm" />
           </button>
         </div>
-        <p className="text-xs text-neu-600 mt-3">
-          Press <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700">Enter</kbd> to send • <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700">Shift+Enter</kbd> for new line
+        <p className="text-[10px] text-neu-600 mt-2">
+          Press <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Enter</kbd> to send • <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Shift+Enter</kbd> for new line
         </p>
       </div>
     </div>
