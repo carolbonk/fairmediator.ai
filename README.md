@@ -189,20 +189,6 @@ Machine learning classification based on:
 - Secure API key management
 - Data anonymization for analytics
 
-## 💰 Monetization Strategy
-
-1. **Freemium Model**:
-   - Basic search: Free
-   - Advanced filtering + AI insights: Subscription
-   
-2. **Premium Mediator Placement**:
-   - Featured listings for verified mediators
-   
-3. **Enterprise Plans**:
-   - API access for law firms
-   - Custom affiliation rules
-   - Dedicated support
-
 ## 🛣️ Roadmap
 
 - [ ] Phase 1: MVP (Chat + basic mediator list)
@@ -211,6 +197,10 @@ Machine learning classification based on:
 - [ ] Phase 4: Advanced filtering + analytics
 - [ ] Phase 5: Mobile app
 - [ ] Phase 6: Fine-tuned Llama model for legal domain
+
+## 🤝 Contributing
+
+Contributions welcome! Please read CONTRIBUTING.md first.
 
 ## 📚 Learn More
 
@@ -228,10 +218,4 @@ Machine learning classification based on:
 
 MIT License - See LICENSE file for details
 
-## 🤝 Contributing
-
-Contributions welcome! Please read CONTRIBUTING.md first.
-
----
-
-**Built with ❤️ using Meta Llama | Empowering Fair Mediation Selection**
+**Empowering Fair Mediation Selection**
