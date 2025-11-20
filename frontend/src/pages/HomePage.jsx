@@ -63,10 +63,10 @@ const HomePage = () => {
       <Header />
 
       {/* Neumorphism layout with generous spacing - 2 Column Design (60/40 split) */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-10 overflow-x-hidden">
-        <div className="flex flex-col lg:grid lg:grid-cols-[60%_40%] gap-4 sm:gap-6 min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:h-[calc(100vh-140px)] overflow-x-hidden">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-[60%_40%] gap-4 sm:gap-6 min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:h-[calc(100vh-140px)]">
           {/* Left Column - Chat on top, Mediators below */}
-          <div className="flex flex-col gap-4 sm:gap-6 lg:h-full lg:min-h-0 overflow-x-hidden">
+          <div className="flex flex-col gap-4 sm:gap-6 lg:h-full lg:min-h-0">
             {/* Chat Panel - Dynamic height based on search state */}
             <div className={`card-neu lg:${chatHeight} min-h-[300px] sm:min-h-[350px] lg:min-h-0 transition-all duration-500 ease-in-out flex flex-col overflow-hidden`}>
               <ChatPanel

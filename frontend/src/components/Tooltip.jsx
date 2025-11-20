@@ -38,7 +38,7 @@ const Tooltip = ({ text, position = 'top' }) => {
           {/* Neumorphism tooltip card */}
           <div className="relative bg-neu-100 rounded-2xl shadow-neu-lg p-4 border border-neu-200">
             {/* Content */}
-            <p className="text-xs leading-relaxed text-neu-700 font-medium">
+            <p className="text-xs leading-relaxed text-neu-700 font-medium break-words overflow-wrap-anywhere">
               {text}
             </p>
 

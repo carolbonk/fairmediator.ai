@@ -192,7 +192,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute, neutral stance')"
+            placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute, moderated stance')"
             className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[60px]"
             rows="2"
             disabled={loading}
