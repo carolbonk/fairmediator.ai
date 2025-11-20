@@ -20,6 +20,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const scrapingRoutes = require('./routes/scraping');
 const matchingRoutes = require('./routes/matching');
 const analysisRoutes = require('./routes/analysis'); // NEW: Document analysis and bulk conflict checking
+const learningRoutes = require('./routes/learning'); // NEW: Smart learning system for AI improvement
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -74,6 +75,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/scraping', scrapingRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/analysis', analysisRoutes); // NEW: Document analysis and bulk conflict checking
+app.use('/api/learning', learningRoutes); // NEW: Smart learning system for AI improvement
 
 // Error handling middleware
 app.use((err, req, res, next) => {

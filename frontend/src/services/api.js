@@ -143,4 +143,20 @@ export const getRecommendations = async (caseContext, limit = 10) => {
   return response.data;
 };
 
+// Learning & Tracking API - Smart AI improvement
+export const trackMediatorSelection = async (selectionData) => {
+  const response = await api.post('/learning/track-selection', selectionData);
+  return response.data;
+};
+
+export const recordCaseOutcome = async (outcomeData) => {
+  const response = await api.post('/learning/record-outcome', outcomeData);
+  return response.data;
+};
+
+export const getMediatorHistory = async (mediatorId) => {
+  const response = await api.get(`/learning/mediator-history/${mediatorId}`);
+  return response.data;
+};
+
 export default api;

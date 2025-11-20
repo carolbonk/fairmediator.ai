@@ -132,7 +132,7 @@ const getIdeologyScore = (state, index) => {
 const getIdeologyLabel = (score) => {
   if (score <= -1) return 'liberal';
   if (score >= 1) return 'conservative';
-  return 'neutral';
+  return 'moderated';
 };
 
 // Generate hourly rate between $120-$440
@@ -194,7 +194,7 @@ export const MOCK_MEDIATORS = generateMockMediators();
 export const categorizeMediatorsByIdeology = (mediators) => {
   return {
     liberal: mediators.filter(m => m.ideology === 'liberal'),
-    neutral: mediators.filter(m => m.ideology === 'neutral'),
+    moderated: mediators.filter(m => m.ideology === 'moderated'),
     conservative: mediators.filter(m => m.ideology === 'conservative')
   };
 };
