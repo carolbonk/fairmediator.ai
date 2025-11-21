@@ -1,16 +1,7 @@
-/**
- * Context Builder - Smart Learning Without Model Training
- * Tracks user behavior and builds dynamic context for AI
- * FREE TIER - No model training, just smart data analysis
- */
-
 const MediatorSelection = require('../../models/MediatorSelection');
 const CaseOutcome = require('../../models/CaseOutcome');
 
 class ContextBuilder {
-  /**
-   * Build intelligent context based on historical data
-   */
   async buildContextForQuery(caseType, jurisdiction, ideology) {
     const insights = await this.gatherInsights(caseType, jurisdiction, ideology);
 
@@ -19,258 +10,171 @@ class ContextBuilder {
     }
 
     return `
-LEARNING FROM PAST CASES:
-- Analyzed ${insights.totalCases} similar cases
-- Top performing mediators: ${insights.topMediators.join(', ')}
-- Success rate with ${ideology} mediators: ${insights.ideologySuccessRate}%
-- Average settlement time: ${insights.avgSettlementDays} days
-- Most common hourly rate: $${insights.commonHourlyRate}
-- User satisfaction average: ${insights.avgSatisfaction}/5
+PAST CASE DATA:
+- ${insights.totalCases} similar cases analyzed
+- Top mediators: ${insights.topMediators.join(', ')}
+- ${ideology} success rate: ${insights.ideologySuccessRate}%
+- Avg settlement: ${insights.avgSettlementDays} days
+- Common rate: $${insights.commonHourlyRate}/hr
+- Satisfaction: ${insights.avgSatisfaction}/5
 
-KEY INSIGHTS:
+INSIGHTS:
 ${insights.keyInsights.map(i => `- ${i}`).join('\n')}
 `;
   }
 
-  /**
-   * Gather insights from historical selections and outcomes
-   */
   async gatherInsights(caseType, jurisdiction, ideology) {
     try {
-      // Get successful past cases
       const query = { outcome: { $in: ['settled', 'resolved'] } };
 
-      if (caseType) {
-        query.caseType = new RegExp(caseType, 'i');
-      }
+      if (caseType) query.caseType = new RegExp(caseType, 'i');
+      if (jurisdiction?.state) query['jurisdiction.state'] = jurisdiction.state;
 
-      if (jurisdiction?.state) {
-        query['jurisdiction.state'] = jurisdiction.state;
-      }
-
-      const successfulCases = await CaseOutcome.find(query)
+      const cases = await CaseOutcome.find(query)
         .populate('mediatorId')
         .limit(100)
         .sort({ createdAt: -1 });
 
-      if (successfulCases.length === 0) {
-        return { hasData: false };
-      }
+      if (!cases.length) return { hasData: false };
 
-      // Calculate mediator success rates
-      const mediatorStats = this.calculateMediatorStats(successfulCases);
-
-      // Get ideology performance
-      const ideologyStats = this.calculateIdeologyStats(successfulCases, ideology);
-
-      // Calculate timing and cost insights
-      const timingInsights = this.calculateTimingInsights(successfulCases);
+      const mediatorStats = this.calcMediatorStats(cases);
+      const ideologyStats = this.calcIdeologyStats(cases, ideology);
+      const timingStats = this.calcTimingStats(cases);
 
       return {
         hasData: true,
-        totalCases: successfulCases.length,
+        totalCases: cases.length,
         topMediators: mediatorStats.topPerformers.slice(0, 3),
         ideologySuccessRate: ideologyStats.successRate,
-        avgSettlementDays: timingInsights.avgDays,
-        commonHourlyRate: timingInsights.commonRate,
+        avgSettlementDays: timingStats.avgDays,
+        commonHourlyRate: timingStats.commonRate,
         avgSatisfaction: mediatorStats.avgSatisfaction,
-        keyInsights: this.generateKeyInsights(mediatorStats, ideologyStats, timingInsights)
+        keyInsights: this.getKeyInsights(mediatorStats, ideologyStats, timingStats)
       };
-    } catch (error) {
-      console.error('Error gathering insights:', error);
+    } catch (err) {
+      console.error('gatherInsights error:', err);
       return { hasData: false };
     }
   }
 
-  /**
-   * Calculate mediator performance statistics
-   */
-  calculateMediatorStats(cases) {
-    const mediatorMap = new Map();
+  calcMediatorStats(cases) {
+    const stats = new Map();
 
     cases.forEach(c => {
-      const key = c.mediatorId?._id?.toString();
-      if (!key) return;
+      const id = c.mediatorId?._id?.toString();
+      if (!id) return;
 
-      if (!mediatorMap.has(key)) {
-        mediatorMap.set(key, {
-          name: c.mediatorId.name,
-          cases: 0,
-          totalSatisfaction: 0,
-          settlements: 0
-        });
+      if (!stats.has(id)) {
+        stats.set(id, { name: c.mediatorId.name, cases: 0, satisfaction: 0, settled: 0 });
       }
 
-      const stats = mediatorMap.get(key);
-      stats.cases++;
-      stats.totalSatisfaction += c.userSatisfaction || 0;
-      if (c.outcome === 'settled') stats.settlements++;
+      const s = stats.get(id);
+      s.cases++;
+      s.satisfaction += c.userSatisfaction || 0;
+      if (c.outcome === 'settled') s.settled++;
     });
 
-    const topPerformers = Array.from(mediatorMap.values())
+    const performers = Array.from(stats.values())
       .sort((a, b) => {
-        const aScore = (a.totalSatisfaction / a.cases) * (a.settlements / a.cases);
-        const bScore = (b.totalSatisfaction / b.cases) * (b.settlements / b.cases);
-        return bScore - aScore;
+        const scoreA = (a.satisfaction / a.cases) * (a.settled / a.cases);
+        const scoreB = (b.satisfaction / b.cases) * (b.settled / b.cases);
+        return scoreB - scoreA;
       })
       .map(m => m.name);
 
-    const avgSatisfaction = Array.from(mediatorMap.values())
-      .reduce((sum, m) => sum + (m.totalSatisfaction / m.cases), 0) / mediatorMap.size;
+    const avgSat = Array.from(stats.values())
+      .reduce((sum, m) => sum + (m.satisfaction / m.cases), 0) / stats.size;
 
-    return {
-      topPerformers,
-      avgSatisfaction: avgSatisfaction.toFixed(1)
-    };
+    return { topPerformers: performers, avgSatisfaction: avgSat.toFixed(1) };
   }
 
-  /**
-   * Calculate ideology-specific performance
-   */
-  calculateIdeologyStats(cases, targetIdeology) {
-    const ideologyCases = cases.filter(c =>
-      c.mediatorId?.ideology?.leaning === targetIdeology
-    );
+  calcIdeologyStats(cases, ideology) {
+    const filtered = cases.filter(c => c.mediatorId?.ideology?.leaning === ideology);
+    if (!filtered.length) return { successRate: 50 };
 
-    if (ideologyCases.length === 0) {
-      return { successRate: 50 }; // Default
-    }
-
-    const successful = ideologyCases.filter(c =>
-      c.outcome === 'settled' || c.outcome === 'resolved'
-    ).length;
-
-    return {
-      successRate: Math.round((successful / ideologyCases.length) * 100)
-    };
+    const success = filtered.filter(c => ['settled', 'resolved'].includes(c.outcome)).length;
+    return { successRate: Math.round((success / filtered.length) * 100) };
   }
 
-  /**
-   * Calculate timing and cost insights
-   */
-  calculateTimingInsights(cases) {
-    const timings = cases
-      .filter(c => c.settlementDays)
-      .map(c => c.settlementDays);
+  calcTimingStats(cases) {
+    const days = cases.filter(c => c.settlementDays).map(c => c.settlementDays);
+    const rates = cases.filter(c => c.mediatorId?.hourlyRate).map(c => c.mediatorId.hourlyRate);
 
-    const rates = cases
-      .filter(c => c.mediatorId?.hourlyRate)
-      .map(c => c.mediatorId.hourlyRate);
+    const avgDays = days.length ? Math.round(days.reduce((a, b) => a + b, 0) / days.length) : 30;
 
-    const avgDays = timings.length > 0
-      ? Math.round(timings.reduce((a, b) => a + b, 0) / timings.length)
-      : 30;
-
-    // Find most common rate (mode)
-    const rateFreq = {};
-    rates.forEach(r => {
-      rateFreq[r] = (rateFreq[r] || 0) + 1;
-    });
-    const commonRate = rates.length > 0
-      ? Object.keys(rateFreq).reduce((a, b) => rateFreq[a] > rateFreq[b] ? a : b)
+    const freq = {};
+    rates.forEach(r => freq[r] = (freq[r] || 0) + 1);
+    const commonRate = rates.length
+      ? parseInt(Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b))
       : 250;
 
-    return { avgDays, commonRate: parseInt(commonRate) };
+    return { avgDays, commonRate };
   }
 
-  /**
-   * Generate actionable insights
-   */
-  generateKeyInsights(mediatorStats, ideologyStats, timingInsights) {
+  getKeyInsights(mediatorStats, ideologyStats, timingStats) {
     const insights = [];
 
     if (ideologyStats.successRate > 70) {
-      insights.push(`High ${ideologyStats.successRate}% success rate with this ideology`);
+      insights.push(`${ideologyStats.successRate}% success rate with this ideology`);
     } else if (ideologyStats.successRate < 40) {
-      insights.push(`Consider moderated mediators - higher success rates observed`);
+      insights.push('Consider moderated mediators for better outcomes');
     }
 
-    if (timingInsights.avgDays < 20) {
-      insights.push(`Quick resolution: cases settle in ${timingInsights.avgDays} days on average`);
+    if (timingStats.avgDays < 20) {
+      insights.push(`Fast resolution: ~${timingStats.avgDays} days avg`);
     }
 
     if (mediatorStats.avgSatisfaction > 4.0) {
-      insights.push(`High client satisfaction with recommended mediators`);
+      insights.push('High satisfaction with recommended mediators');
     }
 
-    if (insights.length === 0) {
-      insights.push('Neutral mediators recommended for balanced outcomes');
-    }
-
-    return insights;
+    return insights.length ? insights : ['Moderated mediators recommended'];
   }
 
-  /**
-   * Default context when no historical data available
-   */
   getDefaultContext() {
     return `
-GENERAL GUIDANCE (No historical data yet - building your learning database):
-- Prioritizing moderated mediators for balanced outcomes
-- Considering experience, specialization, and ratings
-- Evaluating potential conflicts of interest
-- As you use FairMediator, AI recommendations will improve based on successful outcomes
+NO HISTORICAL DATA YET:
+- Prioritizing moderated mediators
+- Using experience and ratings
+- Checking for conflicts
 `;
   }
 
-  /**
-   * Get mediator-specific historical performance
-   */
   async getMediatorHistory(mediatorId) {
     try {
       const outcomes = await CaseOutcome.find({ mediatorId })
         .sort({ createdAt: -1 })
         .limit(50);
 
-      if (outcomes.length === 0) {
-        return null;
-      }
+      if (!outcomes.length) return null;
 
       const settled = outcomes.filter(o => o.outcome === 'settled').length;
-      const avgSatisfaction = outcomes
+      const avgSat = outcomes
         .filter(o => o.userSatisfaction)
         .reduce((sum, o) => sum + o.userSatisfaction, 0) / outcomes.length || 0;
 
       return {
         totalCases: outcomes.length,
         settlementRate: Math.round((settled / outcomes.length) * 100),
-        avgSatisfaction: avgSatisfaction.toFixed(1),
+        avgSatisfaction: avgSat.toFixed(1),
         recentSuccess: outcomes.slice(0, 10).filter(o => o.outcome === 'settled').length >= 7
       };
-    } catch (error) {
-      console.error('Error getting mediator history:', error);
+    } catch (err) {
+      console.error('getMediatorHistory error:', err);
       return null;
     }
   }
 
-  /**
-   * Track mediator selection (called from frontend)
-   */
-  async trackSelection(selectionData) {
-    try {
-      const selection = new MediatorSelection(selectionData);
-      await selection.save();
-      console.log(`Tracked selection: ${selectionData.action} for mediator ${selectionData.mediatorId}`);
-      return selection;
-    } catch (error) {
-      console.error('Error tracking selection:', error);
-      throw error;
-    }
+  async trackSelection(data) {
+    const selection = new MediatorSelection(data);
+    await selection.save();
+    return selection;
   }
 
-  /**
-   * Record case outcome (called after case completes)
-   */
-  async recordOutcome(outcomeData) {
-    try {
-      const outcome = new CaseOutcome(outcomeData);
-      await outcome.save();
-      console.log(`Recorded outcome: ${outcomeData.outcome} for case with mediator ${outcomeData.mediatorId}`);
-      return outcome;
-    } catch (error) {
-      console.error('Error recording outcome:', error);
-      throw error;
-    }
+  async recordOutcome(data) {
+    const outcome = new CaseOutcome(data);
+    await outcome.save();
+    return outcome;
   }
 }
 
