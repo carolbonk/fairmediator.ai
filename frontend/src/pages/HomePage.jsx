@@ -6,7 +6,6 @@ import StatisticsPanel from '../components/StatisticsPanel';
 
 const HomePage = () => {
   const [parties, setParties] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
   const [caseData, setCaseData] = useState({
     political: {
       liberal: 35,
@@ -18,10 +17,6 @@ const HomePage = () => {
   });
 
   const handleChatResponse = (response) => {
-    if (response.mediators) {
-      setHasSearched(true);
-    }
-
     // Update case data from chat analysis
     if (response.caseAnalysis) {
       setCaseData(prev => ({
@@ -54,21 +49,17 @@ const HomePage = () => {
     }
   };
 
-  // Dynamic heights based on search state - Give more space to chat
-  const chatHeight = hasSearched ? 'flex-[60]' : 'flex-[70]';
-  const mediatorHeight = hasSearched ? 'flex-[40]' : 'flex-[30]';
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200">
       <Header />
 
-      {/* Neumorphism layout with generous spacing - 2 Column Design (60/40 split) */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-[60%_40%] gap-4 sm:gap-6 min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)] lg:h-[calc(100vh-140px)]">
-          {/* Left Column - Chat on top, Mediators below */}
-          <div className="flex flex-col gap-4 sm:gap-6 lg:h-full lg:min-h-0">
-            {/* Chat Panel - Dynamic height based on search state */}
-            <div className={`card-neu lg:${chatHeight} min-h-[300px] sm:min-h-[350px] lg:min-h-0 transition-all duration-500 ease-in-out flex flex-col overflow-hidden`}>
+      {/* Responsive layout - content flows naturally with page scroll */}
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-[3fr_2fr] gap-4 sm:gap-6">
+          {/* Left Column - Chat and Mediators stack */}
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {/* Chat Panel */}
+            <div className="card-neu">
               <ChatPanel
                 onResponse={handleChatResponse}
                 parties={parties}
@@ -77,16 +68,16 @@ const HomePage = () => {
               />
             </div>
 
-            {/* Mediator Lists - Dynamic height based on search state */}
-            <div className={`card-neu lg:${mediatorHeight} min-h-[250px] sm:min-h-[300px] lg:min-h-0 transition-all duration-500 ease-in-out flex flex-col overflow-hidden`}>
+            {/* Mediator Lists */}
+            <div className="card-neu">
               <MediatorList
                 parties={parties}
               />
             </div>
           </div>
 
-          {/* Right Column - Statistics Panel (with integrated Bulk Conflict Checker) */}
-          <div className="min-h-[400px] lg:h-full lg:min-h-0 overflow-y-auto">
+          {/* Right Column - Statistics Panel */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
             <StatisticsPanel
               caseData={caseData}
               onIdeologyChange={handleIdeologyChange}

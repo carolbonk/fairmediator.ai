@@ -78,7 +78,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col">
       {/* Header - Neumorphism */}
       <div className="px-4 py-3 bg-neu-100 border-b border-neu-200">
         <h2 className="text-base font-semibold text-neu-800">
@@ -129,32 +129,10 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             </div>
           )}
         </div>
-
-        {/* Document Analyzer - Integrated with Chat */}
-        <div className="mt-3 pt-3 border-t border-neu-200">
-          <FileUpload onAnalysisComplete={(analysis) => {
-            // Update parties from document analysis
-            if (analysis.opposingParties && analysis.opposingParties.length > 0) {
-              const newParties = [...new Set([...parties, ...analysis.opposingParties])];
-              setParties(newParties);
-            }
-            // Send analysis to parent component
-            if (onDocumentAnalysis) {
-              onDocumentAnalysis(analysis);
-            }
-            // Auto-populate chat with case details
-            const caseTypeText = analysis.caseType ? `Case Type: ${analysis.caseType.replace(/_/g, ' ')}` : '';
-            const jurisdictionText = analysis.jurisdiction
-              ? `\nJurisdiction: ${analysis.jurisdiction.city ? analysis.jurisdiction.city + ', ' : ''}${analysis.jurisdiction.state}`
-              : '';
-            const autoMessage = `I've uploaded a document. ${caseTypeText}${jurisdictionText}\n\nCan you recommend suitable mediators?`;
-            setInput(autoMessage);
-          }} />
-        </div>
       </div>
 
       {/* Messages - Neumorphism bubbles */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 space-y-2">
+      <div className="px-4 py-3 space-y-2">
         {messages.map((msg, idx) => (
           <div
             key={idx}
@@ -187,12 +165,33 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
 
       {/* Input - Neumorphism */}
       <div className="border-t border-neu-200 px-4 py-3 bg-neu-100">
+        {/* Document Analyzer - Compact line above textarea */}
+        <div className="mb-2">
+          <FileUpload onAnalysisComplete={(analysis) => {
+            // Update parties from document analysis
+            if (analysis.opposingParties && analysis.opposingParties.length > 0) {
+              const newParties = [...new Set([...parties, ...analysis.opposingParties])];
+              setParties(newParties);
+            }
+            // Send analysis to parent component
+            if (onDocumentAnalysis) {
+              onDocumentAnalysis(analysis);
+            }
+            // Auto-populate chat with case details
+            const caseTypeText = analysis.caseType ? `Case Type: ${analysis.caseType.replace(/_/g, ' ')}` : '';
+            const jurisdictionText = analysis.jurisdiction
+              ? `\nJurisdiction: ${analysis.jurisdiction.city ? analysis.jurisdiction.city + ', ' : ''}${analysis.jurisdiction.state}`
+              : '';
+            const autoMessage = `I've uploaded a document. ${caseTypeText}${jurisdictionText}\n\nCan you recommend suitable mediators?`;
+            setInput(autoMessage);
+          }} />
+        </div>
         <div className="flex gap-2">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute, moderated stance')"
+            placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')"
             className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[60px]"
             rows="2"
             disabled={loading}
@@ -206,7 +205,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
           </button>
         </div>
         <p className="text-[10px] text-neu-600 mt-2">
-          Press <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Enter</kbd> to send • <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Shift+Enter</kbd> for new line
+          <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Enter</kbd> send • <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Shift+Enter</kbd> new line
         </p>
       </div>
     </div>

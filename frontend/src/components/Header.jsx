@@ -4,6 +4,7 @@ import { FaRobot, FaUser, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 import logoBlue from '../images/Fair_Mediator_logoBlue.svg';
 
+
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
