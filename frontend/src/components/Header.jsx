@@ -27,17 +27,17 @@ const Header = () => {
               
             />
 
-            {/* Tagline */}
-            <div>
-              <p className="text-sm text-white font-semibold tracking-wide opacity-80 mb-[3px]">
+            {/* Tagline - Hidden on mobile, smaller on tablet */}
+            <div className="hidden sm:block">
+              <p className="text-[10px] md:text-xs lg:text-sm text-white font-semibold tracking-wide opacity-80 mb-[3px]">
                 Intelligent Mediator Matching & Screening Platform
               </p>
             </div>
           </Link>
 
-          <div className="flex items-center gap-4">
-            {/* Badge with convex neumorphism */}
-            <div className="flex items-center space-x-3 px-5 py-3 bg-dark-neu-400 rounded-xl shadow-dark-neu border border-dark-neu-200">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Badge with convex neumorphism - Hidden on mobile */}
+            <div className="hidden sm:flex items-center space-x-3 px-5 py-3 bg-dark-neu-400 rounded-xl shadow-dark-neu border border-dark-neu-200">
               <div className="relative">
                 <FaRobot className="text-xl text-blue-400 drop-shadow-lg animate-pulse" />
                 <div className="absolute inset-0 bg-blue-400 blur-md opacity-30"></div>
