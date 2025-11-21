@@ -50,7 +50,7 @@ const MediatorList = ({ parties }) => {
   const [modalPage, setModalPage] = useState(1);
   const [selectedMediator, setSelectedMediator] = useState(null);
   const [showMediatorDetail, setShowMediatorDetail] = useState(false);
-  const ITEMS_PER_PAGE = 3;
+  const ITEMS_PER_PAGE = 2;
 
   // Get mediators from mock data
   const allMockMediators = MOCK_MEDIATORS;
@@ -142,10 +142,10 @@ const MediatorList = ({ parties }) => {
 
     if (filteredMediators.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-400">
-          <p>No {title.toLowerCase()} mediators found</p>
+        <div className="text-center py-4 text-gray-400">
+          <p className="text-xs">No {title.toLowerCase()} mediators found</p>
           {(selectedState !== 'all' || lowBudget) && (
-            <p className="text-xs mt-2">Try adjusting your filters</p>
+            <p className="text-[10px] mt-1">Try adjusting filters</p>
           )}
         </div>
       );
@@ -153,7 +153,7 @@ const MediatorList = ({ parties }) => {
 
     return (
       <>
-        <div className="space-y-2 flex-1 overflow-x-hidden">
+        <div className="space-y-1.5">
           {paginatedMediators.map(mediator => (
             <div
               key={mediator._id}
@@ -162,9 +162,9 @@ const MediatorList = ({ parties }) => {
                 setSelectedMediator(mediator);
                 setShowMediatorDetail(true);
               }}
-              className="bg-neu-200 rounded-lg p-3 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 w-full cursor-pointer">
+              className="bg-neu-200 rounded-lg p-2 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 w-full cursor-pointer">
               <div className="flex items-center justify-between gap-2 w-full">
-                <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex-1 min-w-0">
                   {/* Name and Rating on same line */}
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h4 className="text-sm font-semibold text-neu-800 truncate flex-shrink-0">{mediator.name}</h4>
@@ -236,17 +236,17 @@ const MediatorList = ({ parties }) => {
           ))}
         </div>
 
-        {/* Pagination Controls - Opens Modal */}
+        {/* Pagination Controls - Compact */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-neu-200">
+          <div className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-neu-200">
             <button
               onClick={() => {
                 setModalPage(Math.max(1, currentPage - 1));
                 setShowModal(true);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+              className="px-2 py-1 rounded-md text-[10px] font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
             >
-              Previous
+              ←
             </button>
 
             <div className="flex items-center gap-1">
@@ -257,7 +257,7 @@ const MediatorList = ({ parties }) => {
                     setModalPage(i + 1);
                     setShowModal(true);
                   }}
-                  className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${
+                  className={`w-6 h-6 rounded-md text-[10px] font-medium transition-all ${
                     currentPage === i + 1
                       ? 'shadow-neu-inset bg-neu-200 text-neu-800'
                       : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -273,9 +273,9 @@ const MediatorList = ({ parties }) => {
                 setModalPage(Math.min(totalPages, currentPage + 1));
                 setShowModal(true);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+              className="px-2 py-1 rounded-md text-[10px] font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
             >
-              Next
+              →
             </button>
           </div>
         )}
@@ -289,26 +289,26 @@ const MediatorList = ({ parties }) => {
   const totalCount = filteredLiberalCount + filteredModeratedCount + filteredConservativeCount;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header with Filters - Neumorphism */}
-      <div className="border-b border-neu-200 px-6 py-5 bg-neu-100">
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-xl font-semibold text-neu-800">
-            Mediator Suggestions
-            <span className="ml-2 text-base font-medium text-neu-600">
+    <div className="flex flex-col">
+      {/* Header with Filters - Ultra Compact */}
+      <div className="border-b border-neu-200 px-4 py-2 bg-neu-100">
+        <div className="flex items-center gap-2 mb-2">
+          <h2 className="text-sm font-semibold text-neu-800">
+            Mediators
+            <span className="ml-1 text-xs font-medium text-neu-600">
               ({totalCount})
             </span>
           </h2>
-          <Tooltip text="AI-powered suggestions based on your case details, party affiliations, and mediator ideology. Results prioritize neutral options and flag potential conflicts of interest. This is an estimation." />
+          <Tooltip text="AI-powered suggestions" />
         </div>
 
-        {/* Filters Row - All in one line */}
-        <div className="flex items-center gap-3">
-          {/* State Selector - Custom Neumorphism Dropdown */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-neu bg-neu-100">
-            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
+        {/* Filters Row - Compact */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* State Selector - Compact */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            <label className="text-[10px] font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
               State
-              <Tooltip text="Filter mediators by location. Select a specific state to find mediators practicing in that jurisdiction." position="top" />
+              <Tooltip text="Filter by state" position="top" />
             </label>
             <div className="relative">
               <button
@@ -368,24 +368,24 @@ const MediatorList = ({ parties }) => {
             </div>
           </div>
 
-          {/* Low Budget Toggle - Compact */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-neu bg-neu-100">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Low Budget</span>
-              <Tooltip text="Filters for mediators with hourly rates under $300. Budget-friendly options for cost-conscious clients." position="top" />
+          {/* Low Budget Toggle - Ultra Compact */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <span className="text-[10px] font-semibold text-neu-700 whitespace-nowrap">$</span>
+              <Tooltip text="Under $300/hr" position="top" />
               <button
                 type="button"
                 onClick={() => setLowBudget(!lowBudget)}
-                className={`relative w-10 h-5 rounded-full transition-all duration-300 ${
+                className={`relative w-8 h-4 rounded-full transition-all duration-300 ${
                   lowBudget
                     ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
                     : 'bg-neu-200 shadow-neu-inset'
                 }`}
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-all duration-300 ${
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
                     lowBudget
-                      ? 'translate-x-5 bg-white shadow-neu-lg'
+                      ? 'translate-x-4 bg-white shadow-neu-lg'
                       : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
                   }`}
                 />
@@ -393,52 +393,52 @@ const MediatorList = ({ parties }) => {
             </label>
           </div>
 
-          {/* Ideology Tabs - Compact (No All option) */}
+          {/* Ideology Tabs - Ultra Compact */}
           <button
             onClick={() => setActiveTab('liberal')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'liberal'
                 ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Liberal <span className="ml-1 opacity-75">({filteredLiberalCount})</span>
+            L <span className="opacity-75">({filteredLiberalCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('moderated')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'moderated'
                 ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Moderated <span className="ml-1 opacity-75">({filteredModeratedCount})</span>
+            M <span className="opacity-75">({filteredModeratedCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('conservative')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === 'conservative'
                 ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            Conservative <span className="ml-1 opacity-75">({filteredConservativeCount})</span>
+            C <span className="opacity-75">({filteredConservativeCount})</span>
           </button>
         </div>
       </div>
 
-      {/* Mediator Lists - Neumorphism */}
-      <div className="flex-1 px-6 py-6 flex flex-col overflow-hidden">
+      {/* Mediator Lists - Compact */}
+      <div className="px-4 py-3">
         {loading && (
-          <div className="text-center py-8 text-sm text-neu-600 font-medium">
+          <div className="text-center py-4 text-xs text-neu-600 font-medium">
             Checking affiliations...
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
-          {activeTab === 'liberal' && <div className="flex-1 flex flex-col overflow-x-hidden">{renderList(liberal, 'Liberal')}</div>}
-          {activeTab === 'moderated' && <div className="flex-1 flex flex-col overflow-x-hidden">{renderList(moderated, 'Moderated')}</div>}
-          {activeTab === 'conservative' && <div className="flex-1 flex flex-col overflow-x-hidden">{renderList(conservative, 'Conservative')}</div>}
+        <div>
+          {activeTab === 'liberal' && <div>{renderList(liberal, 'Liberal')}</div>}
+          {activeTab === 'moderated' && <div>{renderList(moderated, 'Moderated')}</div>}
+          {activeTab === 'conservative' && <div>{renderList(conservative, 'Conservative')}</div>}
         </div>
       </div>
 

@@ -104,7 +104,7 @@ const FileUpload = ({ onAnalysisComplete }) => {
 
   return (
     <div className="w-full">
-      {/* Upload Area - Compact */}
+      {/* Upload Area - Ultra Compact */}
       {!analysis && (
         <div
           className={`relative transition-all duration-200`}
@@ -113,13 +113,6 @@ const FileUpload = ({ onAnalysisComplete }) => {
           onDragOver={handleDrag}
           onDrop={handleDrop}
         >
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-xs font-semibold text-neu-700">
-              Document Analyzer
-            </h3>
-            <Tooltip text="AI-powered extraction of case type, jurisdiction, and opposing parties from legal documents. Estimates only." />
-          </div>
-
           <input
             ref={fileInputRef}
             type="file"
@@ -129,31 +122,31 @@ const FileUpload = ({ onAnalysisComplete }) => {
             disabled={uploading}
           />
 
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="w-full button-neu text-xs py-2 flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {uploading ? (
-              <>
-                <FaSpinner className="animate-spin" />
-                Analyzing...
-              </>
-            ) : (
-              <>
-                <FaFileUpload />
-                Upload Document
-              </>
-            )}
-          </button>
-
-          <p className="text-xs text-neu-500 text-center mt-1.5">
-            .txt, .pdf, .docx (max 1MB)
-          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="button-neu text-[10px] py-1.5 px-3 flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {uploading ? (
+                <>
+                  <FaSpinner className="animate-spin text-[9px]" />
+                  <span>Analyzing...</span>
+                </>
+              ) : (
+                <>
+                  <FaFileUpload className="text-[9px]" />
+                  <span>Upload Doc</span>
+                </>
+              )}
+            </button>
+            <span className="text-[9px] text-neu-500">.txt, .pdf, .docx</span>
+            <Tooltip text="AI extraction of case details" />
+          </div>
 
           {error && (
-            <div className="mt-2 p-2 bg-red-50 rounded-lg shadow-neu-inset text-xs text-red-700 font-medium flex items-center gap-2">
-              <FaTimes />
+            <div className="mt-1.5 p-1.5 bg-red-50 rounded-lg shadow-neu-inset text-[10px] text-red-700 font-medium flex items-center gap-1.5">
+              <FaTimes className="text-[9px]" />
               {error}
             </div>
           )}

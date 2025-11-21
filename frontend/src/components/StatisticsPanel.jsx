@@ -84,7 +84,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
   };
 
   return (
-    <div className="h-full flex flex-col gap-4 lg:gap-6">
+    <div className="flex flex-col gap-4 lg:gap-6">
       {/* AI/Human Toggle - Compact */}
       <div className="card-neu p-4 sm:p-6 flex-shrink-0">
         <div className="flex items-center justify-between">
