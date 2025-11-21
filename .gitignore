@@ -12,10 +12,16 @@ venv/
 env/
 automation/venv/
 
-# Environment variables
+# Environment variables - NEVER commit these
 .env
 .env.local
 .env.*.local
+.env.test
+.env.production
+.env.development
+*/.env
+**/.env
+automation/.env
 
 # Build outputs
 frontend/dist/
