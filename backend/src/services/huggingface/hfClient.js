@@ -1,6 +1,5 @@
 /**
- * Hugging Face Client (DRY - Refactored)
- * Single, clean client using shared utilities
+ * Hugging Face Client
  */
 
 const { callAPI, validateApiKey, config } = require('./utils');
@@ -12,9 +11,8 @@ class HuggingFaceClient {
   }
 
   async chat(messages, options = {}) {
-    // UPDATED: Use new OpenAI-compatible chat API format
     const payload = {
-      messages: messages, // Pass messages directly instead of formatting
+      messages: messages,
       parameters: {
         max_new_tokens: options.maxTokens || config.defaults.maxTokens,
         temperature: options.temperature ?? config.defaults.temperature,

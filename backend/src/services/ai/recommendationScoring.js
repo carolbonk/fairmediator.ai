@@ -1,7 +1,5 @@
 /**
  * Mediator Recommendation Scoring System
- * Scores and ranks mediators based on multiple factors
- * DRY: Reusable scoring logic for all recommendation needs
  */
 
 const Mediator = require('../../models/Mediator');
@@ -10,7 +8,6 @@ const UsageLog = require('../../models/UsageLog');
 class RecommendationScoring {
   /**
    * Score and rank mediators for a specific case
-   * DRY: Single method for all scoring needs
    */
   async scoreMediator(mediatorId, caseContext) {
     try {
