@@ -1,10 +1,6 @@
-/**
- * Mock Mediator Data
- * 2 mediators per state with realistic data
- * Includes Uber-style rating system with mediation counts
- */
+// Mock Mediator Data
 
-const US_STATES = [
+export const US_STATES = [
   'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
   'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
   'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',

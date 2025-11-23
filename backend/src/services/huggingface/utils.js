@@ -1,14 +1,12 @@
 /**
- * Shared Hugging Face Utilities (DRY)
- * Common functions used across all HF services
+ * Shared Hugging Face Utilities
  */
 
 const axios = require('axios');
 const config = require('./config');
 
 /**
- * Call Hugging Face API with retry logic (DRY)
- * UPDATED: Uses new router endpoint for chat completions
+ * Call Hugging Face API with retry logic
  */
 async function callAPI(model, payload, retryCount = 0) {
   try {
@@ -52,7 +50,7 @@ async function callAPI(model, payload, retryCount = 0) {
 }
 
 /**
- * Format messages for HF models (DRY)
+ * Format messages for HF models
  */
 function formatMessages(messages) {
   if (!messages.length || messages[0].role !== 'system') {
@@ -66,7 +64,7 @@ function formatMessages(messages) {
 }
 
 /**
- * Extract text from API response (DRY)
+ * Extract text from API response
  */
 function extractText(result) {
   if (Array.isArray(result) && result.length > 0) {

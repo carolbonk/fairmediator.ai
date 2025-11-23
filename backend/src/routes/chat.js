@@ -1,14 +1,11 @@
 /**
  * Chat Routes
- * Handles natural language chat interactions for mediator search
- * Now using FREE Hugging Face models with LLM-powered web scraping!
+ * Handles chat interactions for mediator search
  */
 
 const express = require('express');
 const router = express.Router();
 const chatService = require('../services/huggingface/chatService');
-const llamaClient = require('../services/llama/llamaClient');
-const { affiliationDetector, ideologyClassifier } = require('../services/llama');
 
 /**
  * POST /api/chat
@@ -178,7 +175,7 @@ router.post('/analyze-ideology', async (req, res) => {
  * GET /api/chat/scraper-health
  * Check health of the Python scraper service
  */
-router.get('/scraper-health', async (req, res) => {
+router.get('/scraper-health', async (_req, res) => {
   try {
     const health = await llamaClient.healthCheck();
     res.json({

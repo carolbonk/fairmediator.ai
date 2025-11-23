@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRobot, FaUser, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';

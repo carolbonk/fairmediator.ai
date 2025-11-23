@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaPaperPlane, FaSpinner, FaStar, FaMapMarkerAlt, FaBriefcase } from 'react-icons/fa';
+import { useState, useRef, useEffect } from 'react';
+import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
 import FileUpload from './FileUpload';
 
@@ -13,7 +13,6 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [partyInput, setPartyInput] = useState('');
-  const [suggestedMediators, setSuggestedMediators] = useState([]);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -41,11 +40,6 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-
-      // Store suggested mediators if available
-      if (response.mediators && response.mediators.length > 0) {
-        setSuggestedMediators(response.mediators);
-      }
 
       onResponse(response);
     } catch (error) {
@@ -98,7 +92,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               type="text"
               value={partyInput}
               onChange={(e) => setPartyInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && addParty()}
+              onKeyDown={(e) => e.key === 'Enter' && addParty()}
               placeholder="e.g., BigLaw LLC"
               className="input-neu flex-1 text-xs py-1.5"
             />
@@ -190,7 +184,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')"
             className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[60px]"
             rows="2"
