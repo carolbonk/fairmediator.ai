@@ -24,7 +24,7 @@
     "conflict-detection",
     "huggingface"
   ],
-  "author": "",
+  "author": "CarolBonk",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2",
