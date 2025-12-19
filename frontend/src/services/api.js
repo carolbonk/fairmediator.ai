@@ -159,4 +159,15 @@ export const getMediatorHistory = async (mediatorId) => {
   return response.data;
 };
 
+// State Mediation API
+export const getStateMediationData = async (stateCode) => {
+  const response = await api.get(`/state-mediation/${stateCode}`);
+  return response.data;
+};
+
+export const getSupportedStates = async () => {
+  const response = await api.get('/state-mediation');
+  return response.data;
+};
+
 export default api;

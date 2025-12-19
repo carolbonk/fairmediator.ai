@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 const ForgotPasswordPage = () => {
@@ -7,6 +7,11 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleBackdropClick = () => {
+    navigate('/');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,9 +36,17 @@ const ForgotPasswordPage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-        <div className="w-full max-w-md">
-          <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
+      <div className="min-h-screen flex flex-col relative">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+          onClick={handleBackdropClick}
+        />
+        <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-10">
+          <div
+            className="w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
             <div className="text-center mb-6">
               <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-neumorphic mb-4">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,15 +72,24 @@ const ForgotPasswordPage = () => {
               Back to Login
             </Link>
           </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
+    <div className="min-h-screen flex flex-col relative">
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        onClick={handleBackdropClick}
+      />
+      <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-10">
+        <div
+          className="w-full max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Forgot Password?</h2>
             <p className="text-gray-600">
@@ -122,6 +144,7 @@ const ForgotPasswordPage = () => {
               Back to Login
             </Link>
           </div>
+        </div>
         </div>
       </div>
     </div>
