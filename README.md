@@ -19,7 +19,7 @@ FairMediator helps law firms, corporations, and individuals select mediators by:
 
   ## Live Demo
 
-    [![FairMediator AI Demo](https://img.shields.io/badge/🤗%20Live%20Demo-FairMediator-blue?style=for-the-badge)](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
+   [![FairMediator AI Demo](https://img.shields.io/badge/🤗%20Live%20Demo-FairMediator-blue?style=for-the-badge)](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
 
 This project uses **Meta Llama models** for AI-powered features:
 
