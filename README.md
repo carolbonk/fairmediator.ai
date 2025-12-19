@@ -14,123 +14,118 @@ FairMediator helps law firms, corporations, and individuals select mediators by:
 - **AI-powered chat interface** for natural language mediator search
 - **Automated data aggregation** from public legal databases
 
+## 🏗️ Architecture
 
-## 🤖 AI Integration (Llama Models)
+### Frontend
+- **Framework**: React with Tailwind CSS
+- **Layout**: Horizontal split single-page app
+  - Left: Chat input powered by Llama
+  - Right: Mediator lists with affiliation tags
 
-  ## Live Demo
+### Backend
+- **API**: Node.js + Express
+- **Database**: MongoDB
+- **AI Engine**: Meta Llama 3.3/4 for:
+  - Natural language query processing
+  - Affiliation detection via NLP
+  - Ideological classification
+
+### Data Pipeline
+- **Scraping**: Puppeteer/Cheerio for legal directories
+- **Automation**: Python scripts for scheduled updates
+- **Sources**: RECAP, Toolkit.law, LinkedIn, bar associations
+
+### Deployment
+- **Frontend**: Netlify
+- **Backend**: To be determined (Vercel, Railway, or self-hosted)
+
+## 🤖 AI Integration (100% FREE)
+
+## Live Demo
 
    [![FairMediator AI Demo](https://img.shields.io/badge/🤗%20Live%20Demo-FairMediator-blue?style=for-the-badge)](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
 
-This project uses **Meta Llama models** for AI-powered features:
+This project uses **HuggingFace Transformers** - completely FREE!
 
-### Model Usage
-- **Primary Model**: Llama 3.3 70B (or Llama 4 when available)
-- **Use Cases**:
-  - Chat-based mediator search
-  - NLP for affiliation detection
-  - Ideological leaning classification
-  - Conflict of interest pattern matching
+### AI Models (All Free)
+- **Chat**: Llama 3.2 (1B/3B), Mistral Mixtral-8x7B, Google Gemma 2
+- **NER**: BERT-large for entity extraction
+- **Zero-Shot**: DeBERTa-v3 for affiliation detection
+- **Political Analysis**: Specialized political leaning classifier
+- **Sentiment**: RoBERTa for review analysis
+
+### Use Cases
+- Chat-based mediator search
+- Affiliation & conflict detection
+- Ideological leaning classification
+- Entity extraction (organizations, people)
+- Automated profile enrichment
+
 
 ### Resources
-- [Llama Documentation](https://www.llama.com/docs/overview/)
-- [Llama Models on Hugging Face](https://huggingface.co/meta-llama)
-- [Llama API Python SDK](https://github.com/meta-llama/llama-api-python)
-- [Text Classification Guide](https://www.llama.com/docs/how-to-guides/fine-tuning/)
+- [HuggingFace Documentation](https://huggingface.co/docs)
+- [Transformers Library](https://huggingface.co/docs/transformers)
+- [Free Inference API](https://huggingface.co/inference-api)
+- [Model Hub](https://huggingface.co/models)
 
 ## 📁 Project Structure
 
 ```
 FairMediator/
-├── frontend/                 # React + Tailwind frontend
+├── frontend/                      # React + Tailwind frontend
 │   ├── src/
-│   │   ├── components/      # UI components
-│   │   ├── services/        # API client
-│   │   └── App.jsx          # Main app
+│   │   ├── components/           # UI components
+│   │   ├── services/             # API client
+│   │   └── App.jsx               # Main app
 │   └── package.json
-├── backend/                  # Node.js + Express API
+├── backend/                       # Node.js + Express API
 │   ├── src/
-│   │   ├── routes/          # API endpoints
-│   │   ├── models/          # MongoDB schemas
-│   │   ├── services/        # Business logic
-│   │   │   └── llama/       # Llama integration
+│   │   ├── routes/               # API endpoints
+│   │   ├── models/               # MongoDB schemas
+│   │   ├── services/
+│   │   │   ├── huggingface/      # 🤗 HF integration
+│   │   │   │   ├── chatService.js
+│   │   │   │   ├── affiliationDetector.js
+│   │   │   │   ├── ideologyClassifier.js
+│   │   │   │   └── hfClient.js
+│   │   │   ├── scraping/         # Web scraping
+│   │   │   └── matching/         # Mediator matching
 │   │   └── server.js
 │   └── package.json
-├── automation/              # Python automation scripts
-│   ├── scrapers/           # Puppeteer/Cheerio wrappers
-│   ├── llama/              # Llama Python scripts
+├── automation/                    # Python automation
+│   ├── huggingface/              # 🤗 HF Python scripts
 │   │   ├── affiliation_detector.py
-│   │   └── ideology_classifier.py
+│   │   ├── ideology_classifier.py
+│   │   └── batch_analyze.py
+│   ├── gradio_app.py             # HF Spaces demo
 │   └── requirements.txt
-├── docs/                    # Documentation
-└── .env.example            # Environment variables template
+├── notebooks/                     # Jupyter prototyping
+│   ├── FairMediator_AI_Pipeline_Consolidated.ipynb
+│   ├── README.md
+│   └── requirements.txt
+├── huggingface-space/            # HF Spaces deployment
+└── .env.example                  # Environment variables
 ```
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+ 
+### Prerequisites (All FREE!)
+- Node.js 18+
 - Python 3.10+
-- MongoDB (local or Atlas)
-- Llama API key (Together AI, Groq, or similar)
+- MongoDB (free tier: [MongoDB Atlas](https://mongodb.com/cloud/atlas))
+- HuggingFace account (free: [huggingface.co](https://huggingface.co))
 
-### Installation
-
-1. **Clone and setup**:
-```bash
-cd FairMediator
-```
-
-2. **Frontend setup**:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-3. **Backend setup**:
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Add your MongoDB URI and Llama API key
-npm run dev
-```
-
-4. **Python automation**:
-```bash
-cd automation
-python -m venv venv
-source venv/bin/activate  # On macOS/Linux
-pip install -r requirements.txt
-```
-
-## 🔑 Environment Variables
-
-```env
-# Backend (.env)
-MONGODB_URI=mongodb://localhost:27017/fairmediator
-PORT=5000
-
-# Llama API Configuration
-LLAMA_API_KEY=your_api_key_here
-LLAMA_API_BASE_URL=https://api.together.xyz/v1  # or your provider
-LLAMA_MODEL=meta-llama/Llama-3.3-70B-Instruct
-
-# Scraping
-LINKEDIN_EMAIL=
-LINKEDIN_PASSWORD=
-```
 
 ## 🧠 AI Features
 
 ### 1. Chat-Based Search
 Users describe their mediation needs in natural language:
 ```
-"I need a mediator experienced in tech IP disputes, 
+"I need a mediator experienced in tech IP disputes,
 neutral on corporate matters, no BigLaw affiliations"
 ```
 
-Llama processes this and returns ranked mediators.
+Our AI (powered by HuggingFace models) processes this and returns ranked mediators.
 
 ### 2. Affiliation Detection
 Automated NLP analysis flags potential conflicts:
@@ -160,30 +155,110 @@ Machine learning classification based on:
 - Secure API key management
 - Data anonymization for analytics
 
-## 🛣️ Roadmap
-
-- [ ] Phase 1: MVP (Chat + basic mediator list)
-- [ ] Phase 2: Affiliation detection engine
-- [ ] Phase 3: Ideological classification
-- [ ] Phase 4: Advanced filtering + analytics
-- [ ] Phase 5: Mobile app
-- [ ] Phase 6: Fine-tuned Llama model for legal domain
-
 ## 🤝 Contributing
 
 Contributions welcome! Please read CONTRIBUTING.md first.
 
+## 🛣️ Roadmap
+
+- [x] Phase 1: MVP (Chat + basic mediator list) ✅
+- [x] Phase 2: Affiliation detection engine ✅
+- [x] Phase 3: Ideological classification ✅
+- [x] Phase 4: HuggingFace Spaces demo ✅
+- [ ] Phase 5: Advanced filtering + analytics
+- [ ] Phase 6: Mobile app
+- [ ] Phase 7: Fine-tuned models for legal domain
+- [ ] Phase 8: Public API for mediator data
+
+### Installation
+
+1. **Clone repository**:
+```bash
+git clone https://github.com/carolbonk/fairmediator.ai.git
+cd FairMediator
+```
+
+2. **Frontend setup**:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+3. **Backend setup**:
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Edit .env and add:
+#   - MongoDB URI (free Atlas or local)
+#   - HuggingFace API key (free at huggingface.co/settings/tokens)
+npm run dev
+```
+
+4. **Python automation (optional)**:
+```bash
+cd automation
+python -m venv venv
+source venv/bin/activate  # On macOS/Linux (Windows: venv\Scripts\activate)
+pip install -r requirements.txt
+```
+
+5. **Jupyter notebooks (optional)**:
+```bash
+cd notebooks
+pip install -r requirements.txt
+jupyter notebook
+```
+
+## 🔑 Environment Variables
+
+```env
+# Backend (.env) - See backend/.env.example for full details
+
+# Server
+PORT=5000
+NODE_ENV=development
+
+# MongoDB (FREE tier available)
+MONGODB_URI=mongodb://localhost:27017/fairmediator
+# Or MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/fairmediator
+
+# HuggingFace API (100% FREE - Get at: https://huggingface.co/settings/tokens)
+HUGGINGFACE_API_KEY=your_free_huggingface_api_key
+
+# Optional: Choose which free model to use
+HF_MODEL_CHAT=meta-llama/Meta-Llama-3-8B-Instruct
+
+# Authentication
+JWT_SECRET=your_jwt_secret
+SESSION_SECRET=your_session_secret
+
+# Optional: Email service (Resend - FREE 3000/month)
+# RESEND_API_KEY=your_resend_api_key
+
+# Optional: Stripe (only for paid subscriptions)
+# STRIPE_SECRET_KEY=your_stripe_key
+```
+
 ## 📚 Learn More
 
-### Llama Resources
-- [Llama Developer Guide](https://www.llama.com/developer-use-guide/)
-- [Prompt Engineering for Llama 3.3](https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/)
-- [Text Classification Cookbook](https://www.llama.com/resources/cookbook/text2sql_natural_language_to_sql_interface/)
-- [Tool Calling with Llama](https://www.llama.com/resources/cookbook/toolcalling-with-llama/)
+### AI & Machine Learning
+- [HuggingFace Documentation](https://huggingface.co/docs) - Transformers, datasets, inference
+- [Free Inference API](https://huggingface.co/docs/api-inference) - No credit card required
+- [Transformers Course](https://huggingface.co/learn/nlp-course) - Free NLP course
+- [Model Hub](https://huggingface.co/models) - 500k+ open-source models
+- [Our HuggingFace Demo](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
 
-### Legal Tech
-- [RECAP Project](https://free.law/recap/)
-- [Toolkit.law](https://toolkit.law)
+### Legal Tech Resources
+- [RECAP Project](https://free.law/recap/) - Free law project
+- [Court Listener](https://www.courtlistener.com/) - Legal search engine
+- [Legal Information Institute](https://www.law.cornell.edu/) - Free legal reference
+
+### Open Source Tools
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - Web scraping
+- [Gradio](https://gradio.app/) - ML web interfaces
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Free database hosting
 
 ## 📄 License
 
