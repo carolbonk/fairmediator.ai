@@ -4,8 +4,6 @@
   </a>
 </p>
 
-# FairMediator
-
 A single-page platform for transparent law firm mediation selection with AI-powered conflict detection and ideological analysis.
 
 ## 🎯 Overview
