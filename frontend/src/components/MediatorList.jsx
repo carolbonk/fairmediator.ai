@@ -360,7 +360,7 @@ const MediatorList = ({ parties }) => {
           {/* Low Budget Toggle - Ultra Compact */}
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
             <label className="flex items-center gap-1.5 cursor-pointer">
-              <span className="text-[10px] font-semibold text-neu-700 whitespace-nowrap">$</span>
+              <span className="text-[10px] font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
               <button
                 type="button"
@@ -391,7 +391,7 @@ const MediatorList = ({ parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            L <span className="opacity-75">({filteredLiberalCount})</span>
+            Liberal <span className="opacity-75">({filteredLiberalCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('moderated')}
@@ -401,7 +401,7 @@ const MediatorList = ({ parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            M <span className="opacity-75">({filteredModeratedCount})</span>
+            Moderate <span className="opacity-75">({filteredModeratedCount})</span>
           </button>
           <button
             onClick={() => setActiveTab('conservative')}
@@ -411,7 +411,7 @@ const MediatorList = ({ parties }) => {
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
-            C <span className="opacity-75">({filteredConservativeCount})</span>
+            Conservative <span className="opacity-75">({filteredConservativeCount})</span>
           </button>
         </div>
       </div>
