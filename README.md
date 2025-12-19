@@ -14,41 +14,13 @@ FairMediator helps law firms, corporations, and individuals select mediators by:
 - **AI-powered chat interface** for natural language mediator search
 - **Automated data aggregation** from public legal databases
 
-## 🏗️ Architecture
-
-### Frontend
-- **Framework**: React with Tailwind CSS
-- **Layout**: Horizontal split single-page app
-  - Left: Chat input powered by Llama
-  - Right: Mediator lists with affiliation tags
-
-### Backend
-- **API**: Node.js + Express
-- **Database**: MongoDB
-- **AI Engine**: Meta Llama 3.3/4 for:
-  - Natural language query processing
-  - Affiliation detection via NLP
-  - Ideological classification
-
-### Data Pipeline
-- **Scraping**: Puppeteer/Cheerio for legal directories
-- **Automation**: Python scripts for scheduled updates
-- **Sources**: RECAP, Toolkit.law, LinkedIn, bar associations
-
-### Deployment
-- **Frontend**: Netlify
-- **Backend**: To be determined (Vercel, Railway, or self-hosted)
 
 ## 🤖 AI Integration (Llama Models)
 
   ## Live Demo
 
-  [![HuggingFace Space](https://img.shields.io/badge/🤗%20HuggingF
-  ace-Demo-blue?style=for-the-badge)](https://huggingface.co/space
-  s/CarolBonk/FairMediator_AI_Demo)
-
-  **Try it now:** [FairMediator AI Demo](https://huggingface.co/sp
-  aces/CarolBonk/FairMediator_AI_Demo)
+  **Try it now:** 
+    [![FairMediator AI Demo](https://img.shields.io/badge/🤗%20Live%20Demo-FairMediator-blue?style=for-the-badge)](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
 
 This project uses **Meta Llama models** for AI-powered features:
 
@@ -59,19 +31,6 @@ This project uses **Meta Llama models** for AI-powered features:
   - NLP for affiliation detection
   - Ideological leaning classification
   - Conflict of interest pattern matching
-
-### Deployment Options
-1. **API-based** (Recommended for MVP):
-   - Together AI, Groq, or Fireworks AI (pay-per-token)
-   - Fast inference, no infrastructure management
-   
-2. **On-premise** (Future scalability):
-   - Self-hosted with Llama Stack
-   - Full control, fixed costs at scale
-
-3. **Hybrid**:
-   - API for real-time chat
-   - Local models for batch affiliation analysis
 
 ### Resources
 - [Llama Documentation](https://www.llama.com/docs/overview/)
