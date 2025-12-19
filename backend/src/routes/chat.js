@@ -6,6 +6,8 @@
 const express = require('express');
 const router = express.Router();
 const chatService = require('../services/huggingface/chatService');
+const affiliationDetector = require('../services/huggingface/affiliationDetector');
+const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
 
 /**
  * POST /api/chat
@@ -70,43 +72,14 @@ router.post('/stream', async (req, res) => {
 /**
  * POST /api/chat/enrich-mediator
  * Scrape and enrich mediator data from web sources
+ * TODO: Implement scraper service integration
+ * Currently disabled - llamaClient dependency removed during refactoring
  */
 router.post('/enrich-mediator', async (req, res) => {
-  try {
-    const { mediatorName, urls } = req.body;
-
-    if (!mediatorName) {
-      return res.status(400).json({
-        error: 'mediatorName is required'
-      });
-    }
-
-    // Build search URLs if not provided
-    const searchUrls = urls || llamaClient.buildSearchUrls(mediatorName);
-
-    // Scrape profile from primary sources
-    const profilePromises = [
-      llamaClient.scrapeMediatorProfile(searchUrls.martindale, mediatorName).catch(() => null),
-      llamaClient.scrapeMediatorProfile(searchUrls.avvo, mediatorName).catch(() => null)
-    ];
-
-    const profiles = await Promise.all(profilePromises);
-    const validProfiles = profiles.filter(p => p && p.success);
-
-    res.json({
-      success: true,
-      mediatorName,
-      enrichedData: validProfiles.map(p => p.data),
-      sourcesScraped: Object.keys(searchUrls).length,
-      timestamp: new Date()
-    });
-  } catch (error) {
-    console.error('Enrich mediator error:', error);
-    res.status(500).json({
-      error: 'Failed to enrich mediator data',
-      message: error.message
-    });
-  }
+  res.status(501).json({
+    error: 'Endpoint not yet implemented',
+    message: 'Scraper service integration pending. See TODO in backend/src/routes/chat.js'
+  });
 });
 
 /**
@@ -174,52 +147,27 @@ router.post('/analyze-ideology', async (req, res) => {
 /**
  * GET /api/chat/scraper-health
  * Check health of the Python scraper service
+ * TODO: Implement scraper service health check
+ * Currently disabled - llamaClient dependency removed during refactoring
  */
 router.get('/scraper-health', async (_req, res) => {
-  try {
-    const health = await llamaClient.healthCheck();
-    res.json({
-      success: true,
-      ...health,
-      timestamp: new Date()
-    });
-  } catch (error) {
-    res.status(503).json({
-      success: false,
-      status: 'unhealthy',
-      error: error.message
-    });
-  }
+  res.status(501).json({
+    error: 'Endpoint not yet implemented',
+    message: 'Scraper health check pending. See TODO in backend/src/routes/chat.js'
+  });
 });
 
 /**
  * POST /api/chat/bulk-scrape
  * Scrape multiple URLs for mediator information
+ * TODO: Implement bulk scraping service
+ * Currently disabled - llamaClient dependency removed during refactoring
  */
 router.post('/bulk-scrape', async (req, res) => {
-  try {
-    const { urls, query } = req.body;
-
-    if (!urls || urls.length === 0 || !query) {
-      return res.status(400).json({
-        error: 'urls array and query are required'
-      });
-    }
-
-    const result = await llamaClient.scrapeBulk(urls, query);
-
-    res.json({
-      success: true,
-      ...result,
-      timestamp: new Date()
-    });
-  } catch (error) {
-    console.error('Bulk scrape error:', error);
-    res.status(500).json({
-      error: 'Failed to bulk scrape',
-      message: error.message
-    });
-  }
+  res.status(501).json({
+    error: 'Endpoint not yet implemented',
+    message: 'Bulk scraping service pending. See TODO in backend/src/routes/chat.js'
+  });
 });
 
 module.exports = router;
