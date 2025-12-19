@@ -64,3 +64,9 @@ temp/
 
 # Deployment (we don't use Vercel)
 .vercel/
+
+# Jupyter Notebooks (may contain sensitive data/API keys)
+*.ipynb
+.ipynb_checkpoints/
+notebooks/*.ipynb
+**/.ipynb_checkpoints/
