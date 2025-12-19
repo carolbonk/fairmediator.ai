@@ -1,7 +1,7 @@
 {
   "name": "fairmediator",
   "version": "0.1.0",
-  "description": "AI-powered platform for transparent law firm mediation selection",
+  "description": "FairMediator.ai is an AI-powered platform designed to bring transparency and fairness to the mediator selection process. We use state-of-the-art machine learning models to help parties make informed decisions when choosing mediators.",
   "private": true,
   "workspaces": [
     "frontend",
@@ -24,7 +24,7 @@
     "conflict-detection",
     "huggingface"
   ],
-  "author": "CarolBonk",
+  "author": "Carolaine Bonk",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2",
