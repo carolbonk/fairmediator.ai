@@ -85,25 +85,25 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
 
   return (
     <div className="flex flex-col gap-4 lg:gap-6">
-      {/* AI/Human Toggle - Compact */}
-      <div className="card-neu p-4 sm:p-6 flex-shrink-0">
-        <div className="flex items-center justify-between">
+      {/* AI/Human Toggle - Neomorphism Style */}
+      <div className="px-5 py-3 bg-neu-100 rounded-neu shadow-neu-inset flex-shrink-0">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="text-neu-600 font-medium text-sm">Human</div>
+            <span className="text-neu-700 font-semibold text-sm">Human</span>
           </div>
-          
+
           <button
             onClick={handleAiToggle}
             className={`relative w-14 h-8 rounded-full transition-all duration-300 ${
-              aiMediatorsEnabled 
-                ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu' 
+              aiMediatorsEnabled
+                ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu'
                 : 'bg-neu-200 shadow-neu-inset'
             }`}
           >
             <div
               className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-300 ${
-                aiMediatorsEnabled 
-                  ? 'translate-x-6 bg-white shadow-neu-lg' 
+                aiMediatorsEnabled
+                  ? 'translate-x-6 bg-white shadow-neu-lg'
                   : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
               }`}
             >
@@ -115,8 +115,8 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             </div>
           </button>
 
-          <div className={`text-sm font-medium transition-colors ${
-            aiMediatorsEnabled ? 'text-blue-600' : 'text-neu-400'
+          <div className={`text-sm font-semibold transition-colors ${
+            aiMediatorsEnabled ? 'text-liberal' : 'text-neu-500'
           }`}>
             AI
           </div>
@@ -472,58 +472,66 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
 
       {/* Waitlist Modal */}
       {showWaitlist && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
-          <div className="card-neu max-w-md w-full mx-4 p-8 animate-neu-float">
-            <h2 className="text-2xl font-bold text-neu-800 mb-2">Join the Waitlist</h2>
-            <p className="text-neu-600 mb-6">Be the first to access AI-powered mediator matching</p>
-            
-            <form onSubmit={handleWaitlistSubmit} className="space-y-4">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in"
+          onClick={() => setShowWaitlist(false)}
+        >
+          <div
+            className="bg-gray-50 rounded-3xl shadow-neumorphic max-w-md w-full mx-4 p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">Join the Waitlist</h2>
+              <p className="text-gray-600">Be the first to access AI-powered mediator matching</p>
+            </div>
+
+            <form onSubmit={handleWaitlistSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-neu-700 mb-2">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
                 <input
                   type="text"
                   required
                   value={waitlistForm.name}
                   onChange={(e) => setWaitlistForm({...waitlistForm, name: e.target.value})}
-                  className="input-neu"
+                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all"
                   placeholder="Your full name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neu-700 mb-2">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                 <input
                   type="email"
                   required
                   value={waitlistForm.email}
                   onChange={(e) => setWaitlistForm({...waitlistForm, email: e.target.value})}
-                  className="input-neu"
+                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all"
                   placeholder="your@email.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neu-700 mb-2">Deadline</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Deadline</label>
                 <textarea
                   required
                   value={waitlistForm.deadline}
                   onChange={(e) => setWaitlistForm({...waitlistForm, deadline: e.target.value})}
-                  className="input-neu min-h-[100px] resize-none"
+                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all min-h-[100px] resize-none"
                   placeholder="When do you need a mediator? Any specific requirements?"
                 ></textarea>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowWaitlist(false)}
-                  className="btn-neu flex-1"
+                  className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-lg transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="btn-neu-primary flex-1"
+                  className="flex-1 py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
                 >
                   Join Waitlist
                 </button>

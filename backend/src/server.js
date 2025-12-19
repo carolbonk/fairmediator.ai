@@ -21,6 +21,7 @@ const scrapingRoutes = require('./routes/scraping');
 const matchingRoutes = require('./routes/matching');
 const analysisRoutes = require('./routes/analysis');
 const learningRoutes = require('./routes/learning');
+const stateMediationRoutes = require('./routes/stateMediation');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -76,6 +77,7 @@ app.use('/api/scraping', scrapingRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/learning', learningRoutes);
+app.use('/api/state-mediation', stateMediationRoutes);
 
 // Error handling middleware
 app.use((err, _req, res, _next) => {

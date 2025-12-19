@@ -131,11 +131,25 @@ const RegisterForm = () => {
     }
   };
 
+  const handleBackdropClick = () => {
+    navigate('/');
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
-        {/* Neumorphic Card */}
-        <div className="bg-gray-100 rounded-3xl shadow-neumorphic p-8">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Backdrop - Blur and Darken */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        onClick={handleBackdropClick}
+      />
+
+      <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-10">
+        <div
+          className="w-full max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Neumorphic Card */}
+          <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
           {/* Logo/Title */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -340,6 +354,7 @@ const RegisterForm = () => {
               </Link>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </div>

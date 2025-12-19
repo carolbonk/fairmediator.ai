@@ -1,195 +1,193 @@
-import React, { useState } from 'react';
-import { FaStar, FaMapMarkerAlt, FaBriefcase, FaExclamationTriangle, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
+import React from 'react';
+import { FaStar, FaStarHalfAlt, FaMapMarkerAlt, FaBriefcase, FaDollarSign } from 'react-icons/fa';
 
-const MediatorCard = ({ mediator, affiliationFlag }) => {
-  const [showPerformance, setShowPerformance] = useState(false);
+// Star Rating Component
+const StarRating = ({ rating, totalMediations }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
-  // Dummy performance data (for demonstration)
-  const performanceData = {
-    settlementRate: Math.floor(75 + Math.random() * 20), // 75-95%
-    avgResolutionWeeks: Math.floor(2 + Math.random() * 4), // 2-6 weeks
-    casesHandled: Math.floor(50 + Math.random() * 150), // 50-200
-    satisfactionScore: (4.2 + Math.random() * 0.7).toFixed(1), // 4.2-4.9
-    reviews: [
-      { rating: 5, text: "Excellent mediator, very fair and professional", author: "Anonymous Client" },
-      { rating: 4, text: "Great communication throughout the process", author: "Anonymous Attorney" },
-      { rating: 5, text: "Helped us reach a fair settlement quickly", author: "Anonymous Client" }
-    ]
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-sm font-bold text-neu-800">{rating.toFixed(1)}</span>
+      <div className="flex items-center gap-0.5">
+        {[...Array(fullStars)].map((_, i) => (
+          <FaStar key={`full-${i}`} className="text-[#3B82F6] text-[10px]" />
+        ))}
+        {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-[10px]" />}
+        {[...Array(emptyStars)].map((_, i) => (
+          <FaStar key={`empty-${i}`} className="text-gray-300 text-[10px]" />
+        ))}
+      </div>
+      <span className="text-[10px] text-neu-500">({totalMediations})</span>
+    </div>
+  );
+};
+
+const MediatorCard = ({
+  mediator,
+  affiliationFlag,
+  onClick,
+  variant = 'compact' // 'compact' or 'expanded'
+}) => {
+  const getIdeologyLabel = (score) => {
+    if (score <= -1) return 'Liberal';
+    if (score >= 1) return 'Conservative';
+    return 'Moderated';
   };
 
   const getIdeologyColor = (score) => {
-    if (score <= -1) return 'bg-gradient-to-br from-blue-400 to-blue-600 text-white';
-    if (score >= 1) return 'bg-gradient-to-br from-red-400 to-red-600 text-white';
-    return 'bg-gradient-to-br from-gray-400 to-gray-600 text-white';
+    if (score <= -1) return 'bg-blue-100 text-blue-700';
+    if (score >= 1) return 'bg-red-100 text-red-700';
+    return 'bg-gray-100 text-gray-700';
   };
 
-  const getIdeologyLabel = (score) => {
-    if (score <= -1.5) return 'Strong Liberal';
-    if (score <= -0.5) return 'Lean Liberal';
-    if (score >= 1.5) return 'Strong Conservative';
-    if (score >= 0.5) return 'Lean Conservative';
-    return 'Neutral/Centrist';
-  };
+  // Compact card for list view
+  if (variant === 'compact') {
+    return (
+      <div
+        onClick={onClick}
+        className="bg-neu-200 rounded-lg p-2 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 w-full cursor-pointer"
+      >
+        <div className="flex items-center justify-between gap-2 w-full">
+          <div className="flex-1 min-w-0">
+            {/* Name and Rating on same line */}
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <h4 className="text-sm font-semibold text-neu-800 truncate flex-shrink-0">
+                {mediator.name}
+              </h4>
+              <div className="flex-shrink-0">
+                <StarRating rating={mediator.rating} totalMediations={mediator.totalMediations} />
+              </div>
+            </div>
 
-  const getFlagIcon = () => {
-    switch (affiliationFlag) {
-      case 'red':
-        return <FaExclamationTriangle className="text-red-500" title="Potential conflict detected" />;
-      case 'yellow':
-        return <FaExclamationTriangle className="text-yellow-500" title="Possible affiliation" />;
-      case 'green':
-        return <FaCheckCircle className="text-green-500" title="No conflicts detected" />;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="card-neu p-5 hover:shadow-neu-lg transition-all duration-200">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2.5 mb-2">
-            <h3 className="font-semibold text-neu-800 text-[17px]">
-              {mediator.name}
-            </h3>
-            {getFlagIcon()}
-            <button
-              onClick={() => setShowPerformance(!showPerformance)}
-              className="text-neu-500 hover:text-neu-700 transition-colors ml-1"
-              title="View performance data"
-            >
-              <FaInfoCircle className="text-sm" />
-            </button>
-          </div>
-          
-          <div className="flex items-center gap-4 text-sm text-neu-600 mb-3">
-            {mediator.location && (
-              <span className="flex items-center gap-1.5">
-                <FaMapMarkerAlt className="text-xs text-neu-400" />
-                <span className="font-medium">{mediator.location.city}, {mediator.location.state}</span>
-              </span>
-            )}
-            
-            {mediator.yearsExperience && (
-              <span className="flex items-center gap-1.5">
-                <FaBriefcase className="text-xs text-neu-400" />
-                <span className="font-medium">{mediator.yearsExperience} years</span>
-              </span>
-            )}
-            
-            {mediator.rating > 0 && (
-              <span className="flex items-center gap-1.5">
-                <FaStar className="text-yellow-500 text-xs" />
-                <span className="font-medium">{mediator.rating.toFixed(1)}</span>
-              </span>
-            )}
-          </div>
-          
-          {mediator.currentFirm && (
-            <p className="text-sm text-neu-500 font-medium mb-3">
-              {mediator.currentFirm}
-            </p>
-          )}
-          
-          {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {mediator.practiceAreas.slice(0, 3).map((area, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 text-xs font-medium bg-neu-200 text-neu-700 rounded-full shadow-neu-inset"
-                >
-                  {area}
+            {/* Location, Experience, Price in compact row */}
+            <div className="flex flex-wrap items-center gap-2 text-[10px] text-neu-600 mb-1">
+              {mediator.location && (
+                <span className="flex items-center gap-1 flex-shrink-0">
+                  <FaMapMarkerAlt className="text-neu-400 text-[9px]" />
+                  {mediator.location.city}, {mediator.location.state}
                 </span>
-              ))}
-              {mediator.practiceAreas.length > 3 && (
-                <span className="px-2.5 py-1 text-xs text-neu-500 font-medium">
-                  +{mediator.practiceAreas.length - 3} more
+              )}
+              {mediator.yearsExperience && (
+                <span className="flex items-center gap-1 flex-shrink-0">
+                  <FaBriefcase className="text-neu-400 text-[9px]" />
+                  {mediator.yearsExperience}y
+                </span>
+              )}
+              {mediator.hourlyRate && (
+                <span className="flex items-center gap-1 flex-shrink-0">
+                  <FaDollarSign className="text-neu-400 text-[9px]" />
+                  ${mediator.hourlyRate}/hr
                 </span>
               )}
             </div>
+
+            {/* Practice Areas - compact */}
+            {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {mediator.practiceAreas.slice(0, 3).map((area, i) => (
+                  <span key={i} className="px-1.5 py-0.5 text-[9px] bg-neu-300 text-neu-700 rounded-md flex-shrink-0">
+                    {area}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Ideology Badge - compact */}
+          {mediator.ideologyScore !== undefined && (
+            <div className={`px-2 py-1 text-[9px] font-semibold rounded-md whitespace-nowrap flex-shrink-0 ${getIdeologyColor(mediator.ideologyScore)}`}>
+              {getIdeologyLabel(mediator.ideologyScore)}
+            </div>
           )}
         </div>
-        
-        <div className="flex-shrink-0">
-          <span
-            className={`inline-block px-3 py-1.5 text-xs font-semibold rounded-full shadow-neu-sm ${getIdeologyColor(
-              mediator.ideologyScore || 0
-            )}`}
-          >
-            {getIdeologyLabel(mediator.ideologyScore || 0)}
-          </span>
-        </div>
+
+        {/* Affiliation Flag */}
+        {affiliationFlag && (
+          <div className="mt-2 pt-2 border-t border-neu-300">
+            <div className="flex items-center gap-1.5 text-[9px] flex-wrap">
+              <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
+                ⚠️ Conflict
+              </span>
+              <span className="text-neu-600 flex-shrink-0">Check affiliations</span>
+            </div>
+          </div>
+        )}
       </div>
-      
-      {affiliationFlag === 'red' && (
-        <div className="mt-4 p-3 bg-red-50 rounded-xl shadow-neu-inset text-xs text-red-700 font-medium">
-          ⚠️ Potential conflict of interest detected. Review affiliations before proceeding.
-        </div>
-      )}
-      
-      {affiliationFlag === 'yellow' && (
-        <div className="mt-4 p-3 bg-yellow-50 rounded-xl shadow-neu-inset text-xs text-yellow-700 font-medium">
-          ⚠️ Possible affiliation detected. Further review recommended.
-        </div>
-      )}
+    );
+  }
 
-      {/* Performance Data Popover */}
-      {showPerformance && (
-        <div className="mt-4 p-4 bg-neu-50 rounded-xl shadow-neu-inset border border-neu-200">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold text-neu-700">Performance Data</h4>
-            <span className="text-xs text-neu-500 italic">Dummy data for demo</span>
+  // Expanded card for modal view
+  return (
+    <div
+      onClick={onClick}
+      className="bg-neu-200 rounded-xl p-5 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 cursor-pointer"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          {/* Name and Rating */}
+          <div className="flex items-center gap-3 mb-3">
+            <h4 className="text-lg font-semibold text-neu-800">{mediator.name}</h4>
+            <StarRating rating={mediator.rating} totalMediations={mediator.totalMediations} />
           </div>
 
-          {/* Performance Stats Grid */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="p-2.5 bg-white rounded-lg shadow-neu-inset">
-              <div className="text-xs text-neu-600 font-medium mb-0.5">Settlement Rate</div>
-              <div className="text-lg font-bold text-green-600">{performanceData.settlementRate}%</div>
-            </div>
-            <div className="p-2.5 bg-white rounded-lg shadow-neu-inset">
-              <div className="text-xs text-neu-600 font-medium mb-0.5">Avg. Resolution</div>
-              <div className="text-lg font-bold text-blue-600">{performanceData.avgResolutionWeeks} weeks</div>
-            </div>
-            <div className="p-2.5 bg-white rounded-lg shadow-neu-inset">
-              <div className="text-xs text-neu-600 font-medium mb-0.5">Cases Handled</div>
-              <div className="text-lg font-bold text-purple-600">{performanceData.casesHandled}</div>
-            </div>
-            <div className="p-2.5 bg-white rounded-lg shadow-neu-inset">
-              <div className="text-xs text-neu-600 font-medium mb-0.5">Satisfaction</div>
-              <div className="text-lg font-bold text-yellow-600 flex items-center gap-1">
-                <FaStar className="text-sm" />
-                {performanceData.satisfactionScore}
-              </div>
-            </div>
+          {/* Location, Experience, Price */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-neu-600 mb-3">
+            {mediator.location && (
+              <span className="flex items-center gap-1.5">
+                <FaMapMarkerAlt className="text-neu-400" />
+                {mediator.location.city}, {mediator.location.state}
+              </span>
+            )}
+            {mediator.yearsExperience && (
+              <span className="flex items-center gap-1.5">
+                <FaBriefcase className="text-neu-400" />
+                {mediator.yearsExperience} years experience
+              </span>
+            )}
+            {mediator.hourlyRate && (
+              <span className="flex items-center gap-1.5">
+                <FaDollarSign className="text-neu-400" />
+                ${mediator.hourlyRate}/hr
+              </span>
+            )}
           </div>
 
-          {/* Reviews Section */}
-          <div className="border-t border-neu-200 pt-3">
-            <h5 className="text-xs font-semibold text-neu-700 mb-2">Recent Reviews</h5>
-            <div className="space-y-2">
-              {performanceData.reviews.map((review, idx) => (
-                <div key={idx} className="p-2.5 bg-white rounded-lg shadow-neu-inset">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar
-                        key={i}
-                        className={`text-xs ${
-                          i < review.rating ? 'text-yellow-500' : 'text-neu-300'
-                        }`}
-                      />
-                    ))}
-                    <span className="text-xs text-neu-500 ml-1">- {review.author}</span>
-                  </div>
-                  <p className="text-xs text-neu-700 italic">"{review.text}"</p>
-                </div>
+          {/* Practice Areas */}
+          {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {mediator.practiceAreas.map((area, i) => (
+                <span key={i} className="px-3 py-1 text-xs bg-neu-300 text-neu-700 rounded-lg shadow-neu-sm">
+                  {area}
+                </span>
               ))}
             </div>
-          </div>
+          )}
 
-          <p className="text-xs text-neu-500 text-center mt-3 italic">
-            Note: This is sample data for demonstration purposes
-          </p>
+          {/* Bio if available */}
+          {mediator.bio && (
+            <p className="mt-3 text-sm text-neu-600 leading-relaxed">{mediator.bio}</p>
+          )}
+        </div>
+
+        {/* Ideology Badge */}
+        {mediator.ideologyScore !== undefined && (
+          <div className={`px-4 py-2 text-sm font-semibold rounded-xl whitespace-nowrap shadow-neu ${getIdeologyColor(mediator.ideologyScore)}`}>
+            {getIdeologyLabel(mediator.ideologyScore)}
+          </div>
+        )}
+      </div>
+
+      {/* Affiliation Flag */}
+      {affiliationFlag && (
+        <div className="mt-3 pt-3 border-t border-neu-300">
+          <div className="flex items-center gap-2 text-sm">
+            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg font-semibold shadow-neu-sm">
+              ⚠️ Potential Conflict
+            </span>
+            <span className="text-neu-600">Review affiliations carefully</span>
+          </div>
         </div>
       )}
     </div>

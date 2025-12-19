@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import Tooltip from './Tooltip';
+import MediatorCard from './MediatorCard';
 import { checkAffiliationsQuick, trackMediatorSelection } from '../services/api';
 import { MOCK_MEDIATORS, categorizeMediatorsByIdeology, US_STATES } from '../data/mockMediators';
 import { FaStar, FaStarHalfAlt, FaMapMarkerAlt, FaBriefcase, FaDollarSign } from 'react-icons/fa';
 
-// Star Rating Component
+// Star Rating Component (used in detail modal)
 const StarRating = ({ rating, totalMediations }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
@@ -39,7 +40,7 @@ const MediatorList = ({ parties }) => {
   const [modalPage, setModalPage] = useState(1);
   const [selectedMediator, setSelectedMediator] = useState(null);
   const [showMediatorDetail, setShowMediatorDetail] = useState(false);
-  const ITEMS_PER_PAGE = 2;
+  const ITEMS_PER_PAGE = 3;
 
   // Get mediators from mock data
   const allMockMediators = MOCK_MEDIATORS;
@@ -144,84 +145,17 @@ const MediatorList = ({ parties }) => {
       <>
         <div className="space-y-1.5">
           {paginatedMediators.map(mediator => (
-            <div
+            <MediatorCard
               key={mediator._id}
+              mediator={mediator}
+              affiliationFlag={affiliationFlags[mediator._id]}
               onClick={() => {
                 trackSelection(mediator, 'clicked');
                 setSelectedMediator(mediator);
                 setShowMediatorDetail(true);
               }}
-              className="bg-neu-200 rounded-lg p-2 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 w-full cursor-pointer">
-              <div className="flex items-center justify-between gap-2 w-full">
-                <div className="flex-1 min-w-0">
-                  {/* Name and Rating on same line */}
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 className="text-sm font-semibold text-neu-800 truncate flex-shrink-0">{mediator.name}</h4>
-                    <div className="flex-shrink-0">
-                      <StarRating rating={mediator.rating} totalMediations={mediator.totalMediations} />
-                    </div>
-                  </div>
-
-                  {/* Location, Experience, Price in compact row */}
-                  <div className="flex flex-wrap items-center gap-2 text-[10px] text-neu-600 mb-1">
-                    {mediator.location && (
-                      <span className="flex items-center gap-1 flex-shrink-0">
-                        <FaMapMarkerAlt className="text-neu-400 text-[9px]" />
-                        {mediator.location.city}, {mediator.location.state}
-                      </span>
-                    )}
-                    {mediator.yearsExperience && (
-                      <span className="flex items-center gap-1 flex-shrink-0">
-                        <FaBriefcase className="text-neu-400 text-[9px]" />
-                        {mediator.yearsExperience}y
-                      </span>
-                    )}
-                    {mediator.hourlyRate && (
-                      <span className="flex items-center gap-1 flex-shrink-0">
-                        <FaDollarSign className="text-neu-400 text-[9px]" />
-                        ${mediator.hourlyRate}/hr
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Practice Areas - compact */}
-                  {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {mediator.practiceAreas.slice(0, 3).map((area, i) => (
-                        <span key={i} className="px-1.5 py-0.5 text-[9px] bg-neu-300 text-neu-700 rounded-md flex-shrink-0">
-                          {area}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Ideology Badge - compact */}
-                {mediator.ideologyScore !== undefined && (
-                  <div className={`px-2 py-1 text-[9px] font-semibold rounded-md whitespace-nowrap flex-shrink-0 ${
-                    mediator.ideologyScore <= -1 ? 'bg-blue-100 text-blue-700' :
-                    mediator.ideologyScore >= 1 ? 'bg-red-100 text-red-700' :
-                    'bg-gray-100 text-gray-700'
-                  }`}>
-                    {mediator.ideologyScore <= -1 ? 'Liberal' :
-                     mediator.ideologyScore >= 1 ? 'Conservative' :
-                     'Moderated'}
-                  </div>
-                )}
-              </div>
-
-              {/* Affiliation Flag */}
-              {affiliationFlags[mediator._id] && (
-                <div className="mt-2 pt-2 border-t border-neu-300">
-                  <div className="flex items-center gap-1.5 text-[9px] flex-wrap">
-                    <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
-                      ⚠️ Conflict
-                    </span>
-                    <span className="text-neu-600 flex-shrink-0">Check affiliations</span>
-                  </div>
-                </div>
-              )}
-            </div>
+              variant="compact"
+            />
           ))}
         </div>
 
@@ -433,8 +367,14 @@ const MediatorList = ({ parties }) => {
 
       {/* Fullscreen Modal - 75% width, blurred background */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Modal Header */}
             <div className="border-b border-neu-200 px-8 py-6 bg-neu-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -470,87 +410,17 @@ const MediatorList = ({ parties }) => {
                 return (
                   <div className="grid grid-cols-1 gap-4">
                     {paginatedMediators.map(mediator => (
-                      <div
+                      <MediatorCard
                         key={mediator._id}
+                        mediator={mediator}
+                        affiliationFlag={affiliationFlags[mediator._id]}
                         onClick={() => {
                           trackSelection(mediator, 'clicked');
                           setSelectedMediator(mediator);
                           setShowMediatorDetail(true);
                         }}
-                        className="bg-neu-200 rounded-xl p-5 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 cursor-pointer">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            {/* Name and Rating */}
-                            <div className="flex items-center gap-3 mb-3">
-                              <h4 className="text-lg font-semibold text-neu-800">{mediator.name}</h4>
-                              <StarRating rating={mediator.rating} totalMediations={mediator.totalMediations} />
-                            </div>
-
-                            {/* Location, Experience, Price */}
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-neu-600 mb-3">
-                              {mediator.location && (
-                                <span className="flex items-center gap-1.5">
-                                  <FaMapMarkerAlt className="text-neu-400" />
-                                  {mediator.location.city}, {mediator.location.state}
-                                </span>
-                              )}
-                              {mediator.yearsExperience && (
-                                <span className="flex items-center gap-1.5">
-                                  <FaBriefcase className="text-neu-400" />
-                                  {mediator.yearsExperience} years experience
-                                </span>
-                              )}
-                              {mediator.hourlyRate && (
-                                <span className="flex items-center gap-1.5">
-                                  <FaDollarSign className="text-neu-400" />
-                                  ${mediator.hourlyRate}/hr
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Practice Areas */}
-                            {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {mediator.practiceAreas.map((area, i) => (
-                                  <span key={i} className="px-3 py-1 text-xs bg-neu-300 text-neu-700 rounded-lg shadow-neu-sm">
-                                    {area}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Bio if available */}
-                            {mediator.bio && (
-                              <p className="mt-3 text-sm text-neu-600 leading-relaxed">{mediator.bio}</p>
-                            )}
-                          </div>
-
-                          {/* Ideology Badge */}
-                          {mediator.ideologyScore !== undefined && (
-                            <div className={`px-4 py-2 text-sm font-semibold rounded-xl whitespace-nowrap shadow-neu ${
-                              mediator.ideologyScore <= -1 ? 'bg-blue-100 text-blue-700' :
-                              mediator.ideologyScore >= 1 ? 'bg-red-100 text-red-700' :
-                              'bg-gray-100 text-gray-700'
-                            }`}>
-                              {mediator.ideologyScore <= -1 ? 'Liberal' :
-                               mediator.ideologyScore >= 1 ? 'Conservative' :
-                               'Moderated'}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Affiliation Flag */}
-                        {affiliationFlags[mediator._id] && (
-                          <div className="mt-3 pt-3 border-t border-neu-300">
-                            <div className="flex items-center gap-2 text-sm">
-                              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg font-semibold shadow-neu-sm">
-                                ⚠️ Potential Conflict
-                              </span>
-                              <span className="text-neu-600">Review affiliations carefully</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                        variant="expanded"
+                      />
                     ))}
                   </div>
                 );
@@ -621,8 +491,17 @@ const MediatorList = ({ parties }) => {
 
       {/* Mediator Detail Popup - Availability & Video Call Info */}
       {showMediatorDetail && selectedMediator && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[60] animate-fade-in">
-          <div className="w-[90%] max-w-4xl max-h-[90vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[60] animate-fade-in"
+          onClick={() => {
+            setShowMediatorDetail(false);
+            setSelectedMediator(null);
+          }}
+        >
+          <div
+            className="w-[90%] max-w-4xl max-h-[90vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
             <div className="border-b border-neu-200 px-8 py-6 bg-gradient-to-r from-neu-100 to-neu-200">
               <div className="flex items-start justify-between">

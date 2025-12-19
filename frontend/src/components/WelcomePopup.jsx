@@ -30,7 +30,10 @@ const WelcomePopup = ({ onClose }) => {
 
       {/* Popup */}
       <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
-        <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 max-w-md w-full">
+        <div
+          className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 max-w-md w-full"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
             <p className="text-gray-600 text-sm leading-relaxed">
