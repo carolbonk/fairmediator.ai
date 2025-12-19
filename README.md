@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://www.fairmediator.ai">
+    <img src="./GitHub_Banner.png" alt="FairMediator Banner" width="100%"/>
+  </a>
+</p>
+
 # FairMediator
 
 A single-page platform for transparent law firm mediation selection with AI-powered conflict detection and ideological analysis.
