@@ -8,7 +8,7 @@ A single-page platform for transparent law firm mediation selection with AI-powe
 
 ## 🎯 Overview
 
-FairMediator helps law firms, corporations, and individuals select mediators by:
+FairMediator is a transparent platform that helps law firms, corporations, and individuals select mediators by:
 - **Real-time affiliation flagging** (potential conflicts of interest)
 - **Ideological leaning analysis** (liberal/conservative spectrum)
 - **AI-powered chat interface** for natural language mediator search
