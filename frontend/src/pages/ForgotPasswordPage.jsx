@@ -38,10 +38,10 @@ const ForgotPasswordPage = () => {
     return (
       <div className="min-h-screen flex flex-col relative">
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40"
           onClick={handleBackdropClick}
         />
-        <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-10">
+        <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-50">
           <div
             className="w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
