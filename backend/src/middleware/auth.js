@@ -6,6 +6,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Validate JWT_SECRET is set
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
 /**
  * Authenticate middleware
  * Verifies JWT token and attaches user to request
@@ -21,10 +26,7 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'fallback-secret-for-tests'
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Get user from database
     const user = await User.findById(decoded.userId).select('-password');
@@ -86,10 +88,7 @@ const optionalAuth = async (req, res, next) => {
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'fallback-secret-for-tests'
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.userId).select('-password');
     if (user) {

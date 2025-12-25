@@ -8,30 +8,33 @@ const express = require('express');
 const router = express.Router();
 const Mediator = require('../models/Mediator');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
+const { validate, schemas } = require('../middleware/validation');
 
 /**
  * GET /api/mediators
  * Get all mediators with optional filtering
  */
-router.get('/', async (req, res) => {
+router.get('/', validate(schemas.mediatorSearch, 'query'), async (req, res) => {
   try {
-    const { 
-      practiceArea, 
-      location, 
-      ideology, 
+    const {
+      practiceArea,
+      location,
+      ideology,
       minExperience,
       page = 1,
-      limit = 20 
+      limit = 20
     } = req.query;
-    
+
     const query = {};
-    
+
     if (practiceArea) {
       query.practiceAreas = { $in: [practiceArea] };
     }
-    
+
     if (location) {
-      query['location.state'] = new RegExp(location, 'i');
+      // Escape special regex characters to prevent ReDoS attacks
+      const escapedLocation = location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query['location.state'] = new RegExp(escapedLocation, 'i');
     }
     
     if (ideology) {
@@ -74,7 +77,7 @@ router.get('/', async (req, res) => {
  * GET /api/mediators/:id
  * Get a single mediator by ID
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', validate(schemas.objectId, 'params'), async (req, res) => {
   try {
     const mediator = await Mediator.findById(req.params.id);
     

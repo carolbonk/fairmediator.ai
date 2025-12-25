@@ -6,36 +6,75 @@ services:
     container_name: fairmediator-mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"  # Only expose to localhost
     environment:
-      # No authentication for local development
+      # MongoDB Authentication (REQUIRED for production)
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-changeme_production}
       MONGO_INITDB_DATABASE: fairmediator
     volumes:
       # Persist data on your local machine
       - mongodb_data:/data/db
       - mongodb_config:/data/configdb
+    networks:
+      - fairmediator-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/fairmediator -u ${MONGO_ROOT_USER:-admin} -p ${MONGO_ROOT_PASSWORD:-changeme_production} --authenticationDatabase admin --quiet
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    command: ["mongod", "--auth"]
 
   # Optional: MongoDB Express - Web UI for viewing your database
+  # WARNING: Only use in development! Disable in production!
   mongo-express:
     image: mongo-express:latest
     container_name: fairmediator-mongo-express
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"  # Only expose to localhost
     environment:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+      # Use strong credentials from environment variables
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USER:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD:-changeme_production}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-changeme_express}
+      # Security settings
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      ME_CONFIG_SITE_BASEURL: /
+    networks:
+      - fairmediator-network
     depends_on:
       mongodb:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    profiles:
+      - dev  # Only start with: docker-compose --profile dev up
+
+networks:
+  fairmediator-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
 
 volumes:
   mongodb_data:
