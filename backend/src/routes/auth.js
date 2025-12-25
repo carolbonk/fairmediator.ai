@@ -5,64 +5,85 @@
 
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const User = require('../models/User');
 const { authenticate, optionalAuth } = require('../middleware/auth');
+const { validate, schemas } = require('../middleware/validation');
+const { authLimiter, passwordResetLimiter, emailVerificationLimiter } = require('../middleware/rateLimiting');
+const { generateVerificationToken, sendVerificationEmail, sendWelcomeEmail } = require('../services/email/emailVerification');
+const logger = require('../config/logger');
 const UsageLog = require('../models/UsageLog');
 
 /**
  * POST /api/auth/register
  * Register a new user
  */
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, validate(schemas.register), async (req, res) => {
   try {
     const { email, password, name } = req.body;
-
-    // Validation
-    if (!email || !password || !name) {
-      return res.status(400).json({
-        error: 'Email, password, and name are required'
-      });
-    }
-
-    if (password.length < 8) {
-      return res.status(400).json({
-        error: 'Password must be at least 8 characters'
-      });
-    }
 
     // Check if user exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
+      logger.security.suspicious('DUPLICATE_REGISTRATION', null, {
+        email: email.toLowerCase(),
+        ip: req.ip
+      });
       return res.status(409).json({
         error: 'Email already registered'
       });
     }
+
+    // Generate email verification token
+    const { token: verificationToken, hash: verificationHash, expires: verificationExpires } = generateVerificationToken();
 
     // Create user
     const user = await User.create({
       email: email.toLowerCase(),
       password, // Will be hashed by User model pre-save hook
       name,
-      subscriptionTier: 'free'
+      subscriptionTier: 'free',
+      emailVerified: false,
+      emailVerificationToken: verificationHash,
+      emailVerificationExpires: verificationExpires
     });
 
-    // Generate tokens
+    // Send verification email
+    try {
+      await sendVerificationEmail(email, verificationToken, name);
+    } catch (emailError) {
+      logger.error('Failed to send verification email', {
+        userId: user._id,
+        email: email.toLowerCase(),
+        error: emailError.message
+      });
+      // Continue with registration even if email fails
+    }
+
+    // Generate tokens (user can still use app with limited features)
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
     await user.save(); // Save refresh token
 
     // Log registration
+    logger.security.auth('REGISTER', user._id, {
+      email: email.toLowerCase(),
+      ip: req.ip,
+      userAgent: req.get('user-agent')
+    });
+
     await UsageLog.create({
       user: user._id,
       eventType: 'user_registered',
       metadata: {
-        subscriptionTier: 'free'
+        subscriptionTier: 'free',
+        emailVerified: false
       }
     });
 
     res.status(201).json({
       success: true,
-      message: 'Registration successful',
+      message: 'Registration successful. Please check your email to verify your account.',
       data: {
         user: {
           id: user._id,
@@ -72,10 +93,12 @@ router.post('/register', async (req, res) => {
           emailVerified: user.emailVerified
         },
         accessToken,
-        refreshToken
+        refreshToken,
+        emailVerificationSent: true
       }
     });
   } catch (error) {
+    logger.error('Registration error', { error: error.message, stack: error.stack });
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Registration failed' });
   }
@@ -85,44 +108,82 @@ router.post('/register', async (req, res) => {
  * POST /api/auth/login
  * Login existing user
  */
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, validate(schemas.login), async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({
-        error: 'Email and password are required'
-      });
-    }
 
     // Find user
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
+      logger.security.failedLogin(email.toLowerCase(), req.ip, {
+        reason: 'user_not_found',
+        userAgent: req.get('user-agent')
+      });
       return res.status(401).json({
         error: 'Invalid email or password'
+      });
+    }
+
+    // Check if account is locked
+    if (user.isAccountLocked()) {
+      const lockTimeRemaining = Math.ceil((user.accountLockedUntil - new Date()) / 1000 / 60);
+      logger.security.accountLocked(user._id, user.email, req.ip, {
+        lockTimeRemaining,
+        userAgent: req.get('user-agent')
+      });
+      return res.status(423).json({
+        error: 'Account temporarily locked due to multiple failed login attempts',
+        lockedUntil: user.accountLockedUntil,
+        minutesRemaining: lockTimeRemaining,
+        message: `Please try again in ${lockTimeRemaining} minute${lockTimeRemaining > 1 ? 's' : ''}`
       });
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
+      // Increment failed attempts
+      await user.incrementFailedAttempts();
+
+      logger.security.failedLogin(email.toLowerCase(), req.ip, {
+        userId: user._id,
+        reason: 'invalid_password',
+        failedAttempts: user.failedLoginAttempts,
+        userAgent: req.get('user-agent')
+      });
+
+      const remainingAttempts = Math.max(5 - user.failedLoginAttempts, 0);
       return res.status(401).json({
-        error: 'Invalid email or password'
+        error: 'Invalid email or password',
+        remainingAttempts: remainingAttempts,
+        ...(remainingAttempts === 0 && {
+          message: 'Account will be locked for 15 minutes after next failed attempt'
+        })
       });
     }
+
+    // Reset failed attempts on successful login
+    await user.resetFailedAttempts();
 
     // Generate tokens
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
     await user.save(); // Save refresh token
 
-    // Log login
+    // Log successful login
+    logger.security.auth('LOGIN_SUCCESS', user._id, {
+      email: user.email,
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      emailVerified: user.emailVerified
+    });
+
     await UsageLog.create({
       user: user._id,
       eventType: 'user_login',
       metadata: {
-        subscriptionTier: user.subscriptionTier
+        subscriptionTier: user.subscriptionTier,
+        emailVerified: user.emailVerified
       }
     });
 
@@ -143,6 +204,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
+    logger.error('Login error', { error: error.message, stack: error.stack });
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
   }
@@ -152,20 +214,13 @@ router.post('/login', async (req, res) => {
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', validate(schemas.refreshToken), async (req, res) => {
   try {
     const { refreshToken } = req.body;
 
-    if (!refreshToken) {
-      return res.status(400).json({ error: 'Refresh token is required' });
-    }
-
     // Verify refresh token
     const jwt = require('jsonwebtoken');
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret-for-tests'
-    );
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     // Find user and validate token
     const user = await User.findById(decoded.userId);
@@ -266,13 +321,9 @@ router.get('/me', authenticate, async (req, res) => {
  * POST /api/auth/forgot-password
  * Request password reset
  */
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', validate(schemas.passwordResetRequest), async (req, res) => {
   try {
     const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' });
-    }
 
     const user = await User.findOne({ email: email.toLowerCase() });
 
@@ -324,17 +375,9 @@ router.post('/forgot-password', async (req, res) => {
  * POST /api/auth/reset-password
  * Reset password with token
  */
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', validate(schemas.passwordResetConfirm), async (req, res) => {
   try {
     const { token, newPassword } = req.body;
-
-    if (!token || !newPassword) {
-      return res.status(400).json({ error: 'Token and new password are required' });
-    }
-
-    if (newPassword.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters' });
-    }
 
     // Hash the token to match stored hash
     const crypto = require('crypto');
@@ -376,6 +419,116 @@ router.post('/reset-password', async (req, res) => {
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
+/**
+ * POST /api/auth/verify-email
+ * Verify user email address
+ */
+router.post('/verify-email', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ error: 'Verification token is required' });
+    }
+
+    // Hash the token to match stored hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Find user with valid verification token
+    const user = await User.findOne({
+      emailVerificationToken: tokenHash,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        error: 'Invalid or expired verification token',
+        message: 'The verification link is invalid or has expired. Please request a new one.'
+      });
+    }
+
+    // Mark email as verified
+    user.emailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    // Log verification
+    logger.security.emailVerification(user._id, user.email, 'success', {
+      ip: req.ip
+    });
+
+    await UsageLog.create({
+      user: user._id,
+      eventType: 'email_verified'
+    });
+
+    // Send welcome email
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (emailError) {
+      logger.error('Failed to send welcome email', {
+        userId: user._id,
+        error: emailError.message
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Email verified successfully',
+      data: {
+        emailVerified: true
+      }
+    });
+  } catch (error) {
+    logger.error('Email verification error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Email verification failed' });
+  }
+});
+
+/**
+ * POST /api/auth/resend-verification
+ * Resend email verification link
+ */
+router.post('/resend-verification', emailVerificationLimiter, authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.emailVerified) {
+      return res.status(400).json({
+        error: 'Email already verified',
+        message: 'Your email address has already been verified'
+      });
+    }
+
+    // Generate new verification token
+    const { token: verificationToken, hash: verificationHash, expires: verificationExpires } = generateVerificationToken();
+
+    user.emailVerificationToken = verificationHash;
+    user.emailVerificationExpires = verificationExpires;
+    await user.save();
+
+    // Send verification email
+    await sendVerificationEmail(user.email, verificationToken, user.name);
+
+    logger.security.emailVerification(user._id, user.email, 'resent', {
+      ip: req.ip
+    });
+
+    res.json({
+      success: true,
+      message: 'Verification email sent. Please check your inbox.'
+    });
+  } catch (error) {
+    logger.error('Resend verification error', { error: error.message, stack: error.stack });
+    res.status(500).json({ error: 'Failed to resend verification email' });
   }
 });
 

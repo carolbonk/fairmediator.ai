@@ -1,0 +1,92 @@
+name: Docker Security Scanning
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+  schedule:
+    # Run weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  trivy-scan:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Generate Trivy report
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          output: 'trivy-report.txt'
+
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-security-report
+          path: trivy-report.txt
+
+  docker-compose-validation:
+    name: Docker Compose Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: docker-compose config
+
+      - name: Check for security issues in docker-compose
+        run: |
+          echo "Checking docker-compose.yml for security issues..."
+
+          # Check for exposed ports
+          if grep -q "8081:8081" docker-compose.yml; then
+            echo "⚠️  Warning: mongo-express admin UI is exposed on port 8081"
+            echo "This should not be exposed in production!"
+          fi
+
+          # Check for default credentials
+          if grep -q "admin:admin123" docker-compose.yml; then
+            echo "⚠️  Warning: Default credentials detected!"
+            echo "Change default admin credentials before deploying!"
+          fi
+
+          # Check for network isolation
+          if ! grep -q "networks:" docker-compose.yml; then
+            echo "⚠️  Warning: No custom networks defined"
+            echo "Consider using custom networks for isolation"
+          fi
+
+          echo "Docker Compose security check complete"

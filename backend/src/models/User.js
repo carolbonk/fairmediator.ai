@@ -7,6 +7,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Validate required JWT secrets are set
+if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
+  throw new Error('JWT_SECRET and JWT_REFRESH_SECRET environment variables are required');
+}
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -33,6 +38,35 @@ const userSchema = new mongoose.Schema({
   emailVerificationExpires: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  // Account security
+  failedLoginAttempts: {
+    type: Number,
+    default: 0
+  },
+  accountLockedUntil: {
+    type: Date,
+    default: null
+  },
+  lastFailedLoginAt: Date,
+  lastSuccessfulLoginAt: Date,
+  // Role-Based Access Control
+  role: {
+    type: String,
+    enum: ['user', 'moderator', 'admin'],
+    default: 'user'
+  },
+  permissions: [{
+    type: String,
+    enum: [
+      'read:mediators',
+      'write:mediators',
+      'delete:mediators',
+      'manage:users',
+      'manage:subscriptions',
+      'access:admin',
+      'scrape:data'
+    ]
+  }],
   subscriptionTier: {
     type: String,
     enum: ['free', 'premium'],
@@ -96,7 +130,7 @@ userSchema.methods.generateAccessToken = function() {
       email: this.email,
       subscriptionTier: this.subscriptionTier
     },
-    process.env.JWT_SECRET || 'fallback-secret-for-tests',
+    process.env.JWT_SECRET,
     { expiresIn: '15m' }
   );
 };
@@ -105,7 +139,7 @@ userSchema.methods.generateAccessToken = function() {
 userSchema.methods.generateRefreshToken = function() {
   const token = jwt.sign(
     { userId: this._id, type: 'refresh' },
-    process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret-for-tests',
+    process.env.JWT_REFRESH_SECRET,
     { expiresIn: '30d' }
   );
 
@@ -165,6 +199,45 @@ userSchema.methods.incrementUsage = async function(actionType) {
   const field = actionType + 'sToday';
   this.usageStats[field]++;
 
+  await this.save();
+};
+
+// Check if account is locked
+userSchema.methods.isAccountLocked = function() {
+  if (!this.accountLockedUntil) return false;
+
+  // Check if lock period has expired
+  if (this.accountLockedUntil > new Date()) {
+    return true;
+  }
+
+  // Lock expired, reset counters
+  this.failedLoginAttempts = 0;
+  this.accountLockedUntil = null;
+  return false;
+};
+
+// Increment failed login attempts and lock if necessary
+userSchema.methods.incrementFailedAttempts = async function() {
+  this.failedLoginAttempts += 1;
+  this.lastFailedLoginAt = new Date();
+
+  // Lock account after 5 failed attempts
+  const MAX_ATTEMPTS = 5;
+  const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
+  if (this.failedLoginAttempts >= MAX_ATTEMPTS) {
+    this.accountLockedUntil = new Date(Date.now() + LOCK_DURATION_MS);
+  }
+
+  await this.save();
+};
+
+// Reset failed login attempts on successful login
+userSchema.methods.resetFailedAttempts = async function() {
+  this.failedLoginAttempts = 0;
+  this.accountLockedUntil = null;
+  this.lastSuccessfulLoginAt = new Date();
   await this.save();
 };
 
