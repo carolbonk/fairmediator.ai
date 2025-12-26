@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="31" failures="9" errors="0" time="3.513">
+  <testsuite name="Authentication API" errors="0" failures="9" skipped="0" timestamp="2025-12-26T22:19:45" time="2.644" tests="11">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.273">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.012">
+      <failure>Error: expect(received).toHaveProperty(path, value)
+
+Expected path: &quot;success&quot;
+Received path: []
+
+Expected value: false
+Received value: {&quot;details&quot;: [{&quot;field&quot;: &quot;password&quot;, &quot;message&quot;: &quot;Password must be at least 12 characters long&quot;}, {&quot;field&quot;: &quot;password&quot;, &quot;message&quot;: &quot;Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&amp;)&quot;}], &quot;error&quot;: &quot;Validation failed&quot;}
+    at toHaveProperty (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:40:25)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:41:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.07">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 409
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:39:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:62:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.008">
+      <failure>Error: expect(received).toHaveProperty(path, value)
+
+Expected path: &quot;success&quot;
+Received path: []
+
+Expected value: false
+Received value: {&quot;details&quot;: [{&quot;field&quot;: &quot;email&quot;, &quot;message&quot;: &quot;Please provide a valid email address&quot;}], &quot;error&quot;: &quot;Validation failed&quot;}
+    at toHaveProperty (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:40:25)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:74:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.135">
+      <failure>Error: expect(received).toHaveProperty(path)
+
+Expected path: &quot;accessToken&quot;
+Received path: []
+
+Received value: {&quot;authMethod&quot;: &quot;cookie&quot;, &quot;user&quot;: {&quot;email&quot;: &quot;login@example.com&quot;, &quot;emailVerified&quot;: true, &quot;id&quot;: &quot;694f0a03df1628ca2b312f23&quot;, &quot;name&quot;: &quot;Login User&quot;, &quot;role&quot;: &quot;user&quot;, &quot;subscriptionTier&quot;: &quot;free&quot;, &quot;usageStats&quot;: {&quot;aiCallsToday&quot;: 0, &quot;lastReset&quot;: &quot;2025-12-26T22:19:47.634Z&quot;, &quot;profileViewsToday&quot;: 0, &quot;searchesToday&quot;: 0}}}
+    at Object.toHaveProperty (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:99:34)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.066">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 401
+Received: 429
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:39:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:112:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.067">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 401
+Received: 429
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:39:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:123:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.091">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 423
+Received: 429
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:39:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:145:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.072">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0.068">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 404
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:172:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should reject invalid refresh token" time="0.009">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 401
+Received: 404
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:39:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/auth.test.js:181:7)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="EnhancedAffiliationDetector (SKIPPED - No HUGGINGFACE_API_KEY)" errors="0" failures="0" skipped="1" timestamp="2025-12-26T22:19:48" time="0.144" tests="1">
+    <testcase classname="EnhancedAffiliationDetector (SKIPPED - No HUGGINGFACE_API_KEY)" name="placeholder" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="MultiPerspectiveAgents (SKIPPED - No HUGGINGFACE_API_KEY)" errors="0" failures="0" skipped="1" timestamp="2025-12-26T22:19:48" time="0.089" tests="1">
+    <testcase classname="MultiPerspectiveAgents (SKIPPED - No HUGGINGFACE_API_KEY)" name="placeholder" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2025-12-26T22:19:48" time="0.196" tests="18">
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with data" time="0.001">
+    </testcase>
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0">
+    </testcase>
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with message" time="0.001">
+    </testcase>
+    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.002">
+    </testcase>
+    <testcase classname="Response Handlers › sendError" name="should send error response with details" time="0.001">
+    </testcase>
+    <testcase classname="Response Handlers › sendValidationError" name="should send validation error with array of errors" time="0.001">
+    </testcase>
+    <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0">
+    </testcase>
+    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0.001">
+    </testcase>
+    <testcase classname="Response Handlers › sendNotFound" name="should send 404 not found" time="0">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeString" name="should remove HTML tags" time="0.002">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0.002">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0.001">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0">
+    </testcase>
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0.001">
+    </testcase>
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0">
+    </testcase>
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0.001">
+    </testcase>
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>
