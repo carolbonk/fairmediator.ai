@@ -16,8 +16,9 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const logger = require('./config/logger');
 const { sanitizeInput, mongoSanitizeMiddleware } = require('./middleware/sanitization');
-const { csrfProtection, csrfErrorHandler, getCsrfToken } = require('./middleware/csrf');
+const { csrfProtection, csrfErrorHandler, getCsrfToken} = require('./middleware/csrf');
 const { globalLimiter } = require('./middleware/rateLimiting');
+const { initializeSentry, requestHandler, tracingHandler, errorHandler: sentryErrorHandler } = require('./config/sentry');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -37,6 +38,15 @@ const cronScheduler = require('./services/scraping/cronScheduler');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Initialize Sentry (must be first)
+const Sentry = initializeSentry(app);
+
+// Sentry request handler (must be first middleware)
+if (Sentry) {
+  app.use(requestHandler());
+  app.use(tracingHandler());
+}
 
 // HTTPS Enforcement (production only)
 if (process.env.NODE_ENV === 'production') {
@@ -198,7 +208,12 @@ app.use('/api/analysis', analysisRoutes);
 app.use('/api/learning', learningRoutes);
 app.use('/api/state-mediation', stateMediationRoutes);
 
-// CSRF error handler (must come before general error handler)
+// Sentry error handler (must be before other error handlers)
+if (Sentry) {
+  app.use(sentryErrorHandler());
+}
+
+// CSRF error handler
 app.use(csrfErrorHandler);
 
 // Error logging middleware

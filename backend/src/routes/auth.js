@@ -11,6 +11,7 @@ const { authenticate, optionalAuth } = require('../middleware/auth');
 const { validate, schemas } = require('../middleware/validation');
 const { authLimiter, passwordResetLimiter, emailVerificationLimiter } = require('../middleware/rateLimiting');
 const { generateVerificationToken, sendVerificationEmail, sendWelcomeEmail } = require('../services/email/emailVerification');
+const { setAuthCookies, clearAuthCookies, getRefreshToken } = require('../config/cookies');
 const logger = require('../config/logger');
 const UsageLog = require('../models/UsageLog');
 
@@ -65,6 +66,9 @@ router.post('/register', authLimiter, validate(schemas.register), async (req, re
     const refreshToken = user.generateRefreshToken();
     await user.save(); // Save refresh token
 
+    // Set httpOnly cookies (secure JWT storage)
+    setAuthCookies(res, accessToken, refreshToken);
+
     // Log registration
     logger.security.auth('REGISTER', user._id, {
       email: email.toLowerCase(),
@@ -90,11 +94,12 @@ router.post('/register', authLimiter, validate(schemas.register), async (req, re
           email: user.email,
           name: user.name,
           subscriptionTier: user.subscriptionTier,
-          emailVerified: user.emailVerified
+          emailVerified: user.emailVerified,
+          role: user.role
         },
-        accessToken,
-        refreshToken,
-        emailVerificationSent: true
+        emailVerificationSent: true,
+        // Note: Tokens now in httpOnly cookies for security
+        authMethod: 'cookie'
       }
     });
   } catch (error) {
@@ -170,6 +175,9 @@ router.post('/login', authLimiter, validate(schemas.login), async (req, res) => 
     const refreshToken = user.generateRefreshToken();
     await user.save(); // Save refresh token
 
+    // Set httpOnly cookies (secure JWT storage)
+    setAuthCookies(res, accessToken, refreshToken);
+
     // Log successful login
     logger.security.auth('LOGIN_SUCCESS', user._id, {
       email: user.email,
@@ -197,10 +205,11 @@ router.post('/login', authLimiter, validate(schemas.login), async (req, res) => 
           name: user.name,
           subscriptionTier: user.subscriptionTier,
           emailVerified: user.emailVerified,
+          role: user.role,
           usageStats: user.usageStats
         },
-        accessToken,
-        refreshToken
+        // Note: Tokens now in httpOnly cookies for security
+        authMethod: 'cookie'
       }
     });
   } catch (error) {
@@ -214,9 +223,17 @@ router.post('/login', authLimiter, validate(schemas.login), async (req, res) => 
  * POST /api/auth/refresh
  * Refresh access token using refresh token
  */
-router.post('/refresh', validate(schemas.refreshToken), async (req, res) => {
+router.post('/refresh', async (req, res) => {
   try {
-    const { refreshToken } = req.body;
+    // Get refresh token from cookie or request body
+    const refreshToken = getRefreshToken(req);
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        error: 'No refresh token provided',
+        message: 'Please log in again'
+      });
+    }
 
     // Verify refresh token
     const jwt = require('jsonwebtoken');
@@ -240,16 +257,27 @@ router.post('/refresh', validate(schemas.refreshToken), async (req, res) => {
     // Generate new access token
     const newAccessToken = user.generateAccessToken();
 
+    // Set new access token in cookie
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000,
+      path: '/'
+    });
+
     res.json({
       success: true,
+      message: 'Access token refreshed',
       data: {
-        accessToken: newAccessToken
+        authMethod: 'cookie'
       }
     });
   } catch (error) {
     if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Invalid refresh token' });
     }
+    logger.error('Refresh token error', { error: error.message });
     console.error('Refresh token error:', error);
     res.status(500).json({ error: 'Token refresh failed' });
   }
@@ -257,11 +285,12 @@ router.post('/refresh', validate(schemas.refreshToken), async (req, res) => {
 
 /**
  * POST /api/auth/logout
- * Logout user (invalidate refresh token)
+ * Logout user (invalidate refresh token and clear cookies)
  */
 router.post('/logout', authenticate, async (req, res) => {
   try {
-    const { refreshToken } = req.body;
+    // Get refresh token from cookie or request body
+    const refreshToken = getRefreshToken(req);
 
     if (refreshToken) {
       // Remove the specific refresh token
@@ -271,7 +300,15 @@ router.post('/logout', authenticate, async (req, res) => {
       await req.user.save();
     }
 
+    // Clear httpOnly cookies
+    clearAuthCookies(res);
+
     // Log logout
+    logger.security.auth('LOGOUT', req.user._id, {
+      ip: req.ip,
+      userAgent: req.get('user-agent')
+    });
+
     await UsageLog.create({
       user: req.user._id,
       eventType: 'user_logout'
@@ -279,9 +316,10 @@ router.post('/logout', authenticate, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Logout successful'
+      message: 'Logout successful. Cookies cleared.'
     });
   } catch (error) {
+    logger.error('Logout error', { error: error.message });
     console.error('Logout error:', error);
     res.status(500).json({ error: 'Logout failed' });
   }
