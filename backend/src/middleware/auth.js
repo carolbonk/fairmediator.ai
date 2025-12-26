@@ -5,6 +5,7 @@
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { getAccessToken } = require('../config/cookies');
 
 // Validate JWT_SECRET is set
 if (!process.env.JWT_SECRET) {
@@ -17,13 +18,15 @@ if (!process.env.JWT_SECRET) {
  */
 const authenticate = async (req, res, next) => {
   try {
-    // Get token from Authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
+    // Get token from cookie or Authorization header
+    const token = getAccessToken(req);
 
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    if (!token) {
+      return res.status(401).json({
+        error: 'No token provided',
+        message: 'Authentication required. Please log in.'
+      });
+    }
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -81,13 +84,14 @@ const requireTier = (tier) => {
  */
 const optionalAuth = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Get token from cookie or Authorization header
+    const token = getAccessToken(req);
+
+    if (!token) {
       // No token, continue without user
       return next();
     }
 
-    const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.userId).select('-password');
