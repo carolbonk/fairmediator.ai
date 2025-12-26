@@ -1,0 +1,25 @@
+# Development Dockerfile for Backend
+# Includes debugging tools and hot reload
+
+FROM node:18-alpine
+
+# Install debugging tools
+RUN apk add --no-cache python3 make g++
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (including devDependencies)
+RUN npm install
+
+# Copy application code
+COPY . .
+
+# Expose ports
+EXPOSE 5001 9229
+
+# Run with nodemon for hot reload
+CMD ["npm", "run", "dev"]
