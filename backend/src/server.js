@@ -175,16 +175,19 @@ const mongooseOptions = {
   })
 };
 
-mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
-.then(() => {
-  logger.info('MongoDB connected successfully');
-  console.log('MongoDB connected successfully');
-})
-.catch(err => {
-  logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
-  console.error('MongoDB connection error:', err);
-  process.exit(1);
-});
+// Connect to MongoDB (skip in test mode - tests use MongoDB Memory Server)
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
+  .then(() => {
+    logger.info('MongoDB connected successfully');
+    console.log('MongoDB connected successfully');
+  })
+  .catch(err => {
+    logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
+}
 
 // Health check endpoint
 app.get('/health', (_req, res) => {
@@ -249,15 +252,17 @@ app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`FairMediator backend running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
+// Start server (only if not in test mode)
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`FairMediator backend running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
 
-  if (process.env.NODE_ENV === 'production') {
-    cronScheduler.startAll();
-  }
-});
+    if (process.env.NODE_ENV === 'production') {
+      cronScheduler.startAll();
+    }
+  });
+}
 
 module.exports = app;
