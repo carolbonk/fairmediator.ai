@@ -18,6 +18,14 @@ By participating in this project, you agree to maintain a respectful and inclusi
    - Screenshots if applicable
    - Your environment (OS, Node version, etc.)
 
+### Reporting Security Vulnerabilities
+
+**DO NOT** create public issues for security vulnerabilities.
+
+Please report security issues to: security@fairmediator.com
+
+See [SECURITY.md](SECURITY.md) for details.
+
 ### Suggesting Features
 
 1. Check if the feature has been suggested in Issues
@@ -38,14 +46,19 @@ By participating in this project, you agree to maintain a respectful and inclusi
    - Follow existing code style
    - Add comments for complex logic
    - Update documentation if needed
+   - Follow DRY principles (see below)
+   - Ensure security best practices (see below)
 
 4. **Test your changes:**
    ```bash
    # Backend tests
    cd backend && npm test
-   
+
    # Frontend tests
    cd frontend && npm test
+
+   # Security scan
+   npm audit
    ```
 
 5. **Commit with clear messages:**
@@ -53,6 +66,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
    git commit -m "feat: add mediator search filtering"
    git commit -m "fix: resolve affiliation detection bug"
    git commit -m "docs: update API documentation"
+   git commit -m "security: fix XSS vulnerability in search"
    ```
 
 6. **Push and create PR:**
@@ -77,71 +91,232 @@ By participating in this project, you agree to maintain a respectful and inclusi
 - Docstrings for all functions
 - 4 spaces for indentation
 
-### Llama Integration
+### DRY Principles (Don't Repeat Yourself)
 
-When working with Llama models:
+We prioritize code reusability and maintainability:
 
-1. **Follow the global rules** defined in the project
-2. **Reference official docs:** https://www.llama.com/docs/
-3. **Use appropriate prompts** following Llama 3.3 format
-4. **Handle errors gracefully**
-5. **Log token usage** for cost tracking
+**Backend Utilities:**
+- Use `/backend/src/utils/responseHandlers.js` for API responses
+  ```javascript
+  const { sendSuccess, sendError } = require('../utils/responseHandlers');
+
+  // Instead of: res.status(200).json({ success: true, data: users })
+  sendSuccess(res, users);
+
+  // Instead of: res.status(500).json({ error: 'Failed' })
+  sendError(res, 500, 'Failed to fetch users');
+  ```
+
+- Use `/backend/src/utils/sanitization.js` for input sanitization
+  ```javascript
+  const { sanitizeObject } = require('../utils/sanitization');
+  const clean = sanitizeObject(req.body);
+  ```
+
+- Use `/backend/src/utils/rateLimiterFactory.js` for rate limiting
+  ```javascript
+  const { rateLimiters } = require('../utils/rateLimiterFactory');
+  router.post('/login', rateLimiters.auth, loginHandler);
+  ```
+
+**Frontend Utilities:**
+- Use `/frontend/src/utils/apiFactory.js` for API calls
+  ```javascript
+  import { createApiEndpoint } from '../utils/apiFactory';
+  const getUsers = createApiEndpoint('get', '/api/users');
+  ```
+
+- Use `/frontend/src/components/common/LoadingSpinner.jsx` for loading states
+  ```jsx
+  import LoadingSpinner from '../components/common/LoadingSpinner';
+  {isLoading && <LoadingSpinner size="lg" color="blue" />}
+  ```
+
+- Use `/frontend/src/components/common/EmptyState.jsx` for empty data
+  ```jsx
+  import EmptyState from '../components/common/EmptyState';
+  <EmptyState title="No mediators found" description="Try adjusting your filters" />
+  ```
+
+**Before creating new code, check if:**
+- Similar functionality exists in utils/
+- You can extract reusable logic
+- You're duplicating patterns from other files
+
+### Security Best Practices
+
+**CRITICAL: All contributors must follow these security guidelines**
+
+1. **Never commit secrets:**
+   ```bash
+   # Add to .gitignore
+   .env
+   .env.local
+   .env.production
+   ```
+
+2. **Input validation:**
+   ```javascript
+   // Always validate user input
+   const schema = Joi.object({
+     email: Joi.string().email().required(),
+     password: Joi.string().min(12).required()
+   });
+   ```
+
+3. **Output sanitization:**
+   ```javascript
+   // Use sanitization utils
+   const { sanitizeObject } = require('../utils/sanitization');
+   req.body = sanitizeObject(req.body);
+   ```
+
+4. **Authentication checks:**
+   ```javascript
+   // Always use authentication middleware
+   router.get('/profile', authenticate, getProfile);
+   ```
+
+5. **SQL/NoSQL injection prevention:**
+   ```javascript
+   // Use parameterized queries, never string concatenation
+   User.findById(req.params.id); // Good
+   // User.find({ $where: userInput }); // BAD!
+   ```
+
+6. **XSS prevention:**
+   ```javascript
+   // Sanitize all user input before rendering
+   // Never use dangerouslySetInnerHTML without sanitization
+   ```
+
+7. **CSRF protection:**
+   ```javascript
+   // Include CSRF token in state-changing requests
+   headers: { 'X-CSRF-Token': csrfToken }
+   ```
 
 ### Testing
 
 - Write tests for new features
 - Ensure existing tests pass
-- Test with real Llama API (use test key)
+- Test security scenarios (injection attempts, auth bypass, etc.)
 - Check for edge cases
+- Run security scans:
+  ```bash
+  npm audit
+  npm audit fix
+  ```
 
 ### Documentation
 
 - Update README if adding major features
 - Document new API endpoints
 - Add JSDoc/docstrings to code
-- Update LLAMA_INTEGRATION.md for AI changes
+- Update SECURITY.md for security-related changes
+- Update this CONTRIBUTING.md if adding new patterns
 
 ## Project Structure
 
 ```
 FairMediator/
-├── frontend/         # React + Tailwind
-├── backend/          # Node.js + Express
-├── automation/       # Python scripts
-├── docs/             # Documentation
+├── frontend/                  # React + Tailwind
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/       # Reusable components (LoadingSpinner, EmptyState)
+│   │   │   ├── auth/         # Authentication components
+│   │   │   ├── dashboard/    # Dashboard components
+│   │   │   └── subscription/ # Subscription components
+│   │   ├── services/         # API clients
+│   │   ├── utils/            # Utility functions (apiFactory)
+│   │   └── App.jsx
+│   └── package.json
+├── backend/                   # Node.js + Express
+│   ├── src/
+│   │   ├── routes/           # API endpoints
+│   │   ├── models/           # MongoDB schemas
+│   │   ├── middleware/       # Auth, validation, sanitization, CSRF
+│   │   ├── services/         # Business logic
+│   │   ├── utils/            # Shared utilities (NEW!)
+│   │   │   ├── responseHandlers.js  # DRY response patterns
+│   │   │   ├── sanitization.js      # DRY sanitization
+│   │   │   └── rateLimiterFactory.js # DRY rate limiting
+│   │   ├── config/           # Configuration files
+│   │   └── server.js
+│   └── package.json
+├── automation/               # Python scripts
+├── CONTRIBUTING.md          # This file
+├── SECURITY.md              # Security guidelines
+├── DEPLOYMENT.md            # Deployment guide
 └── README.md
 ```
 
-## Llama-Specific Contributions
+## AI Integration (HuggingFace)
 
-If contributing to Llama integration:
+When working with HuggingFace models:
 
-1. **Test with multiple providers:**
-   - Together AI
-   - Groq
-   - Fireworks AI
+1. **Use environment variables:**
+   ```javascript
+   const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
+   ```
 
-2. **Optimize prompts:**
-   - Keep prompts concise
-   - Use system messages effectively
-   - Test temperature settings
+2. **Handle errors gracefully:**
+   ```javascript
+   try {
+     const response = await hfClient.query(prompt);
+   } catch (error) {
+     logger.error('HF API error:', error);
+     // Fallback logic
+   }
+   ```
 
-3. **Monitor costs:**
-   - Track token usage
-   - Suggest caching strategies
-   - Propose model alternatives
+3. **Log usage for monitoring:**
+   ```javascript
+   logger.info('AI query', { model, tokens, latency });
+   ```
+
+## Code Review Checklist
+
+Before submitting your PR, verify:
+
+**Security:**
+- [ ] No hardcoded secrets or API keys
+- [ ] Input validation implemented
+- [ ] Output sanitization applied
+- [ ] Authentication/authorization checks in place
+- [ ] No SQL/NoSQL injection vulnerabilities
+- [ ] XSS prevention applied
+- [ ] CSRF protection for state-changing operations
+- [ ] Error messages don't leak sensitive info
+- [ ] `npm audit` passes with no high/critical issues
+
+**Code Quality:**
+- [ ] No code duplication (DRY principles followed)
+- [ ] Reusable utilities used from `/utils/` folders
+- [ ] Meaningful variable/function names
+- [ ] Comments for complex logic
+- [ ] Tests added for new features
+- [ ] Documentation updated
+
+**Performance:**
+- [ ] No unnecessary API calls
+- [ ] Efficient database queries
+- [ ] Rate limiting considered
+- [ ] Caching implemented where appropriate
+
+## Getting Help
+
+- **Questions?** Open an issue with `question` label
+- **Security concerns?** Email security@fairmediator.com
+- **Feature discussions?** Start a GitHub Discussion
+- **Bug reports?** Create an issue with detailed reproduction steps
 
 ## Resources
 
-- **Llama Docs:** https://www.llama.com/docs/overview/
-- **Prompt Guide:** https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/
-- **Migration Guide:** https://www.llama.com/docs/llama-everywhere/migration/
-
-## Questions?
-
-- Open an issue for discussion
-- Tag with `question` label
-- Be specific about your use case
+- **Security:** [SECURITY.md](SECURITY.md)
+- **Deployment:** [DEPLOYMENT.md](DEPLOYMENT.md)
+- **WAF Setup:** [WAF_INTEGRATION_GUIDE.md](WAF_INTEGRATION_GUIDE.md)
+- **HuggingFace Docs:** https://huggingface.co/docs
 
 ## License
 
