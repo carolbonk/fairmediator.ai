@@ -56,7 +56,10 @@ const LoginForm = () => {
         onClick={handleBackdropClick}
       />
 
-      <div className="flex-grow flex items-center justify-center px-4 py-8 relative z-50">
+      <div
+        className="flex-grow flex items-center justify-center px-4 py-8 relative z-50"
+        onClick={handleBackdropClick}
+      >
         <div
           className="w-full max-w-md"
           onClick={(e) => e.stopPropagation()}
