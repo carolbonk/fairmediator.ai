@@ -28,6 +28,11 @@ const rateLimitHandler = (req, res) => {
 };
 
 /**
+ * Skip rate limiting in test mode
+ */
+const skipInTest = () => process.env.NODE_ENV === 'test';
+
+/**
  * Global API rate limiter
  * 100 requests per 15 minutes per IP
  */
@@ -37,7 +42,8 @@ const globalLimiter = rateLimit({
   message: 'Too many requests from this IP, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -51,7 +57,8 @@ const authLimiter = rateLimit({
   message: 'Too many authentication attempts, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -65,7 +72,8 @@ const passwordResetLimiter = rateLimit({
   message: 'Too many password reset attempts, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -78,7 +86,8 @@ const emailVerificationLimiter = rateLimit({
   message: 'Too many email verification requests, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -92,7 +101,8 @@ const searchLimiter = rateLimit({
   message: 'Too many search requests, please slow down',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -106,7 +116,8 @@ const aiLimiter = rateLimit({
   message: 'Too many AI requests, please slow down',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -120,7 +131,8 @@ const uploadLimiter = rateLimit({
   message: 'Too many file uploads, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**
@@ -134,7 +146,8 @@ const adminLimiter = rateLimit({
   message: 'Too many admin requests, please slow down',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: rateLimitHandler
+  handler: rateLimitHandler,
+  skip: skipInTest
 });
 
 /**

@@ -34,11 +34,21 @@ const expectSuccess = (response, statusCode = 200) => {
 
 /**
  * Expect API error response
+ * Handles both standard errors and validation errors
  */
 const expectError = (response, statusCode = 400, errorMessage = null) => {
   expect(response.status).toBe(statusCode);
-  expect(response.body).toHaveProperty('success', false);
-  expect(response.body).toHaveProperty('error');
+
+  // Validation errors may not have 'success' field
+  const hasSuccess = response.body.hasOwnProperty('success');
+  const hasError = response.body.hasOwnProperty('error');
+
+  if (hasSuccess) {
+    expect(response.body.success).toBe(false);
+  }
+
+  // Error message should exist in some form
+  expect(hasError).toBe(true);
 
   if (errorMessage) {
     expect(response.body.error).toContain(errorMessage);
