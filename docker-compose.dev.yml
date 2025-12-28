@@ -1,0 +1,135 @@
+# Docker Compose for Development Environment
+# Includes MongoDB, Redis, and all services for local testing
+
+version: '3.8'
+
+services:
+  # ==================== MongoDB ====================
+  mongodb:
+    image: mongo:7
+    container_name: fairmediator-mongo-dev
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: dev_password_change_in_production
+      MONGO_INITDB_DATABASE: fairmediator
+    volumes:
+      - mongodb_data:/data/db
+      - ./backend/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - fairmediator-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/fairmediator --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== MongoDB Express (Web UI) ====================
+  mongo-express:
+    image: mongo-express:latest
+    container_name: fairmediator-mongo-express-dev
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: dev_password_change_in_production
+      ME_CONFIG_MONGODB_URL: mongodb://admin:dev_password_change_in_production@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongodb
+    networks:
+      - fairmediator-network
+
+  # ==================== Redis (Caching) ====================
+  redis:
+    image: redis:7-alpine
+    container_name: fairmediator-redis-dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes --requirepass dev_redis_password
+    volumes:
+      - redis_data:/data
+    networks:
+      - fairmediator-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ==================== Backend API ====================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: fairmediator-backend-dev
+    restart: unless-stopped
+    ports:
+      - '5001:5001'
+      - '9229:9229' # Debug port
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - MONGODB_URI=mongodb://admin:dev_password_change_in_production@mongodb:27017/fairmediator?authSource=admin
+      - REDIS_URL=redis://:dev_redis_password@redis:6379
+      - JWT_SECRET=dev_jwt_secret_change_in_production
+      - SESSION_SECRET=dev_session_secret_change_in_production
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/logs:/app/logs
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fairmediator-network
+    command: npm run dev
+
+  # ==================== Frontend ====================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: fairmediator-frontend-dev
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - VITE_API_URL=http://localhost:5001/api
+      - VITE_WS_URL=ws://localhost:5001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - fairmediator-network
+    command: npm run dev
+
+  # ==================== Mailhog (Email Testing) ====================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: fairmediator-mailhog-dev
+    restart: unless-stopped
+    ports:
+      - '1025:1025' # SMTP server
+      - '8025:8025' # Web UI
+    networks:
+      - fairmediator-network
+
+networks:
+  fairmediator-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
