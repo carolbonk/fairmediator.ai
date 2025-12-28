@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="35" failures="0" errors="0" time="3.913">
-  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2025-12-28T04:31:27" time="2.958" tests="11">
-    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.227">
+<testsuites name="jest tests" tests="35" failures="0" errors="0" time="3.368">
+  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2025-12-28T05:08:34" time="2.724" tests="11">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.167">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.019">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.013">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.087">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.074">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.014">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.011">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.171">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.135">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.145">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.126">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.081">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.068">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.449">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.39">
     </testcase>
-    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.101">
+    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.073">
     </testcase>
     <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0">
       <skipped/>
@@ -26,56 +26,56 @@
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2025-12-28T04:31:30" time="0.542" tests="6">
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.032">
+  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2025-12-28T05:08:37" time="0.388" tests="6">
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.02">
     </testcase>
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.179">
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.164">
     </testcase>
-    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.039">
+    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.02">
     </testcase>
-    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include standard rate limit headers" time="0.004">
+    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include standard rate limit headers" time="0.003">
     </testcase>
-    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.012">
+    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.007">
     </testcase>
-    <testcase classname="Rate Limiting › IP-based Rate Limiting" name="should track limits per IP address" time="0.011">
+    <testcase classname="Rate Limiting › IP-based Rate Limiting" name="should track limits per IP address" time="0.006">
     </testcase>
   </testsuite>
-  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2025-12-28T04:31:31" time="0.328" tests="18">
-    <testcase classname="Response Handlers › sendSuccess" name="should send success response with data" time="0.004">
+  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2025-12-28T05:08:37" time="0.195" tests="18">
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with data" time="0.002">
     </testcase>
-    <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0.003">
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendSuccess" name="should send success response with message" time="0.003">
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with message" time="0.001">
     </testcase>
-    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.015">
+    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.004">
     </testcase>
-    <testcase classname="Response Handlers › sendError" name="should send error response with details" time="0.002">
+    <testcase classname="Response Handlers › sendError" name="should send error response with details" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendValidationError" name="should send validation error with array of errors" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0.001">
+    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendNotFound" name="should send 404 not found" time="0">
+    <testcase classname="Response Handlers › sendNotFound" name="should send 404 not found" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeString" name="should remove HTML tags" time="0.002">
+    <testcase classname="Sanitization Utilities › sanitizeString" name="should remove HTML tags" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0.001">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0">
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0.001">
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0.001">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0">
     </testcase>
     <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0.001">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0">
     </testcase>
   </testsuite>
 </testsuites>

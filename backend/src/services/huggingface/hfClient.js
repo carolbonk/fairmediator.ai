@@ -56,6 +56,35 @@ class HuggingFaceClient {
       return { status: 'error', message: error.message };
     }
   }
+
+  /**
+   * Feature extraction for embeddings
+   * @param {string} text - Text to generate embeddings for
+   * @param {string} model - Model to use (default: sentence-transformers/all-MiniLM-L6-v2)
+   */
+  async featureExtraction(text, model = 'sentence-transformers/all-MiniLM-L6-v2') {
+    const axios = require('axios');
+
+    try {
+      const response = await axios.post(
+        `https://api-inference.huggingface.co/models/${model}`,
+        { inputs: text },
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 30000
+        }
+      );
+
+      // Response is an embedding vector (array of numbers)
+      return response.data;
+    } catch (error) {
+      console.error('Feature extraction error:', error.response?.data || error.message);
+      throw new Error(`Failed to generate embedding: ${error.message}`);
+    }
+  }
 }
 
 module.exports = new HuggingFaceClient();
