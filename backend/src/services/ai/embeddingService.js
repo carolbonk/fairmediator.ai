@@ -6,7 +6,7 @@
 
 const { ChromaClient } = require('chromadb');
 const hfClient = require('../huggingface/hfClient');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 
 class EmbeddingService {
   constructor() {

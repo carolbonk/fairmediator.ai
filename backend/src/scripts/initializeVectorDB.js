@@ -7,7 +7,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Mediator = require('../models/Mediator');
 const embeddingService = require('../services/ai/embeddingService');
-const logger = require('../utils/logger');
+const logger = require('../config/logger');
 
 async function initializeVectorDB() {
   try {

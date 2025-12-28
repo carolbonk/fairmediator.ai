@@ -8,10 +8,10 @@ const router = express.Router();
 const ConflictFeedback = require('../models/ConflictFeedback');
 const Mediator = require('../models/Mediator');
 const { sendSuccess, sendError } = require('../utils/responseHandlers');
-const { authenticateToken } = require('../middleware/auth');
-const { validateRequest } = require('../middleware/validation');
+const { authenticate } = require('../middleware/auth');
+const { validate } = require('../middleware/validation');
 const Joi = require('joi');
-const logger = require('../utils/logger');
+const logger = require('../config/logger');
 
 /**
  * Submit conflict feedback
@@ -19,40 +19,38 @@ const logger = require('../utils/logger');
  * Body: { mediatorId, parties, prediction, feedback, caseType, queryText }
  */
 router.post('/conflict',
-  authenticateToken,
-  validateRequest({
-    body: Joi.object({
-      mediatorId: Joi.string().required(),
-      parties: Joi.array().items(Joi.string()).min(1).required(),
-      caseType: Joi.string().valid('employment', 'business', 'family', 'real_estate', 'contract', 'ip', 'construction', 'healthcare', 'other'),
-      prediction: Joi.object({
-        hasConflict: Joi.boolean().required(),
-        riskLevel: Joi.string().valid('low', 'medium', 'high', 'unknown'),
-        confidence: Joi.number().min(0).max(1),
-        detectedConflicts: Joi.array().items(Joi.object({
-          entity: Joi.string(),
-          relationship: Joi.string(),
-          source: Joi.string(),
-          confidence: Joi.number().min(0).max(1)
-        })),
-        modelVersion: Joi.string()
-      }).required(),
-      feedback: Joi.object({
-        hasConflict: Joi.boolean().required(),
-        actualRiskLevel: Joi.string().valid('low', 'medium', 'high', 'none').required(),
-        actualConflicts: Joi.array().items(Joi.object({
-          entity: Joi.string(),
-          relationship: Joi.string(),
-          severity: Joi.string().valid('minor', 'moderate', 'severe'),
-          notes: Joi.string()
-        })),
-        notes: Joi.string(),
+  authenticate,
+  validate(Joi.object({
+    mediatorId: Joi.string().required(),
+    parties: Joi.array().items(Joi.string()).min(1).required(),
+    caseType: Joi.string().valid('employment', 'business', 'family', 'real_estate', 'contract', 'ip', 'construction', 'healthcare', 'other'),
+    prediction: Joi.object({
+      hasConflict: Joi.boolean().required(),
+      riskLevel: Joi.string().valid('low', 'medium', 'high', 'unknown'),
+      confidence: Joi.number().min(0).max(1),
+      detectedConflicts: Joi.array().items(Joi.object({
+        entity: Joi.string(),
+        relationship: Joi.string(),
+        source: Joi.string(),
         confidence: Joi.number().min(0).max(1)
-      }).required(),
-      queryText: Joi.string(),
-      caseId: Joi.string()
-    })
-  }),
+      })),
+      modelVersion: Joi.string()
+    }).required(),
+    feedback: Joi.object({
+      hasConflict: Joi.boolean().required(),
+      actualRiskLevel: Joi.string().valid('low', 'medium', 'high', 'none').required(),
+      actualConflicts: Joi.array().items(Joi.object({
+        entity: Joi.string(),
+        relationship: Joi.string(),
+        severity: Joi.string().valid('minor', 'moderate', 'severe'),
+        notes: Joi.string()
+      })),
+      notes: Joi.string(),
+      confidence: Joi.number().min(0).max(1)
+    }).required(),
+    queryText: Joi.string(),
+    caseId: Joi.string()
+  })),
   async (req, res) => {
     try {
       const {
@@ -114,7 +112,7 @@ router.post('/conflict',
  * GET /api/feedback/mediator/:mediatorId
  */
 router.get('/mediator/:mediatorId',
-  authenticateToken,
+  authenticate,
   async (req, res) => {
     try {
       const { mediatorId } = req.params;
@@ -153,7 +151,7 @@ router.get('/mediator/:mediatorId',
  * Admin only
  */
 router.get('/metrics',
-  authenticateToken,
+  authenticate,
   async (req, res) => {
     try {
       // Check admin permission
@@ -200,7 +198,7 @@ router.get('/metrics',
  * Admin/Legal Expert only
  */
 router.get('/pending',
-  authenticateToken,
+  authenticate,
   async (req, res) => {
     try {
       // Check permission
@@ -230,7 +228,7 @@ router.get('/pending',
  * Admin only - for model retraining
  */
 router.get('/training-data',
-  authenticateToken,
+  authenticate,
   async (req, res) => {
     try {
       // Check admin permission
@@ -272,13 +270,11 @@ router.get('/training-data',
  * Admin only
  */
 router.put('/:feedbackId/status',
-  authenticateToken,
-  validateRequest({
-    body: Joi.object({
-      status: Joi.string().valid('pending', 'reviewed', 'validated', 'disputed', 'archived').required(),
-      notes: Joi.string()
-    })
-  }),
+  authenticate,
+  validate(Joi.object({
+    status: Joi.string().valid('pending', 'reviewed', 'validated', 'disputed', 'archived').required(),
+    notes: Joi.string()
+  })),
   async (req, res) => {
     try {
       // Check admin permission
@@ -319,12 +315,10 @@ router.put('/:feedbackId/status',
  * Admin only - called after model retraining
  */
 router.post('/mark-retrained',
-  authenticateToken,
-  validateRequest({
-    body: Joi.object({
-      feedbackIds: Joi.array().items(Joi.string()).min(1).required()
-    })
-  }),
+  authenticate,
+  validate(Joi.object({
+    feedbackIds: Joi.array().items(Joi.string()).min(1).required()
+  })),
   async (req, res) => {
     try {
       // Check admin permission

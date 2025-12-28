@@ -53,13 +53,28 @@ This project uses **HuggingFace Transformers** - completely FREE!
 - **Zero-Shot**: DeBERTa-v3 for affiliation detection
 - **Political Analysis**: Specialized political leaning classifier
 - **Sentiment**: RoBERTa for review analysis
+- **Embeddings**: sentence-transformers/all-MiniLM-L6-v2 for semantic search ✨ NEW
+
+### Advanced Features ✨ NEW
+- **RAG (Retrieval-Augmented Generation)**
+  - Semantic search using vector embeddings
+  - ChromaDB for similarity matching
+  - Grounded AI responses with citations and match scores
+  - Hybrid search combining vector + keyword matching
+
+- **Active Learning Pipeline**
+  - Human feedback collection on AI predictions
+  - Continuous model improvement through retraining
+  - Performance metrics tracking (Accuracy, Precision, Recall, F1)
+  - High-value training example identification
 
 ### Use Cases
-- Chat-based mediator search
-- Affiliation & conflict detection
+- Chat-based mediator search with semantic understanding
+- Affiliation & conflict detection with continuous learning
 - Ideological leaning classification
 - Entity extraction (organizations, people)
 - Automated profile enrichment
+- Similarity-based mediator recommendations ✨ NEW
 
 
 ### Resources

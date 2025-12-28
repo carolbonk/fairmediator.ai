@@ -6,7 +6,7 @@
 const embeddingService = require('./embeddingService');
 const hfClient = require('../huggingface/hfClient');
 const Mediator = require('../../models/Mediator');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 
 class RAGEngine {
   constructor() {
