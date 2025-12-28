@@ -9,8 +9,54 @@ const documentParser = require('../documentParser');
 const ideologyClassifier = require('./ideologyClassifier');
 const affiliationDetector = require('./affiliationDetector');
 const contextBuilder = require('../learning/contextBuilder');
+const ragEngine = require('../ai/ragEngine');
 
 class ChatService {
+  /**
+   * Process query with RAG (Retrieval-Augmented Generation)
+   * Uses vector search for semantic matching + LLM for grounded responses
+   */
+  async processQueryWithRAG(userMessage, conversationHistory = [], options = {}) {
+    try {
+      // Use RAG engine for semantic search + grounded generation
+      const result = await ragEngine.processQuery(userMessage, conversationHistory, options);
+
+      // Enhance with ideology and emotion analysis
+      const ideologyAnalysis = await ideologyClassifier.classifyText(userMessage);
+      const emotion = await this.analyzeEmotion(userMessage);
+      const politicalBalance = this.buildPoliticalBalance(ideologyAnalysis);
+
+      // Check for conflicts if parties mentioned
+      const parties = await this.extractParties(userMessage, conversationHistory);
+      let conflictFlags = [];
+      if (parties.length > 0) {
+        const conflictResults = await this.checkMediatorConflicts(result.mediators.slice(0, 5), parties);
+        conflictFlags = conflictResults.filter(c => c.hasConflict);
+      }
+
+      return {
+        ...result,
+        caseAnalysis: {
+          political: politicalBalance,
+          emotion,
+          ideologyDetected: ideologyAnalysis,
+          conflictFlags,
+          partiesDetected: parties,
+          baseConflictRisk: this.calculateBaseConflictRisk(politicalBalance, emotion)
+        },
+        ragEnabled: true
+      };
+    } catch (error) {
+      console.error('RAG query error, falling back to traditional:', error);
+      // Fallback to traditional method if RAG fails
+      return await this.processQuery(userMessage, conversationHistory);
+    }
+  }
+
+  /**
+   * Traditional query processing (non-RAG)
+   * Kept for backwards compatibility and fallback
+   */
   async processQuery(userMessage, conversationHistory = []) {
     // Extract parties mentioned in the query
     const parties = await this.extractParties(userMessage, conversationHistory);

@@ -32,6 +32,7 @@ const matchingRoutes = require('./routes/matching');
 const analysisRoutes = require('./routes/analysis');
 const learningRoutes = require('./routes/learning');
 const stateMediationRoutes = require('./routes/stateMediation');
+const feedbackRoutes = require('./routes/feedback');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -210,6 +211,7 @@ app.use('/api/matching', matchingRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/learning', learningRoutes);
 app.use('/api/state-mediation', stateMediationRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Sentry error handler (must be before other error handlers)
 if (Sentry) {
