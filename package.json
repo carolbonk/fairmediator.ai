@@ -15,7 +15,13 @@
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm start",
+    "test": "npm test --prefix backend",
+    "test:watch": "npm run test:watch --prefix backend",
+    "test:coverage": "npm run test:coverage --prefix backend",
+    "test:e2e": "npm run test:e2e --prefix backend",
+    "audit": "npm audit && npm audit --prefix frontend && npm audit --prefix backend",
+    "audit:fix": "npm audit fix && npm audit fix --prefix frontend && npm audit fix --prefix backend"
   },
   "keywords": [
     "mediation",
