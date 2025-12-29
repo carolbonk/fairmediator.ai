@@ -6,6 +6,7 @@
 
 # Default target
 help:
+
 	@echo "FairMediator Development Commands"
 	@echo "=================================="
 	@echo ""

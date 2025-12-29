@@ -33,7 +33,6 @@
     "isomorphic-dompurify": "^2.9.0",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
-    "langchain": "^0.1.36",
     "mongoose": "^8.0.3",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
