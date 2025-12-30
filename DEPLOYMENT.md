@@ -1,6 +1,12 @@
 # FairMediator Deployment Guide
 
-Complete guide to deploy FairMediator (Backend + Frontend) with free SSL.
+**Architecture: Traditional (Dedicated Backend)**
+
+> **📌 Use this guide if:** You want to deploy a Node.js backend server on Render/Vercel/Railway
+>
+> **🔄 Alternative:** For serverless deployment (no dedicated backend), see [NETLIFY.md](./NETLIFY.md)
+
+Complete guide to deploy FairMediator with dedicated backend server + static frontend.
 
 ## Table of Contents
 

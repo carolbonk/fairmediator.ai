@@ -3,8 +3,8 @@
 > **⚠️ RULE: Always read this file first when resuming work on this project.**
 > This file tracks project state, recent changes, and next steps.
 
-**Last Updated:** December 28, 2024
-**Project Status:** ✅ Production Ready - 100% Security + Testing + Advanced AI (RAG, Active Learning, Memory, Chains, Agents)
+**Last Updated:** December 30, 2024
+**Project Status:** ✅ Production Ready - 100% Security + Testing + Advanced AI (RAG, Active Learning, Memory, Chains, Agents) + Serverless Deployment
 
 ---
 
@@ -193,6 +193,16 @@ python gradio_app.py
 ```
 
 **Production Deployment:**
+
+**Option 1: Serverless (Recommended)** - See [NETLIFY.md](./NETLIFY.md)
+- **Backend:** Netlify Functions (serverless, 125k requests/month free)
+- **Frontend:** Netlify (free tier, 100GB bandwidth/month)
+- **Forms:** Netlify Forms (100 submissions/month free)
+- **Database:** MongoDB Atlas (M0 free, 512MB)
+- **AI:** HuggingFace Inference API (free tier)
+- **Total Cost:** $0/month
+
+**Option 2: Traditional** - See [DEPLOYMENT.md](./DEPLOYMENT.md)
 - **Backend:** Render (free tier, cold starts after 15 min)
 - **Frontend:** Netlify (free tier, 100GB bandwidth/month)
 - **Database:** MongoDB Atlas (M0 free, 512MB)
@@ -350,6 +360,50 @@ python scrape_mediators.py
 ---
 
 ## 📋 Recent Major Changes
+
+### December 30, 2024: Serverless Deployment & Documentation Consolidation ✅
+
+**What:** Added Netlify Functions (serverless backend) + Forms, consolidated all documentation
+**Status:** ✅ Complete, tested, ready to deploy
+
+**Serverless Infrastructure Created:**
+
+1. **Netlify Functions** (`netlify/functions/`)
+   - `chat.js` - HuggingFace API proxy (secures API keys)
+   - `check-affiliations.js` - Conflict detection endpoint
+   - Dependencies installed (axios)
+   - **FREE**: 125,000 requests/month, 100 hours runtime
+
+2. **Netlify Forms** (Feedback System)
+   - `FeedbackForm.jsx` component
+   - `FeedbackPage.jsx` page at `/feedback`
+   - Auto-spam protection (honeypot)
+   - **FREE**: 100 submissions/month
+
+3. **Configuration**
+   - Updated `netlify.toml` with functions directory
+   - Security headers configured (HSTS, XSS Protection, etc.)
+   - SSL auto-enabled via Let's Encrypt
+   - Added Makefile commands: `make netlify-dev`, `make netlify-deploy`
+
+**Documentation Consolidation:**
+- ✅ Merged 4 Netlify docs into 1: `NETLIFY.md`
+- ✅ Deleted duplicates: `NETLIFY_SETUP.md`, `QUICK_START_NETLIFY.md`, `NETLIFY_INTEGRATION_SUMMARY.md`, `SETUP_COMPLETE.md`
+- ✅ Created `PROJECT_RULES.md` to prevent future duplication
+- ✅ Updated `DEPLOYMENT.md` and `NETLIFY.md` with clear usage guidance
+- ✅ Updated `README.md` to reference single source files
+
+**Deployment Options Now:**
+- **Option 1 (Serverless)**: Netlify Functions + Frontend = $0/month
+- **Option 2 (Traditional)**: Render Backend + Netlify Frontend = $0/month
+
+**Files Created/Modified:**
+- Created: `netlify/functions/chat.js`, `netlify/functions/check-affiliations.js`
+- Created: `NETLIFY.md`, `PROJECT_RULES.md`
+- Modified: `netlify.toml`, `frontend/src/App.jsx`, `README.md`, `CONTEXT.md`
+- Deleted: 4 duplicate documentation files
+
+---
 
 ### December 27-28, 2024: Testing Infrastructure Complete ✅
 

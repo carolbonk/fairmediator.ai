@@ -52,6 +52,11 @@ help:
 	@echo "  make clean           - Clean build artifacts"
 	@echo "  make update          - Update all dependencies"
 	@echo ""
+	@echo "Netlify (FREE Hosting):"
+	@echo "  make netlify-dev     - Test with Netlify Functions locally"
+	@echo "  make netlify-deploy  - Deploy to Netlify"
+	@echo "  make netlify-status  - Check deployment status"
+	@echo ""
 
 # ==================== Installation ====================
 install:
@@ -176,6 +181,22 @@ build:
 deploy:
 	@echo "Deploying to production..."
 	# Add deployment commands here
+
+# ==================== Netlify Commands ====================
+netlify-dev:
+	@echo "Starting Netlify Dev server (with Functions)..."
+	netlify dev
+
+netlify-deploy:
+	@echo "Deploying to Netlify..."
+	git add . && git commit -m "Deploy to Netlify" && git push origin main
+	@echo "✅ Pushed to GitHub. Netlify will auto-deploy!"
+
+netlify-status:
+	netlify status
+
+netlify-open:
+	netlify open
 
 # ==================== Quick Commands ====================
 quick-test: test-backend

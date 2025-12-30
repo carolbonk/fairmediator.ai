@@ -10,6 +10,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import UpgradePage from './components/subscription/UpgradePage';
+import FeedbackPage from './pages/FeedbackPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
 
           {/* Protected Routes - Require Authentication */}
           <Route
