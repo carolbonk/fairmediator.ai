@@ -36,8 +36,10 @@ FairMediator is a transparent platform that helps law firms, corporations, and i
 - **Sources**: RECAP, Toolkit.law, LinkedIn, bar associations
 
 ### Deployment
-- **Frontend**: Netlify
-- **Backend**: To be determined (Vercel, Railway, or self-hosted)
+- **Frontend**: Netlify (with FREE SSL & CDN)
+- **Backend**: Netlify Functions (Serverless - 125k requests/month FREE)
+- **Forms**: Netlify Forms (100 submissions/month FREE)
+- **Database**: MongoDB Atlas (Free tier)
 
 ## 🤖 AI Integration (100% FREE)
 
@@ -180,8 +182,8 @@ Contributions welcome! Please read CONTRIBUTING.md first.
 - [x] Phase 2: Affiliation detection engine ✅
 - [x] Phase 3: Ideological classification ✅
 - [x] Phase 4: HuggingFace Spaces demo ✅
-- [ ] Phase 5: Advanced filtering + analytics
-- [ ] Phase 6: Mobile app
+- [x] Phase 5: Netlify deployment with serverless functions ✅
+- [ ] Phase 6: Advanced filtering + analytics
 - [ ] Phase 7: Fine-tuned models for legal domain
 - [ ] Phase 8: Public API for mediator data
 
@@ -255,6 +257,29 @@ SESSION_SECRET=your_session_secret
 # Optional: Stripe (only for paid subscriptions)
 # STRIPE_SECRET_KEY=your_stripe_key
 ```
+
+## 🚀 Deploy to Production (FREE)
+
+FairMediator can be deployed to **Netlify for FREE** with serverless functions:
+
+```bash
+# Quick deploy (3 minutes)
+make netlify-deploy
+
+# Or follow the detailed guide
+See: QUICK_START_NETLIFY.md
+```
+
+**What you get for FREE:**
+- ✅ Netlify Functions (125k requests/month)
+- ✅ Netlify Forms (100 submissions/month)
+- ✅ SSL Certificate (automatic)
+- ✅ Global CDN
+- ✅ Auto-deploy from Git
+
+**Deployment Options:**
+- **Serverless (Netlify Functions)**: [NETLIFY.md](./NETLIFY.md)
+- **Traditional (Dedicated Backend)**: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 📚 Learn More
 
