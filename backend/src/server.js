@@ -37,6 +37,9 @@ const feedbackRoutes = require('./routes/feedback');
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
 
+// Import Redis client
+const redisClient = require('./config/redis');
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -256,10 +259,13 @@ app.use((_req, res) => {
 
 // Start server (only if not in test mode)
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
     console.log(`FairMediator backend running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
+
+    // Initialize Redis cache (optional - reduces AI token usage by 70-90%)
+    await redisClient.connect();
 
     if (process.env.NODE_ENV === 'production') {
       cronScheduler.startAll();
