@@ -8,17 +8,19 @@
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "http://fairmediator.ai/*"
-  to = "https://fairmediator.ai/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.fairmediator.ai/*"
-  to = "https://www.fairmediator.ai/:splat"
-  status = 301
-  force = true
+# Custom domain redirects (only needed if you own fairmediator.ai)
+# Remove these if using *.netlify.app domain
+# [[redirects]]
+#   from = "http://fairmediator.ai/*"
+#   to = "https://fairmediator.ai/:splat"
+#   status = 301
+#   force = true
+#
+# [[redirects]]
+#   from = "http://www.fairmediator.ai/*"
+#   to = "https://www.fairmediator.ai/:splat"
+#   status = 301
+#   force = true
 
 [[headers]]
   for = "/*"
