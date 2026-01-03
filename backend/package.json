@@ -36,6 +36,7 @@
     "mongoose": "^8.0.3",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
+    "pdf-parse": "^2.4.5",
     "playwright": "^1.56.1",
     "resend": "^6.4.2",
     "sanitize-html": "^2.11.0",
