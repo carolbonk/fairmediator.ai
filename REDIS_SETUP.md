@@ -6,6 +6,21 @@
 
 ---
 
+## 📑 Quick Navigation
+
+**Jump to Section:**
+- [Why Use Redis?](#why-use-redis-caching) - Understand the benefits
+- [Quick Setup](#quick-setup) - Get started fast
+  - [Upstash (Production)](#option-1-upstash-redis-recommended-for-production)
+  - [Local Redis (Dev)](#option-2-local-redis-development)
+- [How It Works](#how-it-works) - Before/after comparison
+- [Testing](#testing-redis) - Verify it's working
+- [Configuration](#cache-configuration) - What gets cached
+- [Monitoring](#monitoring-cache-performance) - Track performance
+- [Troubleshooting](#troubleshooting) - Fix common issues
+
+---
+
 ## Why Use Redis Caching?
 
 **Current Problem:**
@@ -20,7 +35,9 @@
 
 ---
 
-## Free Tier Options
+## Quick Setup
+
+Choose your option based on environment:
 
 ### Option 1: Upstash Redis (Recommended for Production)
 
