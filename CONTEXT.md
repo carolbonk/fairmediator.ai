@@ -1,10 +1,26 @@
 # FairMediator Project Context
 
-> **⚠️ RULE: Always read this file first when resuming work on this project.**
-> This file tracks project state, recent changes, and next steps.
+> **⚠️ CRITICAL: Read PROJECT_RULES.md FIRST before making ANY changes!**
+>
+> **Order of Operations:**
+> 1. Read [PROJECT_RULES.md](./PROJECT_RULES.md) - Project rules & token optimization
+> 2. Read this file (CONTEXT.md) - Current project state
+> 3. Check [SETUP.md](./SETUP.md) - Setup instructions if needed
+> 4. Begin work following established patterns
 
-**Last Updated:** December 30, 2024
-**Project Status:** ✅ Production Ready - 100% Security + Testing + Advanced AI (RAG, Active Learning, Memory, Chains, Agents) + Serverless Deployment
+**Last Updated:** January 2, 2026
+**Project Status:** ✅ Production Ready - 100% FREE TIER - Token Optimized
+
+---
+
+## 📑 Quick Navigation
+
+- [Project Overview](#-project-overview)
+- [Tech Stack](#-technical-stack)
+- [Project Structure](#-project-structure)
+- [Production Deployment](#production-deployment)
+- [Recent Changes](#-recent-major-changes)
+- [Free Services Used](#-free-services-used)
 
 ---
 
@@ -360,6 +376,59 @@ python scrape_mediators.py
 ---
 
 ## 📋 Recent Major Changes
+
+### January 2, 2026: Token Optimization & Setup Consolidation ✅
+
+**What:** Optimized AI token usage, added caching, integrated Weaviate, consolidated setup docs
+**Status:** ✅ Complete, tested, documented
+
+**Token Optimization:**
+1. **Redis Caching System** (`backend/src/config/redis.js`)
+   - Free tier protection (9k commands/day limit)
+   - Auto-disable when approaching limit
+   - 70-90% token reduction potential
+   - Supports Upstash (free cloud) and local Redis
+
+2. **Weaviate Cloud Integration** (`backend/src/config/weaviate.js`)
+   - FREE semantic vector search
+   - Replaces local ChromaDB (more reliable)
+   - 4 utility scripts for setup/sync
+   - Sandbox: `fairmediator`
+
+3. **GitHub Workflows Removed**
+   - Removed `.github/workflows/` (was causing confusion)
+   - Token usage clarity improved
+
+4. **SSL Configuration Fixed**
+   - Commented out broken custom domain redirects in `netlify.toml`
+   - Now works on any Netlify domain
+
+**Documentation Created:**
+- `TOKEN_OPTIMIZATION_SUMMARY.md` - Complete token analysis
+- `REDIS_SETUP.md` - Redis caching guide
+- `WEAVIATE_SETUP.md` - Weaviate Cloud guide
+- `SETUP.md` - **Master setup guide** (consolidated all setup docs)
+- Updated `PROJECT_RULES.md` - Added token optimization rules
+
+**Makefile Commands Added:**
+```bash
+make weaviate-setup    # Initialize Weaviate schema
+make weaviate-test     # Test connection
+make weaviate-sync     # Sync mediators to Weaviate
+make weaviate-clear    # Clear all vectors
+```
+
+**Environment Variables Added:**
+- `REDIS_ENABLED`, `REDIS_URL`, `REDIS_DAILY_LIMIT`
+- `WEAVIATE_ENABLED`, `WEAVIATE_URL`, `WEAVIATE_API_KEY`
+
+**Files Created:**
+- `backend/src/config/redis.js` - Redis client with free tier protection
+- `backend/src/config/weaviate.js` - Weaviate Cloud client
+- `backend/src/utils/cacheWrapper.js` - Cache utilities
+- `backend/src/scripts/weaviate-*.js` - Setup/test/sync/clear scripts
+
+---
 
 ### December 30, 2024: Serverless Deployment & Documentation Consolidation ✅
 
