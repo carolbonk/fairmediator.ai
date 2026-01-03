@@ -10,16 +10,38 @@ const ideologyClassifier = require('./ideologyClassifier');
 const affiliationDetector = require('./affiliationDetector');
 const contextBuilder = require('../learning/contextBuilder');
 const ragEngine = require('../ai/ragEngine');
+const memorySystem = require('../ai/memorySystem');
 
 class ChatService {
   /**
    * Process query with RAG (Retrieval-Augmented Generation)
    * Uses vector search for semantic matching + LLM for grounded responses
+   * Now enhanced with memory system for personalized responses
    */
   async processQueryWithRAG(userMessage, conversationHistory = [], options = {}) {
     try {
+      // Extract user and conversation IDs
+      const userId = options.userId || 'anonymous';
+      const conversationId = options.conversationId || `conv_${Date.now()}`;
+
+      // Build memory context (user preferences, past interactions)
+      let memoryContext = null;
+      try {
+        memoryContext = await memorySystem.buildMemoryContext(userId, conversationId, userMessage);
+      } catch (error) {
+        console.warn('Memory system unavailable, continuing without memory:', error.message);
+      }
+
+      // Enhance options with memory context
+      const enhancedOptions = {
+        ...options,
+        memoryContext,
+        userId,
+        conversationId
+      };
+
       // Use RAG engine for semantic search + grounded generation
-      const result = await ragEngine.processQuery(userMessage, conversationHistory, options);
+      const result = await ragEngine.processQuery(userMessage, conversationHistory, enhancedOptions);
 
       // Enhance with ideology and emotion analysis
       const ideologyAnalysis = await ideologyClassifier.classifyText(userMessage);
@@ -34,6 +56,29 @@ class ChatService {
         conflictFlags = conflictResults.filter(c => c.hasConflict);
       }
 
+      // Store conversation in memory system for future personalization
+      try {
+        await memorySystem.storeConversation(userId, conversationId, {
+          role: 'user',
+          content: userMessage,
+          timestamp: new Date().toISOString()
+        });
+
+        // Store assistant response
+        await memorySystem.storeConversation(userId, conversationId, {
+          role: 'assistant',
+          content: result.response,
+          timestamp: new Date().toISOString(),
+          metadata: {
+            mediatorsFound: result.mediators?.length || 0,
+            ideologyDetected: ideologyAnalysis
+          }
+        });
+      } catch (error) {
+        console.warn('Failed to store in memory system:', error.message);
+        // Continue even if memory storage fails
+      }
+
       return {
         ...result,
         caseAnalysis: {
@@ -44,7 +89,8 @@ class ChatService {
           partiesDetected: parties,
           baseConflictRisk: this.calculateBaseConflictRisk(politicalBalance, emotion)
         },
-        ragEnabled: true
+        ragEnabled: true,
+        memoryEnabled: memoryContext !== null
       };
     } catch (error) {
       console.error('RAG query error, falling back to traditional:', error);

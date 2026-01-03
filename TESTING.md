@@ -122,6 +122,502 @@ test('should complete registration flow', async ({ page }) => {
 npx playwright test
 ```
 
+### 4. AI Systems Tests
+
+**Location:** Manual API testing for now
+
+Test all activated AI systems to ensure proper integration and functionality.
+
+#### 4.1 Agent System Tests
+
+**Test Agent Availability:**
+```bash
+curl http://localhost:5001/api/agents/available
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "agents": [
+    {
+      "name": "mediator_search_agent",
+      "description": "Searches mediator database with natural language queries",
+      "tools": ["search_database", "analyze_ideology"]
+    },
+    {
+      "name": "research_agent",
+      "description": "Deep research on specific mediators"
+    },
+    {
+      "name": "coordinator_agent",
+      "description": "Coordinates multiple agents for complex tasks"
+    }
+  ]
+}
+```
+
+**Test Mediator Search Agent:**
+```bash
+curl -X POST http://localhost:5001/api/agents/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "employment mediator in California with tech experience"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "answer": { /* search results */ },
+  "iterations": [ /* agent reasoning steps */ ],
+  "agent": "mediator_search_agent"
+}
+```
+
+**Test Agent Execution:**
+```bash
+curl -X POST http://localhost:5001/api/agents/execute \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent": "research_agent",
+    "task": "Research mediator John Doe",
+    "context": {}
+  }'
+```
+
+#### 4.2 Chain System Tests
+
+**Test Chain Availability:**
+```bash
+curl http://localhost:5001/api/chains/available
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "chains": [
+    {
+      "name": "mediator_search",
+      "description": "Multi-step mediator search with ideology analysis",
+      "steps": ["parse_query", "search_database", "analyze_ideology", "rank_results"]
+    },
+    {
+      "name": "conflict_analysis",
+      "description": "Comprehensive conflict of interest detection"
+    },
+    {
+      "name": "conversation_summary",
+      "description": "Summarize and extract key points from conversations"
+    }
+  ]
+}
+```
+
+**Test Mediator Search Chain:**
+```bash
+curl -X POST http://localhost:5001/api/chains/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "family law mediator"
+  }'
+```
+
+**Test Conflict Analysis Chain:**
+```bash
+curl -X POST http://localhost:5001/api/chains/analyze-conflict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mediatorId": "REPLACE_WITH_REAL_ID",
+    "parties": ["Company A", "Law Firm B"]
+  }'
+```
+
+**Test Custom Chain:**
+```bash
+curl -X POST http://localhost:5001/api/chains/custom \
+  -H "Content-Type: application/json" \
+  -d '{
+    "steps": [
+      {
+        "type": "llm",
+        "template": "Analyze this query: {{input}}"
+      }
+    ],
+    "input": "test query"
+  }'
+```
+
+#### 4.3 Multi-Perspective AI Tests
+
+**Test Perspective Info:**
+```bash
+curl http://localhost:5001/api/perspectives/info
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "perspectives": [
+    {
+      "id": "liberal",
+      "name": "Progressive Mediator AI",
+      "icon": "🔵",
+      "description": "Prioritizes social justice, worker rights, and progressive approaches"
+    },
+    {
+      "id": "neutral",
+      "name": "Balanced Mediator AI",
+      "icon": "⚪"
+    },
+    {
+      "id": "conservative",
+      "name": "Traditional Mediator AI",
+      "icon": "🔴"
+    }
+  ]
+}
+```
+
+**Test All Perspectives:**
+```bash
+curl -X POST http://localhost:5001/api/perspectives/all \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Should I settle this employment dispute out of court?",
+    "history": []
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "perspectives": {
+    "liberal": { /* progressive perspective */ },
+    "neutral": { /* balanced perspective */ },
+    "conservative": { /* traditional perspective */ }
+  }
+}
+```
+
+**Test Single Perspective:**
+```bash
+curl -X POST http://localhost:5001/api/perspectives/single \
+  -H "Content-Type: application/json" \
+  -d '{
+    "perspective": "neutral",
+    "message": "What should I do?"
+  }'
+```
+
+#### 4.4 Intelligent Document Processing Tests
+
+**Test Text Processing:**
+```bash
+curl -X POST http://localhost:5001/api/idp/process-text \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "John Doe, Esq. Bar Number: 123456. Specializes in employment law and intellectual property. 15 years of experience. Located in San Francisco, CA. Email: john@example.com. Education: Harvard Law School."
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "documentType": "mediator_cv",
+  "data": {
+    "name": "John Doe",
+    "barNumber": "123456",
+    "specializations": ["employment", "ip", "intellectual property"],
+    "yearsExperience": 15,
+    "location": { "city": "San Francisco", "state": "CA" },
+    "contact": { "email": "john@example.com" },
+    "education": ["Harvard Law School"]
+  },
+  "confidence": 85
+}
+```
+
+**Test PDF Processing (requires PDF file):**
+```bash
+curl -X POST http://localhost:5001/api/idp/process-pdf \
+  -F "file=@/path/to/mediator_cv.pdf"
+```
+
+**Test Process and Save:**
+```bash
+curl -X POST http://localhost:5001/api/idp/process-and-save \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Jane Smith, Bar #789012. Family law mediator. 10 years experience. Los Angeles, CA.",
+    "autoSave": "true"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "extracted": { /* extraction results */ },
+  "saved": true,
+  "mediator": {
+    "id": "...",
+    "name": "Jane Smith",
+    "barNumber": "789012"
+  },
+  "message": "Mediator profile created successfully"
+}
+```
+
+#### 4.5 Quality Assurance Tests
+
+**Test Profile Validation:**
+```bash
+# First get a mediator ID
+curl http://localhost:5001/api/mediators | jq '.[0]._id'
+
+# Then validate it (replace with actual ID)
+curl -X POST http://localhost:5001/api/qa/validate/MEDIATOR_ID_HERE
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "mediatorId": "...",
+  "mediatorName": "John Doe",
+  "qualityScore": 85,
+  "issues": [],
+  "warnings": ["Profile only 60% complete"],
+  "checks": {
+    "requiredFields": true,
+    "dataConsistency": true,
+    "completeness": 60,
+    "bioQuality": "checked",
+    "conflictValidation": "checked"
+  }
+}
+```
+
+**Test Batch Validation:**
+```bash
+curl -X POST http://localhost:5001/api/qa/validate-all \
+  -H "Content-Type: application/json" \
+  -d '{
+    "limit": 10,
+    "skipPassed": false
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total": 10,
+    "passed": 7,
+    "hasIssues": 2,
+    "hasWarnings": 5,
+    "averageQuality": 78.5
+  },
+  "results": [ /* array of validation results */ ]
+}
+```
+
+#### 4.6 Memory System Integration Tests
+
+**Test Chat with Memory:**
+```bash
+# First request (creates memory)
+curl -X POST http://localhost:5001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Find family law mediators in California",
+    "userId": "test-user-123",
+    "conversationId": "conv-456"
+  }'
+
+# Second request (should use memory for personalization)
+curl -X POST http://localhost:5001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Find another mediator",
+    "userId": "test-user-123",
+    "conversationId": "conv-456"
+  }'
+```
+
+**Check Response Flags:**
+- First response: `"memoryEnabled": false`
+- Second response: `"memoryEnabled": true` (memory context loaded)
+
+#### 4.7 Integration Test Suite
+
+**Test All Systems Together:**
+```bash
+# 1. Use IDP to extract mediator from text
+EXTRACTION=$(curl -s -X POST http://localhost:5001/api/idp/process-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Bob Johnson, mediator, employment law specialist"}')
+
+echo "✓ IDP extraction: $(echo $EXTRACTION | jq .success)"
+
+# 2. Use agent to search for mediators
+SEARCH=$(curl -s -X POST http://localhost:5001/api/agents/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "employment mediator"}')
+
+echo "✓ Agent search: $(echo $SEARCH | jq .success)"
+
+# 3. Use chain for conflict analysis
+# (Requires real mediator ID from database)
+
+# 4. Get multi-perspective advice
+PERSPECTIVES=$(curl -s -X POST http://localhost:5001/api/perspectives/all \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Should I mediate?"}')
+
+echo "✓ Multi-perspective: $(echo $PERSPECTIVES | jq .success)"
+
+# 5. Run QA validation
+# (Requires real mediator ID from database)
+
+echo "✅ All AI systems operational"
+```
+
+#### 4.8 Error Handling Tests
+
+**Test Invalid Agent:**
+```bash
+curl -X POST http://localhost:5001/api/agents/execute \
+  -H "Content-Type: application/json" \
+  -d '{"agent": "nonexistent_agent", "task": "test"}'
+```
+
+**Expected:** Error message about agent not found
+
+**Test Invalid Chain:**
+```bash
+curl -X POST http://localhost:5001/api/chains/execute \
+  -H "Content-Type: application/json" \
+  -d '{"chain": "nonexistent_chain", "input": "test"}'
+```
+
+**Expected:** Error message about chain not found
+
+**Test Invalid Perspective:**
+```bash
+curl -X POST http://localhost:5001/api/perspectives/single \
+  -H "Content-Type: application/json" \
+  -d '{"perspective": "invalid", "message": "test"}'
+```
+
+**Expected:** Error listing valid perspectives
+
+**Test Empty IDP Input:**
+```bash
+curl -X POST http://localhost:5001/api/idp/process-text \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+**Expected:** Error about missing text field
+
+#### 4.9 Performance Benchmarks
+
+**Agent Response Time:**
+- Target: < 3 seconds for simple queries
+- Acceptable: < 10 seconds for complex multi-step tasks
+
+**Chain Execution Time:**
+- Target: < 5 seconds for 3-step chains
+- Acceptable: < 15 seconds for 5+ step chains
+
+**IDP Processing:**
+- Text: < 1 second
+- PDF (1-5 pages): < 5 seconds
+- Batch (10 PDFs): < 30 seconds
+
+**QA Validation:**
+- Single profile: < 2 seconds
+- Batch (100 profiles): < 60 seconds
+
+#### 4.10 Automated Test Script
+
+**Create test script:**
+```bash
+# Create tests/ai-systems-test.sh
+#!/bin/bash
+
+BASE_URL="http://localhost:5001"
+ERRORS=0
+
+echo "🧪 Testing AI Systems..."
+echo ""
+
+# Test 1: Agent System
+echo "1. Testing Agent System..."
+RESPONSE=$(curl -s ${BASE_URL}/api/agents/available)
+if echo $RESPONSE | jq -e '.success' > /dev/null; then
+  echo "✅ Agents available"
+else
+  echo "❌ Agents test failed"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Test 2: Chain System
+echo "2. Testing Chain System..."
+RESPONSE=$(curl -s ${BASE_URL}/api/chains/available)
+if echo $RESPONSE | jq -e '.success' > /dev/null; then
+  echo "✅ Chains available"
+else
+  echo "❌ Chains test failed"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Test 3: Perspectives
+echo "3. Testing Multi-Perspective AI..."
+RESPONSE=$(curl -s ${BASE_URL}/api/perspectives/info)
+if echo $RESPONSE | jq -e '.success' > /dev/null; then
+  echo "✅ Perspectives available"
+else
+  echo "❌ Perspectives test failed"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Test 4: IDP
+echo "4. Testing Intelligent Document Processing..."
+RESPONSE=$(curl -s -X POST ${BASE_URL}/api/idp/process-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "John Doe, Bar #12345, employment law"}')
+if echo $RESPONSE | jq -e '.success' > /dev/null; then
+  echo "✅ IDP working"
+else
+  echo "❌ IDP test failed"
+  ERRORS=$((ERRORS + 1))
+fi
+
+echo ""
+if [ $ERRORS -eq 0 ]; then
+  echo "🎉 All AI systems operational!"
+  exit 0
+else
+  echo "⚠️  $ERRORS test(s) failed"
+  exit 1
+fi
+```
+
+**Run automated tests:**
+```bash
+chmod +x tests/ai-systems-test.sh
+./tests/ai-systems-test.sh
+```
+
 ---
 
 ## Running Tests
