@@ -36,8 +36,6 @@ const feedbackRoutes = require('./routes/feedback');
 const agentRoutes = require('./routes/agents');
 const chainRoutes = require('./routes/chains');
 const perspectiveRoutes = require('./routes/perspectives');
-const idpRoutes = require('./routes/idp');
-const qaRoutes = require('./routes/qa');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -223,8 +221,6 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/agents', agentRoutes); // AI Agent system - autonomous task execution
 app.use('/api/chains', chainRoutes); // AI Chain system - multi-step workflows
 app.use('/api/perspectives', perspectiveRoutes); // Multi-perspective AI - balanced mediation
-app.use('/api/idp', idpRoutes); // Intelligent Document Processing - PDF/text extraction
-app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
 
 // Sentry error handler (must be before other error handlers)
 if (Sentry) {
