@@ -155,6 +155,23 @@ db-migrate:
 	@echo "Running migrations..."
 	cd backend && node src/scripts/migrate.js
 
+# ==================== Weaviate (Vector DB) ====================
+weaviate-setup:
+	@echo "Setting up Weaviate schema..."
+	cd backend && node src/scripts/weaviate-setup.js
+
+weaviate-test:
+	@echo "Testing Weaviate connection..."
+	cd backend && node src/scripts/weaviate-test.js
+
+weaviate-sync:
+	@echo "Syncing mediators to Weaviate..."
+	cd backend && node src/scripts/weaviate-sync.js
+
+weaviate-clear:
+	@echo "Clearing Weaviate data..."
+	@read -p "Are you sure? This will delete all vectors [y/N]: " confirm && [ "$$confirm" = "y" ] && cd backend && node src/scripts/weaviate-clear.js || echo "Cancelled"
+
 # ==================== Utilities ====================
 logs:
 	tail -f backend/logs/combined.log
