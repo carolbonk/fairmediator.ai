@@ -9,8 +9,8 @@ const usageLogSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
+    // Note: index defined in compound index below (line 80)
   },
   eventType: {
     type: String,
@@ -27,13 +27,13 @@ const usageLogSchema = new mongoose.Schema({
       'password_reset_completed',
       'subscription_check'
     ],
-    required: true,
-    index: true
+    required: true
+    // Note: index defined in compound indexes below (lines 81-82)
   },
   timestamp: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
+    // Note: index defined in compound indexes below (lines 80-83)
   },
   metadata: {
     // Search metadata

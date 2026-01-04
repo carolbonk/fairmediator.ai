@@ -1,29 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="56" failures="0" errors="0" time="3.065">
-  <testsuite name="AI Systems Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-01-04T05:01:21" time="0.555" tests="21">
-    <testcase classname="AI Systems Integration Tests › Memory System" name="should initialize without errors" time="0.036">
+<testsuites name="jest tests" tests="56" failures="0" errors="0" time="3.63">
+  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2026-01-04T18:38:44" time="2.758" tests="11">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.157">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Memory System" name="should have required methods" time="0.003">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.011">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Memory System" name="should gracefully handle ChromaDB unavailability" time="0.004">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.07">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should be initialized with default chains" time="0.003">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.01">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should have required methods" time="0.001">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.133">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should validate chain structure" time="0.001">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.128">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should handle custom chains" time="0.001">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.07">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should be initialized with default agents" time="0">
+    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.389">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should have required methods" time="0.002">
+    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.072">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should reject invalid refresh token" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2026-01-04T18:38:47" time="0.372" tests="6">
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.017">
+    </testcase>
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.163">
+    </testcase>
+    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.021">
+    </testcase>
+    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include standard rate limit headers" time="0.004">
+    </testcase>
+    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.005">
+    </testcase>
+    <testcase classname="Rate Limiting › IP-based Rate Limiting" name="should track limits per IP address" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="AI Systems Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-01-04T18:38:47" time="0.283" tests="21">
+    <testcase classname="AI Systems Integration Tests › Memory System" name="should initialize without errors" time="0.03">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Memory System" name="should have required methods" time="0.002">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Memory System" name="should gracefully handle ChromaDB unavailability" time="0.003">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should be initialized with default chains" time="0.001">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should have required methods" time="0">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should validate chain structure" time="0.003">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should handle custom chains" time="0">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should be initialized with default agents" time="0.001">
+    </testcase>
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should have required methods" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Agent System" name="should validate agent structure" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Agent System" name="should have correct agent tools" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate research agent" time="0.002">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate research agent" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Agent System" name="should validate coordinator agent" time="0.001">
     </testcase>
@@ -33,93 +73,53 @@
     </testcase>
     <testcase classname="AI Systems Integration Tests › Integration Tests" name="coordinator agent can delegate to other agents" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing agents gracefully" time="0.007">
+    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing agents gracefully" time="0.009">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing chains gracefully" time="0.003">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle memory system failures gracefully" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Module Imports" name="all modules should import without errors" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Module Imports" name="all modules should import without errors" time="0.002">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Module Imports" name="no circular dependency issues" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2026-01-04T05:01:21" time="0.425" tests="6">
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.023">
-    </testcase>
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.161">
-    </testcase>
-    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.022">
-    </testcase>
-    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include standard rate limit headers" time="0.004">
-    </testcase>
-    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.005">
-    </testcase>
-    <testcase classname="Rate Limiting › IP-based Rate Limiting" name="should track limits per IP address" time="0.008">
+    <testcase classname="AI Systems Integration Tests › Module Imports" name="no circular dependency issues" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2026-01-04T05:01:22" time="0.19" tests="18">
+  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2026-01-04T18:38:48" time="0.159" tests="18">
     <testcase classname="Response Handlers › sendSuccess" name="should send success response with data" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0">
     </testcase>
     <testcase classname="Response Handlers › sendSuccess" name="should send success response with message" time="0.001">
     </testcase>
-    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.004">
+    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.002">
     </testcase>
     <testcase classname="Response Handlers › sendError" name="should send error response with details" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendValidationError" name="should send validation error with array of errors" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0.001">
+    <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0">
+    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendNotFound" name="should send 404 not found" time="0">
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeString" name="should remove HTML tags" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0.001">
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0.001">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0.001">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0.001">
     </testcase>
     <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2026-01-04T05:01:22" time="1.837" tests="11">
-    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.186">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.013">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.067">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.008">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.125">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.121">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.063">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.363">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.067">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should reject invalid refresh token" time="0">
-      <skipped/>
     </testcase>
   </testsuite>
 </testsuites>
