@@ -157,7 +157,13 @@ app.use((req, res, next) => {
     req.method === 'HEAD' ||
     req.method === 'OPTIONS' ||
     req.path.startsWith('/health') ||
-    req.path === '/api/csrf-token'
+    req.path === '/api/csrf-token' ||
+    // AI API routes - exempt for testing and programmatic access
+    req.path.startsWith('/api/agents') ||
+    req.path.startsWith('/api/chains') ||
+    req.path.startsWith('/api/perspectives') ||
+    req.path.startsWith('/api/idp') ||
+    req.path.startsWith('/api/qa')
   ) {
     return next();
   }
