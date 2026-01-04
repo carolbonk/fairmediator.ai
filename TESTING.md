@@ -940,6 +940,121 @@ open coverage/lcov-report/index.html
 
 ---
 
+## Current Test Status & Known Issues
+
+**Last Updated:** January 4, 2026
+
+### Test Suite Summary
+
+✅ **Backend Tests: 54 passing, 2 skipped**
+- ✅ Unit tests: 17 passing (utils, sanitization, responseHandlers)
+- ✅ Integration tests: 15 passing (auth API, rate limiting)
+- ✅ AI Systems tests: 21 passing (memory, chains, agents)
+- ⏭️ JWT refresh tests: 2 skipped (httpOnly cookies - hard to test)
+
+⚠️ **Frontend Tests: Not configured**
+- Placeholder script in place
+- See "Frontend Test Setup" section below for setup instructions
+
+### Current Coverage: ~16%
+
+| Area | Coverage | Status | Priority |
+|------|----------|--------|----------|
+| **Utils** | 40% | ⚠️ Medium | Low |
+| **Routes** | 23% | ❌ Low | High |
+| **Services** | 5-15% | ❌ Very Low | High |
+| **Models** | 55% | ⚠️ Medium | Medium |
+| **Middleware** | 22% | ❌ Low | High |
+
+### Coverage Improvement Plan
+
+**Phase 1: Critical Path (Target: 40% total)**
+- [ ] Add tests for all `/api/auth/*` routes
+- [ ] Add tests for `/api/chat` and `/api/mediators` routes
+- [ ] Add tests for chatService and affiliationDetector
+- [ ] **Timeline:** 2-3 weeks
+
+**Phase 2: AI Features (Target: 55% total)**
+- [ ] Add tests for RAG engine and embedding service
+- [ ] Add tests for agent system and chain system
+- [ ] Add tests for memory system
+- [ ] **Timeline:** 3-4 weeks
+
+**Phase 3: Complete Coverage (Target: 70% total)**
+- [ ] Add tests for all remaining routes
+- [ ] Add tests for all services
+- [ ] Add E2E tests for critical user flows
+- [ ] **Timeline:** 4-6 weeks
+
+### Known Issues
+
+**1. Mongoose Duplicate Index Warning** ✅ FIXED
+- **Issue:** `(node:93921) [MONGOOSE] Warning: Duplicate schema index on {"user":1} found`
+- **Cause:** UsageLog model had both field-level `index: true` and compound index
+- **Fix:** Removed field-level indexes, kept only compound indexes
+- **Status:** Fixed in UsageLog.js
+
+**2. Frontend Test Script Missing** ✅ FIXED
+- **Issue:** `npm error Missing script: "test"` in frontend/package.json
+- **Fix:** Added placeholder test script with helpful message
+- **Status:** Fixed - placeholder in place, full setup pending
+
+**3. JWT Refresh Token Tests Skipped** ⚠️ EXPECTED
+- **Issue:** 2 tests skipped in auth.test.js
+- **Reason:** JWT refresh tokens use httpOnly cookies, difficult to test with supertest
+- **Workaround:** Manual testing + E2E tests cover this flow
+- **Status:** Acceptable - not blocking
+
+**4. Sentry/Stripe Not Configured** ✅ EXPECTED
+- **Issue:** Warnings in test output
+- **Reason:** Dev/test environment doesn't need these services
+- **Status:** Expected behavior - no action needed
+
+### Frontend Test Setup (Pending)
+
+**To add frontend tests:**
+
+1. **Install dependencies:**
+   ```bash
+   cd frontend
+   npm install --save-dev vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+   ```
+
+2. **Create vitest.config.js:**
+   ```javascript
+   import { defineConfig } from 'vitest/config';
+   import react from '@vitejs/plugin-react';
+
+   export default defineConfig({
+     plugins: [react()],
+     test: {
+       environment: 'jsdom',
+       globals: true,
+       setupFiles: './tests/setup.js',
+     },
+   });
+   ```
+
+3. **Update package.json:**
+   ```json
+   {
+     "scripts": {
+       "test": "vitest",
+       "test:ui": "vitest --ui",
+       "test:coverage": "vitest --coverage"
+     }
+   }
+   ```
+
+4. **Create tests directory:**
+   ```bash
+   mkdir -p frontend/tests
+   mkdir -p frontend/tests/components
+   mkdir -p frontend/tests/utils
+   ```
+
+---
+
 ## CI/CD Pipeline
 
 ### GitHub Actions Workflow

@@ -43,7 +43,7 @@ const subscriptionSchema = new mongoose.Schema({
 });
 
 // Index for quick lookups
-subscriptionSchema.index({ user: 1 });
+// Note: user field already has unique index (line 13), no need to duplicate
 subscriptionSchema.index({ stripeCustomerId: 1 });
 subscriptionSchema.index({ stripeSubscriptionId: 1 });
 
