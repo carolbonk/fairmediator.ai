@@ -4,6 +4,10 @@
   </a>
 </p>
 
+<p align="center">
+  [![Netlify Status](https://api.netlify.com/api/v1/badges/bdf7bf88-79d1-42ca-ab21-a14d3964ef81/deploy-status)](https://app.netlify.com/projects/fairmediator/deploys)
+</p>
+
 A single-page platform for transparent law firm mediation selection with AI-powered conflict detection and ideological analysis.
 
 ## 🎯 Overview
@@ -37,9 +41,12 @@ FairMediator is a transparent platform that helps law firms, corporations, and i
 
 ### Deployment
 - **Frontend**: Netlify (with FREE SSL & CDN)
-- **Backend**: Netlify Functions (Serverless - 125k requests/month FREE)
-- **Forms**: Netlify Forms (100 submissions/month FREE)
-- **Database**: MongoDB Atlas (Free tier)
+- **Backend**: Render Web Service (FREE tier - 750 hours/month)
+- **Cron Jobs**: Render Cron (FREE - daily/weekly scraping automation)
+- **Database**: MongoDB Atlas (FREE tier - 512MB)
+- **Cache**: Upstash Redis (FREE tier - 10k commands/day)
+- **Vector DB**: Weaviate Cloud (FREE tier - 100k vectors)
+- **Cost**: $0/month (100% FREE)
 
 ## 🤖 AI Integration (100% FREE)
 
@@ -183,9 +190,13 @@ Contributions welcome! Please read CONTRIBUTING.md first.
 - [x] Phase 3: Ideological classification ✅
 - [x] Phase 4: HuggingFace Spaces demo ✅
 - [x] Phase 5: Netlify deployment with serverless functions ✅
-- [ ] Phase 6: Advanced filtering + analytics
-- [ ] Phase 7: Fine-tuned models for legal domain
-- [ ] Phase 8: Public API for mediator data
+- [x] Phase 6: Production deployment (Render + Netlify) ✅
+- [x] Phase 7: Free tier monitoring system ✅
+- [x] Phase 8: Advanced AI systems (agents, chains, perspectives, IDP, QA) ✅
+- [x] Phase 9: Automated 50-state scraping pipeline ✅
+- [ ] Phase 10: Fine-tuned models for legal domain
+- [ ] Phase 11: Public API for mediator data
+- [ ] Phase 12: Mobile app (React Native)
 
 ### Installation
 
