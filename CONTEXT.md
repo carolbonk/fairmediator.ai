@@ -458,10 +458,23 @@ This applies to:
 
 2. **Popup Structure (Required)**
    ```jsx
-   {/* Correct Pattern - ALL Popups */}
+   {/* Correct Pattern - ALL Popups with CTAs at Bottom */}
    <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6">
-     <div className="w-[85%] sm:w-[90%] lg:w-[75%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl overflow-hidden">
-       {/* Content */}
+     <div className="w-[85%] sm:w-[90%] lg:w-[75%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl overflow-hidden flex flex-col">
+       {/* Header - Fixed at top */}
+       <div className="flex-shrink-0 p-6">
+         <h2>Title</h2>
+       </div>
+
+       {/* Content - Scrollable */}
+       <div className="flex-1 overflow-y-auto p-6">
+         {/* Main content here */}
+       </div>
+
+       {/* Footer with CTAs - Fixed at bottom */}
+       <div className="flex-shrink-0 p-6">
+         <button>Action</button>
+       </div>
      </div>
    </div>
    ```
@@ -472,10 +485,15 @@ This applies to:
    - ✅ All buttons/CTAs: Minimum `px-4 py-2` padding
    - ❌ **NEVER let content touch screen edges**
 
-4. **Overflow Handling**
-   - ✅ Vertical scroll: Allowed with `overflow-y-auto` when needed
+4. **Overflow Handling (Critical - Prevents CTA Cut-off)**
+   - ✅ Use `flex flex-col` on modal container
+   - ✅ Header: `flex-shrink-0` (stays at top)
+   - ✅ Content: `flex-1 overflow-y-auto` (scrolls independently)
+   - ✅ Footer with CTAs: `flex-shrink-0` (always visible at bottom)
    - ❌ Horizontal scroll: **NEVER ALLOWED**
-   - ✅ Long content: Use `max-h-[85vh]` with `overflow-y-auto`
+   - ❌ **NEVER use fixed heights** on content - let flex-1 handle it
+
+   **Why this matters:** Without this pattern, buttons get cut off on mobile screens!
 
 #### UI Component Headers (Required)
 
@@ -521,9 +539,13 @@ This applies to:
 - [ ] Headers are visible in dark blue
 - [ ] Tooltips work where required
 - [ ] Close buttons are accessible
-- [ ] CTAs don't overlap or get cut off
+- [ ] **CTAs are ALWAYS visible at bottom** (most important!)
+- [ ] Content scrolls but header/footer stay fixed
+- [ ] Buttons have proper padding and don't get cut off
 
-**Rule:** If a popup doesn't fit within 85% of mobile screen, redesign it - NEVER allow horizontal scrolling.
+**Rules:**
+1. If a popup doesn't fit within 85% of mobile screen, redesign it - NEVER allow horizontal scrolling
+2. **If CTAs get cut off, use the flex-col pattern with flex-shrink-0 footer**
 
 ---
 

@@ -373,11 +373,11 @@ const MediatorList = ({ parties }) => {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="w-[85%] sm:w-[80%] lg:w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            className="w-[85%] sm:w-[80%] lg:w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="border-b border-neu-200 px-8 py-6 bg-neu-100 flex items-center justify-between">
+            <div className="border-b border-neu-200 px-8 py-6 bg-neu-100 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-semibold text-neu-800">
                   {activeTab === 'liberal' ? 'Liberal' : activeTab === 'moderated' ? 'Moderated' : 'Conservative'} Mediators
@@ -399,8 +399,8 @@ const MediatorList = ({ parties }) => {
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="px-8 py-6 overflow-y-auto max-h-[calc(85vh-200px)]">
+            {/* Modal Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto px-8 py-6">
               {(() => {
                 const currentMediators = activeTab === 'liberal' ? liberal : activeTab === 'moderated' ? moderated : conservative;
                 const filteredMediators = applyFilters(currentMediators);
@@ -428,8 +428,8 @@ const MediatorList = ({ parties }) => {
               })()}
             </div>
 
-            {/* Modal Footer with Pagination */}
-            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100">
+            {/* Modal Footer with Pagination - Fixed at Bottom */}
+            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100 flex-shrink-0">
               {(() => {
                 const currentMediators = activeTab === 'liberal' ? liberal : activeTab === 'moderated' ? moderated : conservative;
                 const filteredMediators = applyFilters(currentMediators);
@@ -500,11 +500,11 @@ const MediatorList = ({ parties }) => {
           }}
         >
           <div
-            className="w-[85%] sm:w-[90%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            className="w-[85%] sm:w-[90%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="border-b border-neu-200 px-8 py-6 bg-gradient-to-r from-neu-100 to-neu-200">
+            <div className="border-b border-neu-200 px-8 py-6 bg-gradient-to-r from-neu-100 to-neu-200 flex-shrink-0">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h2 className="text-3xl font-bold text-neu-800 mb-2">{selectedMediator.name}</h2>
@@ -537,8 +537,8 @@ const MediatorList = ({ parties }) => {
               </div>
             </div>
 
-            {/* Content */}
-            <div className="px-8 py-6 overflow-y-auto max-h-[calc(90vh-180px)]">
+            {/* Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto px-8 py-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left Column - Details */}
                 <div className="space-y-6">
@@ -683,8 +683,8 @@ const MediatorList = ({ parties }) => {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100 flex items-center justify-between">
+            {/* Footer - Fixed at Bottom */}
+            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100 flex items-center justify-between flex-shrink-0">
               <button
                 onClick={() => {
                   setShowMediatorDetail(false);
