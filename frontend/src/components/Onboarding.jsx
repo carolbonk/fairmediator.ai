@@ -72,34 +72,37 @@ const Onboarding = ({ shouldStart, onComplete }) => {
       {/* Onboarding Popup */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 md:p-8">
         <div
-          className="bg-gray-50 rounded-3xl shadow-neumorphic p-6 sm:p-8 w-[85%] max-w-md mx-auto"
+          className="bg-gray-50 rounded-3xl shadow-neumorphic w-[85%] max-w-md max-h-[85vh] mx-auto flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">{currentStepData.title}</h2>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {currentStepData.content}
-            </p>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">{currentStepData.title}</h2>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {currentStepData.content}
+              </p>
+            </div>
+
+            {/* Progress Indicators */}
+            <div className="flex justify-center gap-2 mb-6">
+              {steps.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentStep
+                      ? 'w-8 bg-blue-500'
+                      : index < currentStep
+                      ? 'w-2 bg-blue-300'
+                      : 'w-2 bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Progress Indicators */}
-          <div className="flex justify-center gap-2 mb-6">
-            {steps.map((_, index) => (
-              <div
-                key={index}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentStep
-                    ? 'w-8 bg-blue-500'
-                    : index < currentStep
-                    ? 'w-2 bg-blue-300'
-                    : 'w-2 bg-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Buttons */}
-          <div className="flex gap-3">
+          {/* Fixed Buttons at Bottom */}
+          <div className="flex gap-3 p-6 sm:p-8 pt-0 flex-shrink-0">
             {currentStepData.showSkip ? (
               <>
                 <button

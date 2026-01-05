@@ -31,22 +31,28 @@ const WelcomePopup = ({ onClose }) => {
       {/* Popup */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 md:p-8">
         <div
-          className="bg-gray-50 rounded-3xl shadow-neumorphic p-6 sm:p-8 w-[85%] max-w-md mx-auto"
+          className="bg-gray-50 rounded-3xl shadow-neumorphic w-[85%] max-w-md max-h-[85vh] mx-auto flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              AI-powered platform designed for the modular future of LawTech: aims to bring transparency and fairness to the mediator selection process screening & matching platform
-            </p>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                AI-powered platform designed for the modular future of LawTech: aims to bring transparency and fairness to the mediator selection process screening & matching platform
+              </p>
+            </div>
           </div>
 
-          <button
-            onClick={handleClose}
-            className="w-full py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
-          >
-            Get Started
-          </button>
+          {/* Fixed Button at Bottom */}
+          <div className="p-6 sm:p-8 pt-0 flex-shrink-0">
+            <button
+              onClick={handleClose}
+              className="w-full py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+            >
+              Get Started
+            </button>
+          </div>
         </div>
       </div>
     </>
