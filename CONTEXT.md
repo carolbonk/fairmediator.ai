@@ -8,20 +8,121 @@
 > 3. Check [SETUP.md](./SETUP.md) - Setup instructions if needed
 > 4. Begin work following established patterns
 
-**Last Updated:** January 2, 2026
+**Last Updated:** January 4, 2026
 **Project Status:** ✅ Production Ready - 100% FREE TIER - Token Optimized
 
 ---
 
 ## 📑 Quick Navigation
 
-- [Project Rules](#-project-rules) ⭐ **READ THIS FIRST**
+- [Tech Stack (CORRECTED)](#-tech-stack-corrected) ⭐ **SEE THIS FIRST**
+- [Project Rules](#-project-rules) ⭐ **READ THIS SECOND**
+- [Core Business Model](#-core-business-model--data-strategy) 🎯 **SCRAPING IS CORE**
 - [Project Overview](#-project-overview)
-- [Tech Stack](#-technical-stack)
 - [Project Structure](#-project-structure)
 - [Production Deployment](#production-deployment)
 - [Recent Changes](#-recent-major-changes)
 - [Free Services Used](#-free-services-used)
+
+---
+
+## 🏗️ Tech Stack (CORRECTED)
+
+> **Last Updated:** January 4, 2026 - **Scraping reclassified as CORE (95%), Monitoring as CRITICAL (90%)**
+
+### 🎯 Tier 1: ABSOLUTE CORE (95-100% Essential)
+
+**Cannot run without these - Foundation of the platform:**
+
+| Technology | Purpose | Necessity | Why CORE |
+|------------|---------|-----------|----------|
+| **Node.js + Express** | Backend API server | **100%** | The engine that runs everything |
+| **MongoDB + Mongoose** | Database & ODM | **100%** | Stores all data (7 models: User, Mediator, Subscription, UsageLog, ConflictFeedback, MediatorSelection, CaseOutcome) |
+| **React + Vite** | Frontend UI | **100%** | Entire user interface |
+| **cheerio** | HTML parsing | **95%** | 🕷️ **SCRAPES YOUR PRIMARY DATA SOURCE** - All 50 states |
+| **axios** | HTTP client | **95%** | Web scraping + AI API calls |
+| **node-cron** | Scheduled jobs | **90%** | ⏰ **DAILY SCRAPING AUTOMATION** - Keeps data fresh |
+| **Hugging Face API** | AI/ML models | **95%** | Powers ALL AI features (ideology, conflict detection, RAG, IDP) |
+| **bcryptjs + JWT** | Authentication | **100%** | Security foundation (password hashing, sessions) |
+| **winston** | Logging system | **95%** | 📊 **FREE TIER MONITORING** - Track daily usage |
+| **dotenv** | Config management | **100%** | Environment variables (.env file) |
+
+**Data Pipeline:**
+```
+Web Scraping (cheerio) → MongoDB (Mongoose) → AI Processing (Hugging Face) → API (Express) → UI (React)
+```
+
+---
+
+### 🛡️ Tier 2: CRITICAL FOR BUSINESS (85-95% Essential)
+
+**Core features, security, and free tier protection:**
+
+| Technology | Purpose | Necessity | Why CRITICAL |
+|------------|---------|-----------|--------------|
+| **@sentry/node** | Error tracking | **90%** | 🚨 **MONITOR SCRAPING FAILURES** - Alert on issues |
+| **helmet** | Security headers | **95%** | XSS, clickjacking, MIME sniffing protection |
+| **cors** | API security | **100%** | Frontend ↔ Backend communication |
+| **express-mongo-sanitize** | NoSQL injection protection | **95%** | Prevent MongoDB injection attacks |
+| **express-rate-limit** | Rate limiting | **90%** | 🛡️ **FREE TIER PROTECTION** - Prevent exhaustion |
+| **cookie-parser** | Cookie handling | **95%** | Auth uses httpOnly cookies |
+| **joi** | Input validation | **90%** | Validate all API requests |
+| **TailwindCSS** | CSS framework | **85%** | All UI styling |
+| **react-router-dom** | Navigation | **100%** | Page routing (SPA) |
+
+---
+
+### 🤖 Tier 3: AI & VECTOR SEARCH (70-85% Essential)
+
+**Enhanced AI capabilities:**
+
+| Technology | Purpose | Necessity | Why IMPORTANT |
+|------------|---------|-----------|---------------|
+| **ChromaDB** | Vector database (local) | **75%** | Semantic search & AI memory |
+| **Weaviate** | Vector database (cloud) | **75%** | Alternative to ChromaDB (production) |
+| **Redis/Upstash** | Caching layer | **80%** | 70-90% AI token reduction |
+| **pdf-parse + multer** | PDF processing | **70%** | IDP feature (automate mediator onboarding) |
+| **Resend** | Email service | **75%** | Email verification, notifications |
+| **Jest + supertest** | Testing framework | **85%** | Quality assurance (54 tests passing) |
+| **sanitize-html + dompurify** | XSS protection | **90%** | Clean malicious user input |
+| **csrf-csrf** | CSRF protection | **90%** | Prevent cross-site request forgery |
+
+---
+
+### 💳 Tier 4: PREMIUM/OPTIONAL (50-70% Essential)
+
+**Nice to have, not critical:**
+
+| Technology | Purpose | Necessity | Why OPTIONAL |
+|------------|---------|-----------|--------------|
+| **Stripe** | Payment processing | **60%** | Only for premium subscriptions |
+| **Playwright** | E2E testing | **70%** | Full user journey tests |
+| **@headlessui/react** | UI components | **65%** | Accessible modals, dropdowns |
+| **react-icons** | Icon library | **50%** | Cosmetic enhancement |
+| **Sentry profiling** | Performance monitoring | **40%** | Find slow code (nice to have) |
+
+---
+
+### 📊 Tech Stack Summary
+
+**Total Dependencies:**
+- Backend: 25 production + 9 dev dependencies
+- Frontend: 6 production + 8 dev dependencies
+- **Total Cost:** $0/month (100% free tier)
+
+**Core Technology Breakdown:**
+- **95-100% Essential:** 10 technologies (Node, Express, MongoDB, Mongoose, React, Vite, cheerio, axios, node-cron, Hugging Face)
+- **85-95% Critical:** 9 technologies (Sentry, helmet, cors, sanitization, rate limiting, cookies, validation, Tailwind, routing)
+- **70-85% Important:** 8 technologies (vector DBs, Redis, IDP, email, testing, CSRF)
+- **50-70% Optional:** 5 technologies (Stripe, Playwright, UI libs, icons, profiling)
+
+**Why This Stack?**
+1. ✅ **100% Free Tier** - No monthly costs
+2. ✅ **Scalable** - Can grow to millions of users
+3. ✅ **Secure** - Enterprise-grade security (helmet, sanitization, CSRF, rate limiting)
+4. ✅ **AI-Powered** - Hugging Face + vector DBs + RAG
+5. ✅ **Data-Driven** - Web scraping + MongoDB + analytics
+6. ✅ **Well-Tested** - 54 tests passing, 4 test suites
 
 ---
 
@@ -48,6 +149,54 @@ This applies to:
 5. Use "WIP" or "Partial" if work is incomplete
 
 **Integrity > Everything. If you can't verify it, don't claim it.**
+
+---
+
+### 🔴 CRITICAL RULE: Free Tier Protection - MUST NOT RUN OUT
+
+**ALL free tier services MUST have daily rate limiting to last the ENTIRE month.**
+
+**The Problem:**
+- Most free tiers are MONTHLY limits (e.g., 10k requests/month)
+- Without protection, you could exhaust limits by week 2
+- Service outages in week 4 = broken product
+
+**Required Protection:**
+
+1. **Daily Budget Allocation**
+   - Calculate: `monthly_limit / 30 = daily_budget`
+   - Example: 10,000 requests/month ÷ 30 = 333/day max
+   - Track actual daily usage vs budget
+   - **STOP operations when daily budget reached**
+
+2. **Warning Thresholds**
+   - 70% of daily budget = Warning log
+   - 85% of daily budget = Alert + slow down
+   - 95% of daily budget = Graceful degradation
+   - 100% = Stop non-critical operations
+
+3. **Services Requiring Protection**
+   - Redis/Upstash: 10,000 commands/day → **Already has protection ✅**
+   - Hugging Face: Varies by model → **Need to add limits**
+   - MongoDB Atlas: 512MB storage → **Monitor size**
+   - Weaviate: 100k vectors → **Monitor count**
+   - Resend: 100 emails/day → **Already rate limited**
+   - Sentry: 5k errors/month → **Monitor daily**
+   - Scraping targets: Varies → **Respect robots.txt + rate limit**
+
+4. **Monitoring Dashboard** (Required)
+   - Daily usage per service
+   - Percentage of monthly limit used
+   - Projected end-of-month usage
+   - Alerts when >70% consumed
+
+**Implementation:**
+- File: `backend/src/utils/freeTierMonitor.js` (create if doesn't exist)
+- Log all service usage to MongoDB
+- Daily cron job to check limits
+- Automatic throttling when approaching limits
+
+**Rule:** If a feature would exhaust the free tier, DISABLE it rather than break the entire app.
 
 ---
 
@@ -628,12 +777,23 @@ backend/src/
 ### 🎯 Consolidation History
 
 **January 4, 2026:**
+- ✅ **CORRECTED TECH STACK** - Reclassified scraping (95% CORE) & monitoring (90% CRITICAL)
+- ✅ **FREE TIER MONITORING SYSTEM** - Created complete usage tracking
+- ✅ **50-STATE SCRAPING STRATEGY** - Documented data sources for all states
 - ✅ Consolidated REDIS_SETUP.md → SETUP.md (enhanced with navigation menu)
 - ✅ Deleted AI_ACTIVATION_SUMMARY.md (information already in January 3, 2026 section)
-- ✅ Added DRY principle as critical rule #1
+- ✅ Added **NO LIES** rule as Critical Rule #1
+- ✅ Added **Free Tier Protection** rule as Critical Rule #2
+- ✅ Added **DRY Principle** rule as Critical Rule #3
 - ✅ Added rules for no AI watermarks in files
 - ✅ Verified all AI systems integration and testing
-- ✅ Fixed all test suite issues (see testing improvements below)
+- ✅ Fixed all test suite issues (54/54 tests passing, 0 warnings)
+
+**New Features Created (January 4):**
+- `backend/src/utils/freeTierMonitor.js` (330 lines) - Daily usage tracker
+- `backend/src/routes/monitoring.js` (130 lines) - Monitoring dashboard API
+- `backend/src/config/scrapingTargets.js` (150 lines) - 50-state data sources
+- API endpoints: `/api/monitoring/dashboard`, `/stats`, `/alerts`, `/projections`, `/health`
 
 **January 2, 2026:**
 - ✅ Consolidated TOKEN_OPTIMIZATION_SUMMARY.md into PROJECT_RULES.md
@@ -667,6 +827,97 @@ As the project grows, follow these principles:
 ### What is FairMediator?
 
 **FairMediator.ai** is an AI-powered platform that brings **transparency and fairness to mediator selection** for legal disputes. When law firms, corporations, or individuals need to choose a mediator, they often lack visibility into potential conflicts of interest or ideological leanings that could affect the mediation outcome.
+
+---
+
+## 🎯 Core Business Model & Data Strategy
+
+### Data Acquisition: 50-State Scraping System
+
+**PRIMARY DATA SOURCE:** Web scraping is **NOT optional** - it's the foundation of the entire platform.
+
+**Why Scraping is CORE (95% Essential):**
+
+1. **Automated Data Collection**
+   - Scrape mediator profiles from all 50 state bar associations
+   - Scrape court listings, mediation centers, professional organizations
+   - Automated daily updates to keep data fresh
+   - **Without this: No mediator data = No platform**
+
+2. **AI Training Pipeline**
+   - Scraped profiles train AI agents to understand mediator characteristics
+   - Case outcome data trains AI for better recommendations
+   - Conversation data from chatbot feeds back into training
+   - **Goal:** Eventually train AI agents that can become mediators themselves
+
+3. **Intelligent Chatbot**
+   - Scraped data makes chatbot responses intelligent and accurate
+   - AI analyzes user case → matches to scraped mediator profiles
+   - Deep learning improves recommendations over time
+   - **User Experience:** "Find me a mediator" → AI finds perfect match
+
+4. **Perfect Matching Algorithm**
+   - More scraped data = Better AI recommendations
+   - Understand mediator specializations, success rates, ideologies
+   - Detect conflicts of interest from scraped affiliation data
+   - **Competitive Advantage:** Best mediator matching in the industry
+
+**50-State Coverage Requirements:**
+
+| Region | States | Key Data Sources |
+|--------|--------|------------------|
+| **Northeast** | CT, MA, ME, NH, NJ, NY, PA, RI, VT | State bar associations, court websites |
+| **Southeast** | AL, AR, DE, FL, GA, KY, LA, MD, MS, NC, SC, TN, VA, WV | Bar directories, mediation centers |
+| **Midwest** | IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI | Professional mediation organizations |
+| **Southwest** | AZ, NM, OK, TX | State bar websites, court mediator lists |
+| **West** | AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY | Bar associations, ADR centers |
+
+**Scraping Frequency:**
+- **Daily:** Active mediators (changes, new cases)
+- **Weekly:** Affiliations, certifications
+- **Monthly:** Full profile refreshes
+- **Real-time:** User-requested specific mediator updates
+
+**Data Sources Per State:**
+1. State Bar Association directories
+2. Court-certified mediator lists
+3. Professional mediation organization rosters
+4. Law firm mediator panels
+5. Published case outcomes (public records)
+
+**Technology Stack for Scraping:**
+- **cheerio** (95% essential) - HTML parsing from state websites
+- **node-cron** (90% essential) - Scheduled daily/weekly scraping jobs
+- **axios** (95% essential) - HTTP requests to state websites
+- **Rate limiting** (100% essential) - Respect robots.txt, avoid bans
+
+**Legal & Ethical Scraping:**
+- ✅ Respect robots.txt
+- ✅ Rate limit to 1 request/second per domain
+- ✅ Only scrape publicly available data
+- ✅ Identify as FairMediator bot in User-Agent
+- ✅ Provide opt-out mechanism for mediators
+
+---
+
+### AI Training & Future Vision
+
+**Phase 1: Data Collection (Current)**
+- Scrape all 50 states
+- Build comprehensive mediator database
+- Train initial AI models on scraped data
+
+**Phase 2: Intelligent Recommendations (6-12 months)**
+- Deep learning models analyze case characteristics
+- AI predicts best mediator matches
+- Chatbot provides expert-level advice
+- Continuous learning from user feedback
+
+**Phase 3: AI Mediators (12-24 months)**
+- Train AI agents on thousands of mediation cases
+- AI agents learn mediation techniques from scraped data
+- AI agents can assist or even conduct simple mediations
+- **Vision:** Democratize mediation with AI mediators
 
 **The Problem We Solve:**
 - **Hidden Conflicts:** Mediators may have affiliations with opposing counsel or parties

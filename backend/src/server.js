@@ -38,6 +38,7 @@ const chainRoutes = require('./routes/chains');
 const perspectiveRoutes = require('./routes/perspectives');
 const idpRoutes = require('./routes/idp');
 const qaRoutes = require('./routes/qa');
+const monitoringRoutes = require('./routes/monitoring');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -231,6 +232,7 @@ app.use('/api/chains', chainRoutes); // AI Chain system - multi-step workflows
 app.use('/api/perspectives', perspectiveRoutes); // Multi-perspective AI - balanced mediation
 app.use('/api/idp', idpRoutes); // Intelligent Document Processing - PDF/text extraction
 app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
+app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard
 
 // Sentry error handler (must be before other error handlers)
 if (Sentry) {

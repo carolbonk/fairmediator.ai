@@ -2,7 +2,7 @@
 
 > **Master deployment guide with BOTH serverless and traditional options**
 
-**Last Updated:** January 3, 2026
+**Last Updated:** January 4, 2026
 
 ---
 
@@ -107,33 +107,156 @@ MONGODB_URI=mongodb+srv://...
 - **Frontend:** Netlify (static hosting)
 - **Backend:** Render (free tier with sleep)
 - **Database:** MongoDB Atlas (free M0)
+- **Cron Jobs:** Automated via Render (daily/weekly scraping, free tier reset)
 - **Cost:** $0/month
 - **Best for:** Full-featured apps with cron jobs, no timeout limits
+
+### Prerequisites
+
+You'll need free accounts for:
+1. ✅ **GitHub** - Already have it
+2. ✅ **Netlify** - Already configured
+3. 🆕 **Render** - Sign up at https://render.com
+4. 🆕 **MongoDB Atlas** - Sign up at https://mongodb.com/cloud/atlas
+5. 🆕 **Upstash Redis** - Sign up at https://upstash.com
+6. 🆕 **Hugging Face** - Sign up at https://huggingface.co
+7. 🆕 **Weaviate Cloud** - Sign up at https://console.weaviate.cloud
 
 ### Deployment Steps
 
 **Step 1: Deploy Backend to Render**
 
+> **Note:** The project includes `backend/render.yaml` which automatically configures the web service AND cron jobs.
+
 1. Go to https://render.com
-2. Click "New +" → "Web Service"
-3. Connect your GitHub repository
-4. Configure:
+2. Sign up with GitHub (easiest - auto-connects repositories)
+3. From Dashboard, click "New +" → "Web Service"
+4. Connect your GitHub repository: `FairMediator`
+5. Render will detect `render.yaml` and offer to create ALL services:
+   - ✅ `fairmediator-backend` (web service)
+   - ✅ `fairmediator-scraping-daily` (cron - 2 AM daily)
+   - ✅ `fairmediator-scraping-weekly` (cron - 3 AM Sunday)
+   - ✅ `fairmediator-tier-reset` (cron - midnight daily)
+6. Click "Create Services" - Render creates everything automatically!
+
+**Step 2: Configure Environment Variables**
+
+After services are created, add environment variables to the web service:
+
+1. Go to `fairmediator-backend` service
+2. Click "Environment" tab
+3. Add these variables:
+
+**Required Environment Variables:**
+```bash
+# Server Configuration
+NODE_ENV=production
+PORT=5001
+CORS_ORIGIN=https://fairmediator.netlify.app
+FRONTEND_URL=https://fairmediator.netlify.app
+
+# Security Secrets (generate secure 64-byte hex strings)
+JWT_SECRET=fd571a8bdc0635476b8b4231e7baa90c13c33f009bcb139562fc792cf75960c070823e0786601a9b68933963d6a43c4a43204199c6bd73030df74cefcf9521a9
+JWT_REFRESH_SECRET=57bdab8d99ac0d35655403b0468ae1652257af2f24a27db10aed43f2d3fd367b32b8ff47919926b03b6f3e5aa62ab60e9666674c737e5cdc04e9a15c79066993
+SESSION_SECRET=ae93a520421fc102a0448cd35e690976f9dd3a6f6099b2d04428721bceaf9284ed3be532404e6f50673e070ed9aedd5e0d04e277024a64cbbec95bf1e2ab24e8
+
+# MongoDB Atlas (from Step 3)
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/fairmediator
+
+# Redis Cache (from Step 4)
+REDIS_ENABLED=true
+REDIS_URL=redis://default:YOUR_PASSWORD@YOUR_ENDPOINT.upstash.io:6379
+
+# Hugging Face API (from Step 5)
+HUGGINGFACE_API_KEY=hf_YOUR_API_KEY_HERE
+
+# Weaviate Vector DB (from Step 6)
+WEAVIATE_ENABLED=true
+WEAVIATE_URL=fairmediator-xxxxx.weaviate.network
+WEAVIATE_API_KEY=YOUR_WEAVIATE_API_KEY
+```
+
+**Optional Services:**
+```bash
+# Sentry Error Tracking
+SENTRY_DSN=https://your-sentry-dsn.ingest.sentry.io
+
+# Stripe Payment Processing
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Resend Email Service
+RESEND_API_KEY=re_...
+```
+
+**Step 3: Setup MongoDB Atlas (FREE)**
+
+1. Go to https://mongodb.com/cloud/atlas
+2. Create account (no credit card required)
+3. Click "Build a Database" → Choose "FREE" tier (M0 Sandbox)
+4. Configure cluster:
+   - Provider: **AWS**
+   - Region: **us-west-2 (Oregon)** - same region as Render
+   - Cluster Name: `FairMediator`
+5. Create database user:
+   - Username: `fairmediator`
+   - Password: Generate secure password (save it!)
+6. Network Access:
+   - Click "Network Access" → "Add IP Address"
+   - Select "Allow access from anywhere" (0.0.0.0/0)
+   - This is safe because you still need username/password
+7. Get connection string:
+   - Click "Connect" → "Connect your application"
+   - Copy connection string:
+     ```
+     mongodb+srv://fairmediator:PASSWORD@cluster.mongodb.net/fairmediator
+     ```
+   - Replace `PASSWORD` with your actual password
+8. Add `MONGODB_URI` to Render environment variables
+
+**Step 4: Setup Upstash Redis (FREE)**
+
+1. Go to https://upstash.com
+2. Sign up (no credit card required)
+3. Create database:
+   - Name: `fairmediator-cache`
+   - Type: **Regional**
+   - Region: **us-west-1** (closest to Render Oregon)
+4. Copy Redis URL from database details:
    ```
-   Name: fairmediator-backend
-   Root Directory: backend
-   Build Command: npm install
-   Start Command: npm start
+   redis://default:YOUR_PASSWORD@YOUR_ENDPOINT.upstash.io:6379
    ```
-5. Add environment variables:
-   ```
-   HUGGINGFACE_API_KEY=your_key_here
-   MONGODB_URI=mongodb+srv://...
-   REDIS_ENABLED=true
-   REDIS_URL=your_upstash_redis_url
-   NODE_ENV=production
-   ```
-6. Click "Create Web Service"
-7. Copy the service URL (e.g., `https://fairmediator-backend.onrender.com`)
+5. Add to Render:
+   - `REDIS_ENABLED`: `true`
+   - `REDIS_URL`: (from step 4)
+
+**Step 5: Setup Hugging Face API (FREE)**
+
+1. Go to https://huggingface.co
+2. Sign up (no credit card required)
+3. Go to Settings → Access Tokens
+4. Create new token:
+   - Name: `fairmediator-production`
+   - Type: **Read**
+5. Copy token (starts with `hf_`)
+6. Add `HUGGINGFACE_API_KEY` to Render
+
+**Step 6: Setup Weaviate Cloud (FREE)**
+
+1. Go to https://console.weaviate.cloud
+2. Sign up (no credit card required)
+3. Create sandbox cluster:
+   - Name: `fairmediator`
+   - Sandbox duration: 14 days (auto-converts to free persistent)
+4. Get credentials:
+   - URL: `fairmediator-xxxxx.weaviate.network`
+   - Click "Generate API Key"
+5. Add to Render:
+   - `WEAVIATE_ENABLED`: `true`
+   - `WEAVIATE_URL`: (from step 4)
+   - `WEAVIATE_API_KEY`: (from step 4)
+
+7. Your backend is now live at: `https://fairmediator-backend.onrender.com`
 
 **Step 2: Deploy Frontend to Netlify**
 

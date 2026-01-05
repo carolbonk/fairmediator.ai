@@ -33,5 +33,5 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
 # Environment variables (set these in Netlify Dashboard)
-# HUGGINGFACE_API_KEY = "your_key_here"
+# VITE_API_URL = "https://fairmediator-backend.onrender.com/api"
 # NODE_ENV = "production"
