@@ -376,6 +376,15 @@ app.use(cors({
 2. Database user has read/write permissions
 3. Connection string has correct password (URL-encoded)
 
+### SSL / HTTPS not working
+**Problem:** Domain works on HTTP but shows "Not Secure" (no HTTPS)
+**Solution:**
+1. Go to Netlify Dashboard > Site Settings > Domain Management > HTTPS
+2. Click "Verify DNS configuration" or "Provision Certificate"
+3. Wait for "Let's Encrypt Certificate" to appear (can take up to 24h after DNS changes)
+4. Click "Force HTTPS" to redirect all traffic to secure version
+**Cost:** Free (included with Netlify)
+
 ---
 
 ## Recommended Setup
