@@ -29,9 +29,9 @@ const WelcomePopup = ({ onClose }) => {
       />
 
       {/* Popup */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+      <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 md:p-8">
         <div
-          className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 max-w-md w-full"
+          className="bg-gray-50 rounded-3xl shadow-neumorphic p-6 sm:p-8 w-[85%] max-w-md mx-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="text-center mb-6">

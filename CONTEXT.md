@@ -126,6 +126,229 @@ Web Scraping (cheerio) → MongoDB (Mongoose) → AI Processing (Hugging Face) �
 
 ---
 
+## 🏗️ Project Overview & System Architecture
+
+### Current Tech Stack Summary
+
+**FairMediator** is a comprehensive AI-powered mediator matching platform built on a modern, scalable stack - **100% free tier**.
+
+#### Technology Breakdown
+- **Backend**: Node.js 18+ with Express.js (RESTful API)
+- **Frontend**: React 18 with Vite (SPA with React Router)
+- **Database**: MongoDB Atlas (7 models: User, Mediator, Subscription, UsageLog, ConflictFeedback, MediatorSelection, CaseOutcome)
+- **AI/ML**: Hugging Face Transformers (ideology detection, conflict analysis, NLP)
+- **Vector DB**: Weaviate Cloud (semantic search, RAG)
+- **Cache**: Upstash Redis (70-90% token reduction)
+- **Web Scraping**: Cheerio + Axios (50-state automation)
+- **Styling**: TailwindCSS (neumorphic design system)
+- **Testing**: Jest + Supertest (54 tests, 16% coverage)
+- **Monitoring**: Winston + Sentry (error tracking + free tier protection)
+- **Deployment**: Render (backend + cron) + Netlify (frontend)
+- **Cost**: **$0/month** (all free tiers)
+
+### System Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          CLIENT LAYER (Frontend)                         │
+│                     Netlify CDN (100GB/month FREE)                      │
+└────────────────────────────┬────────────────────────────────────────────┘
+                             │ HTTPS/WSS
+                             │
+┌────────────────────────────▼────────────────────────────────────────────┐
+│                    REACT SPA (Vite + React Router)                      │
+│  Components: Chat │ Mediator List │ Statistics │ Auth │ Dashboard      │
+│  State: Context API │ React Hooks                                       │
+│  Styling: TailwindCSS (Neumorphic Design)                               │
+└────────────────────────────┬────────────────────────────────────────────┘
+                             │ REST API (axios)
+                             │
+┌────────────────────────────▼────────────────────────────────────────────┐
+│                       API GATEWAY (Express.js)                           │
+│        Render Web Service (750 hours/month FREE, auto-sleep)            │
+│                                                                          │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐      │
+│  │  Security  │  │Rate Limit │  │   CSRF     │  │Sanitization│      │
+│  │  (Helmet)  │  │  (Global)  │  │Protection  │  │  (XSS/NoSQL) │      │
+│  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘      │
+│        └────────────────┴────────────────┴────────────────┘             │
+│                                │                                         │
+│                     ┌──────────▼──────────┐                             │
+│                     │   API Routes (14)   │                             │
+│                     └──────────┬──────────┘                             │
+│   /auth │ /mediators │ /chat │ /matching │ /subscription              │
+│   /feedback │ /dashboard │ /scraping │ /agents │ /chains               │
+│   /perspectives │ /idp │ /qa │ /monitoring │ /affiliations            │
+└────────────────────────────┬────────────────────────────────────────────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         │                   │                   │
+┌────────▼─────────┐ ┌───────▼────────┐ ┌───────▼────────┐
+│   DATA LAYER     │ │  AI/ML LAYER   │ │  CACHE LAYER   │
+│  MongoDB Atlas   │ │ Hugging Face   │ │ Upstash Redis  │
+│  (512MB FREE)    │ │   (FREE API)   │ │(10k cmds/day)  │
+│                  │ │                │ │                │
+│ ┌──────────────┐ │ │ ┌────────────┐ │ │ ┌────────────┐ │
+│ │   Models:    │ │ │ │ Ideology   │ │ │ │   Cache:   │ │
+│ │ • User       │ │ │ │Classifier  │ │ │ │ • AI calls │ │
+│ │ • Mediator   │ │ │ │            │ │ │ │ • Searches │ │
+│ │ • Subscription│ │ │ ├────────────┤ │ │ │ • Sessions │ │
+│ │ • UsageLog   │ │ │ │ Conflict   │ │ │ └────────────┘ │
+│ │ • Feedback   │ │ │ │ Detector   │ │ │                │
+│ │ • Selection  │ │ │ │            │ │ │  TTL: 5-10min  │
+│ │ • Outcome    │ │ │ ├────────────┤ │ │                │
+│ └──────────────┘ │ │ │   NER &    │ │ └────────────────┘
+│                  │ │ │ Sentiment  │ │
+│  Indexes:        │ │ │            │ │
+│  • email (unique)│ │ ├────────────┤ │
+│  • barNumber     │ │ │    RAG     │ │
+│  • userId + type │ │ │ (Semantic) │ │
+│  • compound      │ │ └────────────┘ │
+└──────────────────┘ └────────────────┘
+         │
+┌────────▼─────────────────────────────┐
+│     VECTOR DATABASE (Weaviate)       │
+│      (100k vectors FREE)             │
+│                                      │
+│  Semantic Search | Mediator Profiles│
+│  Case Matching  | RAG Memory        │
+└──────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────┐
+│                    AUTOMATION LAYER (Cron Jobs)                        │
+│                   Render Cron (FREE - 3 jobs)                         │
+└───────────────────────────────────────────────────────────────────────┘
+         │                      │                      │
+┌────────▼────────┐   ┌─────────▼─────────┐  ┌────────▼────────┐
+│ Daily Scraping  │   │ Weekly Analysis   │  │  Tier Reset     │
+│   (2 AM daily)  │   │  (3 AM Sunday)    │  │(Midnight daily) │
+│                 │   │                   │  │                 │
+│ • 50-state data │   │ • Deep affiliation│  │ • Reset quotas  │
+│ • High priority │   │ • Update profiles │  │ • Log usage     │
+│ • Rate limited  │   │ • Entity extract  │  │ • Send alerts   │
+└─────────────────┘   └───────────────────┘  └─────────────────┘
+         │                      │                      │
+         └──────────────────────┴──────────────────────┘
+                               │
+                  ┌────────────▼────────────┐
+                  │  Scraping Targets (50)  │
+                  │ State Bar Associations  │
+                  │ Court Lists | Directories│
+                  └─────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────┐
+│                      MONITORING & LOGGING                              │
+└───────────────────────────────────────────────────────────────────────┘
+         │                      │                      │
+┌────────▼────────┐   ┌─────────▼─────────┐  ┌────────▼────────┐
+│  Winston Logs   │   │  Sentry Errors    │  │ Free Tier       │
+│  (File + DB)    │   │ (5k/month FREE)   │  │ Monitor         │
+│                 │   │                   │  │                 │
+│ • API requests  │   │ • Stack traces    │  │ • Daily budgets │
+│ • Scraping logs │   │ • Performance     │  │ • Usage alerts  │
+│ • User actions  │   │ • Source maps     │  │ • Projections   │
+└─────────────────┘   └───────────────────┘  └─────────────────┘
+```
+
+### Data Flow Example: User Finds Mediator
+
+```
+1. User describes case in chat
+   ↓
+2. Frontend sends to /api/chat
+   ↓
+3. Backend checks Redis cache (HIT = instant response)
+   ↓
+4. If MISS → Hugging Face API (ideology analysis)
+   ↓
+5. Store in cache (5 min TTL)
+   ↓
+6. Query MongoDB for matching mediators
+   ↓
+7. Check Weaviate for semantic similarity
+   ↓
+8. Run conflict detection (parties vs affiliations)
+   ↓
+9. Return ranked mediators to frontend
+   ↓
+10. Track usage in UsageLog (learning)
+```
+
+### Key Features
+
+1. **AI-Powered Matching**
+   - Ideology classification (liberal/conservative/moderate)
+   - Conflict of interest detection (NLP-based)
+   - Semantic search with RAG
+   - Multi-perspective analysis
+
+2. **50-State Scraping Automation**
+   - Daily: High-priority sources (bar associations)
+   - Weekly: Deep analysis (affiliations, entities)
+   - Rate limited: Respects robots.txt, 1s delay
+   - Monitored: Free tier protection
+
+3. **Security & Compliance**
+   - Helmet security headers
+   - CSRF protection
+   - XSS sanitization
+   - NoSQL injection prevention
+   - Rate limiting (global + endpoint-specific)
+   - JWT + httpOnly cookies
+
+4. **Free Tier Protection**
+   - Daily budget allocation (monthly_limit / 30)
+   - Warning thresholds (70%, 85%, 95%, 100%)
+   - Real-time monitoring dashboard
+   - Automatic throttling
+
+5. **Testing & Quality**
+   - 54 tests passing (auth, API, scraping, AI)
+   - 16% coverage (target: 70%)
+   - CI/CD ready
+   - Error tracking with Sentry
+
+### Deployment Architecture
+
+```
+Production: https://fairmediator.netlify.app
+         │
+         ├─ Frontend (Netlify)
+         │   • Global CDN
+         │   • Auto SSL (Let's Encrypt)
+         │   • Build: npm run build
+         │   • Deploy: Git push to main
+         │
+         └─ Backend (Render)
+             • Web Service: fairmediator-backend.onrender.com
+             • Cron 1: Daily scraping (2 AM)
+             • Cron 2: Weekly analysis (3 AM Sunday)
+             • Cron 3: Tier reset (Midnight)
+             • Auto-deploy: Git push to main
+             • Sleep after 15 min (FREE tier)
+```
+
+### Performance Optimizations
+
+1. **Redis Caching** → 70-90% reduction in AI API calls
+2. **Vector Search** → Sub-second semantic matching
+3. **Rate Limiting** → Prevents free tier exhaustion
+4. **Lazy Loading** → Components load on demand
+5. **Image Optimization** → WebP with fallbacks
+6. **Code Splitting** → Smaller bundle sizes
+
+### Security Measures
+
+1. **Authentication**: JWT + refresh tokens (httpOnly cookies)
+2. **Authorization**: Role-based access control (user, admin)
+3. **Input Validation**: Joi schemas on all endpoints
+4. **Output Sanitization**: DOMPurify + sanitize-html
+5. **HTTPS Only**: Enforced in production
+6. **CORS**: Restricted to frontend domain
+7. **Rate Limiting**: Global (100 req/15min) + endpoint-specific
+
+---
+
 ## 📋 Project Rules
 
 > **⚠️ CRITICAL: Read before making any changes to the project**
@@ -218,17 +441,104 @@ This applies to:
 3. Extract common patterns into reusable functions
 4. Follow established patterns in the codebase
 
+---
+
+### 🎨 UX DESIGN RULES: Responsive Design & Popups
+
+**ALL popups, modals, and overlay components MUST follow these responsive design rules:**
+
+#### Mobile Responsiveness (Priority: CRITICAL)
+
+1. **Popup Size Constraints (Mobile)**
+   - ✅ Max width: **85% of screen** on mobile (<768px)
+   - ✅ Max width: **90% of screen** on tablet (768px - 1024px)
+   - ✅ Max width: **75% of screen** on desktop (>1024px)
+   - ❌ **NEVER allow horizontal overflow** - NO horizontal scrolling on ANY screen size
+   - ✅ Always include proper padding: `p-4 sm:p-6 md:p-8`
+
+2. **Popup Structure (Required)**
+   ```jsx
+   {/* Correct Pattern - ALL Popups */}
+   <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6">
+     <div className="w-[85%] sm:w-[90%] lg:w-[75%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl overflow-hidden">
+       {/* Content */}
+     </div>
+   </div>
+   ```
+
+3. **Padding & Margins (Required)**
+   - ✅ Outer container: `p-4 sm:p-6 md:p-8` (spacing from screen edges)
+   - ✅ Inner content: Respect CTA paddings and button margins
+   - ✅ All buttons/CTAs: Minimum `px-4 py-2` padding
+   - ❌ **NEVER let content touch screen edges**
+
+4. **Overflow Handling**
+   - ✅ Vertical scroll: Allowed with `overflow-y-auto` when needed
+   - ❌ Horizontal scroll: **NEVER ALLOWED**
+   - ✅ Long content: Use `max-h-[85vh]` with `overflow-y-auto`
+
+#### UI Component Headers (Required)
+
+**ALL major sections MUST have descriptive headers in dark blue (#1E3A8A):**
+
+1. **Human/AI Toggle Section**
+   - Header text: `"Select your preference"`
+   - Color: `text-[#1E3A8A]`
+   - Font: `text-sm font-bold`
+
+2. **Chat Panel Section**
+   - Primary header: `"Describe your legal dispute"`
+   - Secondary header: `"AI Chat Assistant"` (with Tooltip "?")
+   - Color: `text-[#1E3A8A]` for primary
+   - Tooltip: Must include helpful explanation
+
+3. **Mediator List Section**
+   - Header text: `"Review & Select your Mediator"`
+   - Color: `text-[#1E3A8A]`
+   - Font: `text-sm font-bold`
+
+#### Component-Specific Rules
+
+1. **WelcomePopup.jsx**
+   - ✅ Mobile: `w-[85%] max-w-md`
+   - ✅ Padding: `p-6 sm:p-8`
+
+2. **Onboarding.jsx**
+   - ✅ Mobile: `w-[85%] max-w-md`
+   - ✅ Padding: `p-6 sm:p-8`
+
+3. **MediatorList Modals**
+   - ✅ List modal: `w-[85%] sm:w-[80%] lg:w-[75%]`
+   - ✅ Detail modal: `w-[85%] sm:w-[90%] max-w-4xl`
+   - ✅ Max height: `max-h-[85vh]`
+
+#### Testing Checklist
+
+**Before committing UI changes, verify:**
+- [ ] Popup displays correctly on mobile (375px width)
+- [ ] No horizontal overflow at any screen size
+- [ ] All padding/margins properly applied
+- [ ] Headers are visible in dark blue
+- [ ] Tooltips work where required
+- [ ] Close buttons are accessible
+- [ ] CTAs don't overlap or get cut off
+
+**Rule:** If a popup doesn't fit within 85% of mobile screen, redesign it - NEVER allow horizontal scrolling.
+
+---
+
 ### 📑 Rules Table of Contents
 
 1. **[NO LIES - Ever](#-critical-rule-no-lies---ever)** ⭐ **#1 MOST IMPORTANT**
 2. **[DRY Principle](#-critical-rule-dry---dont-repeat-yourself)** ⭐ **#2 MOST IMPORTANT**
-3. [Token Optimization Rules](#token-optimization-rules) ⭐
-4. [Token Optimization Summary](#token-optimization-summary) ⭐
-5. [No Duplication Rule](#rule-1-no-duplication)
-6. [Documentation Structure](#current-documentation-structure-approved)
-7. [Code Organization](#code-organization-rules)
-8. [Naming Conventions](#naming-conventions)
-9. [Update Rules](#update-contextmd-rule)
+3. **[UX Design Rules](#-ux-design-rules-responsive-design--popups)** 🎨 **MOBILE FIRST**
+4. [Token Optimization Rules](#token-optimization-rules) ⭐
+5. [Token Optimization Summary](#token-optimization-summary) ⭐
+6. [No Duplication Rule](#rule-1-no-duplication)
+7. [Documentation Structure](#current-documentation-structure-approved)
+8. [Code Organization](#code-organization-rules)
+9. [Naming Conventions](#naming-conventions)
+10. [Update Rules](#update-contextmd-rule)
 
 ---
 

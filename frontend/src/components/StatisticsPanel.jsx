@@ -87,6 +87,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
     <div className="flex flex-col gap-4 lg:gap-6">
       {/* AI/Human Toggle - Neomorphism Style */}
       <div className="px-5 py-3 bg-neu-100 rounded-neu shadow-neu-inset flex-shrink-0">
+        <h3 className="text-sm font-bold text-[#1E3A8A] mb-3">Select your preference</h3>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-neu-700 font-semibold text-sm">Human</span>

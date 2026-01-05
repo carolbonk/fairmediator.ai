@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
 import FileUpload from './FileUpload';
+import Tooltip from './Tooltip';
 
 const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const [messages, setMessages] = useState([
@@ -75,9 +76,13 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
     <div className="flex flex-col">
       {/* Header - Neumorphism */}
       <div className="px-4 py-3 bg-neu-100 border-b border-neu-200">
-        <h2 className="text-base font-semibold text-neu-800">
-          AI Chat Assistant
-        </h2>
+        <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">Describe your legal dispute</h3>
+        <div className="flex items-center gap-2">
+          <h2 className="text-base font-semibold text-neu-800">
+            AI Chat Assistant
+          </h2>
+          <Tooltip text="Our AI assistant helps you describe your case and find the perfect mediator. Powered by Hugging Face - completely free!" />
+        </div>
         <p className="text-xs text-neu-600 mt-0.5">
           Powered by Hugging Face (100% FREE)
         </p>

@@ -215,6 +215,7 @@ const MediatorList = ({ parties }) => {
     <div className="flex flex-col">
       {/* Header with Filters - Ultra Compact */}
       <div className="border-b border-neu-200 px-4 py-2 bg-neu-100">
+        <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">Review & Select your Mediator</h3>
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-semibold text-neu-800">
             Mediators
@@ -365,14 +366,14 @@ const MediatorList = ({ parties }) => {
         </div>
       </div>
 
-      {/* Fullscreen Modal - 75% width, blurred background */}
+      {/* Fullscreen Modal - Responsive width, blurred background */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in"
+          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in p-4 sm:p-6"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            className="w-[85%] sm:w-[80%] lg:w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -492,14 +493,14 @@ const MediatorList = ({ parties }) => {
       {/* Mediator Detail Popup - Availability & Video Call Info */}
       {showMediatorDetail && selectedMediator && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[60] animate-fade-in"
+          className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[60] animate-fade-in p-4 sm:p-6"
           onClick={() => {
             setShowMediatorDetail(false);
             setSelectedMediator(null);
           }}
         >
           <div
-            className="w-[90%] max-w-4xl max-h-[90vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
+            className="w-[85%] sm:w-[90%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
