@@ -10,6 +10,7 @@ const multer = require('multer'); // NOTE: Install with: npm install multer
 const documentParser = require('../services/documentParser');
 const bulkConflictChecker = require('../services/bulkConflictChecker');
 const chatService = require('../services/huggingface/chatService');
+const { sendSuccess, sendError, sendValidationError, asyncHandler } = require('../utils/responseHandlers');
 
 /**
  * Configure multer for file uploads
@@ -55,34 +56,20 @@ const upload = multer({
  *   }
  * }
  */
-router.post('/document', upload.single('document'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: 'No file uploaded. Please upload a document'
-      });
-    }
-
-    // Parse the uploaded file
-    const analysis = await documentParser.parseFile(
-      req.file.buffer,
-      req.file.mimetype,
-      req.file.originalname
-    );
-
-    res.json({
-      success: true,
-      analysis
-    });
-  } catch (error) {
-    console.error('Document analysis error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message || 'Failed to analyze document'
-    });
+router.post('/document', upload.single('document'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return sendValidationError(res, 'No file uploaded. Please upload a document');
   }
-});
+
+  // Parse the uploaded file
+  const analysis = await documentParser.parseFile(
+    req.file.buffer,
+    req.file.mimetype,
+    req.file.originalname
+  );
+
+  sendSuccess(res, { analysis });
+}));
 
 /**
  * POST /api/analysis/text
@@ -92,32 +79,18 @@ router.post('/document', upload.single('document'), async (req, res) => {
  * BODY: { text: string }
  * RESPONSE: Same as /document endpoint
  */
-router.post('/text', async (req, res) => {
-  try {
-    const { text } = req.body;
+router.post('/text', asyncHandler(async (req, res) => {
+  const { text } = req.body;
 
-    if (!text || typeof text !== 'string') {
-      return res.status(400).json({
-        success: false,
-        error: 'Text content is required'
-      });
-    }
-
-    // Parse the text
-    const analysis = await documentParser.parseText(text);
-
-    res.json({
-      success: true,
-      analysis
-    });
-  } catch (error) {
-    console.error('Text analysis error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to analyze text'
-    });
+  if (!text || typeof text !== 'string') {
+    return sendValidationError(res, 'Text content is required');
   }
-});
+
+  // Parse the text
+  const analysis = await documentParser.parseText(text);
+
+  sendSuccess(res, { analysis });
+}));
 
 /**
  * POST /api/analysis/bulk-conflict
@@ -135,43 +108,29 @@ router.post('/text', async (req, res) => {
  *   }
  * }
  */
-router.post('/bulk-conflict', upload.single('parties'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: 'No file uploaded. Please upload a CSV or TXT file'
-      });
-    }
-
-    // Validate file
-    bulkConflictChecker.validateFile(req.file.size, req.file.mimetype);
-
-    // Parse file content
-    const fileContent = req.file.buffer.toString('utf-8');
-    let parties;
-
-    if (req.file.mimetype.includes('csv')) {
-      parties = bulkConflictChecker.parseCSV(fileContent);
-    } else {
-      parties = bulkConflictChecker.parseText(fileContent);
-    }
-
-    // Check conflicts
-    const results = await bulkConflictChecker.checkConflicts(parties);
-
-    res.json({
-      success: true,
-      results
-    });
-  } catch (error) {
-    console.error('Bulk conflict check error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message || 'Failed to check conflicts'
-    });
+router.post('/bulk-conflict', upload.single('parties'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return sendValidationError(res, 'No file uploaded. Please upload a CSV or TXT file');
   }
-});
+
+  // Validate file
+  bulkConflictChecker.validateFile(req.file.size, req.file.mimetype);
+
+  // Parse file content
+  const fileContent = req.file.buffer.toString('utf-8');
+  let parties;
+
+  if (req.file.mimetype.includes('csv')) {
+    parties = bulkConflictChecker.parseCSV(fileContent);
+  } else {
+    parties = bulkConflictChecker.parseText(fileContent);
+  }
+
+  // Check conflicts
+  const results = await bulkConflictChecker.checkConflicts(parties);
+
+  sendSuccess(res, { results });
+}));
 
 /**
  * POST /api/analysis/chat-enhanced
@@ -184,33 +143,18 @@ router.post('/bulk-conflict', upload.single('parties'), async (req, res) => {
  * }
  * RESPONSE: Enhanced chat response with case analysis and mediator suggestions
  */
-router.post('/chat-enhanced', async (req, res) => {
-  try {
-    const { message, history = [] } = req.body;
+router.post('/chat-enhanced', asyncHandler(async (req, res) => {
+  const { message, history = [] } = req.body;
 
-    if (!message || typeof message !== 'string') {
-      return res.status(400).json({
-        success: false,
-        error: 'Message is required and must be a string'
-      });
-    }
-
-    // Use enhanced chat service with case analysis
-    const result = await chatService.processQueryWithCaseAnalysis(message, history);
-
-    res.json({
-      success: true,
-      ...result
-    });
-  } catch (error) {
-    console.error('Enhanced chat error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to process enhanced chat message',
-      message: error.message
-    });
+  if (!message || typeof message !== 'string') {
+    return sendValidationError(res, 'Message is required and must be a string');
   }
-});
+
+  // Use enhanced chat service with case analysis
+  const result = await chatService.processQueryWithCaseAnalysis(message, history);
+
+  sendSuccess(res, result);
+}));
 
 /**
  * Error handling middleware for file upload errors
@@ -218,22 +162,13 @@ router.post('/chat-enhanced', async (req, res) => {
 router.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({
-        success: false,
-        error: 'File too large. Maximum size is 1MB'
-      });
+      return sendValidationError(res, 'File too large. Maximum size is 1MB');
     }
-    return res.status(400).json({
-      success: false,
-      error: error.message
-    });
+    return sendValidationError(res, error.message);
   }
 
   if (error.message) {
-    return res.status(400).json({
-      success: false,
-      error: error.message
-    });
+    return sendValidationError(res, error.message);
   }
 
   next(error);

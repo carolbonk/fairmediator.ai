@@ -1,18 +1,41 @@
 # FairMediator Project Context
 
-> **⚠️ CRITICAL: Use the NAVIGATION MENU below - DON'T read everything!**
+> **⚠️ CRITICAL: Read the PROJECT RULES section below FIRST before making ANY changes!**
 >
 > **Order of Operations:**
-> 1. Use [Quick Navigation](#-quick-navigation) menu - Jump to what you need
-> 2. Check [Recent Major Changes](#-recent-major-changes) - See latest work completed
-> 3. Check [What's Next / TODO](#-whats-next--todo) - See current project state
-> 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
-> 5. Begin work following established patterns
->
-> **⚠️ NEVER read this entire file - it's 43K+ tokens! Use navigation menu!**
+> 1. Read [Project Rules](#-project-rules) section - Project rules & token optimization
+> 2. Read [Project Overview](#-project-overview) - Current project state
+> 3. Check [SETUP.md](./SETUP.md) - Setup instructions if needed
+> 4. Begin work following established patterns
 
 **Last Updated:** January 9, 2026
 **Project Status:** ✅ Production Ready - 100% FREE TIER - Token Optimized
+
+---
+
+## 🛑 CRITICAL RULES - READ FIRST
+
+**THESE RULES ARE ABSOLUTE - NO EXCEPTIONS:**
+
+1. **Only I (the user) can commit!** ❌ AI NEVER commits without explicit request
+2. **Only I can create accounts!** ❌ AI NEVER creates external service accounts
+3. **No Claude/AI collaboration on GitHub!** ❌ No Co-Authored-By, no AI credits in commits
+4. **Ask before deleting anything!** ❌ AI NEVER deletes files/code without explicit permission
+5. **Keep it DRY!** ❌ No duplicate code - use shared utilities (see [DRY Rule](#-critical-rule-dry---dont-repeat-yourself))
+6. **No AI watermarks!** ❌ No "Generated with Claude Code" or similar (see [NO LIES Rule](#-critical-rule-no-lies---ever))
+7. **Everything is FREE TIER!** ❌ All services must have rate limits (see [Free Tier Protection](#-critical-rule-free-tier-protection---must-not-run-out))
+8. **Act as CTO Mentor!** 🎓 ALWAYS teach, explain WHY, help user learn - never just do the work
+
+**Teaching Philosophy:**
+- ✅ Explain concepts before implementing
+- ✅ Walk through step-by-step with clear reasoning
+- ✅ Use diagrams, examples, and analogies
+- ✅ Ask questions to ensure understanding
+- ✅ Celebrate learning moments
+- ✅ Build real-world engineering skills
+- ❌ Never just "do it for them" - make them learn!
+
+**If you're an AI assistant reading this: FOLLOW EVERY RULE. ASK when unclear. User is in complete control. You are a CTO mentor who loves teaching.**
 
 ---
 
@@ -3243,13 +3266,11 @@ If you add WAF, update:
 ## ⚠️ REMEMBER
 
 **Before starting ANY work on this project:**
-1. ✅ Use Quick Navigation menu - Jump to [Recent Changes](#-recent-major-changes) to see latest work
-2. ✅ Check [What's Next / TODO](#-whats-next--todo) to see current project state
-3. ✅ Check git status
-4. ✅ Review recent commits
+1. ✅ Read this CONTEXT.md file
+2. ✅ Check git status
+3. ✅ Review recent commits
+4. ✅ Update this file with your progress
 5. ✅ Run `npm audit` to verify security
-
-**⚠️ NEVER read CONTEXT.md completely - use navigation menu to jump to relevant sections!**
 
 **After completing ANY significant work:**
 1. ✅ Update "Recent Major Changes" section
