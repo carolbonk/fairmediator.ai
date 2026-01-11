@@ -15,6 +15,8 @@ const WelcomePopup = ({ onClose }) => {
   const handleClose = () => {
     localStorage.setItem('hasSeenWelcome', 'true');
     setIsOpen(false);
+    // Scroll to top for mobile users
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (onClose) onClose();
   };
 

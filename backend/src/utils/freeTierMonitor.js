@@ -7,51 +7,51 @@
 
 const logger = require('../config/logger');
 
-// Free Tier Limits (Monthly)
+// Free Tier Limits (from environment variables with fallback defaults)
 const FREE_TIER_LIMITS = {
   redis: {
-    monthly: 300000, // Upstash: 10k commands/day × 30 days
-    daily: 9000, // Stay under 10k to be safe
+    monthly: parseInt(process.env.REDIS_MONTHLY_LIMIT) || 300000,
+    daily: parseInt(process.env.REDIS_DAILY_LIMIT) || 1250,
     name: 'Redis/Upstash'
   },
   huggingface: {
-    monthly: 30000, // Estimate: 1000 requests/day
-    daily: 900, // Conservative limit
+    monthly: parseInt(process.env.HUGGINGFACE_MONTHLY_LIMIT) || 30000,
+    daily: parseInt(process.env.HUGGINGFACE_DAILY_LIMIT) || 900,
     name: 'Hugging Face API'
   },
   mongodb: {
-    monthly: 512 * 1024 * 1024, // 512MB storage
+    monthly: parseInt(process.env.MONGODB_SIZE_LIMIT) || (512 * 1024 * 1024),
     daily: null, // Size-based, not request-based
     name: 'MongoDB Atlas'
   },
   weaviate: {
-    monthly: 100000, // 100k vectors
+    monthly: parseInt(process.env.WEAVIATE_VECTOR_LIMIT) || 100000,
     daily: null, // Count-based, not daily
     name: 'Weaviate Cloud'
   },
   resend: {
-    monthly: 3000, // 100 emails/day × 30
-    daily: 90, // Stay under 100
+    monthly: parseInt(process.env.RESEND_MONTHLY_LIMIT) || 3000,
+    daily: parseInt(process.env.RESEND_DAILY_LIMIT) || 90,
     name: 'Resend Email'
   },
   sentry: {
-    monthly: 5000, // 5k errors/month
-    daily: 150, // ~167/day, stay under
+    monthly: parseInt(process.env.SENTRY_MONTHLY_LIMIT) || 5000,
+    daily: parseInt(process.env.SENTRY_DAILY_LIMIT) || 150,
     name: 'Sentry Error Tracking'
   },
   scraping: {
-    monthly: 15000, // 500 pages/day × 30
-    daily: 450, // Stay under 500
+    monthly: parseInt(process.env.SCRAPING_MONTHLY_LIMIT) || 15000,
+    daily: parseInt(process.env.SCRAPING_DAILY_LIMIT) || 450,
     name: 'Web Scraping'
   }
 };
 
-// Warning thresholds
+// Warning thresholds (from environment variables with fallback defaults)
 const THRESHOLDS = {
-  warning: 0.70,  // 70%
-  alert: 0.85,    // 85%
-  critical: 0.95, // 95%
-  stop: 1.0       // 100%
+  warning: parseFloat(process.env.FREE_TIER_WARNING_THRESHOLD) || 0.70,
+  alert: parseFloat(process.env.FREE_TIER_ALERT_THRESHOLD) || 0.85,
+  critical: parseFloat(process.env.FREE_TIER_CRITICAL_THRESHOLD) || 0.95,
+  stop: parseFloat(process.env.FREE_TIER_STOP_THRESHOLD) || 1.0
 };
 
 class FreeTierMonitor {

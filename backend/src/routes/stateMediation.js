@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const { sendSuccess, sendError, asyncHandler } = require('../utils/responseHandlers');
 const router = express.Router();
 
 // State mediation data - eventually should be in database
@@ -126,47 +127,31 @@ const stateMediationData = {
  * GET /api/state-mediation/:stateCode
  * Get mediation laws and standards for a specific state
  */
-router.get('/:stateCode', (req, res) => {
-  try {
-    const { stateCode } = req.params;
-    const stateCodeUpper = stateCode.toUpperCase();
+router.get('/:stateCode', asyncHandler(async (req, res) => {
+  const { stateCode } = req.params;
+  const stateCodeUpper = stateCode.toUpperCase();
 
-    const stateData = stateMediationData[stateCodeUpper];
+  const stateData = stateMediationData[stateCodeUpper];
 
-    if (!stateData) {
-      // Default to Florida if state not found
-      return res.json(stateMediationData.FL);
-    }
-
-    res.json(stateData);
-  } catch (error) {
-    console.error('Error fetching state mediation data:', error);
-    res.status(500).json({
-      error: 'Failed to fetch state mediation data',
-      message: error.message,
-    });
+  if (!stateData) {
+    // Default to Florida if state not found
+    return sendSuccess(res, stateMediationData.FL);
   }
-});
+
+  sendSuccess(res, stateData);
+}));
 
 /**
  * GET /api/state-mediation
  * Get list of all supported states
  */
-router.get('/', (_req, res) => {
-  try {
-    const states = Object.keys(stateMediationData).map(code => ({
-      stateCode: code,
-      stateName: stateMediationData[code].stateName,
-    }));
+router.get('/', asyncHandler(async (_req, res) => {
+  const states = Object.keys(stateMediationData).map(code => ({
+    stateCode: code,
+    stateName: stateMediationData[code].stateName,
+  }));
 
-    res.json({ states });
-  } catch (error) {
-    console.error('Error fetching states list:', error);
-    res.status(500).json({
-      error: 'Failed to fetch states list',
-      message: error.message,
-    });
-  }
-});
+  sendSuccess(res, { states });
+}));
 
 module.exports = router;

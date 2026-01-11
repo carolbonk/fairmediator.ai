@@ -9,6 +9,7 @@ const multer = require('multer');
 const idpService = require('../services/ai/idpService');
 const logger = require('../config/logger');
 const Mediator = require('../models/Mediator');
+const { sendError, sendSuccess, asyncHandler } = require('../utils/responseHandlers');
 
 // Configure multer for file uploads (memory storage)
 const upload = multer({
@@ -32,28 +33,17 @@ const upload = multer({
  * Form data:
  * - file: PDF file
  */
-router.post('/process-pdf', upload.single('file'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: 'No file uploaded'
-      });
-    }
-
-    logger.info(`Processing PDF: ${req.file.originalname}`);
-
-    const result = await idpService.processPDF(req.file.buffer);
-
-    return res.json(result);
-  } catch (error) {
-    logger.error('PDF processing failed:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+router.post('/process-pdf', upload.single('file'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return sendError(res, 400, 'No file uploaded');
   }
-});
+
+  logger.info(`Processing PDF: ${req.file.originalname}`);
+
+  const result = await idpService.processPDF(req.file.buffer);
+
+  return sendSuccess(res, result);
+}));
 
 /**
  * POST /api/idp/process-text
@@ -64,30 +54,19 @@ router.post('/process-pdf', upload.single('file'), async (req, res) => {
  *   "text": "mediator bio or profile text..."
  * }
  */
-router.post('/process-text', async (req, res) => {
-  try {
-    const { text } = req.body;
+router.post('/process-text', asyncHandler(async (req, res) => {
+  const { text } = req.body;
 
-    if (!text) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: text'
-      });
-    }
-
-    logger.info('Processing text document');
-
-    const result = await idpService.processDocument(text);
-
-    return res.json(result);
-  } catch (error) {
-    logger.error('Text processing failed:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  if (!text) {
+    return sendError(res, 400, 'Missing required field: text');
   }
-});
+
+  logger.info('Processing text document');
+
+  const result = await idpService.processDocument(text);
+
+  return sendSuccess(res, result);
+}));
 
 /**
  * POST /api/idp/process-and-save
@@ -98,100 +77,84 @@ router.post('/process-text', async (req, res) => {
  * - text: Plain text (optional if file provided)
  * - autoSave: boolean (default: true)
  */
-router.post('/process-and-save', upload.single('file'), async (req, res) => {
-  try {
-    let result;
+router.post('/process-and-save', upload.single('file'), asyncHandler(async (req, res) => {
+  let result;
 
-    // Process file or text
-    if (req.file) {
-      logger.info(`Processing and saving PDF: ${req.file.originalname}`);
-      result = await idpService.processPDF(req.file.buffer);
-    } else if (req.body.text) {
-      logger.info('Processing and saving text document');
-      result = await idpService.processDocument(req.body.text);
-    } else {
-      return res.status(400).json({
-        success: false,
-        error: 'Either file or text must be provided'
-      });
-    }
-
-    // Check if extraction was successful
-    if (!result.success || !result.data.name) {
-      return res.status(400).json({
-        success: false,
-        error: 'Failed to extract mediator data. Confidence too low or missing required fields.',
-        result
-      });
-    }
-
-    // Auto-save if enabled (default: true)
-    const autoSave = req.body.autoSave !== 'false';
-    let savedMediator = null;
-
-    if (autoSave) {
-      // Check if mediator already exists
-      const existing = await Mediator.findOne({ name: result.data.name });
-
-      if (existing) {
-        // Update existing mediator
-        Object.assign(existing, {
-          barNumber: result.data.barNumber || existing.barNumber,
-          location: result.data.location || existing.location,
-          specializations: [...new Set([...(existing.specializations || []), ...(result.data.specializations || [])])],
-          yearsExperience: result.data.yearsExperience || existing.yearsExperience,
-          education: result.data.education || existing.education,
-          email: result.data.contact?.email || existing.email,
-          phone: result.data.contact?.phone || existing.phone,
-          practiceAreas: [...new Set([...(existing.practiceAreas || []), ...(result.data.practiceAreas || [])])]
-        });
-
-        savedMediator = await existing.save();
-        logger.info(`Updated existing mediator: ${result.data.name}`);
-      } else {
-        // Create new mediator
-        savedMediator = await Mediator.create({
-          name: result.data.name,
-          barNumber: result.data.barNumber,
-          location: result.data.location?.city ? `${result.data.location.city}, ${result.data.location.state}` : null,
-          state: result.data.location?.state,
-          specializations: result.data.specializations || [],
-          yearsExperience: result.data.yearsExperience,
-          education: result.data.education || [],
-          email: result.data.contact?.email,
-          phone: result.data.contact?.phone,
-          practiceAreas: result.data.practiceAreas || [],
-          ideology: 0, // Neutral by default
-          ideologyScore: 0,
-          dataSource: 'IDP - Automated extraction',
-          lastUpdated: new Date()
-        });
-
-        logger.info(`Created new mediator: ${result.data.name}`);
-      }
-    }
-
-    return res.json({
-      success: true,
-      extracted: result,
-      saved: autoSave,
-      mediator: savedMediator ? {
-        id: savedMediator._id,
-        name: savedMediator.name,
-        barNumber: savedMediator.barNumber
-      } : null,
-      message: autoSave
-        ? (savedMediator.id ? 'Mediator profile created successfully' : 'Mediator profile updated successfully')
-        : 'Data extracted successfully (not saved)'
-    });
-  } catch (error) {
-    logger.error('Process and save failed:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  // Process file or text
+  if (req.file) {
+    logger.info(`Processing and saving PDF: ${req.file.originalname}`);
+    result = await idpService.processPDF(req.file.buffer);
+  } else if (req.body.text) {
+    logger.info('Processing and saving text document');
+    result = await idpService.processDocument(req.body.text);
+  } else {
+    return sendError(res, 400, 'Either file or text must be provided');
   }
-});
+
+  // Check if extraction was successful
+  if (!result.success || !result.data.name) {
+    return sendError(res, 400, 'Failed to extract mediator data. Confidence too low or missing required fields.', { result });
+  }
+
+  // Auto-save if enabled (default: true)
+  const autoSave = req.body.autoSave !== 'false';
+  let savedMediator = null;
+
+  if (autoSave) {
+    // Check if mediator already exists
+    const existing = await Mediator.findOne({ name: result.data.name });
+
+    if (existing) {
+      // Update existing mediator
+      Object.assign(existing, {
+        barNumber: result.data.barNumber || existing.barNumber,
+        location: result.data.location || existing.location,
+        specializations: [...new Set([...(existing.specializations || []), ...(result.data.specializations || [])])],
+        yearsExperience: result.data.yearsExperience || existing.yearsExperience,
+        education: result.data.education || existing.education,
+        email: result.data.contact?.email || existing.email,
+        phone: result.data.contact?.phone || existing.phone,
+        practiceAreas: [...new Set([...(existing.practiceAreas || []), ...(result.data.practiceAreas || [])])]
+      });
+
+      savedMediator = await existing.save();
+      logger.info(`Updated existing mediator: ${result.data.name}`);
+    } else {
+      // Create new mediator
+      savedMediator = await Mediator.create({
+        name: result.data.name,
+        barNumber: result.data.barNumber,
+        location: result.data.location?.city ? `${result.data.location.city}, ${result.data.location.state}` : null,
+        state: result.data.location?.state,
+        specializations: result.data.specializations || [],
+        yearsExperience: result.data.yearsExperience,
+        education: result.data.education || [],
+        email: result.data.contact?.email,
+        phone: result.data.contact?.phone,
+        practiceAreas: result.data.practiceAreas || [],
+        ideology: 0, // Neutral by default
+        ideologyScore: 0,
+        dataSource: 'IDP - Automated extraction',
+        lastUpdated: new Date()
+      });
+
+      logger.info(`Created new mediator: ${result.data.name}`);
+    }
+  }
+
+  return sendSuccess(res, {
+    extracted: result,
+    saved: autoSave,
+    mediator: savedMediator ? {
+      id: savedMediator._id,
+      name: savedMediator.name,
+      barNumber: savedMediator.barNumber
+    } : null,
+    message: autoSave
+      ? (savedMediator.id ? 'Mediator profile created successfully' : 'Mediator profile updated successfully')
+      : 'Data extracted successfully (not saved)'
+  });
+}));
 
 /**
  * POST /api/idp/batch-process

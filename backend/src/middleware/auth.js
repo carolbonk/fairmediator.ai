@@ -107,6 +107,33 @@ const optionalAuth = async (req, res, next) => {
 };
 
 /**
+ * Require specific role(s)
+ * Use after authenticate middleware
+ */
+const requireRole = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    // Ensure roles is an array
+    const requiredRoles = Array.isArray(roles) ? roles : [roles];
+
+    // Check if user has one of the required roles
+    if (!requiredRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        error: 'Insufficient permissions',
+        message: `This action requires one of the following roles: ${requiredRoles.join(', ')}`,
+        requiredRoles,
+        currentRole: req.user.role
+      });
+    }
+
+    next();
+  };
+};
+
+/**
  * Check usage limits
  * Verifies user hasn't exceeded their tier limits for a specific action
  */
@@ -144,6 +171,7 @@ const checkUsageLimit = (actionType) => {
 module.exports = {
   authenticate,
   requireTier,
+  requireRole,
   optionalAuth,
   checkUsageLimit
 };
