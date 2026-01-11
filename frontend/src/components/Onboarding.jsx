@@ -5,17 +5,24 @@ const Onboarding = ({ shouldStart, onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    // Check if user has seen the onboarding before
+    // Check if user has seen the onboarding and welcome popup
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
 
-    if (shouldStart && !hasSeenOnboarding) {
-      setIsOpen(true);
+    // Show onboarding automatically after welcome popup is dismissed
+    // OR if shouldStart is explicitly triggered
+    if (!hasSeenOnboarding && (hasSeenWelcome || shouldStart)) {
+      // Small delay to allow WelcomePopup to fully close first
+      const timer = setTimeout(() => setIsOpen(true), 300);
+      return () => clearTimeout(timer);
     }
-  }, [shouldStart]);
+  }, [shouldStart]); // Re-check when shouldStart changes or component mounts
 
   const handleSkip = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setIsOpen(false);
+    // Scroll to top of page (especially important for mobile)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (onComplete) onComplete();
   };
 

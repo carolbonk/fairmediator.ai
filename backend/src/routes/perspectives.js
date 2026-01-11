@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const multiPerspectiveAgents = require('../services/huggingface/multiPerspectiveAgents');
-const logger = require('../config/logger');
+const { sendSuccess, sendError, sendValidationError, asyncHandler } = require('../utils/responseHandlers');
 
 /**
  * POST /api/perspectives/all
@@ -18,34 +18,20 @@ const logger = require('../config/logger');
  *   "history": [{"role": "user", "content": "..."}]
  * }
  */
-router.post('/all', async (req, res) => {
-  try {
-    const { message, history = [] } = req.body;
+router.post('/all', asyncHandler(async (req, res) => {
+  const { message, history = [] } = req.body;
 
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: message'
-      });
-    }
-
-    logger.info('Getting multi-perspective responses for:', message.substring(0, 50));
-
-    const perspectives = await multiPerspectiveAgents.getAllPerspectives(message, history);
-
-    return res.json({
-      success: true,
-      perspectives,
-      message: 'Retrieved responses from all three AI perspectives'
-    });
-  } catch (error) {
-    logger.error('Multi-perspective request failed:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  if (!message) {
+    return sendValidationError(res, 'Missing required field: message');
   }
-});
+
+  const perspectives = await multiPerspectiveAgents.getAllPerspectives(message, history);
+
+  sendSuccess(res, {
+    perspectives,
+    message: 'Retrieved responses from all three AI perspectives'
+  });
+}));
 
 /**
  * POST /api/perspectives/single
@@ -58,41 +44,22 @@ router.post('/all', async (req, res) => {
  *   "history": []
  * }
  */
-router.post('/single', async (req, res) => {
-  try {
-    const { perspective, message, history = [] } = req.body;
+router.post('/single', asyncHandler(async (req, res) => {
+  const { perspective, message, history = [] } = req.body;
 
-    if (!perspective || !message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required fields: perspective, message'
-      });
-    }
-
-    const validPerspectives = ['liberal', 'neutral', 'conservative'];
-    if (!validPerspectives.includes(perspective)) {
-      return res.status(400).json({
-        success: false,
-        error: `Invalid perspective. Must be one of: ${validPerspectives.join(', ')}`
-      });
-    }
-
-    logger.info(`Getting ${perspective} perspective for:`, message.substring(0, 50));
-
-    const response = await multiPerspectiveAgents.getResponse(perspective, message, history);
-
-    return res.json({
-      success: true,
-      perspective: response
-    });
-  } catch (error) {
-    logger.error(`${req.body.perspective} perspective request failed:`, error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  if (!perspective || !message) {
+    return sendValidationError(res, 'Missing required fields: perspective, message');
   }
-});
+
+  const validPerspectives = ['liberal', 'neutral', 'conservative'];
+  if (!validPerspectives.includes(perspective)) {
+    return sendValidationError(res, `Invalid perspective. Must be one of: ${validPerspectives.join(', ')}`);
+  }
+
+  const response = await multiPerspectiveAgents.getResponse(perspective, message, history);
+
+  sendSuccess(res, { perspective: response });
+}));
 
 /**
  * POST /api/perspectives/compare
@@ -104,88 +71,67 @@ router.post('/single', async (req, res) => {
  *   "history": []
  * }
  */
-router.post('/compare', async (req, res) => {
-  try {
-    const { message, history = [] } = req.body;
+router.post('/compare', asyncHandler(async (req, res) => {
+  const { message, history = [] } = req.body;
 
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: message'
-      });
-    }
-
-    const perspectives = await multiPerspectiveAgents.getAllPerspectives(message, history);
-
-    // Analyze differences and similarities
-    const comparison = {
-      perspectives: perspectives,
-      analysis: {
-        commonGround: [],
-        keyDifferences: [],
-        recommendations: []
-      }
-    };
-
-    // Note: This is a placeholder for deeper analysis
-    // You could use another AI call here to analyze the three perspectives
-
-    return res.json({
-      success: true,
-      comparison,
-      message: 'Retrieved and compared all three perspectives'
-    });
-  } catch (error) {
-    logger.error('Perspective comparison failed:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  if (!message) {
+    return sendValidationError(res, 'Missing required field: message');
   }
-});
+
+  const perspectives = await multiPerspectiveAgents.getAllPerspectives(message, history);
+
+  // Analyze differences and similarities
+  const comparison = {
+    perspectives: perspectives,
+    analysis: {
+      commonGround: [],
+      keyDifferences: [],
+      recommendations: []
+    }
+  };
+
+  // Note: This is a placeholder for deeper analysis
+  // You could use another AI call here to analyze the three perspectives
+
+  sendSuccess(res, {
+    comparison,
+    message: 'Retrieved and compared all three perspectives'
+  });
+}));
 
 /**
  * GET /api/perspectives/info
  * Get information about available perspectives
  */
-router.get('/info', async (req, res) => {
-  try {
-    const perspectives = [
-      {
-        id: 'liberal',
-        name: 'Progressive Mediator AI',
-        icon: '🔵',
-        description: 'Prioritizes social justice, worker rights, and progressive approaches',
-        focus: ['Equity', 'Social justice', 'Progressive solutions', 'Civil liberties']
-      },
-      {
-        id: 'neutral',
-        name: 'Balanced Mediator AI',
-        icon: '⚪',
-        description: 'Strictly neutral, fact-based approach with pragmatic solutions',
-        focus: ['Objectivity', 'Facts', 'Balanced view', 'Practical compromise']
-      },
-      {
-        id: 'conservative',
-        name: 'Traditional Mediator AI',
-        icon: '🔴',
-        description: 'Emphasizes legal frameworks, contracts, and traditional methods',
-        focus: ['Legal precedent', 'Property rights', 'Personal responsibility', 'Traditional methods']
-      }
-    ];
+router.get('/info', asyncHandler(async (req, res) => {
+  const perspectives = [
+    {
+      id: 'liberal',
+      name: 'Progressive Mediator AI',
+      icon: '🔵',
+      description: 'Prioritizes social justice, worker rights, and progressive approaches',
+      focus: ['Equity', 'Social justice', 'Progressive solutions', 'Civil liberties']
+    },
+    {
+      id: 'neutral',
+      name: 'Balanced Mediator AI',
+      icon: '⚪',
+      description: 'Strictly neutral, fact-based approach with pragmatic solutions',
+      focus: ['Objectivity', 'Facts', 'Balanced view', 'Practical compromise']
+    },
+    {
+      id: 'conservative',
+      name: 'Traditional Mediator AI',
+      icon: '🔴',
+      description: 'Emphasizes legal frameworks, contracts, and traditional methods',
+      focus: ['Legal precedent', 'Property rights', 'Personal responsibility', 'Traditional methods']
+    }
+  ];
 
-    return res.json({
-      success: true,
-      perspectives,
-      message: 'Three AI perspectives available for balanced mediation'
-    });
-  } catch (error) {
-    logger.error('Failed to get perspective info:', error);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
+  sendSuccess(res, {
+    perspectives,
+    message: 'Three AI perspectives available for balanced mediation'
+  });
+}));
 
 module.exports = router;
