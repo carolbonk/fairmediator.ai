@@ -1,55 +1,18 @@
 /**
  * Embedding Service
  * Generates vector embeddings for mediator profiles using HuggingFace
- * Stores embeddings in ChromaDB for semantic search
+ * Stores embeddings in MongoDB Atlas for semantic vector search
  */
 
-const { ChromaClient } = require('chromadb');
 const hfClient = require('../huggingface/hfClient');
+const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
 
 class EmbeddingService {
   constructor() {
-    this.client = null;
-    this.collection = null;
-    this.collectionName = 'mediator_profiles';
     this.embeddingModel = 'sentence-transformers/all-MiniLM-L6-v2';
-    this.initialized = false;
-  }
-
-  /**
-   * Initialize ChromaDB client and collection
-   */
-  async initialize() {
-    if (this.initialized) return;
-
-    try {
-      // Initialize ChromaDB client
-      this.client = new ChromaClient({
-        path: process.env.CHROMADB_URL || 'http://localhost:8000'
-      });
-
-      // Create or get collection
-      try {
-        this.collection = await this.client.getOrCreateCollection({
-          name: this.collectionName,
-          metadata: {
-            description: 'Mediator profile embeddings for semantic search',
-            model: this.embeddingModel
-          }
-        });
-        logger.info(`ChromaDB collection "${this.collectionName}" ready`);
-      } catch (error) {
-        logger.error('Error creating/getting collection:', error);
-        throw error;
-      }
-
-      this.initialized = true;
-    } catch (error) {
-      logger.error('Failed to initialize ChromaDB:', error);
-      // Don't throw - allow system to run without vector search
-      this.initialized = false;
-    }
+    this.vectorIndexName = 'mediator_vector_search';
+    this.dimensions = 384; // all-MiniLM-L6-v2 produces 384-dimensional vectors
   }
 
   /**
@@ -126,16 +89,9 @@ class EmbeddingService {
   }
 
   /**
-   * Index a mediator profile in ChromaDB
+   * Index a mediator profile in MongoDB Atlas
    */
   async indexMediator(mediator) {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, skipping indexing');
-      return null;
-    }
-
     try {
       // Generate text representation
       const text = this.generateMediatorText(mediator);
@@ -143,26 +99,16 @@ class EmbeddingService {
       // Generate embedding
       const embedding = await this.generateEmbedding(text);
 
-      // Prepare metadata
-      const metadata = {
-        mediator_id: mediator._id.toString(),
-        name: mediator.name,
-        location_city: mediator.location?.city || '',
-        location_state: mediator.location?.state || '',
-        years_experience: mediator.yearsExperience || 0,
-        ideology_score: mediator.ideologyScore || 0,
-        specializations: mediator.specializations?.join(', ') || '',
-        is_verified: mediator.isVerified || false,
-        is_active: mediator.isActive || true
-      };
-
-      // Add to collection
-      await this.collection.add({
-        ids: [mediator._id.toString()],
-        embeddings: [embedding],
-        documents: [text],
-        metadatas: [metadata]
-      });
+      // Update mediator document with embedding
+      await Mediator.findByIdAndUpdate(
+        mediator._id,
+        {
+          embedding: embedding,
+          embeddingModel: this.embeddingModel,
+          embeddingGeneratedAt: new Date()
+        },
+        { runValidators: false } // Skip validation for performance
+      );
 
       logger.info(`Indexed mediator: ${mediator.name} (${mediator._id})`);
       return { mediatorId: mediator._id, embedding, text };
@@ -176,13 +122,6 @@ class EmbeddingService {
    * Batch index multiple mediators
    */
   async indexMediators(mediators) {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, skipping batch indexing');
-      return { indexed: 0, failed: 0 };
-    }
-
     let indexed = 0;
     let failed = 0;
 
@@ -201,52 +140,97 @@ class EmbeddingService {
   }
 
   /**
-   * Search for similar mediators using semantic search
+   * Search for similar mediators using MongoDB Atlas Vector Search
+   * NOTE: Requires vector search index to be created in MongoDB Atlas
    */
   async searchSimilar(query, options = {}) {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, returning empty results');
-      return [];
-    }
-
     try {
       const {
         topK = 10,
-        filter = null,
+        filter = {},
         includeMetadata = true
       } = options;
 
       // Generate embedding for query
       const queryEmbedding = await this.generateEmbedding(query);
 
-      // Search in ChromaDB
-      const results = await this.collection.query({
-        queryEmbeddings: [queryEmbedding],
-        nResults: topK,
-        where: filter,
-        include: includeMetadata ? ['metadatas', 'documents', 'distances'] : ['distances']
-      });
+      // Build vector search aggregation pipeline
+      const pipeline = [
+        {
+          $vectorSearch: {
+            index: this.vectorIndexName,
+            path: 'embedding',
+            queryVector: queryEmbedding,
+            numCandidates: topK * 10, // Search more candidates for better results
+            limit: topK
+          }
+        },
+        {
+          $addFields: {
+            similarity: { $meta: 'vectorSearchScore' }
+          }
+        }
+      ];
+
+      // Add filters if provided
+      if (Object.keys(filter).length > 0) {
+        pipeline.push({ $match: filter });
+      }
+
+      // Project fields
+      if (includeMetadata) {
+        pipeline.push({
+          $project: {
+            _id: 1,
+            name: 1,
+            location: 1,
+            yearsExperience: 1,
+            ideologyScore: 1,
+            specializations: 1,
+            isVerified: 1,
+            isActive: 1,
+            similarity: 1
+          }
+        });
+      } else {
+        pipeline.push({
+          $project: {
+            _id: 1,
+            similarity: 1
+          }
+        });
+      }
+
+      // Execute search
+      const results = await Mediator.aggregate(pipeline);
 
       // Format results
-      const formattedResults = [];
-      if (results.ids && results.ids[0]) {
-        for (let i = 0; i < results.ids[0].length; i++) {
-          formattedResults.push({
-            mediatorId: results.ids[0][i],
-            distance: results.distances[0][i],
-            similarity: 1 - results.distances[0][i], // Convert distance to similarity
-            metadata: includeMetadata ? results.metadatas[0][i] : null,
-            document: includeMetadata ? results.documents[0][i] : null
-          });
-        }
-      }
+      const formattedResults = results.map(result => ({
+        mediatorId: result._id.toString(),
+        similarity: result.similarity,
+        metadata: includeMetadata ? {
+          name: result.name,
+          location_city: result.location?.city || '',
+          location_state: result.location?.state || '',
+          years_experience: result.yearsExperience || 0,
+          ideology_score: result.ideologyScore || 0,
+          specializations: result.specializations?.join(', ') || '',
+          is_verified: result.isVerified || false,
+          is_active: result.isActive || true
+        } : null
+      }));
 
       logger.info(`Found ${formattedResults.length} similar mediators for query: "${query.substring(0, 50)}..."`);
       return formattedResults;
     } catch (error) {
       logger.error('Error searching for similar mediators:', error);
+
+      // If vector search fails (index not created), return empty results gracefully
+      if (error.message?.includes('$vectorSearch') || error.message?.includes('index')) {
+        logger.warn('Vector search index not found. Create it in MongoDB Atlas first.');
+        return [];
+      }
+
       throw error;
     }
   }
@@ -255,18 +239,7 @@ class EmbeddingService {
    * Update mediator embedding
    */
   async updateMediator(mediator) {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, skipping update');
-      return null;
-    }
-
     try {
-      // Delete old embedding
-      await this.deleteMediator(mediator._id.toString());
-
-      // Add new embedding
       return await this.indexMediator(mediator);
     } catch (error) {
       logger.error(`Error updating mediator ${mediator._id}:`, error);
@@ -275,80 +248,105 @@ class EmbeddingService {
   }
 
   /**
-   * Delete mediator from index
+   * Delete mediator embedding
    */
   async deleteMediator(mediatorId) {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, skipping delete');
-      return null;
-    }
-
     try {
-      await this.collection.delete({
-        ids: [mediatorId.toString()]
-      });
+      await Mediator.findByIdAndUpdate(
+        mediatorId,
+        {
+          $unset: {
+            embedding: '',
+            embeddingModel: '',
+            embeddingGeneratedAt: ''
+          }
+        }
+      );
 
-      logger.info(`Deleted mediator from index: ${mediatorId}`);
+      logger.info(`Deleted embedding for mediator: ${mediatorId}`);
       return { deleted: true, mediatorId };
     } catch (error) {
-      logger.error(`Error deleting mediator ${mediatorId}:`, error);
+      logger.error(`Error deleting mediator embedding ${mediatorId}:`, error);
       throw error;
     }
   }
 
   /**
-   * Get collection statistics
+   * Get embedding statistics
    */
   async getStats() {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      return { initialized: false, count: 0 };
-    }
-
     try {
-      const count = await this.collection.count();
+      const total = await Mediator.countDocuments();
+      const indexed = await Mediator.countDocuments({ embedding: { $exists: true, $ne: [] } });
+
       return {
         initialized: true,
-        collectionName: this.collectionName,
-        count,
-        model: this.embeddingModel
+        total,
+        indexed,
+        notIndexed: total - indexed,
+        indexName: this.vectorIndexName,
+        model: this.embeddingModel,
+        dimensions: this.dimensions
       };
     } catch (error) {
-      logger.error('Error getting collection stats:', error);
+      logger.error('Error getting embedding stats:', error);
       return { initialized: false, error: error.message };
     }
   }
 
   /**
-   * Clear entire collection (use with caution!)
+   * Clear all embeddings (use with caution!)
    */
   async clearAll() {
-    await this.initialize();
-
-    if (!this.initialized || !this.collection) {
-      logger.warn('ChromaDB not initialized, nothing to clear');
-      return { cleared: 0 };
-    }
-
     try {
-      await this.client.deleteCollection({ name: this.collectionName });
-      this.collection = await this.client.createCollection({
-        name: this.collectionName,
-        metadata: {
-          description: 'Mediator profile embeddings for semantic search',
-          model: this.embeddingModel
+      const result = await Mediator.updateMany(
+        { embedding: { $exists: true } },
+        {
+          $unset: {
+            embedding: '',
+            embeddingModel: '',
+            embeddingGeneratedAt: ''
+          }
         }
-      });
+      );
 
-      logger.info('Cleared all embeddings from collection');
-      return { cleared: true };
+      logger.info(`Cleared embeddings from ${result.modifiedCount} mediators`);
+      return { cleared: result.modifiedCount };
     } catch (error) {
-      logger.error('Error clearing collection:', error);
+      logger.error('Error clearing embeddings:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get instructions for creating vector search index in MongoDB Atlas
+   */
+  getIndexInstructions() {
+    return {
+      message: 'Vector search index must be created in MongoDB Atlas UI or using mongosh',
+      index: {
+        name: this.vectorIndexName,
+        type: 'vectorSearch',
+        definition: {
+          fields: [
+            {
+              type: 'vector',
+              path: 'embedding',
+              numDimensions: this.dimensions,
+              similarity: 'cosine'
+            }
+          ]
+        }
+      },
+      instructions: [
+        '1. Go to MongoDB Atlas UI: https://cloud.mongodb.com',
+        '2. Navigate to your cluster > Browse Collections > fairmediator > mediators',
+        '3. Click on "Search" tab > "Create Search Index"',
+        '4. Choose "JSON Editor" and paste the definition above',
+        '5. Name the index: ' + this.vectorIndexName,
+        '6. Click "Create Search Index"'
+      ]
+    };
   }
 }
 

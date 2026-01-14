@@ -44,24 +44,6 @@ services:
     networks:
       - fairmediator-network
 
-  # ==================== Redis (Caching) ====================
-  redis:
-    image: redis:7-alpine
-    container_name: fairmediator-redis-dev
-    restart: unless-stopped
-    ports:
-      - '6379:6379'
-    command: redis-server --appendonly yes --requirepass dev_redis_password
-    volumes:
-      - redis_data:/data
-    networks:
-      - fairmediator-network
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
   # ==================== Backend API ====================
   backend:
     build:
@@ -76,7 +58,6 @@ services:
       - NODE_ENV=development
       - PORT=5001
       - MONGODB_URI=mongodb://admin:dev_password_change_in_production@mongodb:27017/fairmediator?authSource=admin
-      - REDIS_URL=redis://:dev_redis_password@redis:6379
       - JWT_SECRET=dev_jwt_secret_change_in_production
       - SESSION_SECRET=dev_session_secret_change_in_production
     volumes:
@@ -85,8 +66,6 @@ services:
       - ./backend/logs:/app/logs
     depends_on:
       mongodb:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     networks:
       - fairmediator-network
@@ -130,6 +109,4 @@ networks:
 
 volumes:
   mongodb_data:
-    driver: local
-  redis_data:
     driver: local

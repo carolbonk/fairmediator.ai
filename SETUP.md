@@ -1,21 +1,19 @@
 # FairMediator Setup Guide
 
-> **Master setup guide - All configuration in one place**
+> **Complete local development setup - 100% Free Tier**
 
-**Last Updated:** January 2, 2026
+**Last Updated:** January 13, 2026
 
 ---
 
 ## 📑 Quick Navigation
 
-**Jump to Section:**
-- [Quick Start (5 min)](#-quick-start-5-minutes) ⭐ **Start here**
+- [Quick Start (5 min)](#-quick-start-5-minutes)
 - [Environment Setup](#-environment-setup)
-- [Database Setup](#-database-setup-mongodb--vector-db)
-- [Caching Setup (Redis)](#-redis-caching-setup-optional---token-optimization) 🎯 **Saves 70-90% tokens**
-- [Vector Search (Weaviate)](#-weaviate-vector-search-setup-optional) 🚀 **Semantic search**
+- [Database Setup](#-database-setup)
+- [Docker Development](#-docker-development)
 - [Development Tools](#-development-tools)
-- [Deployment](#-deployment-options)
+- [Testing](#-testing)
 - [Troubleshooting](#-troubleshooting)
 
 ---
@@ -35,8 +33,8 @@ cp backend/.env.example backend/.env
 # Edit backend/.env - add your HUGGINGFACE_API_KEY (free from huggingface.co)
 
 # 3. Start MongoDB (choose one):
-# Option A: Docker
-docker run -d -p 27017:27017 mongo
+# Option A: Docker (recommended)
+docker-compose -f docker-compose.dev.yml up -d
 
 # Option B: MongoDB Atlas (free cloud)
 # Get connection string from mongodb.com/cloud/atlas
@@ -63,51 +61,106 @@ npm run dev
 # backend/.env
 
 # Database (choose one)
-MONGODB_URI=mongodb://localhost:27017/fairmediator
+MONGODB_URI=mongodb://localhost:27017/fairmediator  # Docker
 # OR
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/fairmediator
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/fairmediator  # Atlas
 
-# AI (FREE - get from https://huggingface.co/settings/tokens)
+# AI/ML (FREE - get from https://huggingface.co/settings/tokens)
 HUGGINGFACE_API_KEY=hf_your_free_key_here
 
 # Server
 NODE_ENV=development
 PORT=5001
 CORS_ORIGIN=http://localhost:3000
+FRONTEND_URL=http://localhost:3000
+
+# Security (development - use simple keys for local dev)
+JWT_SECRET=dev_jwt_secret_key
+JWT_REFRESH_SECRET=dev_jwt_refresh_secret_key
+SESSION_SECRET=dev_session_secret_key
 ```
 
-### Optional Variables (Recommended)
+### Optional Variables
 
-**For token optimization (highly recommended):**
+**For production features in development:**
 
 ```bash
-# Redis Caching (reduces AI calls by 70-90%)
-REDIS_ENABLED=true
-REDIS_URL=redis://localhost:6379
-# OR use Upstash (free tier): redis://default:xxx@xxx.upstash.io:6379
-REDIS_DAILY_LIMIT=9000
+# Netlify Blobs Storage (images, documents)
+NETLIFY_SITE_ID=your_site_id
+NETLIFY_TOKEN=your_netlify_token
 
-# Weaviate Vector Search (semantic mediator search)
-WEAVIATE_ENABLED=true
-WEAVIATE_URL=your-cluster.weaviate.network
-WEAVIATE_API_KEY=your_key_here
-WEAVIATE_SCHEME=https
+# Email Service (optional - logs to console if not configured)
+RESEND_API_KEY=re_your_key_here
+EMAIL_FROM=FairMediator <noreply@fairmediator.com>
+
+# Free Tier Limits (optional - uses defaults)
+HUGGINGFACE_DAILY_LIMIT=900
+HUGGINGFACE_MONTHLY_LIMIT=30000
+RESEND_DAILY_LIMIT=90
+RESEND_MONTHLY_LIMIT=3000
+MONGODB_SIZE_LIMIT=536870912
 ```
 
-### All Variables Reference
+### Complete .env.example
 
-See `backend/.env.example` for complete list with comments.
+See `backend/.env.example` for all available options with detailed comments.
 
 ---
 
-## 🗄️ Database Setup (MongoDB + Vector DB)
+## 🗄️ Database Setup
 
 ### MongoDB (Required)
 
-**Option 1: Local MongoDB**
+**Option 1: Docker MongoDB (Recommended for Development)**
 
 ```bash
-# Mac
+# Start MongoDB using docker-compose
+docker-compose -f docker-compose.dev.yml up -d
+
+# Verify it's running
+docker ps | grep mongo
+
+# Connection string for .env:
+MONGODB_URI=mongodb://localhost:27017/fairmediator
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f mongo
+
+# Stop MongoDB
+docker-compose -f docker-compose.dev.yml down
+```
+
+**Option 2: MongoDB Atlas (Free Cloud - Recommended for Production-like Testing)**
+
+1. **Create free account:** https://mongodb.com/cloud/atlas
+2. **Create M0 FREE cluster:**
+   - Click "Build a Database" → FREE tier (M0 Sandbox)
+   - Provider: AWS
+   - Region: Closest to you (e.g., us-west-2)
+   - Cluster Name: `FairMediator`
+3. **Create database user:**
+   - Go to "Database Access"
+   - Add New Database User
+   - Username: `fairmediator`
+   - Auto-generate password (save it!)
+   - Privileges: "Read and write to any database"
+4. **Whitelist your IP:**
+   - Go to "Network Access"
+   - Add IP Address → "Add Current IP Address"
+   - Or use 0.0.0.0/0 for anywhere (less secure but convenient for dev)
+5. **Get connection string:**
+   - Click "Connect" → "Connect your application"
+   - Copy connection string
+   - Replace `<password>` with your actual password
+   - Add to `.env`:
+     ```
+     MONGODB_URI=mongodb+srv://fairmediator:PASSWORD@cluster.mongodb.net/fairmediator
+     ```
+
+**Option 3: Local MongoDB Installation**
+
+```bash
+# macOS
 brew install mongodb-community
 brew services start mongodb-community
 
@@ -115,904 +168,276 @@ brew services start mongodb-community
 sudo apt-get install mongodb
 sudo systemctl start mongod
 
-# Docker
-docker run -d -p 27017:27017 --name mongodb mongo
+# Windows - Use Docker option instead
 ```
 
-**Option 2: MongoDB Atlas (FREE - Recommended)**
+### Seed Database (Optional)
 
-1. Go to https://mongodb.com/cloud/atlas
-2. Create free M0 cluster (512MB - plenty for this project)
-3. Get connection string
-4. Add to `.env`: `MONGODB_URI=mongodb+srv://...`
-
-**Seed Data (Optional):**
+Add sample mediator data for testing:
 
 ```bash
-make db-seed
-# Or: cd backend && node src/scripts/seed-data.js
+cd backend
+node src/scripts/seed-data.js
 ```
 
-### Vector Database (Optional - Choose One)
+### MongoDB Atlas Vector Search Index (Optional - For Semantic Search)
 
-**Option A: Weaviate Cloud (Recommended)**
+If using MongoDB Atlas, you can enable vector search for semantic mediator matching:
 
-See [Weaviate Setup](#-weaviate-vector-search-setup-optional) below
-
-**Option B: ChromaDB (Local)**
-
-```bash
-# Docker
-docker run -p 8000:8000 chromadb/chroma
-
-# Add to .env
-CHROMADB_URL=http://localhost:8000
-```
-
----
-
-## 🎯 Redis Caching Setup (Optional - Token Optimization)
-
-**Purpose:** Reduce AI token usage by 70-90% by caching duplicate requests
-
-**Status:** ✅ Code ready, **OPTIONAL** to enable
-
-### 📑 Redis Quick Navigation
-
-**Jump to Redis Section:**
-- [Why Use Redis?](#why-use-redis-caching) - Understand the benefits
-- [Quick Setup](#redis-quick-setup) - Get started fast
-  - [Upstash (Production)](#option-1-upstash-redis-recommended-for-production)
-  - [Local Redis (Dev)](#option-2-local-redis-development)
-- [How It Works](#how-redis-caching-works) - Before/after comparison
-- [Testing](#testing-redis-cache) - Verify it's working
-- [Cache Configuration](#cache-configuration) - What gets cached
-- [Monitoring](#monitoring-cache-performance) - Track performance
-- [Troubleshooting](#redis-troubleshooting) - Fix common issues
-
----
-
-### Why Use Redis Caching?
-
-**Current Problem:**
-- Every chat request makes 2-5 AI calls
-- Same questions = same AI calls = wasted tokens
-- Example: 10 users ask "Find mediator in LA" = 50 AI calls
-
-**With Redis Caching:**
-- First user asks "Find mediator in LA" → 5 AI calls → cached
-- Next 9 users → 0 AI calls (served from cache)
-- **Result: 90% reduction in AI calls!**
-
----
-
-### Redis Quick Setup
-
-Choose your option based on environment:
-
-#### Option 1: Upstash Redis (Recommended for Production)
-
-**Free Tier:**
-- ✅ 10,000 commands/day FREE
-- ✅ No credit card required
-- ✅ 256MB storage
-- ✅ Global edge network
-- ✅ Auto-scaling
-
-**Setup (2 minutes):**
-
-1. **Sign up:** https://upstash.com (no credit card)
-2. **Create database:**
-   - Click "Create Database"
-   - Name: `fairmediator-cache`
-   - Type: Regional
-   - Region: Closest to your users
-3. **Get connection string:**
-   - Click your database
-   - Copy "UPSTASH_REDIS_REST_URL"
-   - It looks like: `redis://default:xxx@xxx.upstash.io:6379`
-
-4. **Add to backend/.env:**
+1. **Generate embeddings for existing mediators:**
    ```bash
-   REDIS_ENABLED=true
-   REDIS_URL=redis://default:YOUR_PASSWORD@xxx.upstash.io:6379
-   REDIS_DAILY_LIMIT=9000
+   cd backend
+   node src/scripts/initializeVectorDB.js
    ```
 
-5. **Restart server:**
+2. **Create vector search index in Atlas UI:**
+   - Go to MongoDB Atlas → Your cluster
+   - Navigate to "Browse Collections" → `fairmediator` → `mediators`
+   - Click "Atlas Search" tab → "Create Search Index"
+   - Choose "JSON Editor"
+   - Index name: `mediator_vector_search`
+   - Paste this definition:
+     ```json
+     {
+       "fields": [
+         {
+           "type": "vector",
+           "path": "embedding",
+           "numDimensions": 384,
+           "similarity": "cosine"
+         }
+       ]
+     }
+     ```
+   - Click "Create Search Index"
+   - Wait for index to become "Active"
+
+3. **Test vector search:**
    ```bash
-   cd backend && npm run dev
+   node src/scripts/initializeVectorDB.js --show-index
    ```
 
-**Cost:** $0/month (10k commands = ~1000 users/day)
+For complete vector search setup, see [MONGODB_VECTOR_SEARCH_SETUP.md](./MONGODB_VECTOR_SEARCH_SETUP.md)
 
 ---
 
-#### Option 2: Local Redis (Development)
+## 🐳 Docker Development
 
-**Free Tier:**
-- ✅ 100% FREE forever
-- ✅ No limits
-- ✅ Fast (same machine)
-- ❌ Only works on your computer
+### Docker Compose (Simplified - MongoDB Only)
 
-**Setup (Mac):**
-```bash
-# Install Redis
-brew install redis
-
-# Start Redis
-brew services start redis
-
-# Verify running
-redis-cli ping
-# Should return: PONG
-```
-
-**Setup (Linux):**
-```bash
-sudo apt-get install redis-server
-sudo systemctl start redis
-redis-cli ping
-```
-
-**Setup (Windows):**
-```bash
-# Use Docker
-docker run -d -p 6379:6379 redis:alpine
-
-# Or download Windows binary
-# https://github.com/microsoftarchive/redis/releases
-```
-
-**Add to backend/.env:**
-```bash
-REDIS_ENABLED=true
-REDIS_HOST=localhost
-REDIS_PORT=6379
-```
-
----
-
-#### Option 3: Redis Cloud (Alternative)
-
-**Free Tier:**
-- ✅ 30MB FREE
-- ✅ 30 connections
-- ⚠️ Requires credit card (won't be charged on free tier)
-
-**Setup:** https://redis.com/try-free
-
----
-
-### How Redis Caching Works
-
-**Before Caching:**
-```
-User 1: "Find mediator in LA"
-→ AI Call 1: Classify ideology
-→ AI Call 2: RAG search
-→ AI Call 3: Generate response
-Total: 3 AI calls
-
-User 2: "Find mediator in LA" (same question)
-→ AI Call 1: Classify ideology (duplicate!)
-→ AI Call 2: RAG search (duplicate!)
-→ AI Call 3: Generate response (duplicate!)
-Total: 3 more AI calls (6 total)
-```
-
-**With Caching:**
-```
-User 1: "Find mediator in LA"
-→ AI Call 1: Classify ideology → cached for 10 min
-→ AI Call 2: RAG search → cached for 5 min
-→ AI Call 3: Generate response → cached for 5 min
-Total: 3 AI calls
-
-User 2: "Find mediator in LA" (same question)
-→ Cached ideology result
-→ Cached RAG result
-→ Cached response
-Total: 0 AI calls! (still 3 total)
-```
-
-**Savings: 50% reduction immediately**
-
----
-
-### Testing Redis Cache
-
-After setup, test it:
+The project includes `docker-compose.dev.yml` for local MongoDB:
 
 ```bash
-# 1. Start backend
-cd backend && npm run dev
+# Start MongoDB
+docker-compose -f docker-compose.dev.yml up -d
 
-# Should see:
-# "Redis connected successfully"
-# "Redis cache enabled: Remote" (or "Local")
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
 
-# 2. Make same request twice
-curl -X POST http://localhost:5001/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Find mediator in LA"}'
+# Stop all services
+docker-compose -f docker-compose.dev.yml down
 
-# First request: Slow (makes AI calls)
-# Second request: Fast (from cache)
-
-# 3. Check logs
-# Look for: "Cache HIT: ideology:..."
-
-# 4. Check stats
-curl http://localhost:5001/api/cache/stats
+# Clean up volumes
+docker-compose -f docker-compose.dev.yml down -v
 ```
 
----
+### What's Included
 
-### Cache Configuration
+**docker-compose.dev.yml provides:**
+- MongoDB 7.0 on port 27017
+- Persistent volume for data
+- Automatic restart
 
-**What Gets Cached:**
-- ✅ Ideology classification (10 min TTL)
-- ✅ RAG search results (5 min TTL)
-- ✅ Conflict detection (5 min TTL)
-- ❌ Final chat responses (too personalized)
+**What's NOT in Docker (runs directly on your machine):**
+- Backend Node.js server (faster hot-reload)
+- Frontend React dev server (better DX with Vite)
 
-**Files Created:**
-- `backend/src/config/redis.js` - Redis connection
-- `backend/src/utils/cacheWrapper.js` - Cache utilities
-
-**To Apply Caching:**
-
-Edit `backend/src/services/huggingface/chatService.js`:
-
-```javascript
-const { withCache } = require('../../utils/cacheWrapper');
-
-class ChatService {
-  constructor() {
-    // Wrap ideology classifier with cache
-    this.cachedIdeologyClassify = withCache(
-      ideologyClassifier.classifyText.bind(ideologyClassifier),
-      { prefix: 'ideology', ttl: 600 }
-    );
-  }
-
-  async processQuery(message, history) {
-    // Use cached version instead of direct call
-    const ideology = await this.cachedIdeologyClassify(message);
-    // ...rest of code
-  }
-}
-```
-
----
-
-### Monitoring Cache Performance
-
-**View cache stats:**
-
-```javascript
-// Add to any route
-const redisClient = require('./config/redis');
-
-app.get('/api/cache/stats', async (req, res) => {
-  const stats = await redisClient.getStats();
-  res.json(stats);
-});
-```
-
-**Clear cache manually:**
-
-```javascript
-const { invalidateCache } = require('./utils/cacheWrapper');
-
-// Clear all ideology classifications
-await invalidateCache('ideology:*');
-
-// Clear all caches
-await invalidateCache('*');
-```
-
----
-
-### Redis Troubleshooting
-
-**"Redis connection refused"**
-- Local Redis: Make sure it's running (`brew services list`)
-- Upstash: Check REDIS_URL is correct
-
-**"Cache not working"**
-- Check `REDIS_ENABLED=true` in .env
-- Check server logs for "Redis connected successfully"
-- Verify cache wrapper is imported and used
-
-**"Too many connections"**
-- Free tier limit hit
-- Upgrade to paid tier or reduce cache TTL
-
----
-
-### Cost Comparison
-
-| Users/Day | No Cache | With Upstash Cache | Savings |
-|-----------|----------|-------------------|---------|
-| 100 | 1500 AI calls | 450 AI calls | 70% |
-| 500 | 7500 AI calls | 1500 AI calls | 80% |
-| 1000 | 15000 AI calls | 2000 AI calls | 87% |
-
-**Upstash free tier:** 10,000 commands/day = ~1000 users/day
-
----
-
-### Redis Summary
-
-**To enable caching:**
-
-1. Choose option (Upstash for production, Local for dev)
-2. Add `REDIS_ENABLED=true` and `REDIS_URL` to .env
-3. Restart backend server
-4. Watch logs confirm "Redis connected successfully"
-
-**Expected results:**
-- 70-90% reduction in AI token usage
-- Faster response times
-- Same user experience
-
-**No changes needed if you don't want caching - app works fine without it!**
-
----
-
-## 🚀 Weaviate Vector Search Setup (Optional)
-
-**Your Sandbox:** `fairmediator`
-**Purpose:** Vector search for semantic mediator matching
-
-### 📑 Weaviate Quick Links
-
-**Jump to Weaviate Section:**
-- [Quick Setup (5 min)](#weaviate-quick-setup-5-minutes) ⭐ Start here
-- [What You Get (Free Tier)](#what-you-get-free-tier)
-- [Makefile Commands](#weaviate-makefile-commands)
-- [How It Works](#how-weaviate-works)
-- [Free Vectorizer](#free-huggingface-vectorizer)
-- [Monitoring Usage](#monitoring-weaviate-usage)
-- [Integration](#weaviate-integration-with-your-app)
-- [Troubleshooting](#weaviate-troubleshooting)
-
----
-
-### Weaviate Quick Setup (5 minutes)
-
-**Step 1: Get Your Credentials**
-
-1. Go to https://console.weaviate.cloud
-2. Find your **fairmediator** sandbox
-3. Click "Details" to get:
-   - **Cluster URL:** `fairmediator-xxxxx.weaviate.network`
-   - **API Key:** `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-
-**Step 2: Configure Environment**
-
-Add to `backend/.env`:
+### Docker Commands
 
 ```bash
-WEAVIATE_ENABLED=true
-WEAVIATE_URL=fairmediator-xxxxx.weaviate.network
-WEAVIATE_API_KEY=your_actual_api_key_here
-WEAVIATE_SCHEME=https
+# Check running containers
+docker ps
+
+# View MongoDB logs
+docker logs -f fairmediator-mongo
+
+# Access MongoDB shell
+docker exec -it fairmediator-mongo mongosh
+
+# Reset database (delete all data)
+docker-compose -f docker-compose.dev.yml down -v
+docker-compose -f docker-compose.dev.yml up -d
 ```
-
-**Step 3: Initialize Schema**
-
-```bash
-make weaviate-setup
-```
-
-This creates the "Mediator" class in Weaviate with proper fields.
-
-**Step 4: Sync Your Data**
-
-```bash
-# Sync mediators from MongoDB to Weaviate
-make weaviate-sync
-```
-
-**Step 5: Test It**
-
-```bash
-make weaviate-test
-```
-
----
-
-### What You Get (FREE TIER)
-
-| Feature | Sandbox (14 days) | After 14 Days |
-|---------|-------------------|---------------|
-| **Storage** | Unlimited | Converts to free cluster |
-| **Requests** | Unlimited | 100k vectors free |
-| **Vectorizer** | Free HuggingFace model | Same |
-| **Uptime** | 100% | 99.9% SLA |
-| **Cost** | $0 | $0 (stays free!) |
-
-**Note:** After 14 days, your sandbox auto-converts to a free persistent cluster. No action needed!
-
----
-
-### Weaviate Makefile Commands
-
-```bash
-# Setup (run once)
-make weaviate-setup    # Initialize schema
-
-# Regular use
-make weaviate-sync     # Sync mediators from MongoDB
-make weaviate-test     # Test connection & search
-
-# Maintenance
-make weaviate-clear    # Delete all vectors
-```
-
----
-
-### How Weaviate Works
-
-**Before Weaviate:**
-```
-User: "Find family law mediator in LA"
-→ MongoDB text search: "family" in specializations
-→ Returns: 5 exact matches only
-```
-
-**With Weaviate:**
-```
-User: "divorce attorney in Los Angeles"
-→ Weaviate semantic search: understands divorce ≈ family law
-→ Returns: 20 relevant mediators ranked by similarity
-→ Includes: "family law", "custody", "domestic relations"
-```
-
-**Improvement:** 4x more relevant results!
-
----
-
-### Free HuggingFace Vectorizer
-
-Your Weaviate uses this **FREE** model:
-- Model: `sentence-transformers/all-MiniLM-L6-v2`
-- Speed: Fast (384-dimensional vectors)
-- Quality: Excellent for English text
-- Cost: $0 (no API key needed)
-
----
-
-### Monitoring Weaviate Usage
-
-Check your usage at: https://console.weaviate.cloud
-
-Free tier limits (you won't hit these):
-- ✅ 100,000 vectors
-- ✅ 5M queries/month
-- ✅ 256MB RAM
-
-**For ~500 mediators:** Uses <1% of free tier
-
----
-
-### Weaviate Integration with Your App
-
-**Option A: Replace ChromaDB (Recommended)**
-
-Edit `backend/src/services/ai/ragEngine.js`:
-
-```javascript
-// Before (ChromaDB):
-const embeddingService = require('./embeddingService');
-const results = await embeddingService.searchSimilar(query);
-
-// After (Weaviate):
-const weaviateClient = require('../../config/weaviate');
-const results = await weaviateClient.searchMediators(query, {
-  limit: 10,
-  filters: { state: 'CA' }
-});
-```
-
-**Option B: Use Both**
-
-- Weaviate: Mediator search (persistent, managed)
-- ChromaDB: Memory/conversations (local, temporary)
-
----
-
-### Weaviate Troubleshooting
-
-**"Connection refused"**
-- Check WEAVIATE_URL has no `https://` prefix
-- Format: `fairmediator-xxxxx.weaviate.network`
-
-**"Unauthorized"**
-- Verify WEAVIATE_API_KEY is correct
-- Get new key from console.weaviate.cloud
-
-**"Schema already exists"**
-- This is OK! It means setup already ran
-- Safe to run `make weaviate-setup` multiple times
-
-**"No mediators found"**
-- Run `make weaviate-sync` to add data
-- Check MongoDB has mediators first
-
----
-
-### What Was Created
-
-**Files:**
-- `backend/src/config/weaviate.js` - Client connection
-- `backend/src/scripts/weaviate-setup.js` - Schema init
-- `backend/src/scripts/weaviate-test.js` - Connection test
-- `backend/src/scripts/weaviate-sync.js` - Data sync
-- `backend/src/scripts/weaviate-clear.js` - Clear data
-
-**Makefile commands:**
-- `make weaviate-setup`
-- `make weaviate-test`
-- `make weaviate-sync`
-- `make weaviate-clear`
-
----
-
-### Weaviate Next Steps
-
-1. **Get credentials** from console.weaviate.cloud
-2. **Add to .env** (WEAVIATE_URL and WEAVIATE_API_KEY)
-3. **Run:** `make weaviate-setup`
-4. **Run:** `make weaviate-sync`
-5. **Test:** `make weaviate-test`
-
-**That's it! Your vector search is ready. 🚀**
 
 ---
 
 ## 🛠️ Development Tools
 
-### Makefile Commands
+### NPM Scripts
 
-**Daily Use:**
+**Root directory (runs both frontend + backend):**
+
 ```bash
-make dev              # Start full stack (frontend + backend)
-make dev-backend      # Backend only
-make dev-frontend     # Frontend only
-make test             # Run all tests
-make clean            # Clean node_modules
+npm run dev          # Start full stack (frontend + backend)
+npm run dev:frontend # Frontend only
+npm run dev:backend  # Backend only
+npm install          # Install all dependencies
+npm test             # Run all tests
 ```
 
-**Database:**
+**Backend directory:**
+
 ```bash
-make db-seed          # Seed with test data
-make db-reset         # Reset database
+cd backend
+
+npm run dev          # Start with nodemon (hot reload)
+npm start            # Start production mode
+npm test             # Run Jest tests
+npm test:watch       # Run tests in watch mode
+npm run test:coverage # Generate coverage report
 ```
 
-**Weaviate:**
+**Frontend directory:**
+
 ```bash
-make weaviate-setup   # Initialize
-make weaviate-sync    # Sync data
-make weaviate-test    # Test connection
+cd frontend
+
+npm run dev          # Start Vite dev server
+npm run build        # Production build
+npm run preview      # Preview production build
 ```
 
-**Code Quality:**
+### Code Quality
+
 ```bash
-make lint             # Run linters
-make lint-fix         # Fix linting issues
-make security         # Security audit
-make format           # Format code
+# Linting
+npm run lint         # Check for issues
+npm run lint:fix     # Auto-fix issues
+
+# Security
+npm audit            # Check for vulnerabilities
+npm audit fix        # Fix vulnerabilities
 ```
 
-### Docker (Optional)
+### Database Scripts
 
 ```bash
-make docker-up        # Start all services
-make docker-down      # Stop all services
-make docker-logs      # View logs
-make docker-clean     # Clean everything
+cd backend
+
+# Seed database with sample data
+node src/scripts/seed-data.js
+
+# Initialize vector search (generate embeddings)
+node src/scripts/initializeVectorDB.js
+
+# Clear all embeddings
+node src/scripts/initializeVectorDB.js --clear
+
+# Re-index all mediators
+node src/scripts/initializeVectorDB.js --reindex
 ```
 
 ---
 
-## 🌐 Production Deployment
+## 🧪 Testing
 
-Choose your deployment architecture:
+### Test Stack
 
-### Option 1: Serverless (Netlify Functions) - Recommended ⭐
+**Current:** Jest + Supertest (54 tests passing)
+- Integration tests for API endpoints
+- AI systems integration tests
+- Service layer unit tests
 
-**Best for:** Small-medium traffic, simplicity, 100% free
-**What you get:** Frontend + serverless API + auto-SSL
-**Cost:** $0/month (125k requests/month)
+**Removed:** Playwright (E2E - all tests failing, not cost-effective)
 
-#### Quick Deploy (3 minutes)
-
-```bash
-# 1. Push to GitHub
-git add .
-git commit -m "Deploy to production"
-git push origin main
-
-# 2. Connect to Netlify (one-time)
-# - Go to https://netlify.com
-# - Click "Add new site" → "Import from GitHub"
-# - Select FairMediator repo
-# - Build settings auto-detected ✓
-
-# 3. Add environment variables (one-time)
-# Netlify Dashboard → Site settings → Environment variables
-# Add these:
-HUGGINGFACE_API_KEY=hf_your_key_here
-NODE_ENV=production
-
-# 4. Deploy automatically!
-# Every git push to main = automatic deploy
-```
-
-**Or use Makefile:**
-```bash
-make netlify-deploy  # Commits and pushes
-```
-
-#### What Gets Deployed
-
-**Netlify Functions** (`netlify/functions/`):
-- `/.netlify/functions/chat` - AI chat endpoint
-- `/.netlify/functions/check-affiliations` - Conflict detection
-- FREE: 125k requests/month, 100 hours runtime
-
-**Netlify Forms**:
-- Feedback form at `/feedback`
-- FREE: 100 submissions/month
-
-**Frontend**:
-- React SPA from `frontend/dist`
-- Global CDN
-- Automatic SSL/HTTPS
-
-#### Configuration
-
-**netlify.toml** (already configured):
-```toml
-[build]
-  publish = "frontend/dist"
-  command = "cd frontend && npm run build"
-  functions = "netlify/functions"
-```
-
-#### Testing Locally
+### Run Tests
 
 ```bash
-# Install CLI (one-time)
-npm install -g netlify-cli
-netlify login
+# All tests
+npm test
 
-# Test with functions
-make netlify-dev
-# Or: netlify dev
+# Backend tests only
+cd backend && npm test
 
-# Visit: http://localhost:8888
-```
-
-#### Custom Domain (Optional)
-
-1. Netlify Dashboard → Domain settings
-2. Add custom domain
-3. Update DNS:
-   - CNAME: `www` → `your-site.netlify.app`
-   - A record: `@` → Netlify IP
-4. SSL auto-provisions (2-5 min)
-
----
-
-### Option 2: Traditional (Render Backend + Netlify Frontend)
-
-**Best for:** Advanced features (cron jobs, WebSockets, long tasks)
-**What you get:** Dedicated backend + static frontend
-**Cost:** $0/month (with 15-min cold starts)
-
-#### Architecture
-
-```
-Frontend (Netlify) → Backend (Render) → MongoDB Atlas
-                      ├── Redis (Upstash)
-                      └── Weaviate Cloud
-```
-
-#### Step 1: MongoDB Atlas (5 minutes)
-
-1. **Create account:** https://mongodb.com/cloud/atlas
-2. **Create M0 FREE cluster:**
-   - Provider: AWS
-   - Region: Oregon (close to Render)
-   - Name: `fairmediator`
-3. **Create user:**
-   - Username: `fairmediator_user`
-   - Password: Auto-generate & save
-4. **Allow access:**
-   - Add current IP
-   - Add `0.0.0.0/0` (for Render)
-5. **Get connection string:**
-   ```
-   mongodb+srv://user:PASSWORD@cluster.mongodb.net/fairmediator
-   ```
-
-#### Step 2: Get API Keys (5 minutes)
-
-**HuggingFace (required):**
-1. Sign up: https://huggingface.co/join
-2. Get token: https://huggingface.co/settings/tokens
-3. Create "Read" token
-4. Save token: `hf_xxxxx`
-
-**Upstash Redis (optional - for caching):**
-1. Sign up: https://upstash.com
-2. Create database: Regional, closest region
-3. Copy Redis URL: `redis://default:xxx@xxx.upstash.io:6379`
-
-**Weaviate (optional - for vector search):**
-- Use your existing `fairmediator` sandbox
-- Get URL and API key from console.weaviate.cloud
-
-#### Step 3: Deploy Backend to Render (10 minutes)
-
-1. **Create account:** https://render.com
-2. **Create Web Service:**
-   - Connect GitHub repo
-   - Name: `fairmediator-backend`
-   - Environment: Node
-   - Build command: `cd backend && npm install`
-   - Start command: `cd backend && npm start`
-   - Plan: **Free**
-
-3. **Add environment variables:**
-   ```bash
-   NODE_ENV=production
-   PORT=5000
-   MONGODB_URI=mongodb+srv://...  # From Step 1
-   HUGGINGFACE_API_KEY=hf_...     # From Step 2
-   CORS_ORIGIN=https://your-frontend.netlify.app
-   FRONTEND_URL=https://your-frontend.netlify.app
-
-   # Generate these:
-   JWT_SECRET=<random-64-chars>
-   JWT_REFRESH_SECRET=<random-64-chars>
-   SESSION_SECRET=<random-32-chars>
-
-   # Optional (from Step 2):
-   REDIS_ENABLED=true
-   REDIS_URL=redis://...
-   WEAVIATE_ENABLED=true
-   WEAVIATE_URL=fairmediator-xxxxx.weaviate.network
-   WEAVIATE_API_KEY=xxx
-   ```
-
-4. **Deploy!**
-   - Render auto-deploys from main branch
-   - Get URL: `https://fairmediator-backend.onrender.com`
-
-#### Step 4: Deploy Frontend to Netlify (5 minutes)
-
-1. **Update frontend config:**
-   ```bash
-   # frontend/.env.production
-   VITE_API_URL=https://fairmediator-backend.onrender.com/api
-   ```
-
-2. **Deploy to Netlify:**
-   - Same as Option 1 above
-   - No functions needed (backend on Render)
-
-3. **Update Render CORS:**
-   - Go back to Render
-   - Update `CORS_ORIGIN` to your Netlify URL
-   - Redeploys automatically
-
-#### Step 5: Test Deployment
-
-```bash
-# Test backend
-curl https://fairmediator-backend.onrender.com/health
-
-# Should return:
-# {"status":"healthy","timestamp":"..."}
-
-# Test frontend
-# Visit: https://your-site.netlify.app
-# Try chat interface
-```
-
-#### Render Free Tier Notes
-
-**Limitations:**
-- Sleeps after 15 min inactivity
-- First request after sleep: 30-60 sec cold start
-- 512 MB RAM
-- 750 hours/month (enough for one service)
-
-**Good for:**
-- Development/testing
-- Low-traffic production
-- Cron jobs (stays awake when running)
-
-**Upgrade to avoid cold starts:** $7/month
-
----
-
-### Deployment Comparison
-
-| Feature | Netlify Functions | Render + Netlify |
-|---------|------------------|------------------|
-| **Setup time** | 3 minutes | 20 minutes |
-| **Cost** | $0/month | $0/month |
-| **Cold starts** | None | After 15 min |
-| **Request limit** | 125k/month | Unlimited |
-| **Execution time** | 10 seconds | Unlimited |
-| **Cron jobs** | ❌ No | ✅ Yes |
-| **WebSockets** | ❌ No | ✅ Yes |
-| **Best for** | Simple apps | Advanced features |
-
-**Recommendation:**
-- Start with **Option 1** (Netlify Functions)
-- Migrate to **Option 2** if you need cron jobs or longer execution times
-
----
-
-## 🔐 Security Setup
-
-### Environment Variables
-
-**Never commit these:**
-- `HUGGINGFACE_API_KEY`
-- `MONGODB_URI` with credentials
-- `JWT_SECRET`
-- `REDIS_URL` with password
-- `WEAVIATE_API_KEY`
-
-### Generate Secrets
-
-```bash
-# JWT secrets
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-
-# Session secret
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-### Security Checklist
-
-- [ ] All API keys in `.env` (never in code)
-- [ ] `.env` added to `.gitignore`
-- [ ] CORS_ORIGIN set to your frontend domain
-- [ ] Rate limiting enabled
-- [ ] HTTPS in production (automatic on Netlify)
-
-See [SECURITY.md](./SECURITY.md) for complete security guidelines.
-
----
-
-## 🧪 Testing Setup
-
-```bash
-# Run all tests
-make test
-
-# Run specific tests
-cd backend && npm test -- --testPathPattern=chatService
+# Watch mode (re-run on file changes)
+cd backend && npm test:watch
 
 # Coverage report
-make test-coverage
+cd backend && npm run test:coverage
 
-# Watch mode
-make test-watch
+# Specific test file
+cd backend && npm test -- --testPathPattern=chatService
 ```
 
-See [TESTING.md](./TESTING.md) for testing guidelines.
+### Test Coverage
+
+**Current coverage:** ~16%
+
+**Goal:** 30% (high-value tests only)
+
+**Focus areas:**
+- API endpoints (authentication, mediator search, chat)
+- AI service integration (HuggingFace, embeddings)
+- Security middleware (CSRF, rate limiting)
+- Free tier monitoring
+
+### Manual Testing Scenarios
+
+For E2E testing scenarios (previously tested with Playwright), see CONTEXT.md "E2E Test Scenarios (Manual Testing Reference)" section.
+
+We're exploring free alternatives to Playwright for automated E2E testing.
+
+---
+
+## 🌐 Production Features in Development
+
+### Netlify Blobs Storage (Optional)
+
+To test file upload/download locally:
+
+1. **Get Netlify credentials:**
+   - Deploy site to Netlify (or use existing site)
+   - Get Site ID from site dashboard
+   - Create Personal Access Token in User Settings → Applications
+
+2. **Add to .env:**
+   ```bash
+   NETLIFY_SITE_ID=your_site_id
+   NETLIFY_TOKEN=your_personal_access_token
+   ```
+
+3. **Test upload:**
+   ```bash
+   curl -X POST http://localhost:5001/api/storage/mediator/123/image \
+     -H "Content-Type: multipart/form-data" \
+     -F "image=@/path/to/image.jpg"
+   ```
+
+### Email Service (Optional)
+
+To test email sending locally:
+
+1. **Get Resend API key:**
+   - Sign up at https://resend.com (free tier: 100 emails/day)
+   - Get API key from dashboard
+
+2. **Add to .env:**
+   ```bash
+   RESEND_API_KEY=re_your_key_here
+   EMAIL_FROM=FairMediator <noreply@yourdomain.com>
+   ```
+
+3. **Test email:**
+   ```bash
+   # Trigger password reset
+   curl -X POST http://localhost:5001/api/auth/forgot-password \
+     -H "Content-Type: application/json" \
+     -d '{"email":"your@email.com"}'
+   ```
+
+**Without Resend configured:**
+- Emails are logged to console only
+- App works normally, just no actual emails sent
 
 ---
 
@@ -1021,83 +446,256 @@ See [TESTING.md](./TESTING.md) for testing guidelines.
 ### Common Issues
 
 **"MongoDB connection failed"**
+
 ```bash
 # Check MongoDB is running
-mongosh  # Should connect
-
-# Or check Docker
+# Docker:
 docker ps | grep mongo
 
-# Fix: Start MongoDB
+# Local installation:
+mongosh  # Should connect
+
+# Fix:
+docker-compose -f docker-compose.dev.yml up -d  # Start Docker MongoDB
+# OR
 brew services start mongodb-community  # Mac
 sudo systemctl start mongod  # Linux
-docker start mongodb  # Docker
-```
-
-**"Redis connection refused"**
-```bash
-# Check Redis is running
-redis-cli ping  # Should return PONG
-
-# Fix: Start Redis
-brew services start redis  # Mac
-sudo systemctl start redis  # Linux
-
-# Or disable Redis
-# In .env: REDIS_ENABLED=false
-```
-
-**"Weaviate unauthorized"**
-```bash
-# Check credentials in .env
-echo $WEAVIATE_API_KEY
-
-# Fix: Get new key from console.weaviate.cloud
-```
-
-**"HuggingFace API error"**
-```bash
-# Check key is valid
-curl https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct \
-  -H "Authorization: Bearer $HUGGINGFACE_API_KEY"
-
-# Fix: Get new key from huggingface.co/settings/tokens
 ```
 
 **"Port 5001 already in use"**
+
 ```bash
-# Find process
+# Find process using port
 lsof -i :5001
 
-# Kill process
+# Kill the process
 kill -9 <PID>
 
 # Or change port in .env
 PORT=5002
 ```
 
-### Getting Help
+**"Module not found" errors**
 
-1. Check [CONTEXT.md](./CONTEXT.md) - Project rules, recent changes, and state
-2. Check service-specific guides:
-   - [REDIS_SETUP.md](./REDIS_SETUP.md) - Redis caching details
-   - [DEPLOYMENT.md](./DEPLOYMENT.md) - Both deployment options
-   - Weaviate guide is in this file (see above)
+```bash
+# Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
+
+# For backend specifically
+cd backend
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**"HuggingFace API error" or "Rate limited"**
+
+```bash
+# Check your API key is valid
+echo $HUGGINGFACE_API_KEY
+
+# Verify it works
+curl https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct \
+  -H "Authorization: Bearer $HUGGINGFACE_API_KEY"
+
+# Get new key if needed:
+# https://huggingface.co/settings/tokens
+
+# Check free tier usage
+curl http://localhost:5001/api/monitoring/free-tier
+```
+
+**"Cannot connect to MongoDB Atlas"**
+
+- Check network access whitelist includes your IP (or 0.0.0.0/0)
+- Verify password is correct and URL-encoded
+- Check connection string format
+- Ensure database user has correct permissions
+
+**"Vector search not working"**
+
+- Check if vector search index exists and is "Active" in MongoDB Atlas
+- Run embedding generation: `node src/scripts/initializeVectorDB.js`
+- Verify mediators have `embedding` field in database
+- Wait 1-2 minutes after creating index for it to become active
+
+**"Docker MongoDB won't start"**
+
+```bash
+# Check logs
+docker-compose -f docker-compose.dev.yml logs mongo
+
+# Common fix: Remove old volumes
+docker-compose -f docker-compose.dev.yml down -v
+docker-compose -f docker-compose.dev.yml up -d
+
+# Check if port 27017 is already in use
+lsof -i :27017
+# If MongoDB is running locally, stop it or use Atlas instead
+```
+
+**"Frontend won't connect to backend"**
+
+- Check backend is running on port 5001
+- Verify CORS_ORIGIN in backend/.env matches frontend URL
+- Check browser console for CORS errors
+- Ensure both frontend and backend are running
+
+### Development Workflow Issues
+
+**Hot reload not working**
+
+```bash
+# Backend: Make sure using nodemon
+cd backend && npm run dev
+
+# Frontend: Make sure using Vite dev server
+cd frontend && npm run dev
+
+# Check file watchers aren't exhausted (Mac/Linux)
+# Increase limit if needed
+```
+
+**Tests failing after pulling changes**
+
+```bash
+# Reinstall dependencies
+npm install
+
+# Clear Jest cache
+cd backend && npx jest --clearCache
+
+# Run tests
+npm test
+```
 
 ---
 
-## 📊 Free Services Used
+## 🔐 Security Setup
 
-| Service | Free Tier | What We Use | Status |
-|---------|-----------|-------------|--------|
-| **HuggingFace** | Unlimited* | AI chat, embeddings | ✅ Active |
-| **MongoDB Atlas** | 512MB | Database | ✅ Active |
-| **Netlify** | 100GB bandwidth | Frontend + Functions | ✅ Active |
-| **Upstash Redis** | 10k commands/day | Caching | ⚪ Optional |
-| **Weaviate Cloud** | 100k vectors | Vector search | ⚪ Optional |
-| **Render** | 750 hrs/month | Backend (option 2) | ⚪ Alternative |
+### Development vs Production
 
-*Subject to rate limits
+**Development (local):**
+- Use simple secrets for JWT (e.g., `dev_jwt_secret`)
+- MongoDB without authentication (Docker) is OK
+- CORS allows localhost:3000
+
+**Production (see DEPLOYMENT.md):**
+- Generate secure random secrets (64+ characters)
+- MongoDB with authentication required
+- CORS limited to your domain only
+- All traffic over HTTPS
+
+### Generate Production Secrets
+
+```bash
+# JWT Secret (64 bytes)
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+# JWT Refresh Secret (64 bytes)
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+# Session Secret (64 bytes)
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+### Security Checklist
+
+**Never commit to git:**
+- [ ] `.env` files
+- [ ] API keys (HuggingFace, Resend, Netlify)
+- [ ] MongoDB connection strings with credentials
+- [ ] JWT secrets
+- [ ] Any passwords or tokens
+
+**Always use:**
+- [ ] `.gitignore` includes `.env` and `*.env`
+- [ ] Environment variables for all secrets
+- [ ] HTTPS in production (automatic on Netlify)
+- [ ] CORS with specific origins in production
+
+For complete security guidelines, see [SECURITY.md](./SECURITY.md)
+
+---
+
+## 📊 Architecture Overview
+
+### Technology Stack (100% FREE)
+
+**Backend:**
+- Node.js 18+ + Express.js
+- MongoDB Atlas M0 (512MB) - Database + Vector Search
+- HuggingFace API - AI/ML inference
+- JWT + bcryptjs - Authentication
+- Helmet + CORS + CSRF - Security
+- Winston - Logging
+
+**Frontend:**
+- React 18 + Vite
+- TailwindCSS
+- React Router DOM
+
+**AI/ML:**
+- HuggingFace Transformers - Ideology classification, conflict detection
+- MongoDB Atlas Vector Search - Semantic search, RAG
+- sentence-transformers/all-MiniLM-L6-v2 - 384-dim embeddings
+
+**Storage:**
+- Netlify Blobs - Images, documents (100GB bandwidth/month)
+
+**Testing:**
+- Jest + Supertest - 54 tests passing
+- Manual testing for critical user flows
+
+**Deployment:**
+- Netlify - Frontend + Functions + Blobs
+- MongoDB Atlas - Database + Vector Search
+- GitHub Actions - CI/CD (optional)
+
+**Cost:** $0/month (100% free tier)
+
+### API Structure
+
+```
+/api/
+├── /auth          - Authentication (register, login, JWT)
+├── /mediators     - Mediator CRUD operations
+├── /chat          - AI chat with semantic search
+├── /matching      - Mediator matching algorithms
+├── /subscription  - Premium tier (future)
+├── /dashboard     - User dashboard data
+├── /scraping      - Web scraping (admin only)
+├── /analysis      - Conflict analysis
+├── /feedback      - Active learning feedback
+├── /monitoring    - Free tier usage monitoring
+├── /affiliations  - Bias/conflict detection
+└── /storage       - File upload/download (Netlify Blobs)
+```
+
+### Database Schema
+
+**Collections (MongoDB):**
+1. `users` - User accounts
+2. `mediators` - Mediator profiles (includes `embedding` field for vector search)
+3. `subscriptions` - User subscription data
+4. `usagelogs` - Free tier usage tracking
+5. `conflictfeedback` - User feedback for AI training
+6. `mediatorselections` - User selection history
+7. `caseoutcomes` - Case outcome tracking
+8. `errorlogs` - Application error monitoring (capped collection)
+
+---
+
+## 📚 Free Services Used
+
+| Service | Free Tier | What We Use | Setup Required |
+|---------|-----------|-------------|----------------|
+| **HuggingFace** | Rate limited | AI chat, embeddings | ✅ API key |
+| **MongoDB Atlas** | 512MB | Database + Vector Search | ✅ Account |
+| **Netlify** | 100GB bandwidth | Frontend + Functions | ⚪ For deployment |
+| **Netlify Blobs** | 100GB bandwidth | File storage | ⚪ Optional |
+| **Resend Email** | 100/day | Email notifications | ⚪ Optional |
+| **Docker** | Free forever | Local MongoDB | ⚪ For local dev |
 
 **Total Cost:** $0/month 🎉
 
@@ -1105,24 +703,48 @@ PORT=5002
 
 ## 🎯 Next Steps After Setup
 
-1. **Test the app:** Try chat interface at http://localhost:3000
-2. **Enable caching:** Set up Redis to reduce token usage
-3. **Add vector search:** Set up Weaviate for semantic search (see above)
-4. **Deploy:** Follow [DEPLOYMENT.md](./DEPLOYMENT.md) for both options
-5. **Monitor:** Check token usage and optimize
+1. **✅ Verify everything works:**
+   ```bash
+   # Backend health check
+   curl http://localhost:5001/health
+
+   # Frontend
+   # Open http://localhost:3000
+   ```
+
+2. **Test core features:**
+   - [ ] User registration/login
+   - [ ] Mediator search
+   - [ ] AI chat functionality
+   - [ ] Monitoring dashboard
+
+3. **Optional enhancements:**
+   - [ ] Enable vector search (if using MongoDB Atlas)
+   - [ ] Configure Netlify Blobs for file storage
+   - [ ] Set up email service with Resend
+
+4. **Deploy to production:**
+   - Follow [DEPLOYMENT.md](./DEPLOYMENT.md) for step-by-step guide
+   - Free deployment on Netlify
+   - Takes ~20 minutes
+
+5. **Start developing:**
+   - Check [CONTEXT.md](./CONTEXT.md) for project rules and architecture
+   - See API documentation in code comments
+   - Review test examples in `/backend/src/tests/`
 
 ---
 
 ## 📝 Related Documentation
 
-- **[CONTEXT.md](./CONTEXT.md)** - Project state, rules, and token optimization (all-in-one)
-- **[REDIS_SETUP.md](./REDIS_SETUP.md)** - Detailed Redis caching guide
-- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Both deployment options (serverless + traditional)
+- **[CONTEXT.md](./CONTEXT.md)** - Project rules, tech stack, recent changes, TODO
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Production deployment guide (Netlify)
+- **[MONGODB_VECTOR_SEARCH_SETUP.md](./MONGODB_VECTOR_SEARCH_SETUP.md)** - Vector search setup guide
+- **[SECURITY.md](./SECURITY.md)** - Security best practices and audit
 - **[README.md](./README.md)** - Project overview and quick start
-- **Weaviate setup** - Included in this file (see above)
 
 ---
 
-**Questions?** Check [CONTEXT.md](./CONTEXT.md) first (contains all project rules and token optimization)
+**Questions?** Check [CONTEXT.md](./CONTEXT.md) for project state and rules.
 
-**Need deployment help?** See [Production Deployment](#-production-deployment) or [DEPLOYMENT.md](./DEPLOYMENT.md)
+**Ready to deploy?** See [DEPLOYMENT.md](./DEPLOYMENT.md) for production setup.

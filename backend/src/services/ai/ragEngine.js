@@ -35,7 +35,7 @@ class RAGEngine {
 
       const similarMediators = await embeddingService.searchSimilar(userQuery, {
         topK: topK * 2, // Get more than needed for filtering
-        filter: this.buildChromaFilter(filters)
+        filter: this.buildMongoFilter(filters)
       });
 
       // Step 2: Filter by similarity threshold
@@ -94,32 +94,32 @@ class RAGEngine {
   }
 
   /**
-   * Build ChromaDB filter from user filters
+   * Build MongoDB filter from user filters
    */
-  buildChromaFilter(filters) {
-    const chromaFilter = {};
+  buildMongoFilter(filters) {
+    const mongoFilter = {};
 
     if (filters.state) {
-      chromaFilter.location_state = filters.state;
+      mongoFilter['location.state'] = filters.state;
     }
 
     if (filters.city) {
-      chromaFilter.location_city = filters.city;
+      mongoFilter['location.city'] = filters.city;
     }
 
     if (filters.isVerified !== undefined) {
-      chromaFilter.is_verified = filters.isVerified;
+      mongoFilter.isVerified = filters.isVerified;
     }
 
     if (filters.isActive !== undefined) {
-      chromaFilter.is_active = filters.isActive;
+      mongoFilter.isActive = filters.isActive;
     }
 
     if (filters.minExperience) {
-      chromaFilter.years_experience = { $gte: filters.minExperience };
+      mongoFilter.yearsExperience = { $gte: filters.minExperience };
     }
 
-    return Object.keys(chromaFilter).length > 0 ? chromaFilter : null;
+    return Object.keys(mongoFilter).length > 0 ? mongoFilter : {};
   }
 
   /**
@@ -302,7 +302,7 @@ Note: These results are from keyword search. For better semantic matching, ensur
       // Get semantic matches
       const vectorResults = await embeddingService.searchSimilar(userQuery, {
         topK: 20,
-        filter: this.buildChromaFilter(filters)
+        filter: this.buildMongoFilter(filters)
       });
 
       // Get keyword matches

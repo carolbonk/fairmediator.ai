@@ -2,7 +2,6 @@
 /**
  * Weekly Scraping Cron Job
  * Runs at 3 AM every Sunday for comprehensive affiliation analysis
- * Called by Render cron service
  */
 
 require('dotenv').config();

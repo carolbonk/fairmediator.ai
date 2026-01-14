@@ -2,7 +2,6 @@
 /**
  * Free Tier Reset Cron Job
  * Runs at midnight daily to reset daily usage counters
- * Called by Render cron service
  */
 
 require('dotenv').config();
