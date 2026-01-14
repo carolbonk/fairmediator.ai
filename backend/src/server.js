@@ -18,7 +18,7 @@ const logger = require('./config/logger');
 const { sanitizeInput, mongoSanitizeMiddleware } = require('./middleware/sanitization');
 const { csrfProtection, csrfErrorHandler, getCsrfToken} = require('./middleware/csrf');
 const { globalLimiter } = require('./middleware/rateLimiting');
-const { initializeSentry, requestHandler, tracingHandler, errorHandler: sentryErrorHandler } = require('./config/sentry');
+const { errorMonitoringMiddleware, notFoundHandler } = require('./middleware/errorMonitoring');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -39,24 +39,13 @@ const perspectiveRoutes = require('./routes/perspectives');
 const idpRoutes = require('./routes/idp');
 const qaRoutes = require('./routes/qa');
 const monitoringRoutes = require('./routes/monitoring');
+const storageRoutes = require('./routes/storage');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
 
-// Import Redis client
-const redisClient = require('./config/redis');
-
 const app = express();
 const PORT = process.env.PORT || 5001;
-
-// Initialize Sentry (must be first)
-const Sentry = initializeSentry(app);
-
-// Sentry request handler (must be first middleware)
-if (Sentry) {
-  app.use(requestHandler());
-  app.use(tracingHandler());
-}
 
 // HTTPS Enforcement (production only)
 if (process.env.NODE_ENV === 'production') {
@@ -232,12 +221,8 @@ app.use('/api/chains', chainRoutes); // AI Chain system - multi-step workflows
 app.use('/api/perspectives', perspectiveRoutes); // Multi-perspective AI - balanced mediation
 app.use('/api/idp', idpRoutes); // Intelligent Document Processing - PDF/text extraction
 app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
-app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard
-
-// Sentry error handler (must be before other error handlers)
-if (Sentry) {
-  app.use(sentryErrorHandler());
-}
+app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard + MongoDB Atlas monitoring
+app.use('/api/storage', storageRoutes); // File storage with Netlify Blobs (images, documents)
 
 // CSRF error handler
 app.use(csrfErrorHandler);
@@ -245,35 +230,11 @@ app.use(csrfErrorHandler);
 // Error logging middleware
 app.use(logger.errorLogger);
 
-// General error handling middleware
-app.use((err, req, res, _next) => {
-  // Log the error
-  logger.error('Unhandled error', {
-    error: err.message,
-    stack: err.stack,
-    url: req.originalUrl,
-    method: req.method,
-    ip: req.ip,
-    userId: req.user?._id
-  });
-
-  // Don't leak error details in production
-  const errorResponse = {
-    error: {
-      message: process.env.NODE_ENV === 'production'
-        ? 'Internal server error'
-        : err.message || 'Internal server error',
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    }
-  };
-
-  res.status(err.status || 500).json(errorResponse);
-});
+// MongoDB error monitoring middleware (replaces Sentry)
+app.use(errorMonitoringMiddleware);
 
 // 404 handler
-app.use((_req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
+app.use(notFoundHandler);
 
 // Start server (only if not in test mode)
 if (process.env.NODE_ENV !== 'test') {
@@ -281,9 +242,6 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`FairMediator backend running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
-
-    // Initialize Redis cache (optional - reduces AI token usage by 70-90%)
-    await redisClient.connect();
 
     if (process.env.NODE_ENV === 'production') {
       cronScheduler.startAll();

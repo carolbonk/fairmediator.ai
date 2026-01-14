@@ -1,6 +1,6 @@
 /**
- * Initialize Vector Database
- * Indexes all existing mediators in ChromaDB for semantic search
+ * Initialize Vector Embeddings for MongoDB Atlas Vector Search
+ * Generates and stores embeddings for all existing mediators
  */
 
 require('dotenv').config();
@@ -11,44 +11,56 @@ const logger = require('../config/logger');
 
 async function initializeVectorDB() {
   try {
-    console.log('🚀 Starting vector database initialization...\n');
+    console.log('🚀 Starting MongoDB Atlas vector embedding initialization...\n');
 
     // Connect to MongoDB
-    console.log('📦 Connecting to MongoDB...');
+    console.log('📦 Connecting to MongoDB Atlas...');
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB\n');
-
-    // Initialize embedding service
-    console.log('🧠 Initializing embedding service...');
-    await embeddingService.initialize();
-    console.log('✅ Embedding service ready\n');
+    console.log('✅ Connected to MongoDB Atlas\n');
 
     // Get current stats
     const stats = await embeddingService.getStats();
-    console.log('📊 Current vector DB stats:');
-    console.log(`   Collection: ${stats.collectionName}`);
-    console.log(`   Documents: ${stats.count}`);
-    console.log(`   Model: ${stats.model}\n`);
+    console.log('📊 Current embedding stats:');
+    console.log(`   Total mediators: ${stats.total}`);
+    console.log(`   Already indexed: ${stats.indexed}`);
+    console.log(`   Not indexed: ${stats.notIndexed}`);
+    console.log(`   Model: ${stats.model}`);
+    console.log(`   Dimensions: ${stats.dimensions}\n`);
+
+    // Display vector search index instructions
+    if (stats.notIndexed > 0 || process.argv.includes('--show-index')) {
+      console.log('📋 MongoDB Atlas Vector Search Index Setup:\n');
+      const instructions = embeddingService.getIndexInstructions();
+      console.log(instructions.instructions.join('\n'));
+      console.log('\n   Index Definition (JSON):');
+      console.log('   ' + JSON.stringify(instructions.index.definition, null, 2).replace(/\n/g, '\n   '));
+      console.log('');
+    }
 
     // Option to clear existing embeddings
     if (process.argv.includes('--clear')) {
       console.log('🗑️  Clearing existing embeddings...');
-      await embeddingService.clearAll();
-      console.log('✅ Cleared all embeddings\n');
+      const cleared = await embeddingService.clearAll();
+      console.log(`✅ Cleared embeddings from ${cleared.cleared} mediators\n`);
     }
 
-    // Fetch all active mediators
-    console.log('🔍 Fetching mediators from database...');
-    const mediators = await Mediator.find({ isActive: true });
-    console.log(`✅ Found ${mediators.length} active mediators\n`);
+    // Fetch mediators that need indexing
+    console.log('🔍 Fetching mediators that need indexing...');
+    const query = process.argv.includes('--clear') || process.argv.includes('--reindex')
+      ? { isActive: true }
+      : { isActive: true, embedding: { $exists: false } };
+
+    const mediators = await Mediator.find(query);
+    console.log(`✅ Found ${mediators.length} mediators to index\n`);
 
     if (mediators.length === 0) {
-      console.log('⚠️  No mediators found to index');
+      console.log('⚠️  No mediators need indexing');
+      console.log('   Use --reindex flag to re-index all mediators');
       return;
     }
 
     // Batch index mediators
-    console.log('⚡ Indexing mediators...');
+    console.log('⚡ Generating embeddings and storing in MongoDB...');
     console.log('This may take a few minutes depending on the number of mediators.\n');
 
     const batchSize = 10;
@@ -69,7 +81,7 @@ async function initializeVectorDB() {
       console.log(`   ✅ Indexed: ${result.indexed}, ❌ Failed: ${result.failed}`);
     }
 
-    console.log('\n🎉 Vector database initialization complete!');
+    console.log('\n🎉 Embedding generation complete!');
     console.log(`\n📊 Final Results:`);
     console.log(`   ✅ Successfully indexed: ${totalIndexed}`);
     console.log(`   ❌ Failed: ${totalFailed}`);
@@ -77,31 +89,42 @@ async function initializeVectorDB() {
 
     // Verify final stats
     const finalStats = await embeddingService.getStats();
-    console.log(`\n📊 Final vector DB stats:`);
-    console.log(`   Collection: ${finalStats.collectionName}`);
-    console.log(`   Documents: ${finalStats.count}`);
+    console.log(`\n📊 Final embedding stats:`);
+    console.log(`   Total mediators: ${finalStats.total}`);
+    console.log(`   Indexed: ${finalStats.indexed}`);
     console.log(`   Model: ${finalStats.model}`);
 
-    // Test search
+    // Test search (only if vector index exists)
     console.log('\n🔍 Testing semantic search...');
     const testQuery = 'employment dispute mediator in California';
     console.log(`   Query: "${testQuery}"`);
 
-    const searchResults = await embeddingService.searchSimilar(testQuery, { topK: 3 });
-    console.log(`   Found ${searchResults.length} results:\n`);
+    try {
+      const searchResults = await embeddingService.searchSimilar(testQuery, { topK: 3 });
 
-    searchResults.forEach((result, index) => {
-      console.log(`   ${index + 1}. ${result.metadata.name}`);
-      console.log(`      Similarity: ${(result.similarity * 100).toFixed(1)}%`);
-      console.log(`      Location: ${result.metadata.location_city}, ${result.metadata.location_state}`);
-      console.log(`      Specializations: ${result.metadata.specializations || 'N/A'}\n`);
-    });
-
-    console.log('✅ All done! Vector database is ready for RAG queries.\n');
+      if (searchResults.length === 0) {
+        console.log('\n   ⚠️  No results found.');
+        console.log('   This means the MongoDB Atlas Vector Search index has not been created yet.');
+        console.log('   Please create the index using the instructions above.\n');
+      } else {
+        console.log(`   Found ${searchResults.length} results:\n`);
+        searchResults.forEach((result, index) => {
+          console.log(`   ${index + 1}. ${result.metadata.name}`);
+          console.log(`      Similarity: ${(result.similarity * 100).toFixed(1)}%`);
+          console.log(`      Location: ${result.metadata.location_city}, ${result.metadata.location_state}`);
+          console.log(`      Specializations: ${result.metadata.specializations || 'N/A'}\n`);
+        });
+        console.log('✅ Vector search is working! Embeddings are ready for RAG queries.\n');
+      }
+    } catch (error) {
+      console.log('\n   ⚠️  Vector search test failed.');
+      console.log('   Error:', error.message);
+      console.log('   Please create the MongoDB Atlas Vector Search index using the instructions above.\n');
+    }
 
   } catch (error) {
-    console.error('❌ Error initializing vector database:', error);
-    logger.error('Vector DB initialization error:', error);
+    console.error('❌ Error initializing vector embeddings:', error);
+    logger.error('Vector embedding initialization error:', error);
     process.exit(1);
   } finally {
     await mongoose.disconnect();
@@ -114,8 +137,14 @@ async function initializeVectorDB() {
 if (require.main === module) {
   console.log(`
 ╔══════════════════════════════════════════════════════╗
-║   FairMediator Vector Database Initialization       ║
+║   MongoDB Atlas Vector Search Initialization        ║
 ╚══════════════════════════════════════════════════════╝
+
+Usage:
+  node initializeVectorDB.js              # Index new mediators only
+  node initializeVectorDB.js --clear      # Clear all and re-index
+  node initializeVectorDB.js --reindex    # Re-index all mediators
+  node initializeVectorDB.js --show-index # Show index setup instructions
 `);
 
   initializeVectorDB();

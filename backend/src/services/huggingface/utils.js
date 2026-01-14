@@ -4,12 +4,19 @@
 
 const axios = require('axios');
 const config = require('./config');
+const { monitor } = require('../../utils/freeTierMonitor');
 
 /**
  * Call Hugging Face API with retry logic
  */
 async function callAPI(model, payload, retryCount = 0) {
   try {
+    // Track HuggingFace API usage for free tier monitoring
+    const allowed = monitor.track('huggingface');
+    if (!allowed) {
+      throw new Error('HuggingFace API daily limit reached. Try again tomorrow.');
+    }
+
     // Use OpenAI-compatible chat completions API with new router
     const response = await axios.post(
       `${config.routerURL}/chat/completions`,

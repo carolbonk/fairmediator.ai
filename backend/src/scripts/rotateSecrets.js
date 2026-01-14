@@ -135,7 +135,7 @@ async function rotateSecrets(dryRun = false) {
 
   console.log('\n⚠️  IMPORTANT NEXT STEPS:');
   console.log('1. Update your .env file with the new secrets above');
-  console.log('2. Update your production environment variables (Render, AWS, etc.)');
+  console.log('2. Update your production environment variables');
   console.log('3. Restart your application servers');
   console.log('4. Monitor logs for any authentication issues');
   console.log('5. Users will need to log in again (JWTs invalidated)');

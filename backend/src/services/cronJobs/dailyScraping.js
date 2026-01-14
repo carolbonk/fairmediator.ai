@@ -2,7 +2,6 @@
 /**
  * Daily Scraping Cron Job
  * Runs at 2 AM daily to refresh stale mediator data
- * Called by Render cron service
  */
 
 require('dotenv').config();

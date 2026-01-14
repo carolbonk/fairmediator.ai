@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { monitor } = require('../utils/freeTierMonitor');
+const mongoMonitoring = require('../services/monitoring/mongoMonitoring');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { sendSuccess } = require('../utils/responseHandlers');
 
@@ -126,6 +127,85 @@ router.get('/health', (req, res) => {
       total: Object.keys(stats).length
     }
   });
+});
+
+/**
+ * GET /api/monitoring/mongodb
+ * MongoDB Atlas monitoring dashboard
+ * Admin only - Replaces Sentry
+ */
+router.get('/mongodb', authenticate, requireRole(['admin']), async (req, res) => {
+  try {
+    const dashboard = await mongoMonitoring.getDashboard();
+    sendSuccess(res, dashboard);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get MongoDB monitoring data',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/monitoring/mongodb/errors
+ * Get recent errors from MongoDB
+ * Admin only
+ */
+router.get('/mongodb/errors', authenticate, requireRole(['admin']), async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const errors = await mongoMonitoring.getRecentErrors(limit);
+    const errorStats = await mongoMonitoring.getErrorStats(24);
+
+    sendSuccess(res, {
+      errors,
+      stats: errorStats,
+      total: errors.length
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get error data',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/monitoring/mongodb/stats
+ * Get database statistics
+ * Admin only
+ */
+router.get('/mongodb/stats', authenticate, requireRole(['admin']), async (req, res) => {
+  try {
+    const stats = await mongoMonitoring.getStats();
+    sendSuccess(res, stats);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get database stats',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/monitoring/mongodb/collections
+ * Get collection statistics
+ * Admin only
+ */
+router.get('/mongodb/collections', authenticate, requireRole(['admin']), async (req, res) => {
+  try {
+    const collections = await mongoMonitoring.getCollectionStats();
+    sendSuccess(res, { collections });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get collection stats',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
 });
 
 module.exports = router;

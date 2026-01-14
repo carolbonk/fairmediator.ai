@@ -4,6 +4,8 @@
  * Get API key at: https://resend.com/api-keys
  */
 
+const { monitor } = require('../../utils/freeTierMonitor');
+
 // Check if Resend is configured
 const isEmailEnabled = () => {
   const key = process.env.RESEND_API_KEY;
@@ -28,6 +30,13 @@ const sendPasswordResetEmail = async (to, resetUrl, userName) => {
     console.log('   Reset URL:', resetUrl);
     console.log('   User:', userName);
     return { success: true, dev: true };
+  }
+
+  // Track email usage for free tier monitoring
+  const allowed = monitor.track('resend');
+  if (!allowed) {
+    console.log('❌ Email daily limit reached');
+    return { success: false, error: 'Email daily limit reached. Try again tomorrow.' };
   }
 
   try {
@@ -95,6 +104,13 @@ const sendWelcomeEmail = async (to, userName) => {
   if (!isEmailEnabled()) {
     console.log('📧 [DEV MODE] Welcome email would be sent to:', to);
     return { success: true, dev: true };
+  }
+
+  // Track email usage for free tier monitoring
+  const allowed = monitor.track('resend');
+  if (!allowed) {
+    console.log('❌ Email daily limit reached');
+    return { success: false, error: 'Email daily limit reached. Try again tomorrow.' };
   }
 
   try {
