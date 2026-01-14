@@ -1,14 +1,28 @@
-const { chromium } = require('playwright');
+// Try to load Playwright (optional dependency for dynamic scraping)
+let chromium = null;
+try {
+  chromium = require('playwright').chromium;
+} catch (error) {
+  // Playwright not installed - only static scraping will be available
+}
+
 const cheerio = require('cheerio');
 const axios = require('axios');
 const Mediator = require('../../models/Mediator');
+const logger = require('../../config/logger');
 
 class MediatorScraper {
   constructor() {
     this.browser = null;
+    this.playwrightAvailable = chromium !== null;
   }
 
   async init() {
+    if (!this.playwrightAvailable) {
+      logger.warn('Playwright not installed - dynamic scraping disabled. Install with: npm install playwright');
+      return;
+    }
+
     if (!this.browser) {
       this.browser = await chromium.launch({ headless: true });
     }
@@ -29,7 +43,18 @@ class MediatorScraper {
   }
 
   async scrapeDynamic(url) {
+    if (!this.playwrightAvailable) {
+      logger.warn(`Dynamic scraping requested for ${url} but Playwright not available. Falling back to static scraping.`);
+      return this.scrapeStatic(url);
+    }
+
     await this.init();
+
+    if (!this.browser) {
+      logger.warn('Browser failed to initialize. Falling back to static scraping.');
+      return this.scrapeStatic(url);
+    }
+
     const page = await this.browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle' });
     const content = await page.content();

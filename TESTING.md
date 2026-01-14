@@ -30,13 +30,6 @@ FairMediator uses a comprehensive testing strategy with multiple layers:
 **Backend:**
 - Jest (test framework)
 - Supertest (HTTP testing)
-- MongoDB Memory Server (in-memory database)
-- Playwright (E2E testing)
-
-**Frontend:**
-- Vitest (test framework)
-- React Testing Library (component testing)
-- Playwright (E2E testing)
 
 **CI/CD:**
 - GitHub Actions
@@ -747,73 +740,6 @@ make test-backend
 # Run frontend tests only
 make test-frontend
 
-# Run E2E tests
-make test-e2e
-
-# Run tests with coverage
-make test-coverage
-
-# Run tests in watch mode
-make test-watch
-```
-
-### Detailed Commands
-
-**Backend Tests:**
-```bash
-cd backend
-
-# All tests
-npm test
-
-# Specific test file
-npm test tests/unit/utils.test.js
-
-# Pattern matching
-npm test -- --testNamePattern="should login"
-
-# With coverage
-npm test -- --coverage
-
-# Watch mode
-npm test -- --watch
-
-# Debug mode
-node --inspect-brk node_modules/.bin/jest --runInBand
-```
-
-**Frontend Tests:**
-```bash
-cd frontend
-
-# All tests
-npm test
-
-# Watch mode
-npm test -- --watch
-
-# Coverage
-npm test -- --coverage
-```
-
-**E2E Tests:**
-```bash
-cd backend
-
-# All E2E tests
-npx playwright test
-
-# Specific browser
-npx playwright test --project=chromium
-
-# With UI
-npx playwright test --ui
-
-# Debug mode
-npx playwright test --debug
-
-# Generate report
-npx playwright show-report
 ```
 
 ---
@@ -1091,7 +1017,7 @@ open coverage/lcov-report/index.html
    - Build and push Docker images
 
 8. **Deployment** (main branch only)
-   - Deploy to Render/Netlify
+   - Deploy to Netlify
 
 ### Pipeline Status
 
@@ -1179,7 +1105,7 @@ tail -f backend/logs/security.log
 ### Full Development Environment
 
 ```bash
-# Start all services (MongoDB, Redis, Backend, Frontend, Mailhog)
+# Start all services (MongoDB, Backend, Frontend, Mailhog)
 make docker-dev
 
 # Or manually
@@ -1192,10 +1118,6 @@ docker-compose -f docker-compose.dev.yml up
 - Port: 27017
 - Admin UI: http://localhost:8081 (mongo-express)
 - Credentials: admin/dev_password_change_in_production
-
-**Redis:**
-- Port: 6379
-- Password: dev_redis_password
 
 **Backend:**
 - Port: 5001
@@ -1236,8 +1158,6 @@ docker exec -it fairmediator-backend-dev sh
 # MongoDB shell
 docker exec -it fairmediator-mongo-dev mongosh
 
-# Redis CLI
-docker exec -it fairmediator-redis-dev redis-cli
 ```
 
 ---
@@ -1341,21 +1261,6 @@ docker exec -it fairmediator-redis-dev redis-cli
    npm test -- --verbose --detectOpenHandles
    ```
 
-### E2E Tests Failing
-
-1. **Update Playwright:**
-   ```bash
-   npx playwright install
-   ```
-
-2. **Run with UI to debug:**
-   ```bash
-   npx playwright test --ui
-   ```
-
-3. **Check screenshots:**
-   ```bash
-   open playwright-report/
    ```
 
 ---

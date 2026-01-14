@@ -122,7 +122,19 @@ const mediatorSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+
+  // Vector Embedding for Semantic Search (MongoDB Atlas Vector Search)
+  embedding: {
+    type: [Number],
+    default: undefined, // Only create when explicitly indexed
+    select: false // Don't return in queries by default (large array)
+  },
+  embeddingModel: {
+    type: String,
+    default: 'sentence-transformers/all-MiniLM-L6-v2'
+  },
+  embeddingGeneratedAt: Date
 }, {
   timestamps: true
 });

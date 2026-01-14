@@ -9,11 +9,6 @@ const logger = require('../config/logger');
 
 // Free Tier Limits (from environment variables with fallback defaults)
 const FREE_TIER_LIMITS = {
-  redis: {
-    monthly: parseInt(process.env.REDIS_MONTHLY_LIMIT) || 300000,
-    daily: parseInt(process.env.REDIS_DAILY_LIMIT) || 1250,
-    name: 'Redis/Upstash'
-  },
   huggingface: {
     monthly: parseInt(process.env.HUGGINGFACE_MONTHLY_LIMIT) || 30000,
     daily: parseInt(process.env.HUGGINGFACE_DAILY_LIMIT) || 900,
@@ -24,20 +19,10 @@ const FREE_TIER_LIMITS = {
     daily: null, // Size-based, not request-based
     name: 'MongoDB Atlas'
   },
-  weaviate: {
-    monthly: parseInt(process.env.WEAVIATE_VECTOR_LIMIT) || 100000,
-    daily: null, // Count-based, not daily
-    name: 'Weaviate Cloud'
-  },
   resend: {
     monthly: parseInt(process.env.RESEND_MONTHLY_LIMIT) || 3000,
     daily: parseInt(process.env.RESEND_DAILY_LIMIT) || 90,
     name: 'Resend Email'
-  },
-  sentry: {
-    monthly: parseInt(process.env.SENTRY_MONTHLY_LIMIT) || 5000,
-    daily: parseInt(process.env.SENTRY_DAILY_LIMIT) || 150,
-    name: 'Sentry Error Tracking'
   },
   scraping: {
     monthly: parseInt(process.env.SCRAPING_MONTHLY_LIMIT) || 15000,

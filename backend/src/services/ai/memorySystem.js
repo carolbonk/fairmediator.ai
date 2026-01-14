@@ -2,9 +2,18 @@
  * AI Memory System
  * Implements conversation memory, long-term memory, and working memory
  * No LangChain - Pure custom implementation
+ *
+ * Note: ChromaDB is optional. If not installed, memory features will be disabled.
  */
 
-const { ChromaClient } = require('chromadb');
+// Try to load ChromaDB (optional dependency)
+let ChromaClient = null;
+try {
+  ChromaClient = require('chromadb').ChromaClient;
+} catch (error) {
+  // ChromaDB not installed - memory system will be disabled
+}
+
 const hfClient = require('../huggingface/hfClient');
 const logger = require('../../config/logger');
 
@@ -29,6 +38,13 @@ class MemorySystem {
    */
   async initialize() {
     if (this.initialized) return;
+
+    // Check if ChromaDB is available
+    if (!ChromaClient) {
+      logger.warn('ChromaDB not installed - memory system disabled. Install with: npm install chromadb');
+      this.initialized = false;
+      return;
+    }
 
     try {
       this.client = new ChromaClient({
