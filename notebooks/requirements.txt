@@ -6,6 +6,12 @@
 # Core ML/AI Libraries
 # ============================================
 
+# Sentence Transformers - text embeddings for mediator & case matching
+sentence-transformers>=5.1.2
+
+# ONNX Runtime - fast model inference (CPU)
+onnxruntime>=1.19.2
+
 # Transformers (HuggingFace) - Latest version with improved models
 transformers>=4.47.0
 
@@ -81,14 +87,14 @@ python-dotenv>=1.0.1
 # Optional: For Production Integration
 # ============================================
 
-# FastAPI - For API endpoints (optional)
-# fastapi>=0.115.6
+# FastAPI - Public API for mediator recommendations
+fastapi>=0.128.0
 
-# Uvicorn - ASGI server (optional)
-# uvicorn>=0.34.0
+# Uvicorn - ASGI server for FastAPI
+uvicorn>=0.24.0
 
 # PyMongo - MongoDB client (optional)
-# pymongo>=4.10.1
+ pymongo>=4.10.1
 
 # ============================================
 # Installation Notes
