@@ -88,7 +88,7 @@ router.get('/:id', validate(schemas.objectId, 'params'), asyncHandler(async (req
  */
 router.post('/', asyncHandler(async (req, res) => {
   const mediator = new Mediator(req.body);
-  mediator.calculateCompleteness();
+  mediator.calculateDataQuality();
 
   await mediator.save();
 
@@ -110,7 +110,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
     return sendNotFound(res, 'Mediator');
   }
 
-  mediator.calculateCompleteness();
+  mediator.calculateDataQuality();
   await mediator.save();
 
   sendSuccess(res, mediator);

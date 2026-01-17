@@ -13,6 +13,7 @@
     "retrain:full": "node src/scripts/retrainConflictModel.js"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.9",
     "@netlify/blobs": "^10.5.0",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
