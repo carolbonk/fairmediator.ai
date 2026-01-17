@@ -12,7 +12,7 @@ const { expectSuccess, expectError, mockExternalAPI } = require('../helpers/test
 describe('Mediator API', () => {
   let testMediatorId;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Create test mediators
     const testMediator = await Mediator.create({
       name: 'Test Mediator',
@@ -73,9 +73,7 @@ describe('Mediator API', () => {
     });
   });
 
-  afterAll(async () => {
-    await Mediator.deleteMany({ email: { $in: ['test.mediator@example.com', 'liberal@example.com', 'conservative@example.com'] } });
-  });
+  // Cleanup handled by setup.js beforeEach
 
   describe('GET /api/mediators', () => {
     it('should return list of mediators', async () => {

@@ -170,4 +170,73 @@ export const getSupportedStates = async () => {
   return response.data;
 };
 
+// Monitoring API (Free Tier Tracking)
+export const getMonitoringStats = async () => {
+  const response = await api.get('/monitoring/stats');
+  return response.data;
+};
+
+export const getDatabaseSize = async () => {
+  const response = await api.get('/monitoring/database-size');
+  return response.data;
+};
+
+export const getUsageMetrics = async (service) => {
+  const response = await api.get(`/monitoring/usage/${service}`);
+  return response.data;
+};
+
+export const getRecentErrors = async (limit = 10) => {
+  const response = await api.get(`/monitoring/errors?limit=${limit}`);
+  return response.data;
+};
+
+// Storage API (Netlify Blobs)
+export const uploadMediatorImage = async (mediatorId, imageFile) => {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+
+  const response = await api.post(`/storage/mediator-image/${mediatorId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};
+
+export const getMediatorImage = async (mediatorId) => {
+  const response = await api.get(`/storage/mediator-image/${mediatorId}`);
+  return response.data;
+};
+
+export const deleteMediatorImage = async (mediatorId) => {
+  const response = await api.delete(`/storage/mediator-image/${mediatorId}`);
+  return response.data;
+};
+
+export const uploadMediatorDocument = async (mediatorId, documentType, documentFile) => {
+  const formData = new FormData();
+  formData.append('document', documentFile);
+  formData.append('documentType', documentType);
+
+  const response = await api.post(`/storage/mediator-document/${mediatorId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};
+
+export const listMediatorDocuments = async (mediatorId, documentType = null) => {
+  const params = documentType ? { documentType } : {};
+  const response = await api.get(`/storage/mediator-documents/${mediatorId}`, { params });
+  return response.data;
+};
+
+export const deleteDocument = async (documentKey) => {
+  const response = await api.delete(`/storage/document/${encodeURIComponent(documentKey)}`);
+  return response.data;
+};
+
+export const getStorageStats = async () => {
+  const response = await api.get('/storage/stats');
+  return response.data;
+};
+
 export default api;

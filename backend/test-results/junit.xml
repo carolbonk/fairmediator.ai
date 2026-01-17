@@ -1,326 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="101" failures="22" errors="0" time="10.087">
-  <testsuite name="Mediator API" errors="0" failures="7" skipped="0" timestamp="2026-01-17T00:11:29" time="3.248" tests="14">
-    <testcase classname="Mediator API › GET /api/mediators" name="should return list of mediators" time="0.122">
-      <failure>Error: expect(received).toBeGreaterThan(expected)
-
-Expected: &gt; 0
-Received:   0
-    at Object.toBeGreaterThan (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:89:51)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by location" time="0.045">
-      <failure>Error: expect(received).toBeGreaterThan(expected)
-
-Expected: &gt; 0
-Received:   0
-    at Object.toBeGreaterThan (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:97:51)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by ideology" time="0.029">
-      <failure>Error: expect(received).toBeGreaterThan(expected)
-
-Expected: &gt; 0
-Received:   0
-    at Object.toBeGreaterThan (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:107:51)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by minimum experience" time="0.039">
-    </testcase>
-    <testcase classname="Mediator API › GET /api/mediators" name="should support pagination" time="0.034">
-    </testcase>
-    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return a single mediator by ID" time="0.028">
+<testsuites name="jest tests" tests="101" failures="12" errors="0" time="14.105">
+  <testsuite name="Dashboard API" errors="0" failures="10" skipped="0" timestamp="2026-01-17T16:28:23" time="7.909" tests="15">
+    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should return user statistics for authenticated user" time="0.404">
       <failure>Error: expect(received).toBe(expected) // Object.is equality
 
 Expected: 200
-Received: 404
+Received: 401
     at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
-    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:136:7)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:79:7)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
     </testcase>
-    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return 404 for non-existent mediator" time="0.012">
+    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should accept days query parameter" time="0.32">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:88:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
     </testcase>
-    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return 400 for invalid mediator ID" time="0.02">
+    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should reject unauthenticated requests" time="0.301">
     </testcase>
-    <testcase classname="Mediator API › POST /api/mediators" name="should create a new mediator" time="0.026">
+    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should return search trends for authenticated user" time="0.292">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:104:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
     </testcase>
-    <testcase classname="Mediator API › POST /api/mediators" name="should reject mediator without required name field" time="0.026">
+    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should accept days query parameter" time="0.299">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:111:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should reject unauthenticated requests" time="0.893">
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should return popular mediators list" time="1.077">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:126:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should accept limit query parameter" time="0.42">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:133:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should reject unauthenticated requests" time="0.293">
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should return platform stats for premium users" time="0.272">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:149:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should reject free tier users" time="0.281">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 403
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:40:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:156:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should reject unauthenticated requests" time="0.3">
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should return conversion funnel for premium users" time="0.3">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
+    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:171:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should reject free tier users" time="0.321">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 403
+Received: 401
+    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:40:27)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:178:7)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should reject unauthenticated requests" time="0.272">
+    </testcase>
+  </testsuite>
+  <testsuite name="Mediator API" errors="0" failures="2" skipped="0" timestamp="2026-01-17T16:28:30" time="0.988" tests="14">
+    <testcase classname="Mediator API › GET /api/mediators" name="should return list of mediators" time="0.064">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by location" time="0.026">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by ideology" time="0.02">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators" name="should filter mediators by minimum experience" time="0.018">
+      <failure>Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+Expected: &gt;= 15
+Received:    10
+    at toBeGreaterThanOrEqual (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:114:42)
+    at Array.forEach (&lt;anonymous&gt;)
+    at Object.forEach (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:113:36)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators" name="should support pagination" time="0.021">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return a single mediator by ID" time="0.024">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return 404 for non-existent mediator" time="0.016">
+    </testcase>
+    <testcase classname="Mediator API › GET /api/mediators/:id" name="should return 400 for invalid mediator ID" time="0.017">
+    </testcase>
+    <testcase classname="Mediator API › POST /api/mediators" name="should create a new mediator" time="0.027">
+    </testcase>
+    <testcase classname="Mediator API › POST /api/mediators" name="should reject mediator without required name field" time="0.03">
       <failure>Error: expect(received).toBe(expected) // Object.is equality
 
 Expected: 400
 Received: 500
     at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:40:27)
-    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:197:7)
+    at Object.expectError (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:195:7)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
     </testcase>
-    <testcase classname="Mediator API › PUT /api/mediators/:id" name="should update an existing mediator" time="0.077">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 200
-Received: 404
-    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
-    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:212:7)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Mediator API › PUT /api/mediators/:id" name="should update an existing mediator" time="0.069">
     </testcase>
-    <testcase classname="Mediator API › PUT /api/mediators/:id" name="should return 404 for non-existent mediator" time="0.016">
+    <testcase classname="Mediator API › PUT /api/mediators/:id" name="should return 404 for non-existent mediator" time="0.02">
     </testcase>
     <testcase classname="Mediator API › POST /api/mediators/:id/analyze-ideology" name="should analyze mediator ideology" time="0.017">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 200
-Received: 404
-    at toBe (/Users/carolbonk/Desktop/FairMediator/backend/tests/helpers/testHelpers.js:30:27)
-    at Object.expectSuccess (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/mediators.test.js:247:7)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
     </testcase>
-    <testcase classname="Mediator API › POST /api/mediators/:id/analyze-ideology" name="should return 404 for non-existent mediator" time="0.011">
+    <testcase classname="Mediator API › POST /api/mediators/:id/analyze-ideology" name="should return 404 for non-existent mediator" time="0.022">
     </testcase>
   </testsuite>
-  <testsuite name="Dashboard API" errors="0" failures="15" skipped="0" timestamp="2026-01-17T00:11:32" time="0.834" tests="15">
-    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should return user statistics for authenticated user" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2026-01-17T16:28:31" time="2.666" tests="11">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.743">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should accept days query parameter" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.03">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/stats" name="should reject unauthenticated requests" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.091">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should return search trends for authenticated user" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.009">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should accept days query parameter" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.137">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/trends" name="should reject unauthenticated requests" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.135">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should return popular mediators list" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.073">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should accept limit query parameter" time="0.001">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.689">
     </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/popular-mediators" name="should reject unauthenticated requests" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should return platform stats for premium users" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should reject free tier users" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/platform" name="should reject unauthenticated requests" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should return conversion funnel for premium users" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should reject free tier users" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-    <testcase classname="Dashboard API › GET /api/dashboard/conversion-funnel" name="should reject unauthenticated requests" time="0">
-      <failure>ValidationError: UsageLog validation failed: metadata.mediatorId: Cast to ObjectId failed for value &quot;test123&quot; (type string) at path &quot;metadata.mediatorId&quot; because of &quot;BSONError&quot;
-    at model.Object.&lt;anonymous&gt;.Document.invalidate (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:3362:32)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1484:12)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1231:14)
-    at model.$set (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:1121:14)
-    at model.Document (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/document.js:178:12)
-    at model.Model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:127:12)
-    at new model (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:4855:15)
-    at /Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2785:20
-    at Array.map (&lt;anonymous&gt;)
-    at Function.create (/Users/carolbonk/Desktop/FairMediator/node_modules/mongoose/lib/model.js:2773:34)
-    at Object.create (/Users/carolbonk/Desktop/FairMediator/backend/tests/integration/dashboard.test.js:65:20)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-  </testsuite>
-  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2026-01-17T00:11:33" time="3.033" tests="11">
-    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.481">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.027">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.093">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.01">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.175">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.201">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.082">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.575">
-    </testcase>
-    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.162">
+    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.288">
     </testcase>
     <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0">
       <skipped/>
@@ -329,114 +173,114 @@ Received: 404
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="Chat API" errors="0" failures="0" skipped="0" timestamp="2026-01-17T00:11:37" time="1.041" tests="16">
-    <testcase classname="Chat API › POST /api/chat" name="should process a chat message successfully" time="0.053">
+  <testsuite name="Chat API" errors="0" failures="0" skipped="0" timestamp="2026-01-17T16:28:34" time="1.417" tests="16">
+    <testcase classname="Chat API › POST /api/chat" name="should process a chat message successfully" time="0.051">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat" name="should accept conversation history" time="0.01">
+    <testcase classname="Chat API › POST /api/chat" name="should accept conversation history" time="0.012">
     </testcase>
     <testcase classname="Chat API › POST /api/chat" name="should reject empty message" time="0.01">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat" name="should reject non-string message" time="0.017">
+    <testcase classname="Chat API › POST /api/chat" name="should reject non-string message" time="0.009">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat" name="should reject missing message" time="0.013">
+    <testcase classname="Chat API › POST /api/chat" name="should reject missing message" time="0.008">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat" name="should handle errors from chat service" time="0.016">
+    <testcase classname="Chat API › POST /api/chat" name="should handle errors from chat service" time="0.013">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should check for conflicts successfully" time="0.056">
+    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should check for conflicts successfully" time="0.05">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should reject missing mediatorId" time="0.012">
+    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should reject missing mediatorId" time="0.01">
     </testcase>
     <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should reject missing parties" time="0.009">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should reject empty parties array" time="0.009">
+    <testcase classname="Chat API › POST /api/chat/check-conflicts" name="should reject empty parties array" time="0.008">
     </testcase>
     <testcase classname="Chat API › POST /api/chat/analyze-ideology" name="should analyze mediator ideology successfully" time="0.009">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat/analyze-ideology" name="should reject missing mediatorId" time="0.01">
+    <testcase classname="Chat API › POST /api/chat/analyze-ideology" name="should reject missing mediatorId" time="0.009">
     </testcase>
-    <testcase classname="Chat API › POST /api/chat/analyze-ideology" name="should handle classifier errors" time="0.015">
+    <testcase classname="Chat API › POST /api/chat/analyze-ideology" name="should handle classifier errors" time="0.017">
     </testcase>
-    <testcase classname="Chat API › Not Implemented Endpoints" name="POST /api/chat/enrich-mediator should return 501" time="0.01">
+    <testcase classname="Chat API › Not Implemented Endpoints" name="POST /api/chat/enrich-mediator should return 501" time="0.009">
     </testcase>
-    <testcase classname="Chat API › Not Implemented Endpoints" name="GET /api/chat/scraper-health should return 501" time="0.011">
+    <testcase classname="Chat API › Not Implemented Endpoints" name="GET /api/chat/scraper-health should return 501" time="0.009">
     </testcase>
     <testcase classname="Chat API › Not Implemented Endpoints" name="POST /api/chat/bulk-scrape should return 501" time="0.01">
     </testcase>
   </testsuite>
-  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2026-01-17T00:11:38" time="0.454" tests="6">
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.02">
+  <testsuite name="Rate Limiting" errors="0" failures="0" skipped="0" timestamp="2026-01-17T16:28:36" time="0.468" tests="6">
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should block requests after exceeding limit" time="0.024">
     </testcase>
-    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.164">
+    <testcase classname="Rate Limiting › Auth Rate Limiter" name="should reset limit after window expires" time="0.166">
     </testcase>
-    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.024">
+    <testcase classname="Rate Limiting › Dynamic Rate Limiter" name="should apply different limits based on user tier" time="0.028">
     </testcase>
     <testcase classname="Rate Limiting › Rate Limit Headers" name="should include standard rate limit headers" time="0.003">
     </testcase>
-    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.006">
+    <testcase classname="Rate Limiting › Rate Limit Headers" name="should include retry-after header when rate limited" time="0.005">
     </testcase>
     <testcase classname="Rate Limiting › IP-based Rate Limiting" name="should track limits per IP address" time="0.008">
     </testcase>
   </testsuite>
-  <testsuite name="AI Systems Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-01-17T00:11:38" time="0.258" tests="21">
+  <testsuite name="AI Systems Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-01-17T16:28:36" time="0.256" tests="21">
     <testcase classname="AI Systems Integration Tests › Memory System" name="should initialize without errors" time="0.007">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Memory System" name="should have required methods" time="0.004">
+    <testcase classname="AI Systems Integration Tests › Memory System" name="should have required methods" time="0.002">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Memory System" name="should gracefully handle ChromaDB unavailability" time="0.002">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Chain System" name="should be initialized with default chains" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should have required methods" time="0.003">
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should have required methods" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Chain System" name="should validate chain structure" time="0.004">
+    <testcase classname="AI Systems Integration Tests › Chain System" name="should validate chain structure" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Chain System" name="should handle custom chains" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should be initialized with default agents" time="0.004">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should be initialized with default agents" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should have required methods" time="0.002">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should have required methods" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate agent structure" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate agent structure" time="0.003">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Agent System" name="should have correct agent tools" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate research agent" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate research agent" time="0.002">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate coordinator agent" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Agent System" name="should validate coordinator agent" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Integration Tests" name="agents can access memory system" time="0.002">
+    <testcase classname="AI Systems Integration Tests › Integration Tests" name="agents can access memory system" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Integration Tests" name="chains can integrate with memory and RAG" time="0.001">
     </testcase>
     <testcase classname="AI Systems Integration Tests › Integration Tests" name="coordinator agent can delegate to other agents" time="0.001">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing agents gracefully" time="0.008">
+    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing agents gracefully" time="0.012">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing chains gracefully" time="0.003">
+    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle missing chains gracefully" time="0.01">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle memory system failures gracefully" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Error Handling" name="should handle memory system failures gracefully" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Module Imports" name="all modules should import without errors" time="0.002">
+    <testcase classname="AI Systems Integration Tests › Module Imports" name="all modules should import without errors" time="0.003">
     </testcase>
-    <testcase classname="AI Systems Integration Tests › Module Imports" name="no circular dependency issues" time="0.001">
+    <testcase classname="AI Systems Integration Tests › Module Imports" name="no circular dependency issues" time="0.005">
     </testcase>
   </testsuite>
-  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2026-01-17T00:11:39" time="0.282" tests="18">
+  <testsuite name="Response Handlers" errors="0" failures="0" skipped="0" timestamp="2026-01-17T16:28:36" time="0.344" tests="18">
     <testcase classname="Response Handlers › sendSuccess" name="should send success response with data" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0.001">
+    <testcase classname="Response Handlers › sendSuccess" name="should send success response with custom status code" time="0.002">
     </testcase>
     <testcase classname="Response Handlers › sendSuccess" name="should send success response with message" time="0">
     </testcase>
-    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.003">
+    <testcase classname="Response Handlers › sendError" name="should send error response" time="0.005">
     </testcase>
     <testcase classname="Response Handlers › sendError" name="should send error response with details" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendValidationError" name="should send validation error with array of errors" time="0.003">
     </testcase>
-    <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0.002">
+    <testcase classname="Response Handlers › sendUnauthorized" name="should send 401 unauthorized" time="0.003">
     </testcase>
-    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0">
+    <testcase classname="Response Handlers › sendForbidden" name="should send 403 forbidden" time="0.001">
     </testcase>
     <testcase classname="Response Handlers › sendNotFound" name="should send 404 not found" time="0">
     </testcase>
@@ -444,19 +288,19 @@ Received: 404
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeString" name="should handle non-string input" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should sanitize all string properties" time="0.001">
     </testcase>
     <testcase classname="Sanitization Utilities › sanitizeObject" name="should remove MongoDB operators" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle nested objects" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0.002">
+    <testcase classname="Sanitization Utilities › sanitizeObject" name="should handle arrays" time="0.003">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0.001">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove javascript: protocol" time="0.002">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove event handlers" time="0.001">
     </testcase>
-    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0.001">
+    <testcase classname="Sanitization Utilities › removeDangerousChars" name="should remove eval calls" time="0">
     </testcase>
   </testsuite>
 </testsuites>
