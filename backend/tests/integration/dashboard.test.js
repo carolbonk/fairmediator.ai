@@ -16,7 +16,7 @@ describe('Dashboard API', () => {
   let premiumUser;
   let premiumToken;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Create free tier test user
     testUser = await User.create({
       email: 'dashboard@example.com',
@@ -65,15 +65,12 @@ describe('Dashboard API', () => {
     await UsageLog.create({
       user: testUser._id,
       eventType: 'profileView',
-      metadata: { mediatorId: 'test123' },
+      metadata: {},
       timestamp: new Date()
     });
   });
 
-  afterAll(async () => {
-    await User.deleteMany({ email: { $in: ['dashboard@example.com', 'premium@example.com'] } });
-    await UsageLog.deleteMany({ user: testUser._id });
-  });
+  // Cleanup handled by setup.js beforeEach
 
   describe('GET /api/dashboard/stats', () => {
     it('should return user statistics for authenticated user', async () => {
