@@ -27,144 +27,234 @@ async function seedMediators() {
         {
             name: "Sarah Johnson",
             email: "sarah.johnson@mediation.com",
-            currentFirm: "Independent Mediation Services",
-            pastFirms: ["Wilson & Associates", "Legal Solutions Group"],
-            practiceAreas: ["Intellectual Property", "Technology", "Commercial"],
+            phone: "+1 (415) 555-0123",
+            website: "https://sarahjohnsonmediation.com",
+            lawFirm: "Independent Mediation Services",
+            currentEmployer: "Independent Mediation Services",
+            previousEmployers: ["Wilson & Associates", "Legal Solutions Group"],
+            specializations: ["Intellectual Property", "Technology", "Commercial"],
             yearsExperience: 15,
-            barMemberships: ["California State Bar", "New York State Bar"],
+            barAdmissions: ["California State Bar", "New York State Bar"],
+            certifications: ["Certified Mediator - ABA", "Technology Mediation Specialist"],
             location: {
                 city: "San Francisco",
                 state: "CA",
                 country: "USA"
             },
-            education: [
-                { institution: "Stanford Law School", degree: "JD", year: 2008 },
-                { institution: "UC Berkeley", degree: "BS Computer Science", year: 2005 }
-            ],
-            organizations: ["American Bar Association", "Silicon Valley Bar"],
-            recentCases: [
-                "Software licensing dispute - TechCorp vs StartupInc",
-                "Patent infringement mediation",
-                "Trade secret misappropriation case"
-            ],
-            ideologyScore: -0.5,
-            ideologyLabel: "LEAN_LIBERAL",
-            ideologyConfidence: 0.7,
-            rating: 4.5,
-            reviewCount: 28,
-            isPremium: true,
+            ideologyScore: -2,
+            biasIndicators: {
+                politicalAffiliations: ["American Bar Association", "Silicon Valley Bar"],
+                publicStatements: [{
+                    statement: "Technology should be accessible to all",
+                    source: "TechLaw Conference 2023",
+                    date: new Date("2023-05-15"),
+                    sentiment: "liberal"
+                }]
+            },
+            affiliations: [{
+                type: "organization",
+                name: "American Bar Association",
+                role: "Member",
+                startDate: new Date("2008-01-01"),
+                isCurrent: true
+            }],
+            cases: [{
+                caseNumber: "CV-2023-001",
+                caseName: "TechCorp vs StartupInc",
+                parties: ["TechCorp", "StartupInc"],
+                role: "mediator",
+                outcome: "Settlement reached",
+                date: new Date("2023-06-20"),
+                court: "Superior Court of California"
+            }],
+            sources: [{
+                url: "https://example.com/sarah-johnson",
+                scrapedAt: new Date(),
+                sourceType: "manual_seed"
+            }],
+            tags: ["Technology", "IP", "Commercial", "Experienced"],
             isVerified: true,
-            profileCompleteness: 95
+            isActive: true,
+            dataQuality: {
+                completeness: 95,
+                lastVerified: new Date(),
+                needsReview: false
+            }
         },
         {
             name: "Michael Chen",
             email: "mchen@neutralmediators.com",
-            currentFirm: "Neutral Mediators LLC",
-            practiceAreas: ["Employment", "Discrimination", "Labor"],
+            phone: "+1 (312) 555-0456",
+            lawFirm: "Neutral Mediators LLC",
+            currentEmployer: "Neutral Mediators LLC",
+            specializations: ["Employment", "Discrimination", "Labor"],
             yearsExperience: 22,
-            barMemberships: ["Illinois State Bar"],
+            barAdmissions: ["Illinois State Bar"],
+            certifications: ["Labor Relations Mediator", "Employment Law Specialist"],
             location: {
                 city: "Chicago",
                 state: "IL",
                 country: "USA"
             },
-            education: [
-                { institution: "Northwestern Law", degree: "JD", year: 2001 },
-                { institution: "University of Chicago", degree: "BA Economics", year: 1998 }
-            ],
-            organizations: ["National Association for Employee Rights"],
             ideologyScore: 0,
-            ideologyLabel: "NEUTRAL",
-            ideologyConfidence: 0.85,
-            rating: 4.8,
-            reviewCount: 45,
-            isPremium: false,
+            biasIndicators: {
+                politicalAffiliations: ["National Association for Employee Rights"]
+            },
+            affiliations: [{
+                type: "organization",
+                name: "National Association for Employee Rights",
+                role: "Board Member",
+                startDate: new Date("2010-01-01"),
+                isCurrent: true
+            }],
+            sources: [{
+                url: "https://example.com/michael-chen",
+                scrapedAt: new Date(),
+                sourceType: "manual_seed"
+            }],
+            tags: ["Employment", "Labor", "Neutral", "Experienced"],
             isVerified: true,
-            profileCompleteness: 88
+            isActive: true,
+            dataQuality: {
+                completeness: 88,
+                lastVerified: new Date(),
+                needsReview: false
+            }
         },
         {
             name: "Robert Hamilton",
             email: "rhamilton@corporate-mediation.com",
-            currentFirm: "Hamilton Dispute Resolution",
-            pastFirms: ["BigLaw Associates", "Corporate Legal Services"],
-            practiceAreas: ["Corporate", "M&A", "Securities"],
+            phone: "+1 (212) 555-0789",
+            website: "https://hamiltondisputeresolution.com",
+            lawFirm: "Hamilton Dispute Resolution",
+            currentEmployer: "Hamilton Dispute Resolution",
+            previousEmployers: ["BigLaw Associates", "Corporate Legal Services"],
+            specializations: ["Corporate", "M&A", "Securities"],
             yearsExperience: 30,
-            barMemberships: ["New York State Bar", "DC Bar"],
+            barAdmissions: ["New York State Bar", "DC Bar"],
+            certifications: ["Securities Mediator", "Corporate Dispute Specialist"],
             location: {
                 city: "New York",
                 state: "NY",
                 country: "USA"
             },
-            education: [
-                { institution: "Harvard Law School", degree: "JD", year: 1993 },
-                { institution: "Yale University", degree: "BA Political Science", year: 1990 }
-            ],
-            organizations: ["Federalist Society", "Manhattan Bar Association"],
-            appointments: ["Appointed to State Mediation Board by Republican Governor"],
-            ideologyScore: 1.5,
-            ideologyLabel: "STRONG_CONSERVATIVE",
-            ideologyConfidence: 0.8,
-            rating: 4.6,
-            reviewCount: 67,
-            isPremium: true,
+            ideologyScore: 5,
+            biasIndicators: {
+                politicalAffiliations: ["Federalist Society", "Manhattan Bar Association"],
+                publicStatements: [{
+                    statement: "Business efficiency and regulatory reduction are paramount",
+                    source: "Corporate Law Review",
+                    date: new Date("2022-11-10"),
+                    sentiment: "conservative"
+                }]
+            },
+            affiliations: [{
+                type: "organization",
+                name: "Federalist Society",
+                role: "Member",
+                startDate: new Date("1995-01-01"),
+                isCurrent: true
+            }],
+            sources: [{
+                url: "https://example.com/robert-hamilton",
+                scrapedAt: new Date(),
+                sourceType: "manual_seed"
+            }],
+            tags: ["Corporate", "M&A", "Conservative", "Highly Experienced"],
             isVerified: true,
-            profileCompleteness: 92
+            isActive: true,
+            dataQuality: {
+                completeness: 92,
+                lastVerified: new Date(),
+                needsReview: false
+            }
         },
         {
             name: "Emily Rodriguez",
             email: "erodriguez@publicinterest.org",
-            currentFirm: "Public Interest Mediation Center",
-            practiceAreas: ["Environmental", "Civil Rights", "Consumer Protection"],
+            phone: "+1 (310) 555-0234",
+            lawFirm: "Public Interest Mediation Center",
+            currentEmployer: "Public Interest Mediation Center",
+            specializations: ["Environmental", "Civil Rights", "Consumer Protection"],
             yearsExperience: 12,
-            barMemberships: ["California State Bar"],
+            barAdmissions: ["California State Bar"],
+            certifications: ["Environmental Mediation Specialist", "Civil Rights Mediator"],
             location: {
                 city: "Los Angeles",
                 state: "CA",
                 country: "USA"
             },
-            education: [
-                { institution: "UCLA Law", degree: "JD", year: 2011 },
-                { institution: "UC Santa Barbara", degree: "BA Environmental Studies", year: 2008 }
-            ],
-            organizations: ["ACLU", "Sierra Club Legal Defense"],
-            publications: [
-                "Environmental Justice in Mediation",
-                "Community-Centered Dispute Resolution"
-            ],
-            ideologyScore: -1.8,
-            ideologyLabel: "STRONG_LIBERAL",
-            ideologyConfidence: 0.9,
-            rating: 4.7,
-            reviewCount: 34,
-            isPremium: false,
+            ideologyScore: -6,
+            biasIndicators: {
+                politicalAffiliations: ["ACLU", "Sierra Club Legal Defense"],
+                publicStatements: [{
+                    statement: "Environmental justice is social justice",
+                    source: "Environmental Law Journal",
+                    date: new Date("2023-03-22"),
+                    sentiment: "liberal"
+                }]
+            },
+            affiliations: [{
+                type: "organization",
+                name: "ACLU",
+                role: "Volunteer Mediator",
+                startDate: new Date("2015-01-01"),
+                isCurrent: true
+            }],
+            sources: [{
+                url: "https://example.com/emily-rodriguez",
+                scrapedAt: new Date(),
+                sourceType: "manual_seed"
+            }],
+            tags: ["Environmental", "Civil Rights", "Progressive", "Public Interest"],
             isVerified: true,
-            profileCompleteness: 85
+            isActive: true,
+            dataQuality: {
+                completeness: 85,
+                lastVerified: new Date(),
+                needsReview: false
+            }
         },
         {
             name: "David Park",
             email: "dpark@techmediation.io",
-            currentFirm: "Tech Mediation Group",
-            practiceAreas: ["Technology", "Data Privacy", "Cybersecurity"],
+            phone: "+1 (206) 555-0567",
+            website: "https://techmediation.io",
+            lawFirm: "Tech Mediation Group",
+            currentEmployer: "Tech Mediation Group",
+            specializations: ["Technology", "Data Privacy", "Cybersecurity"],
             yearsExperience: 8,
-            barMemberships: ["Washington State Bar"],
+            barAdmissions: ["Washington State Bar"],
+            certifications: ["Cybersecurity Law Specialist", "Data Privacy Mediator"],
             location: {
                 city: "Seattle",
                 state: "WA",
                 country: "USA"
             },
-            education: [
-                { institution: "University of Washington Law", degree: "JD", year: 2015 },
-                { institution: "MIT", degree: "BS Computer Science", year: 2012 }
-            ],
-            organizations: ["Tech Law Association", "Cybersecurity Legal Council"],
-            ideologyScore: 0.2,
-            ideologyLabel: "NEUTRAL",
-            ideologyConfidence: 0.65,
-            rating: 4.3,
-            reviewCount: 19,
-            isPremium: true,
+            ideologyScore: 1,
+            biasIndicators: {
+                politicalAffiliations: ["Tech Law Association", "Cybersecurity Legal Council"]
+            },
+            affiliations: [{
+                type: "organization",
+                name: "Tech Law Association",
+                role: "Member",
+                startDate: new Date("2015-01-01"),
+                isCurrent: true
+            }],
+            sources: [{
+                url: "https://example.com/david-park",
+                scrapedAt: new Date(),
+                sourceType: "manual_seed"
+            }],
+            tags: ["Technology", "Cybersecurity", "Data Privacy", "Tech-Savvy"],
             isVerified: true,
-            profileCompleteness: 78
+            isActive: true,
+            dataQuality: {
+                completeness: 78,
+                lastVerified: new Date(),
+                needsReview: false
+            }
         }
     ];
     
@@ -180,7 +270,11 @@ async function seedMediators() {
         console.log(`✅ Successfully inserted ${result.length} mediators!`);
         console.log('\nSample mediators added:');
         sampleMediators.forEach(med => {
-            console.log(`  - ${med.name} (${med.ideologyLabel}) - ${med.practiceAreas.join(', ')}`);
+            const ideologyLabel = med.ideologyScore < -4 ? 'STRONG_LIBERAL' :
+                                 med.ideologyScore < -1 ? 'LEAN_LIBERAL' :
+                                 med.ideologyScore <= 1 ? 'NEUTRAL' :
+                                 med.ideologyScore <= 4 ? 'LEAN_CONSERVATIVE' : 'STRONG_CONSERVATIVE';
+            console.log(`  - ${med.name} (${ideologyLabel}, Score: ${med.ideologyScore}) - ${med.specializations.join(', ')}`);
         });
         
         console.log('\n✅ Seeding complete! You can now test the application.');
