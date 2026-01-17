@@ -42,6 +42,37 @@ class IdeologyClassifier {
     return this.classifyText(text);
   }
 
+  // Alias for compatibility with routes
+  async classifyIdeology(mediator) {
+    const result = await this.analyzeMediatorIdeology(mediator);
+    return {
+      score: result.leaning === 'liberal' ? -5 : result.leaning === 'conservative' ? 5 : 0,
+      label: result.leaning.toUpperCase(),
+      confidence: result.confidence / 100,
+      factors: [result.reasoning],
+      summary: result.reasoning
+    };
+  }
+
+  // Alias for chat route compatibility - accepts mediatorId and returns full analysis
+  async classifyMediator(mediatorId) {
+    const Mediator = require('../../models/Mediator');
+    const mediator = await Mediator.findById(mediatorId);
+
+    if (!mediator) {
+      throw new Error('Mediator not found');
+    }
+
+    const result = await this.analyzeMediatorIdeology(mediator);
+    return {
+      ideology: result.leaning,
+      score: result.leaning === 'liberal' ? -5 : result.leaning === 'conservative' ? 5 : 0,
+      confidence: result.confidence / 100,
+      factors: [result.reasoning],
+      summary: result.reasoning
+    };
+  }
+
   _keywordClassification(text) {
     const lower = text.toLowerCase();
     const libCount = IdeologyClassifier.KEYWORDS.liberal.filter(k => lower.includes(k)).length;

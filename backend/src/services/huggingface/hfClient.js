@@ -63,25 +63,21 @@ class HuggingFaceClient {
    * @param {string} model - Model to use (default: sentence-transformers/all-MiniLM-L6-v2)
    */
   async featureExtraction(text, model = 'sentence-transformers/all-MiniLM-L6-v2') {
-    const axios = require('axios');
+    const { HfInference } = require('@huggingface/inference');
 
     try {
-      const response = await axios.post(
-        `https://api-inference.huggingface.co/models/${model}`,
-        { inputs: text },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 30000
-        }
-      );
+      const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+
+      // Use the modern Inference API
+      const embedding = await hf.featureExtraction({
+        model: model,
+        inputs: text
+      });
 
       // Response is an embedding vector (array of numbers)
-      return response.data;
+      return embedding;
     } catch (error) {
-      console.error('Feature extraction error:', error.response?.data || error.message);
+      console.error('Feature extraction error:', error.message);
       throw new Error(`Failed to generate embedding: ${error.message}`);
     }
   }
