@@ -73,6 +73,55 @@ describe('Authentication API', () => {
 
       expectError(response, 400);
     });
+
+    it('should show detailed validation errors for invalid name', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'SecurePass123!',
+          name: 'X' // Too short
+        });
+
+      expectError(response, 400);
+      expect(response.body.error).toContain('Validation failed');
+      expect(response.body.details).toBeDefined();
+    });
+
+    it('should show detailed password validation errors', async () => {
+      const testCases = [
+        { password: 'short1!A', reason: 'too short' },
+        { password: 'nouppercase123!', reason: 'no uppercase' },
+        { password: 'NOLOWERCASE123!', reason: 'no lowercase' },
+        { password: 'NoSpecialChar123', reason: 'no special char' },
+        { password: 'NoDigitsHere!', reason: 'no digits' }
+      ];
+
+      for (const testCase of testCases) {
+        const response = await request(app)
+          .post('/api/auth/register')
+          .send({
+            email: 'test@example.com',
+            password: testCase.password,
+            name: 'Test User'
+          });
+
+        expectError(response, 400);
+        expect(response.body.error).toContain('Validation failed');
+      }
+    });
+
+    it('should reject registration with name containing numbers', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'SecurePass123!',
+          name: 'Test123'
+        });
+
+      expectError(response, 400);
+    });
   });
 
   describe('POST /api/auth/login', () => {
@@ -124,6 +173,20 @@ describe('Authentication API', () => {
       expectError(response, 401);
     });
 
+    it('should show remaining login attempts after failed login', async () => {
+      // First failed attempt
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'login@example.com',
+          password: 'WrongPassword123!'
+        });
+
+      expectError(response, 401);
+      expect(response.body).toHaveProperty('remainingAttempts');
+      expect(response.body.remainingAttempts).toBe(4); // 5 max - 1 failed = 4 remaining
+    });
+
     it('should lock account after 5 failed login attempts', async () => {
       // Make 5 failed attempts
       for (let i = 0; i < 5; i++) {
@@ -135,16 +198,72 @@ describe('Authentication API', () => {
           });
       }
 
-      // 6th attempt should be blocked
+      // 6th attempt should be blocked (even with correct password)
       const response = await request(app)
         .post('/api/auth/login')
         .send({
           email: 'login@example.com',
-          password: 'LoginPass123!' // Even with correct password
+          password: 'LoginPass123!' // Correct password doesn't matter
         });
 
       expectError(response, 423); // 423 Locked
       expect(response.body.error).toContain('locked');
+      expect(response.body).toHaveProperty('minutesRemaining');
+    });
+
+    it('should reset failed attempts after successful login', async () => {
+      // Make 2 failed attempts
+      await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'login@example.com',
+          password: 'WrongPassword123!'
+        });
+
+      await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'login@example.com',
+          password: 'WrongPassword123!'
+        });
+
+      // Successful login
+      const successResponse = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'login@example.com',
+          password: 'LoginPass123!'
+        });
+
+      expectSuccess(successResponse, 200);
+
+      // Verify failed attempts were reset
+      const user = await User.findOne({ email: 'login@example.com' });
+      expect(user.failedLoginAttempts).toBe(0);
+      expect(user.accountLockedUntil).toBeNull();
+    });
+
+    it('should auto-unlock account after lock duration expires', async () => {
+      // Lock the account
+      const user = await User.findOne({ email: 'login@example.com' });
+      user.failedLoginAttempts = 5;
+      user.accountLockedUntil = new Date(Date.now() - 1000); // Expired 1 second ago
+      await user.save();
+
+      // Try to login (should succeed because lock expired)
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'login@example.com',
+          password: 'LoginPass123!'
+        });
+
+      expectSuccess(response, 200);
+
+      // Verify counters were reset
+      const updatedUser = await User.findOne({ email: 'login@example.com' });
+      expect(updatedUser.failedLoginAttempts).toBe(0);
+      expect(updatedUser.accountLockedUntil).toBeNull();
     });
   });
 

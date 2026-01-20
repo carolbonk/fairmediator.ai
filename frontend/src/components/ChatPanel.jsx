@@ -89,7 +89,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
 
         {/* Parties Input - Neumorphism */}
         <div className="mt-3">
-          <label className="block text-[10px] font-semibold text-neu-700 mb-1 uppercase tracking-wide">
+          <label className="block text-xs font-semibold text-neu-700 mb-1 uppercase tracking-wide">
             Parties/Firms to Check for Conflicts:
           </label>
           <div className="flex gap-1.5">
@@ -99,11 +99,11 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               onChange={(e) => setPartyInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addParty()}
               placeholder="e.g., BigLaw LLC"
-              className="input-neu flex-1 text-xs py-1.5"
+              className="input-neu flex-1 text-sm py-2 min-h-[44px]"
             />
             <button
               onClick={addParty}
-              className="btn-neu text-xs px-3 py-1.5 whitespace-nowrap"
+              className="btn-neu text-sm px-4 py-2 whitespace-nowrap min-h-[44px] min-w-[44px]"
             >
               Add
             </button>
@@ -114,12 +114,13 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               {parties.map((party, idx) => (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-blue-100 text-blue-800 rounded-full shadow-neu-sm"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-blue-100 text-blue-800 rounded-full shadow-neu-sm min-h-[36px]"
                 >
                   {party}
                   <button
                     onClick={() => removeParty(party)}
-                    className="hover:text-blue-600 transition-colors w-3 h-3 flex items-center justify-center rounded-full hover:bg-blue-200"
+                    className="hover:text-blue-600 transition-colors w-5 h-5 flex items-center justify-center rounded-full hover:bg-blue-200 text-base"
+                    aria-label={`Remove ${party}`}
                   >
                     ×
                   </button>
@@ -203,8 +204,8 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             <FaPaperPlane className="text-sm" />
           </button>
         </div>
-        <p className="text-[10px] text-neu-600 mt-2">
-          <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Enter</kbd> send • <kbd className="px-1 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-[9px]">Shift+Enter</kbd> new line
+        <p className="text-xs text-neu-600 mt-2">
+          <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Enter</kbd> send • <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Shift+Enter</kbd> new line
         </p>
       </div>
     </div>

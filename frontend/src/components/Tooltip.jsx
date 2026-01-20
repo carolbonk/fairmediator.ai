@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
 
 /**
  * Reusable Tooltip Component
  * Shows explanatory text on hover with a "?" icon
  * Consistent neumorphism styling across the platform
+ * Memoized for performance - used frequently across app
  */
-const Tooltip = ({ text, position = 'top' }) => {
+const Tooltip = memo(({ text, position = 'top' }) => {
   const [show, setShow] = useState(false);
 
   const positionClasses = {
@@ -68,6 +69,6 @@ const Tooltip = ({ text, position = 'top' }) => {
       )}
     </div>
   );
-};
+});
 
 export default Tooltip;

@@ -16,14 +16,14 @@ const StarRating = ({ rating, totalMediations }) => {
       <span className="text-sm font-bold text-neu-800">{rating.toFixed(1)}</span>
       <div className="flex items-center gap-0.5">
         {[...Array(fullStars)].map((_, i) => (
-          <FaStar key={`full-${i}`} className="text-[#3B82F6] text-[10px]" />
+          <FaStar key={`full-${i}`} className="text-[#3B82F6] text-xs" />
         ))}
-        {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-[10px]" />}
+        {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-xs" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <FaStar key={`empty-${i}`} className="text-gray-300 text-[10px]" />
+          <FaStar key={`empty-${i}`} className="text-gray-300 text-xs" />
         ))}
       </div>
-      <span className="text-[10px] text-neu-500">({totalMediations})</span>
+      <span className="text-xs text-neu-500">({totalMediations})</span>
     </div>
   );
 };
@@ -135,7 +135,7 @@ const MediatorList = ({ parties }) => {
         <div className="text-center py-4 text-gray-400">
           <p className="text-xs">No {title.toLowerCase()} mediators found</p>
           {(selectedState !== 'all' || lowBudget) && (
-            <p className="text-[10px] mt-1">Try adjusting filters</p>
+            <p className="text-xs mt-1">Try adjusting filters</p>
           )}
         </div>
       );
@@ -167,7 +167,8 @@ const MediatorList = ({ parties }) => {
                 setModalPage(Math.max(1, currentPage - 1));
                 setShowModal(true);
               }}
-              className="px-2 py-1 rounded-md text-[10px] font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+              className="px-3 py-2.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[44px] min-w-[44px]"
+              aria-label="Previous page"
             >
               ←
             </button>
@@ -180,11 +181,12 @@ const MediatorList = ({ parties }) => {
                     setModalPage(i + 1);
                     setShowModal(true);
                   }}
-                  className={`w-6 h-6 rounded-md text-[10px] font-medium transition-all ${
+                  className={`min-w-[44px] min-h-[44px] rounded-md text-xs font-medium transition-all ${
                     currentPage === i + 1
                       ? 'shadow-neu-inset bg-neu-200 text-neu-800'
                       : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
                   }`}
+                  aria-label={`Page ${i + 1}`}
                 >
                   {i + 1}
                 </button>
@@ -196,7 +198,8 @@ const MediatorList = ({ parties }) => {
                 setModalPage(Math.min(totalPages, currentPage + 1));
                 setShowModal(true);
               }}
-              className="px-2 py-1 rounded-md text-[10px] font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+              className="px-3 py-2.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[44px] min-w-[44px]"
+              aria-label="Next page"
             >
               →
             </button>
@@ -230,7 +233,7 @@ const MediatorList = ({ parties }) => {
         <div className="flex items-center gap-2 flex-wrap">
           {/* State Selector - Compact */}
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
-            <label className="text-[10px] font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
+            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
               State
               <Tooltip text="Filter by state" position="top" />
             </label>
@@ -295,7 +298,7 @@ const MediatorList = ({ parties }) => {
           {/* Low Budget Toggle - Ultra Compact */}
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
             <label className="flex items-center gap-1.5 cursor-pointer">
-              <span className="text-[10px] font-semibold text-neu-700 whitespace-nowrap">Budget</span>
+              <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
               <button
                 type="button"
@@ -317,10 +320,10 @@ const MediatorList = ({ parties }) => {
             </label>
           </div>
 
-          {/* Ideology Tabs - Ultra Compact */}
+          {/* Ideology Tabs */}
           <button
             onClick={() => setActiveTab('liberal')}
-            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
               activeTab === 'liberal'
                 ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -330,7 +333,7 @@ const MediatorList = ({ parties }) => {
           </button>
           <button
             onClick={() => setActiveTab('moderated')}
-            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
               activeTab === 'moderated'
                 ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -340,7 +343,7 @@ const MediatorList = ({ parties }) => {
           </button>
           <button
             onClick={() => setActiveTab('conservative')}
-            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
               activeTab === 'conservative'
                 ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'

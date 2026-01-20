@@ -12,6 +12,7 @@ validateEnv();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const logger = require('./config/logger');
@@ -118,6 +119,14 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   maxAge: 600 // 10 minutes
+}));
+
+// Compression middleware - gzip responses for better performance
+app.use(compression({
+  // Only compress responses larger than 1kb
+  threshold: 1024,
+  // Compression level (0-9, 6 is default balance)
+  level: 6
 }));
 
 // Body parsing middleware (must come before CSRF)
