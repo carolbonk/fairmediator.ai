@@ -126,27 +126,27 @@ const FileUpload = ({ onAnalysisComplete }) => {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="button-neu text-[10px] py-1.5 px-3 flex items-center gap-1.5 disabled:opacity-50"
+              className="button-neu text-sm py-2.5 px-4 flex items-center gap-2 disabled:opacity-50 min-h-[44px]"
             >
               {uploading ? (
                 <>
-                  <FaSpinner className="animate-spin text-[9px]" />
+                  <FaSpinner className="animate-spin text-xs" />
                   <span>Analyzing...</span>
                 </>
               ) : (
                 <>
-                  <FaFileUpload className="text-[9px]" />
+                  <FaFileUpload className="text-xs" />
                   <span>Upload Doc</span>
                 </>
               )}
             </button>
-            <span className="text-[9px] text-neu-500">.txt, .pdf, .docx</span>
+            <span className="text-xs text-neu-500">.txt, .pdf, .docx</span>
             <Tooltip text="AI extraction of case details" />
           </div>
 
           {error && (
-            <div className="mt-1.5 p-1.5 bg-red-50 rounded-lg shadow-neu-inset text-[10px] text-red-700 font-medium flex items-center gap-1.5">
-              <FaTimes className="text-[9px]" />
+            <div className="mt-1.5 p-1.5 bg-red-50 rounded-lg shadow-neu-inset text-xs text-red-700 font-medium flex items-center gap-1.5">
+              <FaTimes className="text-xs" />
               {error}
             </div>
           )}
