@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FaStar, FaStarHalfAlt, FaMapMarkerAlt, FaBriefcase, FaDollarSign } from 'react-icons/fa';
 
-// Star Rating Component
-const StarRating = ({ rating, totalMediations }) => {
+// Star Rating Component - Memoized for performance
+const StarRating = memo(({ rating, totalMediations }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
@@ -12,19 +12,19 @@ const StarRating = ({ rating, totalMediations }) => {
       <span className="text-sm font-bold text-neu-800">{rating.toFixed(1)}</span>
       <div className="flex items-center gap-0.5">
         {[...Array(fullStars)].map((_, i) => (
-          <FaStar key={`full-${i}`} className="text-[#3B82F6] text-[10px]" />
+          <FaStar key={`full-${i}`} className="text-[#3B82F6] text-xs" />
         ))}
-        {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-[10px]" />}
+        {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-xs" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <FaStar key={`empty-${i}`} className="text-gray-300 text-[10px]" />
+          <FaStar key={`empty-${i}`} className="text-gray-300 text-xs" />
         ))}
       </div>
-      <span className="text-[10px] text-neu-500">({totalMediations})</span>
+      <span className="text-xs text-neu-500">({totalMediations})</span>
     </div>
   );
-};
+});
 
-const MediatorCard = ({
+const MediatorCard = memo(({
   mediator,
   affiliationFlag,
   onClick,
@@ -62,22 +62,22 @@ const MediatorCard = ({
             </div>
 
             {/* Location, Experience, Price in compact row */}
-            <div className="flex flex-wrap items-center gap-2 text-[10px] text-neu-600 mb-1">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-neu-600 mb-1">
               {mediator.location && (
                 <span className="flex items-center gap-1 flex-shrink-0">
-                  <FaMapMarkerAlt className="text-neu-400 text-[9px]" />
+                  <FaMapMarkerAlt className="text-neu-400 text-xs" />
                   {mediator.location.city}, {mediator.location.state}
                 </span>
               )}
               {mediator.yearsExperience && (
                 <span className="flex items-center gap-1 flex-shrink-0">
-                  <FaBriefcase className="text-neu-400 text-[9px]" />
+                  <FaBriefcase className="text-neu-400 text-xs" />
                   {mediator.yearsExperience}y
                 </span>
               )}
               {mediator.hourlyRate && (
                 <span className="flex items-center gap-1 flex-shrink-0">
-                  <FaDollarSign className="text-neu-400 text-[9px]" />
+                  <FaDollarSign className="text-neu-400 text-xs" />
                   ${mediator.hourlyRate}/hr
                 </span>
               )}
@@ -87,7 +87,7 @@ const MediatorCard = ({
             {mediator.practiceAreas && mediator.practiceAreas.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {mediator.practiceAreas.slice(0, 3).map((area, i) => (
-                  <span key={i} className="px-1.5 py-0.5 text-[9px] bg-neu-300 text-neu-700 rounded-md flex-shrink-0">
+                  <span key={i} className="px-2 py-1 text-xs bg-neu-300 text-neu-700 rounded-md flex-shrink-0">
                     {area}
                   </span>
                 ))}
@@ -97,7 +97,7 @@ const MediatorCard = ({
 
           {/* Ideology Badge - compact */}
           {mediator.ideologyScore !== undefined && (
-            <div className={`px-2 py-1 text-[9px] font-semibold rounded-md whitespace-nowrap flex-shrink-0 ${getIdeologyColor(mediator.ideologyScore)}`}>
+            <div className={`px-2.5 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap flex-shrink-0 ${getIdeologyColor(mediator.ideologyScore)}`}>
               {getIdeologyLabel(mediator.ideologyScore)}
             </div>
           )}
@@ -106,8 +106,8 @@ const MediatorCard = ({
         {/* Affiliation Flag */}
         {affiliationFlag && (
           <div className="mt-2 pt-2 border-t border-neu-300">
-            <div className="flex items-center gap-1.5 text-[9px] flex-wrap">
-              <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
+            <div className="flex items-center gap-1.5 text-xs flex-wrap">
+              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
                 ⚠️ Conflict
               </span>
               <span className="text-neu-600 flex-shrink-0">Check affiliations</span>
@@ -192,6 +192,6 @@ const MediatorCard = ({
       )}
     </div>
   );
-};
+});
 
 export default MediatorCard;
