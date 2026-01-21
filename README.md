@@ -4,10 +4,6 @@
   </a>
 </p>
 
-<p align="center">
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/bdf7bf88-79d1-42ca-ab21-a14d3964ef81/deploy-status)](https://app.netlify.com/projects/fairmediator/deploys)
-</p>
-
 A single-page platform for transparent law firm mediation selection with AI-powered conflict detection and ideological analysis.
 
 ## 🎯 Overview
