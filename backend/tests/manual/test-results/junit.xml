@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="17" failures="0" errors="0" time="5.203">
+  <testsuite name="Authentication API" errors="0" failures="0" skipped="2" timestamp="2026-01-17T22:05:32" time="5.147" tests="17">
+    <testcase classname="Authentication API › POST /api/auth/register" name="should register a new user with valid data" time="0.781">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with weak password" time="0.084">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject duplicate email registration" time="0.335">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with invalid email" time="0.032">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should show detailed validation errors for invalid name" time="0.024">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should show detailed password validation errors" time="0.229">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/register" name="should reject registration with name containing numbers" time="0.042">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should login with correct credentials" time="0.4">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login with wrong password" time="0.249">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reject login for non-existent user" time="0.103">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should show remaining login attempts after failed login" time="0.177">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should lock account after 5 failed login attempts" time="0.448">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should reset failed attempts after successful login" time="0.277">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/login" name="should auto-unlock account after lock duration expires" time="0.14">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/logout" name="should logout successfully" time="0.077">
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should refresh access token with valid refresh token" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="Authentication API › POST /api/auth/refresh-token" name="should reject invalid refresh token" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+</testsuites>

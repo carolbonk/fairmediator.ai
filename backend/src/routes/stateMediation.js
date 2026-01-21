@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { sendSuccess, sendError, asyncHandler } = require('../utils/responseHandlers');
+const { cacheStaticData } = require('../middleware/caching');
 const router = express.Router();
 
 // State mediation data - eventually should be in database
@@ -126,8 +127,9 @@ const stateMediationData = {
 /**
  * GET /api/state-mediation/:stateCode
  * Get mediation laws and standards for a specific state
+ * Cached for 1 hour (static data)
  */
-router.get('/:stateCode', asyncHandler(async (req, res) => {
+router.get('/:stateCode', cacheStaticData, asyncHandler(async (req, res) => {
   const { stateCode } = req.params;
   const stateCodeUpper = stateCode.toUpperCase();
 
@@ -144,8 +146,9 @@ router.get('/:stateCode', asyncHandler(async (req, res) => {
 /**
  * GET /api/state-mediation
  * Get list of all supported states
+ * Cached for 1 hour (static data)
  */
-router.get('/', asyncHandler(async (_req, res) => {
+router.get('/', cacheStaticData, asyncHandler(async (_req, res) => {
   const states = Object.keys(stateMediationData).map(code => ({
     stateCode: code,
     stateName: stateMediationData[code].stateName,

@@ -124,6 +124,19 @@ const mediatorSchema = new mongoose.Schema({
     default: true
   },
 
+  // Performance & Ratings
+  rating: {
+    type: Number,
+    default: 5.0,
+    min: 0,
+    max: 5
+  },
+  totalMediations: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
   // Vector Embedding for Semantic Search (MongoDB Atlas Vector Search)
   embedding: {
     type: [Number],
@@ -139,12 +152,15 @@ const mediatorSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for performance
+// Indexes for performance (O(log n) query complexity)
 mediatorSchema.index({ name: 'text', specializations: 'text', tags: 'text' });
 mediatorSchema.index({ ideologyScore: 1 });
 mediatorSchema.index({ 'location.state': 1, 'location.city': 1 });
 mediatorSchema.index({ lawFirm: 1 });
 mediatorSchema.index({ isActive: 1, isVerified: 1 });
+mediatorSchema.index({ specializations: 1 }); // For practiceArea filtering
+mediatorSchema.index({ yearsExperience: 1 }); // For minExperience filtering
+mediatorSchema.index({ rating: -1, yearsExperience: -1 }); // Compound index for efficient sorting
 
 // Methods
 mediatorSchema.methods.calculateDataQuality = function() {
@@ -197,5 +213,14 @@ mediatorSchema.methods.detectConflicts = async function(parties) {
 
   return conflicts;
 };
+
+// Virtual field for backward compatibility (frontend uses "practiceAreas", backend uses "specializations")
+mediatorSchema.virtual('practiceAreas').get(function() {
+  return this.specializations;
+});
+
+// Ensure virtuals are included in JSON/Object output
+mediatorSchema.set('toJSON', { virtuals: true });
+mediatorSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Mediator', mediatorSchema);
