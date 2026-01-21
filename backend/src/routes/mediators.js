@@ -10,12 +10,15 @@ const Mediator = require('../models/Mediator');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
 const { validate, schemas } = require('../middleware/validation');
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
+const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
+const { invalidateMediatorCache } = require('../config/cache');
 
 /**
  * GET /api/mediators
  * Get all mediators with optional filtering
+ * Cached for 5 minutes to reduce database load (O(1) cache vs O(log n) MongoDB)
  */
-router.get('/', validate(schemas.mediatorSearch, 'query'), asyncHandler(async (req, res) => {
+router.get('/', cacheMediatorList, validate(schemas.mediatorSearch, 'query'), asyncHandler(async (req, res) => {
   const {
     practiceArea,
     location,
@@ -71,8 +74,9 @@ router.get('/', validate(schemas.mediatorSearch, 'query'), asyncHandler(async (r
 /**
  * GET /api/mediators/:id
  * Get a single mediator by ID
+ * Cached for 10 minutes
  */
-router.get('/:id', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+router.get('/:id', cacheMediatorProfile, validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
   const mediator = await Mediator.findById(req.params.id);
 
   if (!mediator) {
@@ -91,6 +95,9 @@ router.post('/', asyncHandler(async (req, res) => {
   mediator.calculateDataQuality();
 
   await mediator.save();
+
+  // Invalidate mediator list cache
+  invalidateMediatorCache();
 
   sendSuccess(res, mediator, 201);
 }));
@@ -112,6 +119,9 @@ router.put('/:id', asyncHandler(async (req, res) => {
 
   mediator.calculateDataQuality();
   await mediator.save();
+
+  // Invalidate cache for this mediator and all list queries
+  invalidateMediatorCache(req.params.id);
 
   sendSuccess(res, mediator);
 }));

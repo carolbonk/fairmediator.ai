@@ -104,6 +104,12 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Indexes for performance (O(log n) query complexity)
+userSchema.index({ emailVerificationToken: 1 }, { sparse: true }); // Sparse index for email verification lookups
+userSchema.index({ passwordResetToken: 1 }, { sparse: true }); // Sparse index for password reset lookups
+userSchema.index({ subscriptionTier: 1 }); // For free tier filtering
+userSchema.index({ accountLockedUntil: 1 }, { sparse: true }); // For checking locked accounts
+
 // Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
