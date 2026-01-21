@@ -9,6 +9,7 @@ const { monitor } = require('../utils/freeTierMonitor');
 const mongoMonitoring = require('../services/monitoring/mongoMonitoring');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { sendSuccess } = require('../utils/responseHandlers');
+const cache = require('../config/cache');
 
 /**
  * GET /api/monitoring/dashboard
@@ -75,6 +76,25 @@ router.get('/projections', authenticate, requireRole(['admin']), (req, res) => {
   sendSuccess(res, {
     projections,
     timestamp: new Date()
+  });
+});
+
+/**
+ * GET /api/monitoring/cache
+ * Get cache performance statistics
+ * Admin only
+ */
+router.get('/cache', authenticate, requireRole(['admin']), (req, res) => {
+  const cacheStats = cache.getStats();
+
+  sendSuccess(res, {
+    cache: cacheStats,
+    timestamp: new Date(),
+    performance: {
+      hitRate: cacheStats.hitRate,
+      totalRequests: cacheStats.hits + cacheStats.misses,
+      efficiency: cacheStats.hits > 0 ? 'Caching is working' : 'Cache warming up'
+    }
   });
 });
 
