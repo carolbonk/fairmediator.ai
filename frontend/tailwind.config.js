@@ -85,6 +85,13 @@ export default {
         '3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.002em' }],
         '4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.003em' }],
         '5xl': ['3rem', { lineHeight: '1', letterSpacing: '-0.004em' }],
+        // Fluid typography with clamp() - scales between viewport sizes
+        'fluid-sm': ['clamp(0.875rem, 0.8rem + 0.4vw, 1rem)', { lineHeight: '1.4' }],
+        'fluid-base': ['clamp(1rem, 0.95rem + 0.25vw, 1.125rem)', { lineHeight: '1.5' }],
+        'fluid-lg': ['clamp(1.125rem, 1rem + 0.5vw, 1.5rem)', { lineHeight: '1.4' }],
+        'fluid-xl': ['clamp(1.25rem, 1.1rem + 0.75vw, 2rem)', { lineHeight: '1.3' }],
+        'fluid-2xl': ['clamp(1.5rem, 1.3rem + 1vw, 2.5rem)', { lineHeight: '1.2' }],
+        'fluid-3xl': ['clamp(1.875rem, 1.5rem + 1.5vw, 3rem)', { lineHeight: '1.1' }],
       },
       spacing: {
         '18': '4.5rem',
@@ -128,5 +135,7 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/container-queries'),
+  ],
 }
