@@ -134,6 +134,14 @@ const schemas = {
       .max(100)
       .trim()
       .pattern(/^[a-zA-Z\s,-]+$/),
+    practiceArea: Joi.string()
+      .max(100)
+      .trim()
+      .pattern(/^[a-zA-Z\s,-]+$/),
+    ideology: Joi.string()
+      .valid('liberal', 'conservative', 'neutral')
+      .insensitive(),
+    minExperience: Joi.number().integer().min(0).max(50),
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
     sortBy: Joi.string()
@@ -142,6 +150,43 @@ const schemas = {
     sortOrder: Joi.string()
       .valid('asc', 'desc')
       .default('asc')
+  }),
+
+  mediatorCreate: Joi.object({
+    name: Joi.string()
+      .required()
+      .max(200)
+      .trim()
+      .pattern(/^[a-zA-Z\s'-.,]+$/),
+    email: Joi.string()
+      .email()
+      .trim(),
+    phone: Joi.string()
+      .trim(),
+    lawFirm: Joi.string()
+      .max(200)
+      .trim(),
+    currentEmployer: Joi.string()
+      .max(200)
+      .trim(),
+    specializations: Joi.array()
+      .items(Joi.string().trim()),
+    yearsExperience: Joi.number()
+      .integer()
+      .min(0)
+      .max(50),
+    barAdmissions: Joi.array()
+      .items(Joi.string().trim()),
+    location: Joi.object({
+      city: Joi.string().trim(),
+      state: Joi.string().trim(),
+      country: Joi.string().trim()
+    }),
+    ideologyScore: Joi.number()
+      .min(-10)
+      .max(10),
+    isVerified: Joi.boolean(),
+    isActive: Joi.boolean()
   }),
 
   // ============================================================================

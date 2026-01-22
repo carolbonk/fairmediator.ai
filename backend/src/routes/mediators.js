@@ -90,7 +90,7 @@ router.get('/:id', cacheMediatorProfile, validate(schemas.objectId, 'params'), a
  * POST /api/mediators
  * Create a new mediator profile
  */
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', validate(schemas.mediatorCreate, 'body'), asyncHandler(async (req, res) => {
   const mediator = new Mediator(req.body);
   mediator.calculateDataQuality();
 

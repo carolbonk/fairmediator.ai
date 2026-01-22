@@ -179,7 +179,7 @@ router.post('/login', authLimiter, validate(schemas.login), asyncHandler(async (
     }
   });
 
-  sendSuccess(res, {
+  const responseData = {
     user: {
       id: user._id,
       email: user.email,
@@ -191,7 +191,15 @@ router.post('/login', authLimiter, validate(schemas.login), asyncHandler(async (
     },
     // Note: Tokens now in httpOnly cookies for security
     authMethod: 'cookie'
-  }, 200, 'Login successful');
+  };
+
+  // Include token in response for test environment
+  if (process.env.NODE_ENV === 'test') {
+    responseData.token = accessToken;
+    responseData.refreshToken = refreshToken;
+  }
+
+  sendSuccess(res, responseData, 200, 'Login successful');
 }));
 
 /**
