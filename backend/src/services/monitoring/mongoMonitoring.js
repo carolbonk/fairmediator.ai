@@ -41,11 +41,8 @@ class MongoMonitoring {
       this.errorCollection = db.collection('errors');
       this.initialized = true;
 
-      // Create TTL index to auto-delete old errors after 30 days
-      await this.errorCollection.createIndex(
-        { timestamp: 1 },
-        { expireAfterSeconds: 2592000 } // 30 days
-      );
+      // Capped collection handles automatic cleanup (5MB/1000 docs max)
+      // No TTL index needed - capped collections auto-remove oldest documents
 
       logger.info('MongoDB monitoring initialized');
     } catch (error) {

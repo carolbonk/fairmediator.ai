@@ -23,7 +23,7 @@ describe('Dashboard API', () => {
       password: 'SecurePass123!',
       name: 'Dashboard User',
       emailVerified: true,
-      tier: 'free'
+      subscriptionTier: 'free'
     });
 
     // Login to get token
@@ -34,6 +34,11 @@ describe('Dashboard API', () => {
         password: 'SecurePass123!'
       });
 
+    if (!loginResponse.body.success || !loginResponse.body.data) {
+      console.log('Login failed:', loginResponse.body);
+      throw new Error('Failed to login test user');
+    }
+
     authToken = loginResponse.body.data.token;
 
     // Create premium user for tier-restricted endpoints
@@ -42,7 +47,7 @@ describe('Dashboard API', () => {
       password: 'SecurePass123!',
       name: 'Premium User',
       emailVerified: true,
-      tier: 'premium'
+      subscriptionTier: 'premium'
     });
 
     const premiumLoginResponse = await request(app)
@@ -77,9 +82,11 @@ describe('Dashboard API', () => {
       const response = await authenticatedRequest(app, 'get', '/api/dashboard/stats', authToken);
 
       expectSuccess(response, 200);
-      expect(response.body.data).toHaveProperty('totalSearches');
-      expect(response.body.data).toHaveProperty('totalViews');
-      expect(response.body.data).toHaveProperty('recentActivity');
+      expect(response.body.data).toHaveProperty('totalActions');
+      expect(response.body.data).toHaveProperty('byType');
+      expect(response.body.data).toHaveProperty('dailyActivity');
+      expect(response.body.data).toHaveProperty('period');
+      expect(response.body.data).toHaveProperty('topPracticeAreas');
     });
 
     it('should accept days query parameter', async () => {
