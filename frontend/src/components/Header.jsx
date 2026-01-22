@@ -26,13 +26,13 @@ const Header = () => {
             />
           </Link>
 
-          {/* Tagline - Center - Hidden on mobile */}
+          {/* Tagline - Center - Hidden on mobile - Fluid Typography */}
           <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <div className="text-center">
-              <p className="text-sm lg:text-base text-white font-bold tracking-wide whitespace-nowrap">
+              <p className="text-fluid-base text-white font-bold tracking-wide whitespace-nowrap">
                 Fair Mediador
               </p>
-              <p className="text-xs lg:text-sm text-white font-semibold tracking-wide opacity-80 whitespace-nowrap">
+              <p className="text-fluid-sm text-white font-semibold tracking-wide opacity-80 whitespace-nowrap">
                 Intelligent Mediator Matching & Screening Platform
               </p>
             </div>
