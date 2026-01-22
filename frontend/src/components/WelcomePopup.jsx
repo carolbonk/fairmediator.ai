@@ -38,10 +38,10 @@ const WelcomePopup = ({ onClose }) => {
         >
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto p-6 sm:p-8">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                AI-powered platform designed for the modular future of LawTech: aims to bring transparency and fairness to the mediator selection process screening & matching platform
+            <div className="text-center mb-6 flex flex-col items-center">
+              <h2 className="text-fluid-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
+              <p className="text-gray-600 text-fluid-base leading-relaxed text-center max-w-md">
+                Platform designed for transparent and fair mediator selection with screening & matching
               </p>
             </div>
           </div>
