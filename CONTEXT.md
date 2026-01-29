@@ -478,7 +478,7 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 
 **Vector Search Status:** Fully operational. HuggingFace API upgraded to @huggingface/inference SDK.
 
-### 🚀 January 26, 2026: Netlify Serverless Deployment ✅ READY
+### 🚀 January 26-29, 2026: Netlify Serverless Deployment 🔄 IN PROGRESS
 **Goal:** Deploy entire backend to Netlify Functions (100% serverless)
 
 **Implementation Complete:**
@@ -504,17 +504,32 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 4. Added `serverless-http` dependency to netlify/functions
 5. Created deployment documentation
 
-**Next Steps for Deployment:**
-1. Commit changes to GitHub (user will do this)
-2. In Netlify Dashboard → Environment Variables, add:
-   - `MONGODB_URI`
-   - `JWT_SECRET`
-   - `JWT_REFRESH_SECRET`
-   - `HUGGINGFACE_API_KEY`
-   - `CORS_ORIGIN=https://fairmediator.ai`
-   - `NODE_ENV=production`
-3. Deploy from GitHub (Netlify auto-deploys on push)
-4. Test endpoints: `https://fairmediator.ai/api/mediators`
+**Current Status (Tested Jan 29, 2026):**
+- ✅ Frontend deployed successfully → https://fairmediator.ai
+- ✅ Environment variables configured in Netlify (done weeks ago)
+- ✅ Code committed and pushed to GitHub (commit: 60dcf29)
+- ⚠️  Simple functions work: `chat.js`, `check-affiliations.js`
+- ❌ Main API function NOT working: `api.js` → returns 404
+- ❌ Backend routes NOT accessible: `/api/mediators`, `/api/auth/*`, etc.
+
+**Why First Deploy Failed:**
+1. ❌ **netlify.toml parse error** - Used unsupported `included_files` option in `[functions]` section
+2. ❌ **netlify.toml parse error** - Used unsupported `timeout` option in top-level `[functions]`
+
+**Fix Applied (Jan 29, 2026):**
+- ✅ Removed `included_files = ["backend/**/*"]` (not supported by Netlify)
+- ✅ Removed `timeout = 10` (not supported in top-level [functions])
+- ✅ Kept only supported options: `node_bundler = "esbuild"`
+- ✅ TOML syntax validated successfully
+
+**Remaining Deployment Issues to Watch For:**
+- [ ] Express backend bundling (89 files + native modules like bcrypt)
+- [ ] Function size limits (Netlify max: 50 MB)
+- [ ] MongoDB connection in serverless function
+- [ ] Cold start performance
+
+**Alternative if Bundling Fails:**
+- Deploy backend to Railway/Render (free tier, proven to work with Express + MongoDB)
 
 **Cost:** $0/month (100% free tier)
 
