@@ -516,20 +516,36 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 1. ❌ **netlify.toml parse error** - Used unsupported `included_files` option in `[functions]` section
 2. ❌ **netlify.toml parse error** - Used unsupported `timeout` option in top-level `[functions]`
 
-**Fix Applied (Jan 29, 2026):**
-- ✅ Removed `included_files = ["backend/**/*"]` (not supported by Netlify)
-- ✅ Removed `timeout = 10` (not supported in top-level [functions])
-- ✅ Kept only supported options: `node_bundler = "esbuild"`
-- ✅ TOML syntax validated successfully
+**Fixes Applied (Jan 29, 2026):**
 
-**Remaining Deployment Issues to Watch For:**
-- [ ] Express backend bundling (89 files + native modules like bcrypt)
-- [ ] Function size limits (Netlify max: 50 MB)
-- [ ] MongoDB connection in serverless function
-- [ ] Cold start performance
+**Issue #1: netlify.toml parse error**
+- ❌ Cause: Used `included_files` and `timeout` (not supported by Netlify)
+- ✅ Fixed: Removed unsupported options, kept only `node_bundler = "esbuild"`
 
-**Alternative if Bundling Fails:**
-- Deploy backend to Railway/Render (free tier, proven to work with Express + MongoDB)
+**Issue #2: Missing environment variables**
+- ❌ Cause: Missing `NODE_ENV`, `PORT`, `SESSION_SECRET`, `CORS_ORIGIN`, `FRONTEND_URL`
+- ✅ Fixed: Added all 5 required variables to Netlify Dashboard
+
+**Issue #3: vite not found error**
+- ❌ Cause: npm workspaces + incorrect build command path
+- ✅ Fixed: Changed build command from `cd frontend && npm install` to `npm install` (installs all workspaces)
+
+**Security Audit (Jan 29, 2026):**
+- ✅ Checked staged changes - No secrets found
+- ✅ Checked MongoDB URIs - Only example placeholders in documentation
+- ✅ Checked HuggingFace keys - Only examples in docs
+- ✅ Verified .env in gitignore - Properly ignored
+- ✅ Checked git history - No .env files ever committed
+- ✅ Verified SESSION_SECRET - Only in terminal output, never written to files
+- ✅ **SECURE TO COMMIT** - All secrets are in Netlify Dashboard only
+- ✅ New command: `npm install && npm run build:frontend && cd netlify/functions && npm install`
+
+**Status:**
+- [x] Function bundled successfully (esbuild handled native modules!)
+- [x] Environment variables configured
+- [ ] Waiting for final deployment test
+
+**Next: Commit and push to trigger new build**
 
 **Cost:** $0/month (100% free tier)
 
