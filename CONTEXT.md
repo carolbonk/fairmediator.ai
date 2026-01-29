@@ -478,6 +478,66 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 
 **Vector Search Status:** Fully operational. HuggingFace API upgraded to @huggingface/inference SDK.
 
+### 🚀 January 26, 2026: Netlify Serverless Deployment ✅ READY
+**Goal:** Deploy entire backend to Netlify Functions (100% serverless)
+
+**Implementation Complete:**
+- ✅ Created `netlify/functions/api.js` - Wraps entire Express backend
+- ✅ Configured `netlify.toml` - Redirects `/api/*` to serverless function
+- ✅ Updated frontend API configuration - Works with both dev and prod
+- ✅ Created `DEPLOYMENT_NETLIFY.md` - Complete deployment guide
+- ✅ Created `.env.netlify.example` - Environment variables template
+- ✅ Updated `README.md` - Reflects new architecture
+
+**Architecture (Deployed):**
+- Frontend: Netlify (static site)
+- Backend: Netlify Functions (serverless Express)
+- Database: MongoDB Atlas (M0 free tier)
+- Storage: Netlify Blobs
+- Email: Resend (100 emails/day)
+- AI: HuggingFace API
+
+**What Changed:**
+1. Created `netlify/functions/api.js` - Serverless wrapper for Express backend
+2. Updated `netlify.toml` - Redirects `/api/*` → `/.netlify/functions/api/:splat`
+3. Updated frontend `api.js` - Works with both localhost and production
+4. Added `serverless-http` dependency to netlify/functions
+5. Created deployment documentation
+
+**Next Steps for Deployment:**
+1. Commit changes to GitHub (user will do this)
+2. In Netlify Dashboard → Environment Variables, add:
+   - `MONGODB_URI`
+   - `JWT_SECRET`
+   - `JWT_REFRESH_SECRET`
+   - `HUGGINGFACE_API_KEY`
+   - `CORS_ORIGIN=https://fairmediator.ai`
+   - `NODE_ENV=production`
+3. Deploy from GitHub (Netlify auto-deploys on push)
+4. Test endpoints: `https://fairmediator.ai/api/mediators`
+
+**Cost:** $0/month (100% free tier)
+
+**Request Flow:**
+```
+User → https://fairmediator.ai/api/mediators
+     → Netlify CDN
+     → Redirect: /api/* → /.netlify/functions/api/*
+     → Serverless Function (wraps Express)
+     → Express app (backend/src/server.js)
+     → MongoDB Atlas
+```
+
+**Files Modified:**
+- `netlify/functions/api.js` (new)
+- `netlify/functions/package.json` (added serverless-http)
+- `netlify.toml` (added API redirect + function config)
+- `frontend/src/services/api.js` (added comment)
+- `DEPLOYMENT_NETLIFY.md` (new guide)
+- `.env.netlify.example` (new template)
+- `README.md` (updated deployment section)
+- `CONTEXT.md` (this file)
+
 ### Medium Priority ✅ ALL COMPLETE
 - [x] Configure Netlify Blobs ✅ (NETLIFY_SITE_ID + NETLIFY_TOKEN configured, all tests passing)
   - Image upload/download working (profile images)
