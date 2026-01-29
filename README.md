@@ -35,14 +35,16 @@ FairMediator is a transparent platform that helps law firms, corporations, and i
 - **Automation**: Python scripts for scheduled updates
 - **Sources**: RECAP, Toolkit.law, LinkedIn, bar associations
 
-### Deployment
-- **Frontend**: Netlify (with FREE SSL & CDN)
-- **Backend**: Render Web Service (FREE tier - 750 hours/month)
-- **Cron Jobs**: Render Cron (FREE - daily/weekly scraping automation)
-- **Database**: MongoDB Atlas (FREE tier - 512MB)
-- **Cache**: Upstash Redis (FREE tier - 10k commands/day)
-- **Vector DB**: Weaviate Cloud (FREE tier - 100k vectors)
+### Deployment (100% Netlify)
+- **Frontend**: Netlify (static site with CDN)
+- **Backend**: Netlify Functions (serverless)
+- **Database**: MongoDB Atlas (M0 FREE tier - 512MB with Vector Search)
+- **Storage**: Netlify Blobs (file uploads/downloads)
+- **Email**: Resend (100 emails/day FREE)
+- **AI/ML**: HuggingFace API (FREE inference)
 - **Cost**: $0/month (100% FREE)
+
+📖 **Deployment Guide:** See [DEPLOYMENT_NETLIFY.md](./DEPLOYMENT_NETLIFY.md)
 
 ## 🤖 AI Integration (100% FREE)
 
