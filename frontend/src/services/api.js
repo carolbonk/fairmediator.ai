@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// In production (Netlify), use /api which redirects to /.netlify/functions/api
+// In development, use VITE_API_URL (localhost:5001/api)
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
