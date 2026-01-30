@@ -543,6 +543,14 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 - ✅ Fixed: Modified `backend/src/config/logger.js` to detect serverless environment
 - ✅ Solution: Skip file transports (DailyRotateFile) in serverless, use console logging only
 - ✅ Detection: Check for NETLIFY, AWS_LAMBDA_FUNCTION_NAME, or VERCEL env vars
+- ✅ Result: Logger fixed, but function still crashed with exit status 1
+
+**Issue #6: Runtime exit error in serverless (Jan 30, 2026 - 12:40 AM)**
+- ❌ Error: `Runtime.ExitError: exit status 1`
+- ❌ Cause: `app.listen()` and `cronScheduler.startAll()` called in serverless environment
+- ❌ Problem: Serverless functions don't need app.listen(), and cron jobs don't work in serverless
+- ✅ Fixed: Modified `backend/src/server.js` to skip both in serverless environments
+- ✅ Solution: Detect NETLIFY/AWS_LAMBDA/VERCEL env vars, skip server startup
 - [ ] Waiting for deployment test
 
 **Security Audit (Jan 29, 2026):**
