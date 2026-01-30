@@ -49,57 +49,68 @@ const jsonFormat = winston.format.combine(
 // Create logs directory if it doesn't exist
 const logsDir = path.join(__dirname, '../../logs');
 
+// Detect serverless environment (Netlify Functions, AWS Lambda, etc.)
+const isServerless = process.env.AWS_LAMBDA_FUNCTION_NAME ||
+                     process.env.NETLIFY ||
+                     process.env.VERCEL ||
+                     (process.env.NODE_ENV === 'production' && !process.env.LOGS_ENABLED);
+
 // Define transports
 const transports = [
-  // Console logging (development)
+  // Console logging (always enabled)
   new winston.transports.Console({
     format: format,
     level: process.env.LOG_LEVEL || 'info'
-  }),
-
-  // Error logs - daily rotation
-  new DailyRotateFile({
-    filename: path.join(logsDir, 'error-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    level: 'error',
-    format: jsonFormat,
-    maxSize: '20m',
-    maxFiles: '30d',
-    zippedArchive: true
-  }),
-
-  // Security events - daily rotation
-  new DailyRotateFile({
-    filename: path.join(logsDir, 'security-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    level: 'security',
-    format: jsonFormat,
-    maxSize: '20m',
-    maxFiles: '90d', // Keep security logs for 90 days
-    zippedArchive: true
-  }),
-
-  // Combined logs - daily rotation
-  new DailyRotateFile({
-    filename: path.join(logsDir, 'combined-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    format: jsonFormat,
-    maxSize: '20m',
-    maxFiles: '14d',
-    zippedArchive: true
-  }),
-
-  // HTTP requests - daily rotation
-  new DailyRotateFile({
-    filename: path.join(logsDir, 'http-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    level: 'http',
-    format: jsonFormat,
-    maxSize: '20m',
-    maxFiles: '7d',
-    zippedArchive: true
   })
 ];
+
+// Only add file transports in non-serverless environments
+if (!isServerless) {
+  transports.push(
+    // Error logs - daily rotation
+    new DailyRotateFile({
+      filename: path.join(logsDir, 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      level: 'error',
+      format: jsonFormat,
+      maxSize: '20m',
+      maxFiles: '30d',
+      zippedArchive: true
+    }),
+
+    // Security events - daily rotation
+    new DailyRotateFile({
+      filename: path.join(logsDir, 'security-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      level: 'security',
+      format: jsonFormat,
+      maxSize: '20m',
+      maxFiles: '90d', // Keep security logs for 90 days
+      zippedArchive: true
+    }),
+
+    // Combined logs - daily rotation
+    new DailyRotateFile({
+      filename: path.join(logsDir, 'combined-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      format: jsonFormat,
+      maxSize: '20m',
+      maxFiles: '14d',
+      zippedArchive: true
+    }),
+
+    // HTTP requests - daily rotation
+    new DailyRotateFile({
+      filename: path.join(logsDir, 'http-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      level: 'http',
+      format: jsonFormat,
+      maxSize: '20m',
+      maxFiles: '7d',
+      zippedArchive: true
+    })
+  );
+}
 
 // Create the logger
 const logger = winston.createLogger({
