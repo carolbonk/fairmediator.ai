@@ -245,14 +245,20 @@ app.use(errorMonitoringMiddleware);
 // 404 handler
 app.use(notFoundHandler);
 
-// Start server (only if not in test mode)
-if (process.env.NODE_ENV !== 'test') {
+// Detect serverless environment
+const isServerless = process.env.AWS_LAMBDA_FUNCTION_NAME ||
+                     process.env.NETLIFY ||
+                     process.env.VERCEL;
+
+// Start server (only if not in test mode AND not in serverless)
+if (process.env.NODE_ENV !== 'test' && !isServerless) {
   app.listen(PORT, async () => {
     console.log(`FairMediator backend running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
 
-    if (process.env.NODE_ENV === 'production') {
+    // Only start cron jobs in production AND non-serverless environments
+    if (process.env.NODE_ENV === 'production' && !isServerless) {
       cronScheduler.startAll();
     }
   });
