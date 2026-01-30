@@ -535,6 +535,15 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 - ❌ Problem: vite is a devDependency in frontend/package.json, so it wasn't installed
 - ✅ Fixed: Added `--include=dev` flag to npm install in netlify.toml
 - ✅ New command: `npm install --include=dev && npm run build:frontend && cd netlify/functions && npm install`
+- ✅ Result: Build succeeded! Frontend compiled successfully.
+
+**Issue #5: Read-only filesystem error (Jan 29, 2026 - 11:30 PM)**
+- ❌ Error: `EROFS: read-only file system, mkdir '/var/task/logs/'`
+- ❌ Cause: Winston logger tries to create log files, but Netlify Functions filesystem is read-only
+- ✅ Fixed: Modified `backend/src/config/logger.js` to detect serverless environment
+- ✅ Solution: Skip file transports (DailyRotateFile) in serverless, use console logging only
+- ✅ Detection: Check for NETLIFY, AWS_LAMBDA_FUNCTION_NAME, or VERCEL env vars
+- [ ] Waiting for deployment test
 
 **Security Audit (Jan 29, 2026):**
 - ✅ Checked staged changes - No secrets found
