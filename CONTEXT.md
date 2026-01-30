@@ -526,9 +526,15 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 - ❌ Cause: Missing `NODE_ENV`, `PORT`, `SESSION_SECRET`, `CORS_ORIGIN`, `FRONTEND_URL`
 - ✅ Fixed: Added all 5 required variables to Netlify Dashboard
 
-**Issue #3: vite not found error**
+**Issue #3: vite not found error (FIRST ATTEMPT)**
 - ❌ Cause: npm workspaces + incorrect build command path
 - ✅ Fixed: Changed build command from `cd frontend && npm install` to `npm install` (installs all workspaces)
+
+**Issue #4: vite still not found (Jan 29, 2026 - 11:15 PM)**
+- ❌ Cause: Netlify runs `npm install` with NODE_ENV=production which skips devDependencies
+- ❌ Problem: vite is a devDependency in frontend/package.json, so it wasn't installed
+- ✅ Fixed: Added `--include=dev` flag to npm install in netlify.toml
+- ✅ New command: `npm install --include=dev && npm run build:frontend && cd netlify/functions && npm install`
 
 **Security Audit (Jan 29, 2026):**
 - ✅ Checked staged changes - No secrets found
