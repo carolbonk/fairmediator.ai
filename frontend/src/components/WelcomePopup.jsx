@@ -44,6 +44,16 @@ const WelcomePopup = ({ onClose }) => {
                 Platform designed for transparent and fair mediator selection with screening & matching
               </p>
             </div>
+
+            {/* Privacy Information */}
+            <div className="mt-6 p-4 bg-white rounded-xl shadow-sm">
+              <p className="text-gray-700 text-fluid-sm leading-relaxed text-center">
+                We do value your privacy.
+              </p>
+              <p className="text-gray-600 text-fluid-sm leading-relaxed text-center mt-3">
+                Every dispute in production stays confidential, protected by strong security safeguards, and all conversation data is automatically deleted 30 days after your case reaches an attempted outcome.
+              </p>
+            </div>
           </div>
 
           {/* Fixed Button at Bottom */}

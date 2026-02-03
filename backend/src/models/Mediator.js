@@ -7,6 +7,11 @@ const mediatorSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  bio: {
+    type: String,
+    default: ''
+    // Professional biography, practice description, expertise summary
+  },
   email: {
     type: String,
     sparse: true
@@ -153,7 +158,31 @@ const mediatorSchema = new mongoose.Schema({
 });
 
 // Indexes for performance (O(log n) query complexity)
-mediatorSchema.index({ name: 'text', specializations: 'text', tags: 'text' });
+// Text index with weights for hybrid search (BM25-style)
+mediatorSchema.index(
+  {
+    bio: 'text',
+    name: 'text',
+    specializations: 'text',
+    lawFirm: 'text',
+    'location.city': 'text',
+    'location.state': 'text',
+    tags: 'text'
+  },
+  {
+    name: 'mediator_text_search',
+    weights: {
+      bio: 10,              // Highest weight - professional description
+      name: 8,              // Very high - exact name matches
+      specializations: 6,   // High - practice areas
+      lawFirm: 3,          // Medium - law firm name
+      'location.city': 2,   // Low - location
+      'location.state': 2,
+      tags: 1              // Lowest - generic tags
+    },
+    default_language: 'english'
+  }
+);
 mediatorSchema.index({ ideologyScore: 1 });
 mediatorSchema.index({ 'location.state': 1, 'location.city': 1 });
 mediatorSchema.index({ lawFirm: 1 });

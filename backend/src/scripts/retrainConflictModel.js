@@ -35,7 +35,7 @@ class ConflictModelRetrainer {
     } = options;
 
     try {
-      console.log('🤖 Starting Conflict Detection Model Retraining\n');
+      console.log('Starting Conflict Detection Model Retraining\n');
 
       // Step 1: Fetch training data
       console.log('📊 Fetching training data from feedback...');
