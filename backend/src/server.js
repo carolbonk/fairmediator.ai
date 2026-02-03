@@ -41,6 +41,7 @@ const idpRoutes = require('./routes/idp');
 const qaRoutes = require('./routes/qa');
 const monitoringRoutes = require('./routes/monitoring');
 const storageRoutes = require('./routes/storage');
+const modelsRoutes = require('./routes/models');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -232,6 +233,7 @@ app.use('/api/idp', idpRoutes); // Intelligent Document Processing - PDF/text ex
 app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
 app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard + MongoDB Atlas monitoring
 app.use('/api/storage', storageRoutes); // File storage with Netlify Blobs (images, documents)
+app.use('/api/models', modelsRoutes); // AI model versioning, metrics, and active learning
 
 // CSRF error handler
 app.use(csrfErrorHandler);
