@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 const Mediator = require('../models/Mediator');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
+const hybridSearchService = require('../services/ai/hybridSearchService');
 const { validate, schemas } = require('../middleware/validation');
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
 const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
@@ -84,6 +85,57 @@ router.get('/:id', cacheMediatorProfile, validate(schemas.objectId, 'params'), a
   }
 
   sendSuccess(res, mediator);
+}));
+
+/**
+ * POST /api/mediators/search/hybrid
+ * Hybrid search: combines vector (semantic) + keyword (BM25) search
+ * Formula: 0.7 * vectorScore + 0.3 * keywordScore
+ */
+router.post('/search/hybrid', asyncHandler(async (req, res) => {
+  const {
+    query,
+    topK = 20,
+    filters = {},
+    ideologyPreference,
+    ideologyBoostFactor
+  } = req.body;
+
+  if (!query) {
+    return sendValidationError(res, 'Query is required');
+  }
+
+  // Perform hybrid search
+  const searchOptions = {
+    topK,
+    filters,
+    vectorTopK: topK * 2,  // Get more candidates for merging
+    keywordTopK: topK * 2
+  };
+
+  let results;
+
+  // Apply ideology boost if requested
+  if (ideologyPreference && ideologyPreference !== 'neutral') {
+    results = await hybridSearchService.searchWithIdeologyBoost(query, {
+      ...searchOptions,
+      ideologyPreference,
+      ideologyBoostFactor: ideologyBoostFactor || 0.2
+    });
+  } else {
+    results = await hybridSearchService.search(query, searchOptions);
+  }
+
+  sendSuccess(res, results);
+}));
+
+/**
+ * GET /api/mediators/search/config
+ * Get current hybrid search configuration
+ */
+router.get('/search/config', asyncHandler(async (req, res) => {
+  const config = hybridSearchService.getConfig();
+  sendSuccess(res, config);
 }));
 
 /**

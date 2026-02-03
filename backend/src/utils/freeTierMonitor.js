@@ -10,8 +10,8 @@ const logger = require('../config/logger');
 // Free Tier Limits (from environment variables with fallback defaults)
 const FREE_TIER_LIMITS = {
   huggingface: {
-    monthly: parseInt(process.env.HUGGINGFACE_MONTHLY_LIMIT) || 30000,
-    daily: parseInt(process.env.HUGGINGFACE_DAILY_LIMIT) || 900,
+    monthly: parseInt(process.env.HUGGINGFACE_MONTHLY_LIMIT) || 10000,
+    daily: parseInt(process.env.HUGGINGFACE_DAILY_LIMIT) || 333, // 10k/month ÷ 30 days
     name: 'Hugging Face API'
   },
   mongodb: {

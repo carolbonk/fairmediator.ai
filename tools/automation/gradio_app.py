@@ -300,7 +300,7 @@ with gr.Blocks(
 
     ### The Vision
     We're building toward a future where:
-    - 🤖 **AI analyzes** mediator backgrounds for bias and conflicts
+    - **AI analyzes** mediator backgrounds for bias and conflicts
     - ⛓️ **Smart contracts** enforce fair mediation terms on-chain
     - 🌍 **Global access** to trustworthy dispute resolution
     - 🔓 **Open source** tools democratize justice
