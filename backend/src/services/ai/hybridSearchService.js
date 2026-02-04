@@ -7,6 +7,7 @@
 
 const embeddingService = require('./embeddingService');
 const keywordSearchService = require('./keywordSearchService');
+const queryExpansion = require('./queryExpansion');
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
 
@@ -27,6 +28,7 @@ class HybridSearchService {
 
   /**
    * Hybrid search: combines vector and keyword search
+   * PHASE 2 ENHANCEMENT: Now includes query expansion with legal synonyms
    * @param {String} query - Search query
    * @param {Object} options - Search options
    * @returns {Object} - Search results with hybrid scores
@@ -38,16 +40,38 @@ class HybridSearchService {
       vectorTopK = 30,   // Get more from vector search (will be merged)
       keywordTopK = 30,  // Get more from keyword search (will be merged)
       minVectorScore = 0.5,
-      minKeywordScore = 1.0
+      minKeywordScore = 1.0,
+      useQueryExpansion = true // NEW: Enable query expansion
     } = options;
 
     try {
       logger.info(`Hybrid search: "${query.substring(0, 50)}..."`);
       const startTime = Date.now();
 
+      // NEW: Expand query with legal synonyms
+      let searchQuery = query;
+      let queryExpanded = null;
+
+      if (useQueryExpansion) {
+        queryExpanded = queryExpansion.expandQuery(query, {
+          maxExpansions: 5,
+          includeSynonyms: true,
+          includeAbbreviations: true,
+          practiceAreaExpansion: true
+        });
+
+        // Use expanded terms for keyword search (better recall)
+        searchQuery = queryExpansion.toSearchQuery(queryExpanded, 'OR');
+
+        logger.info(`Query expanded: ${queryExpanded.expansionCount} additional terms`, {
+          original: query,
+          expanded: queryExpanded.expanded.slice(0, 5) // Log first 5
+        });
+      }
+
       // Run vector and keyword search in parallel
       const [vectorResults, keywordResults] = await Promise.all([
-        // Vector search (semantic similarity)
+        // Vector search (semantic similarity) - use ORIGINAL query for embeddings
         embeddingService.searchSimilar(query, {
           topK: vectorTopK,
           filter: this.buildMongoFilter(filters)
@@ -56,8 +80,8 @@ class HybridSearchService {
           return [];
         }),
 
-        // Keyword search (BM25-style)
-        keywordSearchService.search(query, {
+        // Keyword search (BM25-style) - use EXPANDED query for better recall
+        keywordSearchService.search(searchQuery, {
           topK: keywordTopK,
           filters,
           minScore: minKeywordScore
@@ -96,6 +120,13 @@ class HybridSearchService {
             vector: this.vectorWeight,
             keyword: this.keywordWeight
           },
+          // NEW: Query expansion metadata
+          queryExpansion: queryExpanded ? {
+            original: queryExpanded.original,
+            expandedTerms: queryExpanded.expanded,
+            expansionCount: queryExpanded.expansionCount,
+            relatedTerms: queryExpanded.relatedTerms
+          } : null,
           elapsedMs: elapsedTime
         }
       };

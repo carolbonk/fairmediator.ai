@@ -84,7 +84,7 @@ const mediatorSchema = new mongoose.Schema({
     court: String
   }],
 
-  // Conflict Detection Data
+  // Conflict Detection Data (Legacy)
   potentialConflicts: [{
     entity: String,
     entityType: String,
@@ -96,12 +96,78 @@ const mediatorSchema = new mongoose.Schema({
     lastChecked: Date
   }],
 
+  // RECAP-Based Conflict Detection (Case History)
+  recapData: {
+    lastSearched: Date,
+    casesFound: {
+      type: Number,
+      default: 0
+    },
+    cases: [{
+      docketNumber: String,
+      caseName: String,
+      court: String,
+      dateFiled: Date,
+      parties: [String],
+      attorneys: [String],
+      outcome: String,
+      url: String
+    }],
+    knownCounselRelationships: [{
+      counselName: String,
+      firm: String,
+      caseCount: Number,
+      mostRecentCase: Date,
+      riskLevel: {
+        type: String,
+        enum: ['clear', 'yellow', 'red'],
+        default: 'clear'
+      }
+    }]
+  },
+
+  // Conflict Risk Cache (for quick lookup)
+  // Updated by POST /api/mediators/:id/check-conflicts
+  conflictRiskCache: {
+    opposingCounsel: String, // Last checked counsel
+    currentParty: String,    // Last checked party
+    riskLevel: {
+      type: String,
+      enum: ['clear', 'yellow', 'red'],
+      default: 'clear'
+    },
+    reasons: [{
+      type: String,          // 'case_history', 'affiliation', 'party_overlap'
+      description: String,   // Human-readable explanation
+      confidence: Number,    // 0-1 confidence score
+      source: String,        // 'recap', 'manual', 'linkedin'
+      caseReference: String  // Docket number if applicable
+    }],
+    checkedAt: Date,
+    expiresAt: Date          // Cache expires after 7 days
+  },
+
   // Scraped Data Metadata
   sources: [{
     url: String,
     scrapedAt: Date,
     sourceType: String // linkedin, court_records, law_firm_website, etc.
   }],
+
+  // LinkedIn Enrichment Data (Manual User Input)
+  linkedinEnrichment: {
+    profileData: {
+      name: String,
+      headline: String,
+      location: String,
+      connectionsCount: Number,
+      about: String
+    },
+    opposingCounsel: String,        // Opposing counsel name this was checked against
+    mutualConnectionsCount: Number,  // Number of mutual connections
+    checkedAt: Date,                // When LinkedIn data was scraped
+    scrapedBy: String               // 'manual_user_input' or 'automated'
+  },
 
   // Profile Completeness
   dataQuality: {

@@ -6,10 +6,29 @@
 
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
+const fuzzyMatch = require('../../utils/fuzzyMatch');
 
 class KeywordSearchService {
+  constructor() {
+    // Legal term dictionary for fuzzy matching
+    this.legalDictionary = [
+      // Practice areas
+      'divorce', 'custody', 'family', 'marriage', 'alimony', 'separation',
+      'employment', 'workplace', 'discrimination', 'termination', 'labor',
+      'business', 'commercial', 'corporate', 'contract', 'partnership',
+      'real estate', 'property', 'landlord', 'tenant', 'lease',
+      'intellectual property', 'patent', 'trademark', 'copyright',
+      'construction', 'contractor', 'defect', 'builder',
+      'insurance', 'claim', 'coverage', 'policy',
+      'medical', 'malpractice', 'healthcare', 'negligence',
+      'arbitration', 'mediation', 'litigation', 'settlement',
+      // Common terms
+      'conflict', 'dispute', 'resolution', 'agreement', 'negotiation'
+    ];
+  }
+
   /**
-   * Search mediators using MongoDB text search (BM25-like)
+   * Search mediators using MongoDB text search (BM25-like) with fuzzy matching
    * @param {String} query - Search query
    * @param {Object} options - Search options
    * @returns {Array} - Mediators with text scores
@@ -18,22 +37,36 @@ class KeywordSearchService {
     const {
       topK = 20,
       filters = {},
-      minScore = 1.0  // MongoDB text score threshold
+      minScore = 1.0,  // MongoDB text score threshold
+      useFuzzyMatching = true  // Enable fuzzy matching for typos
     } = options;
 
     try {
       logger.info(`Keyword search: "${query.substring(0, 50)}..."`);
 
+      // Apply fuzzy matching if enabled
+      let searchQuery = query;
+      let fuzzyCorrections = null;
+
+      if (useFuzzyMatching) {
+        const correctedQuery = this.correctTypos(query);
+        if (correctedQuery !== query) {
+          fuzzyCorrections = { original: query, corrected: correctedQuery };
+          searchQuery = correctedQuery;
+          logger.info(`Fuzzy correction applied: "${query}" → "${correctedQuery}"`);
+        }
+      }
+
       // Build MongoDB query
-      const searchQuery = {
-        $text: { $search: query },
+      const mongoQuery = {
+        $text: { $search: searchQuery },
         isActive: true,
         ...this.buildFilters(filters)
       };
 
       // Execute text search with scoring
       const results = await Mediator.find(
-        searchQuery,
+        mongoQuery,
         {
           score: { $meta: 'textScore' }  // Get BM25-like score
         }
@@ -49,7 +82,9 @@ class KeywordSearchService {
           mediator: m,
           textScore: m.score,
           // Normalize score to 0-1 range (MongoDB text scores are typically 0.5-5.0)
-          normalizedScore: Math.min(m.score / 5.0, 1.0)
+          normalizedScore: Math.min(m.score / 5.0, 1.0),
+          // Include fuzzy correction info if applied
+          fuzzyCorrection: fuzzyCorrections
         }));
 
       logger.info(`Keyword search found ${mediators.length} results`);
@@ -97,6 +132,69 @@ class KeywordSearchService {
     });
 
     return expandedQuery;
+  }
+
+  /**
+   * Correct typos in query using fuzzy matching
+   * @param {String} query - Query that may contain typos
+   * @returns {String} - Corrected query
+   */
+  correctTypos(query) {
+    const words = query.split(/\s+/);
+    const correctedWords = [];
+
+    words.forEach(word => {
+      // Skip short words and common words (likely correct)
+      if (word.length < 4 || /^(the|and|or|for|with|from)$/i.test(word)) {
+        correctedWords.push(word);
+        return;
+      }
+
+      // Check if word exists in dictionary (exact match)
+      const lowerWord = word.toLowerCase();
+      if (this.legalDictionary.includes(lowerWord)) {
+        correctedWords.push(word);
+        return;
+      }
+
+      // Find fuzzy matches
+      const suggestions = fuzzyMatch.suggestCorrections(word, this.legalDictionary, 1);
+
+      if (suggestions.length > 0 && suggestions[0].confidence > 0.7) {
+        // Use suggestion if confidence is high
+        correctedWords.push(suggestions[0].suggestion);
+        logger.info(`Typo correction: "${word}" → "${suggestions[0].suggestion}" (confidence: ${suggestions[0].confidence})`);
+      } else {
+        // Keep original word
+        correctedWords.push(word);
+      }
+    });
+
+    return correctedWords.join(' ');
+  }
+
+  /**
+   * Get suggestions for potentially misspelled query
+   * @param {String} query - Search query
+   * @returns {Array} - Array of suggestions
+   */
+  getQuerySuggestions(query) {
+    const words = query.split(/\s+/);
+    const allSuggestions = [];
+
+    words.forEach(word => {
+      if (word.length < 4) return;
+
+      const suggestions = fuzzyMatch.suggestCorrections(word, this.legalDictionary, 3);
+      if (suggestions.length > 0 && suggestions[0].distance <= 2) {
+        allSuggestions.push({
+          original: word,
+          suggestions: suggestions.map(s => s.suggestion)
+        });
+      }
+    });
+
+    return allSuggestions;
   }
 
   /**

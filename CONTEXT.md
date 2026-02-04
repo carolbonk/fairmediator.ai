@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 3, 2026 (Evening)
-**Project Status:** ✅ Production Ready + Hybrid Search + F1 Tracking - 100% FREE TIER
+**Last Updated:** February 3, 2026 (Night)
+**Project Status:** ✅ Production Ready + Hybrid Search + F1 Tracking + Multi-Signal Bias Detection - 100% FREE TIER
 
 ---
 
@@ -18,10 +18,43 @@
 
 - [Tech Stack](#-tech-stack) ⭐ **SEE THIS FIRST**
 - [Project Rules](#-project-rules) ⭐ **READ THIS SECOND**
+- [Key Decisions & Why](#-key-decisions--why) 🚫 **READ BEFORE IMPLEMENTING NEW FEATURES**
 - [System Architecture](#-system-architecture)
 - [MongoDB Atlas Vector Search](#-mongodb-atlas-vector-search) 🆕
 - [Recent Major Changes](#-recent-major-changes)
 - [What's Next / TODO](#-whats-next--todo)
+
+---
+
+## 🚫 Key Decisions & Why
+
+**IMPORTANT: Read this section before implementing new features to avoid wasted work!**
+
+### ❌ NO LinkedIn API Integration (UPDATED: Manual scraping OK)
+
+**Decision Date:** February 3, 2026 (Updated: Night)
+
+**Why we're NOT using LinkedIn API:**
+1. **Expensive:** Official API requires partnership ($500-2000/month minimum)
+2. **Restrictive:** Takes months to get approval, very limited access
+3. **Wrong approach:** Automated LinkedIn scraping violates ToS
+
+**What we ARE using (UPDATED):**
+- ✅ **RECAP (Free, Primary):** Federal court records showing actual case history
+- ✅ **LinkedIn Manual Scraping (Secondary):** User pastes URLs, we extract mutual connections count
+- ✅ **Combined Analysis:** RECAP (did they work together?) + LinkedIn (how close are they?)
+
+**Rationale (UPDATED):**
+- **LinkedIn alone** = Not enough (social connections ≠ legal conflicts)
+- **RECAP alone** = Shows they worked together, but not relationship strength
+- **RECAP + LinkedIn** = Complete picture: Case history + mutual connections = bias assessment
+
+**Example:**
+- 3 past cases + 50 mutual connections = 🔴 RED (very close, high bias risk)
+- 3 past cases + 2 mutual connections = 🟡 YELLOW (worked together, not close)
+- 0 past cases + 100 mutual connections = 🟢 CLEAR (friends but no professional bias)
+
+**Status:** Manual LinkedIn enrichment implemented (user-initiated only, respects robots.txt).
 
 ---
 
@@ -253,6 +286,110 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 ---
 
 ## 🔄 Recent Major Changes
+
+### February 3, 2026 (Late Night): Case Outcome Analysis + UI Updates + Ethics Page ✅
+
+**Phase 2 AI Improvements - Case Outcome Win/Loss Analysis:**
+- ✅ **Case outcome categorization** - Parses court dispositions to determine win/loss/settlement
+- ✅ **Win/loss rate calculation** - Calculates opposing counsel's win rate with specific mediator
+- ✅ **Bias risk amplification** - 75%+ win rate = RED flag (high bias risk)
+- ✅ **Statistical significance** - Flags when data is/isn't statistically significant (3+ cases)
+- ✅ **Outcome-aware conflict detection** - Integrated into conflictAnalysisService
+- ✅ **Critical impact scoring** - Outcome bias gets highest weight (0.8) in risk calculation
+
+**New Methods Added:**
+1. `recapClient.analyzeCaseOutcomes()` - Analyzes win/loss patterns from RECAP data
+2. `recapClient._categorizeOutcome()` - Parses dispositions (settled/dismissed/judgment)
+3. `recapClient._determineWinner()` - Determines if opposing counsel won/lost based on user position
+
+**Enhanced Risk Scoring:**
+- 🚨 **CRITICAL**: Opposing counsel won 75%+ of cases → Strongest evidence of bias
+- ⚠️ **HIGH**: Opposing counsel won 60-74% of cases → Moderate bias risk
+- ✅ **LOW**: Opposing counsel lost 75%+ of cases → No favoritism detected
+
+**Example Output:**
+```json
+{
+  "caseOutcomeAnalysis": {
+    "totalCases": 4,
+    "wins": 3,
+    "losses": 1,
+    "winRate": 75.0,
+    "biasRisk": "high",
+    "recommendation": "⚠️ HIGH BIAS RISK: Opposing counsel won 75% of cases (3/4) with this mediator.",
+    "statistically_significant": true
+  }
+}
+```
+
+**UI Updates:**
+- ✅ **Ethics & Safety page** created (`EthicsPage.jsx`)
+- ✅ **Footer link added** - "How We Protect Your Mediation"
+- ✅ **Navbar modernized** - Sleeker, smaller CTAs (reduced from 44px to text links)
+- ✅ **Safeguards link** - Renamed "Ethics" to "Safeguards" in navigation
+- ✅ **Copyright updated** - 2025-2026 FairMediator.AI
+
+**Files Modified:**
+1. `backend/src/services/external/recapClient.js` (+180 lines) - Case outcome analysis methods
+2. `backend/src/services/ai/conflictAnalysisService.js` - Integrated outcome analysis
+3. `frontend/src/pages/EthicsPage.jsx` (NEW) - Full ethics & safety disclosure
+4. `frontend/src/components/Header.jsx` - Modernized navbar CTAs
+5. `frontend/src/components/Footer.jsx` - Added ethics link
+6. `frontend/src/components/MobileMenu.jsx` - Updated mobile navigation
+
+**Expected Impact:**
+- Transforms conflict detection from "they worked together" to "opposing counsel WINS with this mediator"
+- Provides legally defensible evidence of bias (court record outcomes)
+- Users can make informed decisions based on historical win/loss patterns
+
+---
+
+### February 3, 2026 (Night): Phase 4 & 5 Complete - RECAP + LinkedIn Conflict Detection + Premium ✅
+
+**Phase 4: Enhanced Affiliation Detection (RECAP + LinkedIn) - COMPLETE:**
+- ✅ **RECAP client** - Federal court case history lookup via Court Listener API (FREE)
+- ✅ **LinkedIn scraper** - Manual URL input for mutual connections analysis (robots.txt compliant)
+- ✅ **Combined conflict analysis** - RECAP (worked together?) + LinkedIn (how close?)
+- ✅ **Red/Yellow/Green risk levels** - Amplified by mutual connections count
+- ✅ **Conflict risk caching** - 7-day cache for performance, 30-day RECAP data cache
+- ✅ **API endpoints:**
+  - `POST /api/mediators/:id/check-conflicts` - Check conflicts with RECAP + LinkedIn data
+  - `POST /api/mediators/:id/enrich-linkedin` - Manual LinkedIn profile enrichment
+- ✅ **Mediator model updates** - Added `recapData`, `conflictRiskCache`, and `linkedinEnrichment` fields
+
+**Risk Scoring Logic:**
+- 🟢 **CLEAR**: No case history with opposing counsel
+- 🟡 **YELLOW**: Case history exists + few mutual connections (< 10)
+- 🔴 **RED**: Case history exists + many mutual connections (11+) = close relationship, bias risk
+
+**Phase 5: Premium Features & Monetization - COMPLETE:**
+- ✅ **Subscription model** - MongoDB schema for tracking premium subscriptions
+- ✅ **Stripe integration** - Payment processing (checkout, webhooks, cancellation)
+- ✅ **Premium middleware** - Feature gating based on subscription tier
+- ✅ **Usage limits** - Free tier: 10 searches/month, Premium: unlimited
+- ✅ **Subscription routes** - API endpoints for upgrade/downgrade/cancel
+
+**Files Created (Phase 4):**
+1. `backend/src/services/external/recapClient.js` - RECAP case history API
+2. `backend/src/services/ai/conflictAnalysisService.js` - Conflict risk analysis
+3. `backend/src/middleware/premiumFeatures.js` - Premium feature gating
+
+**Files Already Existed (Phase 5):**
+1. `backend/src/models/Subscription.js` - Subscription tracking
+2. `backend/src/services/stripe/stripeService.js` - Stripe integration (373 lines)
+3. `backend/src/routes/subscription.js` - Subscription API
+
+**Expected Impact:**
+- Conflict detection using real federal court data (legally defensible)
+- Premium tier ready for activation once database reaches 500-1,000 mediators
+- Monetization infrastructure complete ($49/month premium tier)
+
+**Next Steps:**
+- 50-state scraping to build database to 500+ mediators (target: Feb 24)
+- Frontend UI for red/yellow/green conflict tags
+- Law firm outreach (South Florida focus)
+
+---
 
 ### February 3, 2026 (Evening): Hybrid Search + Active Learning F1 + Netlify Fix ✅
 
@@ -578,9 +715,97 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 
 ---
 
+### 🚀 AI Improvements - Making Limitations Less Limiting
+
+**Context:** Current limitations reduce trust and accuracy. These phases will turn weaknesses into strengths.
+
+**Phase 1: Quick Wins (1-2 weeks)** ✅ COMPLETE (Feb 3)
+- [x] Add confidence scores to all conflict analysis results
+- [x] Show reasoning/evidence for every decision (transparent AI)
+- [x] Allow user feedback on conflict analysis accuracy
+- [x] Track user decisions for active learning pipeline
+
+**Phase 2: Enhanced Detection (2-3 weeks)** ✅ BACKEND COMPLETE (Feb 3, 2026 Night)
+- [x] Case outcome analysis - Calculate opposing counsel win/loss rate with mediator
+- [x] Query expansion with synonyms/related legal terms
+- [x] Multi-signal bias detection - Combine text + cases + affiliations + donations
+- [ ] Frontend integration - Wire up hybrid search, 🟢🟡🔴 tags, CSV export, fuzzy matching
+
+**Phase 3: Advanced AI (4-6 weeks)** 📋 PLANNED
+- [ ] LLM-powered deep analysis - Use Claude/GPT for nuanced bias detection
+- [ ] RAG search - Semantic understanding of complex legal queries
+- [ ] Collaborative filtering - Learn from similar user selections
+- [ ] Temporal analysis - Track mediator ideology shifts over time
+
+**Expected Impact:**
+- Confidence scores → Users trust "yellow" flags with 95% confidence more than 50%
+- Evidence transparency → "3 cases + 8 mutual connections" beats "conflict detected"
+- Case outcome analysis → "Opposing counsel won 75% of cases" = critical insight
+- User feedback loop → Active learning improves accuracy from 72% → 90%+
+
+---
+
+### 🗺️ Roadmap Completion Tasks
+
+**Context:** Original roadmap items from README.md - tracking implementation status
+
+**Completed:**
+- [x] Integration with mediator databases (MongoDB Atlas + 20 mediators)
+- [x] API for third-party integration (20+ REST endpoints)
+- [x] Real-time web scraping (LinkedIn manual scraping - user-initiated)
+- [x] Historical case outcome analysis (RECAP integration + win/loss calculation)
+- [x] Multi-signal bias detection (6 weighted signals)
+- [x] Query expansion with legal synonyms
+
+**In Progress:**
+- [ ] Frontend integration (hybrid search, 🟢🟡🔴 tags, CSV export, fuzzy matching)
+- [ ] Automated 50-state scraping (Phase 3 - next priority)
+
+**Planned:**
+- [ ] Multi-language support (i18n framework + translations)
+- [ ] PDF report generation (conflict analysis export)
+
+---
+
 ### ✅ Recently Completed
 
-**February 3, 2026:**
+**February 3, 2026 (Night):** Phase 2 AI Improvements - Backend Complete
+- [x] Query expansion service - Legal term synonyms, abbreviations, practice areas
+- [x] Multi-signal bias detection - Weighted scoring (6 signals: outcomes 0.8, history 0.6, LinkedIn 0.4, affiliations 0.5, donations 0.3, statements 0.2)
+- [x] Integrated multi-signal detection into conflict analysis service
+- [x] Comprehensive bias assessment API method
+- [x] Test suite for bias detection system (all tests passing)
+- [x] Route changed from /ethics to /safeguards
+- [x] Footer links updated (column layout, smaller text)
+
+**What EXISTS vs MISSING (Feb 3, 2026 Night):**
+
+✅ **Backend - Fully Implemented:**
+- Hybrid search API endpoint (`POST /api/mediators/search/hybrid`)
+- Multi-signal bias detection (6 weighted signals)
+- Query expansion with legal synonyms
+- Case outcome win/loss analysis
+- Conflict analysis with red/yellow/green risk levels
+- RECAP integration for case history
+- LinkedIn manual scraping
+
+✅ **Frontend - Existing Features (Built Months Ago):**
+- Basic conflict warning (⚠️ yellow badge only)
+- Bulk conflict checker (CSV upload)
+- State filtering dropdown
+- Budget filtering toggle
+- Ideology tabs (Liberal/Conservative/Moderated)
+- Mediator cards with details
+- Affiliation checking
+
+❌ **Frontend - NOT Integrated Yet:**
+- Hybrid search API (still using `MOCK_MEDIATORS` mock data)
+- 🟢🟡🔴 visual tags (only has yellow warning, no red/green distinction)
+- CSV export button (bulk checker has no download)
+- Fuzzy matching for typos (no Levenshtein distance implementation)
+- Multi-signal bias scores display in UI
+
+**February 3, 2026 (Evening):**
 - [x] Free tier monitoring configured (333 HF/day, 450 scraping/day)
 - [x] Markdown docs cleanup (removed 2 outdated files)
 - [x] Monitoring test script created
