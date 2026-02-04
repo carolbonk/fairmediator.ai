@@ -209,4 +209,353 @@ router.post('/:id/analyze-ideology', asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * POST /api/mediators/:id/check-conflicts
+ * Check for conflicts between mediator and case participants
+ * Uses RECAP case history + affiliation data
+ * Returns: 🟢 clear / 🟡 yellow / 🔴 red risk level
+ */
+router.post('/:id/check-conflicts', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const { opposingCounsel, currentParty, forceRefresh = false } = req.body;
+
+  if (!opposingCounsel) {
+    return sendValidationError(res, 'opposingCounsel is required');
+  }
+
+  const conflictAnalysisService = require('../services/ai/conflictAnalysisService');
+
+  const analysis = await conflictAnalysisService.analyzeConflicts(
+    req.params.id,
+    { opposingCounsel, currentParty },
+    { forceRefresh }
+  );
+
+  sendSuccess(res, analysis);
+}));
+
+/**
+ * DELETE /api/mediators/:id/conflict-cache
+ * Clear cached conflict data for a mediator (force refresh on next check)
+ */
+router.delete('/:id/conflict-cache', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const conflictAnalysisService = require('../services/ai/conflictAnalysisService');
+
+  await conflictAnalysisService.clearConflictCache(req.params.id);
+
+  sendSuccess(res, {
+    message: 'Conflict cache cleared successfully'
+  });
+}));
+
+/**
+ * POST /api/mediators/:id/enrich-linkedin
+ * Manual LinkedIn profile enrichment (user-initiated only)
+ *
+ * Purpose: User pastes LinkedIn URLs to enrich conflict detection with mutual connections data
+ * Combined with RECAP: Case history (worked together?) + LinkedIn (how close?)
+ *
+ * Request body:
+ * {
+ *   "mediatorLinkedInUrl": "https://linkedin.com/in/john-mediator",
+ *   "opposingCounselLinkedInUrl": "https://linkedin.com/in/opposing-counsel" (optional)
+ * }
+ */
+router.post('/:id/enrich-linkedin', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const { mediatorLinkedInUrl, opposingCounselLinkedInUrl = null } = req.body;
+
+  if (!mediatorLinkedInUrl) {
+    return sendValidationError(res, 'mediatorLinkedInUrl is required');
+  }
+
+  // Validate URLs are actually LinkedIn profiles
+  if (!mediatorLinkedInUrl.includes('linkedin.com/in/')) {
+    return sendValidationError(res, 'mediatorLinkedInUrl must be a valid LinkedIn profile URL (linkedin.com/in/...)');
+  }
+
+  if (opposingCounselLinkedInUrl && !opposingCounselLinkedInUrl.includes('linkedin.com/in/')) {
+    return sendValidationError(res, 'opposingCounselLinkedInUrl must be a valid LinkedIn profile URL');
+  }
+
+  const mediator = await Mediator.findById(req.params.id);
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator');
+  }
+
+  const linkedinScraper = require('../services/external/linkedinScraper');
+
+  // Scrape LinkedIn profile
+  const scrapeResult = await linkedinScraper.scrapeProfile(
+    mediatorLinkedInUrl,
+    opposingCounselLinkedInUrl
+  );
+
+  if (!scrapeResult.success) {
+    return sendError(res, scrapeResult.error, 400);
+  }
+
+  // Update mediator with LinkedIn data
+  const linkedinSource = {
+    url: mediatorLinkedInUrl,
+    scrapedAt: new Date(),
+    sourceType: 'linkedin'
+  };
+
+  if (!mediator.sources) {
+    mediator.sources = [];
+  }
+
+  // Remove old LinkedIn source if exists
+  mediator.sources = mediator.sources.filter(s => s.sourceType !== 'linkedin');
+  mediator.sources.push(linkedinSource);
+
+  // Store LinkedIn enrichment data (including mutual connections if available)
+  if (!mediator.linkedinEnrichment) {
+    mediator.linkedinEnrichment = {};
+  }
+
+  mediator.linkedinEnrichment = {
+    profileData: scrapeResult.data,
+    opposingCounsel: opposingCounselLinkedInUrl ? 'provided' : null,
+    mutualConnectionsCount: scrapeResult.data.mutualConnections?.count || null,
+    checkedAt: new Date(),
+    scrapedBy: 'manual_user_input'
+  };
+
+  await mediator.save();
+
+  // Clear conflict cache to trigger fresh analysis with LinkedIn data
+  const conflictAnalysisService = require('../services/ai/conflictAnalysisService');
+  await conflictAnalysisService.clearConflictCache(req.params.id);
+
+  sendSuccess(res, {
+    message: 'LinkedIn profile enrichment successful',
+    data: scrapeResult.data,
+    note: 'Conflict cache cleared - next conflict check will include LinkedIn data'
+  });
+}));
+
+/**
+ * POST /api/mediators/:id/conflict-feedback
+ * Submit user feedback on conflict analysis accuracy (Active Learning - Phase 1)
+ *
+ * Purpose: Collect human feedback to improve conflict detection models
+ *
+ * Request body:
+ * {
+ *   "conflictAnalysis": { ... }, // The analysis that was shown to user
+ *   "userFeedback": {
+ *     "wasAccurate": true/false,
+ *     "actualRiskLevel": "low/medium/high/none",
+ *     "comments": "Optional user comments",
+ *     "selectedMediator": true/false // Did user select this mediator despite warning?
+ *   },
+ *   "caseContext": {
+ *     "opposingCounsel": "...",
+ *     "currentParty": "...",
+ *     "caseType": "..."
+ *   }
+ * }
+ */
+router.post('/:id/conflict-feedback', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const ConflictFeedback = require('../models/ConflictFeedback');
+  const { conflictAnalysis, userFeedback, caseContext } = req.body;
+
+  if (!conflictAnalysis || !userFeedback) {
+    return sendValidationError(res, 'conflictAnalysis and userFeedback are required');
+  }
+
+  const mediator = await Mediator.findById(req.params.id);
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator');
+  }
+
+  // Map risk level from our system (clear/yellow/red) to feedback schema (low/medium/high/none)
+  const riskLevelMapping = {
+    'clear': 'low',
+    'yellow': 'medium',
+    'red': 'high'
+  };
+
+  // Create feedback record for active learning
+  const feedback = new ConflictFeedback({
+    mediatorId: req.params.id,
+    parties: caseContext?.opposingCounsel ? [caseContext.opposingCounsel] : [],
+    caseType: caseContext?.caseType || 'other',
+
+    // AI prediction (what we showed the user)
+    prediction: {
+      hasConflict: conflictAnalysis.riskLevel !== 'clear',
+      riskLevel: riskLevelMapping[conflictAnalysis.riskLevel] || 'unknown',
+      confidence: conflictAnalysis.overallConfidence || 0,
+      detectedConflicts: conflictAnalysis.reasons?.map(r => ({
+        entity: caseContext?.opposingCounsel || 'unknown',
+        relationship: r.type,
+        source: r.source,
+        confidence: r.confidence
+      })) || [],
+      modelVersion: 'v1.0-recap-linkedin',
+      timestamp: new Date()
+    },
+
+    // Human feedback (ground truth)
+    feedback: {
+      hasConflict: !userFeedback.wasAccurate ? !conflictAnalysis.riskLevel === 'clear' : conflictAnalysis.riskLevel !== 'clear',
+      actualRiskLevel: userFeedback.actualRiskLevel,
+      notes: userFeedback.comments,
+      confidence: userFeedback.wasAccurate ? 1.0 : 0.7 // High confidence if user agrees
+    },
+
+    // Metadata
+    reviewedBy: {
+      userId: req.user?._id,
+      role: 'user'
+    },
+
+    queryText: `Conflict check for ${caseContext?.opposingCounsel || 'unknown party'}`,
+    source: 'api',
+    status: 'reviewed', // User feedback is immediately "reviewed"
+    tags: [
+      userFeedback.selectedMediator ? 'selected_despite_warning' : 'not_selected',
+      conflictAnalysis.dataCompleteness?.overall || 'unknown_completeness'
+    ]
+  });
+
+  await feedback.save();
+
+  logger.info('Conflict feedback received', {
+    mediatorId: req.params.id,
+    wasAccurate: userFeedback.wasAccurate,
+    selectedMediator: userFeedback.selectedMediator,
+    feedbackId: feedback._id
+  });
+
+  sendSuccess(res, {
+    message: 'Thank you for your feedback! This helps improve our conflict detection.',
+    feedbackId: feedback._id,
+    contributedToLearning: feedback.isHighValue
+  });
+}));
+
+/**
+ * GET /api/mediators/:id/conflict-feedback
+ * Get feedback history for a specific mediator (admin only)
+ */
+router.get('/:id/conflict-feedback', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const ConflictFeedback = require('../models/ConflictFeedback');
+
+  const feedbackHistory = await ConflictFeedback.find({
+    mediatorId: req.params.id,
+    status: 'reviewed'
+  })
+  .sort({ createdAt: -1 })
+  .limit(50)
+  .select('prediction feedback createdAt isCorrectPrediction predictionError');
+
+  const stats = {
+    totalFeedback: feedbackHistory.length,
+    correctPredictions: feedbackHistory.filter(f => f.isCorrectPrediction).length,
+    falsePositives: feedbackHistory.filter(f => f.predictionError === 'false_positive').length,
+    falseNegatives: feedbackHistory.filter(f => f.predictionError === 'false_negative').length
+  };
+
+  sendSuccess(res, {
+    feedbackHistory,
+    stats
+  });
+}));
+
+/**
+ * GET /api/conflict-feedback/stats
+ * Get overall conflict feedback statistics (admin only)
+ * Shows how well our conflict detection is performing
+ */
+router.get('/conflict-feedback/stats', asyncHandler(async (req, res) => {
+  const ConflictFeedback = require('../models/ConflictFeedback');
+
+  const metrics = await ConflictFeedback.getPerformanceMetrics();
+  const pendingReviews = await ConflictFeedback.getPendingReviews(10);
+
+  sendSuccess(res, {
+    performance: metrics,
+    pendingReviews: pendingReviews.length,
+    message: `F1 Score: ${metrics.f1Score}% - ${metrics.f1Score >= 75 ? 'Model performing well ✅' : 'Model needs improvement ⚠️'}`
+  });
+}));
+
+/**
+ * POST /api/mediators/:id/track-selection
+ * Track user decision/selection (Active Learning - Phase 1)
+ *
+ * Purpose: Build collaborative filtering dataset - "Users like you also selected..."
+ *
+ * Request body:
+ * {
+ *   "action": "viewed/clicked/contacted/scheduled_call/hired",
+ *   "caseContext": {
+ *     "caseType": "employment/business/family/...",
+ *     "jurisdiction": { "state": "FL", "city": "Miami" },
+ *     "parties": ["PartyA", "PartyB"],
+ *     "userQuery": "mediator for tech startup dispute"
+ *   },
+ *   "selectionReason": {
+ *     "ideology": true,
+ *     "experience": true,
+ *     "location": false,
+ *     "practiceArea": true
+ *   },
+ *   "conflictWarning": {
+ *     "shown": true,
+ *     "riskLevel": "yellow/red",
+ *     "selectedAnyway": true // Did user proceed despite warning?
+ *   }
+ * }
+ */
+router.post('/:id/track-selection', validate(schemas.objectId, 'params'), asyncHandler(async (req, res) => {
+  const MediatorSelection = require('../models/MediatorSelection');
+  const { action, caseContext, selectionReason, conflictWarning } = req.body;
+
+  if (!action) {
+    return sendValidationError(res, 'action is required (viewed/clicked/contacted/scheduled_call/hired)');
+  }
+
+  const mediator = await Mediator.findById(req.params.id);
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator');
+  }
+
+  // Track the selection for collaborative filtering
+  const selection = new MediatorSelection({
+    userId: req.user?._id,
+    mediatorId: req.params.id,
+    caseType: caseContext?.caseType || 'other',
+    jurisdiction: caseContext?.jurisdiction,
+    partiesInvolved: caseContext?.parties || [],
+    action,
+    selectionReason,
+    userQuery: caseContext?.userQuery,
+    aiRecommendation: conflictWarning?.shown ? `Conflict warning (${conflictWarning.riskLevel}) - ${conflictWarning.selectedAnyway ? 'proceeded anyway' : 'not selected'}` : 'No conflict detected'
+  });
+
+  await selection.save();
+
+  // Update mediator's total mediations count if hired
+  if (action === 'hired') {
+    mediator.totalMediations = (mediator.totalMediations || 0) + 1;
+    await mediator.save();
+  }
+
+  logger.info('User selection tracked', {
+    mediatorId: req.params.id,
+    action,
+    userId: req.user?._id,
+    conflictWarning: conflictWarning?.shown || false
+  });
+
+  sendSuccess(res, {
+    message: 'Selection tracked successfully',
+    selectionId: selection._id,
+    contributesToRecommendations: true
+  });
+}));
+
 module.exports = router;

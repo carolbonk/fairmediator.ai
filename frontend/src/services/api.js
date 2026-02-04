@@ -31,6 +31,20 @@ export const getMediatorById = async (id) => {
   return response.data;
 };
 
+/**
+ * Hybrid Search API - Combines vector (semantic) + keyword (BM25) search
+ * @param {string} query - Search query
+ * @param {object} options - Search options { topK, filters, ideologyPreference }
+ * @returns {Promise} Search results with hybrid scores
+ */
+export const hybridSearch = async (query, options = {}) => {
+  const response = await api.post('/mediators/search/hybrid', {
+    query,
+    ...options
+  });
+  return response.data;
+};
+
 export const analyzeMediatorIdeology = async (id) => {
   const response = await api.post(`/mediators/${id}/analyze-ideology`);
   return response.data;

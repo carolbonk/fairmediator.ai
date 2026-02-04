@@ -39,31 +39,47 @@ const Header = () => {
           </div>
 
           {/* Navigation - Desktop only (hidden on mobile, replaced by hamburger) */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            {/* Safeguards Link - Modern, sleek */}
+            <Link
+              to="/safeguards"
+              className="px-3 py-2 text-white text-sm font-medium hover:text-teal-300 transition-colors duration-200"
+            >
+              Safeguards
+            </Link>
+
+            {/* Mediators Link - Modern, sleek */}
+            <Link
+              to="/mediators/apply"
+              className="px-3 py-2 text-white text-sm font-medium hover:text-teal-300 transition-colors duration-200"
+            >
+              Mediators
+            </Link>
+
             {user ? (
               <>
                 <Link
                   to="/dashboard"
-                  className="flex items-center gap-2 px-4 py-2.5 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                  className="flex items-center gap-1.5 px-3 py-2 text-white text-sm font-medium hover:text-blue-300 transition-colors duration-200"
                 >
-                  <FaChartLine className="text-blue-400 text-base" />
-                  <span className="font-medium text-base">Dashboard</span>
+                  <FaChartLine className="text-sm" />
+                  <span>Dashboard</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                  className="flex items-center gap-1.5 px-3 py-2 text-white text-sm font-medium hover:text-red-300 transition-colors duration-200"
                 >
-                  <FaSignOutAlt className="text-base" />
-                  <span className="font-medium text-base">Logout</span>
+                  <FaSignOutAlt className="text-sm" />
+                  <span>Logout</span>
                 </button>
               </>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-2 px-4 py-2.5 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-1.5 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-all duration-200"
               >
-                <FaUser className="text-white text-base" />
-                <span className="font-medium text-base">Login</span>
+                <FaUser className="text-sm" />
+                <span>Login</span>
               </Link>
             )}
           </div>

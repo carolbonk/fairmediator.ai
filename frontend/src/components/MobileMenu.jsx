@@ -80,6 +80,24 @@ const MobileMenu = () => {
                 <span className="font-medium text-base">Home</span>
               </Link>
 
+              {/* Safeguards Link */}
+              <Link
+                to="/safeguards"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+              >
+                <span className="font-medium text-base">Safeguards</span>
+              </Link>
+
+              {/* Mediators Link */}
+              <Link
+                to="/mediators/apply"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+              >
+                <span className="font-medium text-base">Mediators</span>
+              </Link>
+
               {/* Dashboard Link */}
               <Link
                 to="/dashboard"
@@ -109,6 +127,24 @@ const MobileMenu = () => {
               >
                 <FaHome className="text-lg text-blue-400" />
                 <span className="font-medium text-base">Home</span>
+              </Link>
+
+              {/* Safeguards Link */}
+              <Link
+                to="/safeguards"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+              >
+                <span className="font-medium text-base">Safeguards</span>
+              </Link>
+
+              {/* Mediators Link */}
+              <Link
+                to="/mediators/apply"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+              >
+                <span className="font-medium text-base">Mediators</span>
               </Link>
 
               {/* Login Link */}
