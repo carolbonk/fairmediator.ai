@@ -8,11 +8,13 @@
 
 ## 📋 Overview
 
-Three major development tasks to enhance FairMediator's core capabilities:
+Five major development phases to scale FairMediator to production:
 
-1. **Hybrid Vector/Keyword Search** - Enhance semantic search with keyword blending
-2. **Active Learning Pipeline** - Automated feedback loop with F1 tracking
-3. **50-State Scraping** - Complete mediator data coverage across all US states
+1. ✅ **Hybrid Vector/Keyword Search** - COMPLETE (0.7 vector + 0.3 keyword scoring)
+2. ✅ **Active Learning Pipeline** - COMPLETE (F1 tracking, 9 API endpoints, daily cron)
+3. ⏳ **50-State Scraping** - IN PROGRESS (target: 5k mediators by Feb 24)
+4. ⏳ **Enhanced Affiliation Detection** - NEXT (LinkedIn/RECAP cross-referencing, red/yellow/green tags)
+5. ⏳ **User Acquisition & Monetization** - NEXT ($49/mo premium, South Florida law firm outreach)
 
 ---
 
@@ -512,26 +514,26 @@ const SCRAPING_TARGETS = {
 
 ---
 
-## 🚀 Execution Order & Timeline
+## 🚀 Original Timeline (Pre-Feb 3 Planning)
 
-### Priority Ranking
-1. **Active Learning Pipeline** (Highest Impact) - Improves core AI quality
-2. **Hybrid Search** (Medium Impact) - Better user experience
-3. **50-State Scraping** (Long-term Impact) - Data foundation
+### Original Priority Ranking
+1. ✅ **Active Learning Pipeline** - COMPLETE (Highest Impact)
+2. ✅ **Hybrid Search** - COMPLETE (Medium Impact)
+3. ⏳ **50-State Scraping** - IN PROGRESS (Long-term Impact)
 
-### Recommended Order
+### Original Planned Order (ADJUSTED)
 ```
-Week 1-2:   Active Learning - F1 Tracking
-Week 2-3:   Active Learning - Automated Retraining
-Week 3-4:   Hybrid Search - Keyword Foundation
-Week 4-5:   Hybrid Search - Hybrid Ranking
-Week 5-6:   50-State Scraping - Research Sources
-Week 6-8:   50-State Scraping - Build Pipeline
-Week 8-10:  50-State Scraping - Scale to 50 States
-Week 10-12: Testing, Refinement, Monitoring
+✅ Week 1-2:   Active Learning - F1 Tracking (COMPLETE Feb 3)
+⏳ Week 2-3:   Active Learning - Automated Retraining (PENDING)
+✅ Week 3-4:   Hybrid Search - Keyword Foundation (COMPLETE Feb 3)
+✅ Week 4-5:   Hybrid Search - Hybrid Ranking (COMPLETE Feb 3)
+⏳ Week 5-6:   50-State Scraping - Research Sources (NEXT)
+⏳ Week 6-8:   50-State Scraping - Build Pipeline
+⏳ Week 8-10:  50-State Scraping - Scale to 50 States
+⏳ Week 10-12: Testing, Refinement, Monitoring
 ```
 
-**Total Time:** 10-12 weeks (2.5-3 months)
+**Note:** Phases 1-2 completed ahead of schedule (Feb 3, 2026). See "Updated Timeline" below for revised plan.
 
 ---
 
@@ -558,15 +560,332 @@ Week 10-12: Testing, Refinement, Monitoring
 
 ---
 
+## 4. 🚨 Enhanced Affiliation Detection (Phase 4) ✅ COMPLETE
+
+### Current State ✅ (Completed Feb 3, 2026)
+- ✅ **RECAP integration** - Federal court case history lookup
+- ✅ **Conflict analysis service** - Analyzes mediator-counsel relationships
+- ✅ **Red/Yellow/Green tagging** - Visual risk indicators
+- ✅ **Conflict risk caching** - 7-day cache for performance
+- ✅ **API endpoint** - POST /api/mediators/:id/check-conflicts
+- ✅ **Basic affiliation detector** - `affiliationDetector.js` with keyword matching
+- ✅ **HuggingFace NLP** - Zero-shot classification for conflict detection
+- ✅ **ConflictFeedback model** - Stores human feedback on conflict predictions
+
+### Gaps (Updated Feb 3, 2026) 🟡 MOSTLY RESOLVED
+- ✅ RECAP integration for case history lookup (COMPLETE)
+- ✅ Visual "Red/Yellow/Green" tagging system (COMPLETE)
+- ✅ Cross-referencing with case history databases (COMPLETE)
+- ✅ Confidence scores for conflict warnings (COMPLETE)
+- ❌ LinkedIn integration - **REJECTED** (see CONTEXT.md for rationale)
+- ⏳ Frontend UI integration for visual tags (PENDING)
+- ⏳ Case outcome analysis (Win/Loss ratio for opposing counsel)
+
+**IMPORTANT DECISION:** We are NOT implementing LinkedIn integration. See CONTEXT.md "Key Decisions & Why" section for full rationale. TL;DR: RECAP (free, legally relevant) > LinkedIn (expensive, socially irrelevant).
+
+### Implementation ✅ COMPLETE
+
+#### Phase 4.1: RECAP Integration ✅ COMPLETE (Feb 3, 2026)
+**Goal:** Cross-reference mediator case history against opposing counsel
+
+**Files created:**
+- ✅ `backend/src/services/external/recapClient.js` - RECAP case lookup (FREE API)
+- ✅ `backend/src/services/ai/conflictAnalysisService.js` - Conflict analysis engine
+- ✅ `backend/src/models/Mediator.js` - Added conflict risk fields
+
+**What we built:**
+1. ✅ **RECAP integration (FREE - Court Listener API):**
+   ```javascript
+   // backend/src/services/external/recapClient.js
+   class RECAPClient {
+     async searchMediatorCases(mediatorName, options) {
+       // Search federal court records via Court Listener API
+       // Extract: docket number, parties, attorneys, outcomes
+       // Return: { cases: [...], total: N }
+     }
+
+     async checkCaseHistoryConflict(mediatorCases, opposingCounsel, currentParty) {
+       // Check if opposing counsel appeared in mediator's past cases
+       // Analyze case outcomes (win/loss for opposing counsel)
+       // Return: { hasConflict, conflicts: [...], riskLevel }
+     }
+
+     async getCaseDetails(docketNumber, court) {
+       // Get detailed case information from RECAP
+     }
+
+     async searchAttorneyCases(attorneyName) {
+       // Search opposing counsel's case history
+     }
+   }
+   ```
+
+2. ✅ **Conflict analysis service:**
+   ```javascript
+   // backend/src/services/ai/conflictAnalysisService.js
+   class ConflictAnalysisService {
+     async analyzeConflicts(mediatorId, caseInfo, options) {
+       // caseInfo: { opposingCounsel, currentParty, userPosition }
+       // 1. Get mediator's RECAP case history (cached 30 days)
+       // 2. Check for conflicts with opposing counsel
+       // 3. Analyze existing affiliation data
+       // 4. Calculate overall risk (clear/yellow/red)
+       // 5. Cache results (7 days)
+       // Return: { riskLevel, reasons, recommendation }
+     }
+
+     async clearConflictCache(mediatorId) {
+       // Force refresh on next check
+     }
+   }
+   ```
+
+3. ✅ **Visual tagging system (Mediator model):**
+   ```javascript
+   // Added to Mediator.js model
+   recapData: {
+     lastSearched: Date,
+     casesFound: Number,
+     cases: [{
+       docketNumber, caseName, court, dateFiled, parties, attorneys, outcome, url
+     }],
+     knownCounselRelationships: [{
+       counselName, firm, caseCount, mostRecentCase,
+       riskLevel: { enum: ['clear', 'yellow', 'red'] }
+     }]
+   },
+
+   conflictRiskCache: {
+     opposingCounsel: String,
+     currentParty: String,
+     riskLevel: { enum: ['clear', 'yellow', 'red'] },
+     reasons: [{ type, description, confidence, source, caseReference }],
+     checkedAt: Date,
+     expiresAt: Date // 7-day cache
+   }
+   ```
+
+#### Phase 4.2: API Endpoints ✅ COMPLETE (Feb 3, 2026)
+**Files modified:**
+- ✅ `backend/src/routes/mediators.js` - Added conflict check endpoints
+
+**API Endpoints created:**
+1. ✅ **POST /api/mediators/:id/check-conflicts** - Check conflicts for specific case
+   - Request body:
+   ```json
+   {
+     "opposingCounsel": "Smith & Associates",
+     "currentParty": "ABC Corp",
+     "userPosition": "plaintiff",
+     "forceRefresh": false
+   }
+   ```
+   - Response:
+   ```json
+   {
+     "success": true,
+     "mediatorId": "...",
+     "mediatorName": "John Doe",
+     "riskLevel": "yellow",
+     "reasons": [
+       {
+         "type": "case_history",
+         "description": "Appeared in case 1:20-cv-12345 with opposing counsel",
+         "confidence": 0.85,
+         "source": "recap",
+         "caseReference": "1:20-cv-12345",
+         "dateFiled": "2020-06-15",
+         "url": "https://www.courtlistener.com/docket/..."
+       }
+     ],
+     "recommendation": "Possible indirect connection detected. Review details and disclose to parties before proceeding.",
+     "conflictCount": 1,
+     "metadata": {
+       "searchedCases": 15,
+       "lastUpdated": "2026-02-03T...",
+       "cacheExpiresAt": "2026-02-10T..."
+     }
+   }
+   ```
+
+2. ✅ **DELETE /api/mediators/:id/conflict-cache** - Clear cache, force refresh
+
+#### Phase 4.3: Frontend UI Integration ⏳ PENDING (Week 12-13)
+**Files to modify:**
+- ⏳ `frontend/src/components/MediatorCard.jsx` - Add color-coded tags
+- ⏳ `frontend/src/components/MediatorProfile.jsx` - Show conflict details
+- ⏳ `frontend/src/components/ConflictCheckForm.jsx` - UI for checking conflicts
+
+**Visual Design:**
+- 🟢 **Green badge:** "Clear" - No detected conflicts
+- 🟡 **Yellow badge:** "Review" - Possible indirect connection, disclose to parties
+- 🔴 **Red badge:** "Conflict" - Likely affiliated with opposing counsel, avoid
+
+#### Success Metrics 📊
+- ✅ RECAP integration checks case history overlap
+- ✅ API endpoint returns conflict analysis with risk level
+- ✅ Red/yellow/green risk levels calculated correctly
+- ✅ Conflict detection uses real federal court data (RECAP)
+- ✅ Results cached for 7 days (performance optimization)
+- ⏳ Visual tags (red/yellow/green) display on mediator cards (frontend pending)
+- ⏳ 95%+ accuracy on conflict detection (needs production validation)
+- ⏳ < 1 second API response time for conflict checks (needs load testing)
+
+---
+
+## 5. 💼 User Acquisition & Monetization (Phase 5)
+
+### Current State ✅ (Updated Feb 3, 2026)
+- ✅ **Subscription model** - MongoDB schema for tracking subscriptions
+- ✅ **Stripe integration** - Full payment processing (checkout, webhooks, cancel)
+- ✅ **Premium middleware** - Feature gating based on subscription tier
+- ✅ **Subscription routes** - API endpoints for upgrade/downgrade
+- ✅ **Usage limits** - Free tier: 10 searches/month, premium: unlimited
+- ✅ **Free tier functional** - Basic mediator search available
+- ⏳ **Premium tier ready** - Infrastructure complete, needs activation
+- ❌ **No user outreach** - Organic growth only
+
+### Gaps (Updated Feb 3, 2026) 🟡 INFRASTRUCTURE COMPLETE
+- ✅ Premium tier infrastructure implemented
+- ✅ Payment integration (Stripe) complete
+- ⏳ Law firm outreach strategy (NEXT PHASE)
+- ⏳ Marketing materials (landing page, pitch deck)
+- ⏳ User analytics/tracking
+- ⏳ Premium feature activation (RECAP conflict detection requires premium)
+
+### Implementation Plan 📝
+
+#### Phase 5.1: Premium Tier ($49/mo) ✅ COMPLETE (Already existed)
+**Goal:** Monetize once mediator database reaches 500-1,000 mediators
+
+**Premium Features ($49/month):**
+1. ✅ **Unlimited searches** (vs 10/month free) - middleware ready
+2. ✅ **Conflict detection API** (RECAP case history) - API ready, needs premium gate
+3. ⏳ **Advanced filters** (ideology, win rate) - implementation pending
+4. ⏳ **Export to CSV** (mediator lists) - implementation pending
+5. ⏳ **Priority support** (email/chat) - implementation pending
+
+**Files already exist:**
+- ✅ `backend/src/models/Subscription.js` - Subscription tracking
+- ✅ `backend/src/services/stripe/stripeService.js` - Stripe integration (373 lines)
+- ✅ `backend/src/middleware/premiumFeatures.js` - Premium gate + usage limits
+- ✅ `backend/src/routes/subscription.js` - Subscription API routes
+
+**What's already built:**
+1. ✅ **Stripe integration (COMPLETE):**
+   - createCheckoutSession() - Stripe hosted checkout
+   - handleWebhook() - Automatic subscription updates
+   - cancelSubscription() - Cancellation + refunds
+   - getSubscription() - Get user's subscription status
+   - updatePaymentMethod() - Update card details
+
+2. ✅ **Subscription model (COMPLETE):**
+   - User-subscription relationship
+   - Stripe customer ID + subscription ID
+   - Status tracking (active, canceled, past_due, trialing)
+   - Period dates + auto-renewal
+   - isActive() method for quick checks
+
+3. ✅ **Premium middleware (COMPLETE):**
+   - requirePremium() - Gate premium-only features
+   - checkUsageLimit() - Track free tier usage (10 searches/month)
+   - hasPremiumSubscription() - Check subscription status
+   - getUserSubscriptionInfo() - Get tier + limits + usage
+
+4. ✅ **Subscription routes (COMPLETE):**
+   - GET /api/subscription - Get current subscription
+   - POST /api/subscription/checkout - Create checkout session
+   - POST /api/subscription/webhook - Stripe webhook handler
+   - POST /api/subscription/cancel - Cancel subscription
+   - POST /api/subscription/resume - Resume canceled subscription
+
+#### Phase 5.2: Law Firm Outreach (Week 14-16)
+**Goal:** Acquire 10-20 paying law firms in South Florida
+
+**Target Markets:**
+1. **Miami** - Major metro, high litigation volume
+2. **Aventura** - Corporate litigation hub
+3. **Fort Lauderdale** - Maritime/injury law
+4. **Pompano Beach** - Family law focus
+5. **Boca Raton** - Real estate disputes
+6. **West Palm Beach** - Federal court proximity
+7. **Tampa** - Insurance/healthcare litigation
+
+**Outreach Strategy:**
+1. **LinkedIn outreach** - Target managing partners, litigation directors
+2. **Cold email campaign** - Personalized pitch (see templates below)
+3. **Free trial offer** - 30-day premium access (hook)
+4. **Webinar/demo** - "How AI Eliminates Mediator Bias" presentation
+5. **Referral program** - $100 credit for each referred firm
+
+**Email Template:**
+```
+Subject: Eliminate Mediator Bias with AI (30-Day Free Trial)
+
+Hi [Name],
+
+Are your clients concerned about mediator conflicts of interest?
+
+FairMediator uses AI to:
+- Flag hidden affiliations between mediators & opposing counsel
+- Analyze ideological leanings (liberal/conservative spectrum)
+- Search 5,000+ mediators across Florida in seconds
+
+We're offering [Firm Name] a 30-day premium trial ($49/mo value).
+
+Interested in a 15-minute demo?
+
+Best,
+Carol
+FairMediator.ai
+```
+
+**Success Metrics:**
+- [ ] 100 law firms contacted (South Florida focus)
+- [ ] 20% email open rate
+- [ ] 10-20 firms sign up for free trial
+- [ ] 30% trial → paid conversion rate ($1,500-$3,000 MRR)
+
+#### Phase 5.3: Marketing & Analytics (Week 16+)
+**Tasks:**
+1. **Landing page optimization** - A/B test headlines, CTAs
+2. **Google Analytics** - Track user behavior, conversion funnels
+3. **Testimonials** - Get quotes from early users
+4. **SEO optimization** - Rank for "mediator search Florida"
+5. **Content marketing** - Blog posts on mediation bias, conflict detection
+
+---
+
+## 📋 Updated Execution Order
+
+### Revised Priority Ranking
+1. ✅ **Hybrid Search** - COMPLETE
+2. ✅ **Active Learning (Phase 1)** - COMPLETE
+3. ⏳ **50-State Scraping** - IN PROGRESS (target: 5k mediators by Feb 24)
+4. ⏳ **Enhanced Affiliation Detection** - NEXT (LinkedIn/RECAP integration)
+5. ⏳ **User Acquisition** - NEXT (law firm outreach, $49/mo premium)
+
+### Updated Timeline
+```
+✅ Week 1-2:   Hybrid Search + Active Learning (COMPLETE - Feb 3)
+⏳ Week 3-8:   50-State Scraping (5k mediators) - Target: Feb 24
+⏳ Week 9-13:  Enhanced Affiliation Detection (LinkedIn/RECAP)
+⏳ Week 14-16: User Acquisition (South Florida law firms)
+⏳ Week 16+:   Marketing, SEO, Content
+```
+
+**Total Time:** 16+ weeks (4 months)
+
+---
+
 ## 📋 Next Steps
 
-1. **Review this plan** - Confirm priorities and timeline
-2. **Set up project tracking** - Use GitHub Projects or Trello
-3. **Create feature branches:**
-   - `feature/active-learning`
-   - `feature/hybrid-search`
-   - `feature/50-state-scraping`
-4. **Start with Active Learning F1 tracking** (Week 1)
+1. ✅ **Phase 1-2 Complete** - Hybrid Search + Active Learning done
+2. ⏳ **Deploy to production** - Verify Netlify fix works
+3. ⏳ **Start 50-State Scraping** - Focus on FL/CA/NY first (high-volume states)
+4. ⏳ **Build to 5k mediators** - Target: Feb 24, 2026
+5. ⏳ **Implement premium tier** - Stripe + subscription model
+6. ⏳ **Launch law firm outreach** - South Florida focus
 
 ---
 
