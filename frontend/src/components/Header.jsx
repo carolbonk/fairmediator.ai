@@ -43,15 +43,15 @@ const Header = () => {
             {/* Safeguards Link - Modern, sleek */}
             <Link
               to="/safeguards"
-              className="px-3 py-2 text-white text-sm font-medium hover:text-teal-300 transition-colors duration-200"
+              className="px-3 py-2 text-white text-sm font-medium hover:text-gray-300 transition-colors duration-200"
             >
               Safeguards
             </Link>
 
             {/* Mediators Link - Modern, sleek */}
             <Link
-              to="/mediators/apply"
-              className="px-3 py-2 text-white text-sm font-medium hover:text-teal-300 transition-colors duration-200"
+              to="/mediators"
+              className="px-3 py-2 text-white text-sm font-medium hover:text-gray-300 transition-colors duration-200"
             >
               Mediators
             </Link>
