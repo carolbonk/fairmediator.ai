@@ -687,6 +687,72 @@ node backend/src/scripts/initializeVectorDB.js --show-index
 
 ## 📝 What's Next / TODO
 
+### 🤖 AI Features TODO
+
+**Priority Features for Enhanced Platform Intelligence:**
+
+#### Feature 4: Dynamic Political Affiliation Tracking
+
+**Implementation Approach:**
+- Build scheduled Python scraper using BeautifulSoup/Playwright
+- Data sources:
+  - FEC API (api.open.fec.gov - free, no rate limits) - PRIMARY
+  - OpenSecrets API (campaign finance data)
+  - State bar association websites
+- Storage: PostgreSQL with JSONB columns for flexible affiliation metadata
+- Update frequency: Weekly cron job via GitHub Actions or Render.com free tier
+- Scoring algorithm: Weight FEC donations (40%), bar associations (30%), publications/affiliations (30%)
+
+**Technical Stack:**
+- Python: BeautifulSoup4, Playwright, requests
+- Database: PostgreSQL with JSONB support
+- Scheduler: GitHub Actions cron or Render.com cron jobs
+- API: FastAPI for affiliation data endpoints
+
+**Expected Outcome:** Real-time political affiliation scores based on verifiable public data, updated weekly
+
+---
+
+#### Feature 5: Intelligent Case-Type Matching System
+
+**Implementation Approach:**
+- Use spaCy or Hugging Face transformers (sentence-transformers/all-MiniLM-L6-v2)
+- Extract entities from user's chat message: fraud type, industry, parties involved
+- Calculate cosine similarity between case description and mediator bios/expertise tags
+- Redis caching for similarity scores (reduce computation)
+
+**Technical Stack:**
+- ML: sentence-transformers/all-MiniLM-L6-v2 (already in use)
+- Backend: Python FastAPI or Node.js integration
+- Cache: Redis for similarity scores (60-minute TTL)
+- Hosting: Railway.app or Fly.io free tier
+
+**Expected Outcome:** 80%+ relevance improvement for complex case queries, automatic expertise matching
+
+---
+
+#### Feature 6: Anomaly Detection for "Phantom Affiliations"
+
+**Implementation Approach:**
+- Phase 2 feature (requires Feature #1: Conflict Graph as prerequisite)
+- Clustering algorithms (DBSCAN) to find mediators with suspiciously similar ruling patterns
+- Data requirements:
+  - Historical case outcomes (from RECAP)
+  - Office location coordinates (for geographic clustering)
+  - Conference attendance records
+  - Co-authored publications
+
+**Technical Stack:**
+- Python: scikit-learn (DBSCAN, clustering)
+- Graph DB: NetworkX for graph traversal
+- Analysis: Pattern detection, outlier identification
+
+**Expected Outcome:** Detect hidden relationships not visible in traditional conflict checks (e.g., mediators who rule identically despite no obvious connection)
+
+**Status:** Planned for after Feature #1 completion
+
+---
+
 ### 🎯 Current Development Focus (Feb 2026)
 
 **Phase 1: Active Learning Pipeline (Week 1)** ✅ COMPLETE (Feb 3)

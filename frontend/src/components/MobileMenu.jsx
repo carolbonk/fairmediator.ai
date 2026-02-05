@@ -91,9 +91,9 @@ const MobileMenu = () => {
 
               {/* Mediators Link */}
               <Link
-                to="/mediators/apply"
+                to="/mediators"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Mediators</span>
               </Link>
@@ -140,9 +140,9 @@ const MobileMenu = () => {
 
               {/* Mediators Link */}
               <Link
-                to="/mediators/apply"
+                to="/mediators"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Mediators</span>
               </Link>

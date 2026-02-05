@@ -15,6 +15,8 @@ const UpgradePage = lazy(() => import('./components/subscription/UpgradePage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 const MediatorApplicationPage = lazy(() => import('./pages/MediatorApplicationPage'));
 const EthicsPage = lazy(() => import('./pages/EthicsPage'));
+const SafeguardsPage = lazy(() => import('./pages/SafeguardsPage'));
+const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 
 function App() {
   return (
@@ -30,7 +32,9 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/mediators/apply" element={<MediatorApplicationPage />} />
-          <Route path="/safeguards" element={<EthicsPage />} />
+          <Route path="/ethics" element={<EthicsPage />} />
+          <Route path="/safeguards" element={<SafeguardsPage />} />
+          <Route path="/mediators" element={<MediatorsPage />} />
 
           {/* Protected Routes - Require Authentication */}
           <Route

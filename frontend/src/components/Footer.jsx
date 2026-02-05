@@ -22,6 +22,12 @@ const Footer = () => {
               Are you a Mediator? Join us!
             </Link>
             <Link
+              to="/mediators"
+              className="text-white text-xs opacity-70 hover:opacity-100 transition-opacity underline"
+            >
+              Mediators Across America
+            </Link>
+            <Link
               to="/safeguards"
               className="text-white text-xs opacity-70 hover:opacity-100 transition-opacity underline"
             >
