@@ -935,16 +935,23 @@ sponsiveness (@tailwindcss/container-queries)
 - [x] Multi-signal bias detection (6 weighted signals)
 - [x] Query expansion with legal synonyms
 
-**In Progress - AI Features Integration (Feb 6, 2026):**
+**In Progress - AI Features Integration (Feb 6-7, 2026):**
 - [x] Backend API routes registered (/api/graph, /api/settlement)
 - [x] Python ML environment setup (FastAPI, scikit-learn, pandas)
 - [x] ML model trained (R²=0.9838, 98.38% accuracy)
 - [x] WCAG accessibility rule added (RULE 7)
+- [x] Create ConflictBadge component (WCAG compliant, 3 sizes, 3 variants)
+- [x] Enhance MediatorCard to use ConflictBadge
+- [x] Create ConflictGraph visualization component (paths, nodes, edges, expandable details)
+- [x] Add conflict check API calls to HybridSearch component (batch checks, modal display)
+- [x] Create SettlementPredictor component (confidence intervals, likelihood meter, key factors)
+- [x] Create CaseIntakeForm component (structured intake with validation, party management)
+- [x] Integrate CaseIntakeForm into HomePage (toggle between chat/form modes)
+- [ ] Test conflict detection UI flow (end-to-end)
+- [ ] WCAG accessibility audit for new components
 - [ ] Obtain API keys (FEC, CourtListener, OpenSecrets) - See API_KEYS_SETUP.md
 - [ ] Test frontend pages (SafeguardsPage, MediatorsPage)
 - [ ] Test Docker Compose setup (6 services)
-- [ ] Wire up conflict detection badges to mediator cards (🟢🟡🔴)
-- [ ] Add settlement prediction to case intake form
 - [ ] Integration testing (end-to-end workflows)
 - [ ] Fix DOJ data scraper (collect real FCA settlements)
 - [ ] Frontend integration (hybrid search, CSV export, fuzzy matching)
@@ -987,9 +994,19 @@ sponsiveness (@tailwindcss/container-queries)
 - Mediator cards with details
 - Affiliation checking
 
-❌ **Frontend - NOT Integrated Yet:**
-- Hybrid search API (still using `MOCK_MEDIATORS` mock data)
-- 🟢🟡🔴 visual tags (only has yellow warning, no red/green distinction)
+✅ **Frontend - Recently Integrated (Feb 7, 2026):**
+- ✅ Hybrid search API integrated into HybridSearch component
+- ✅ 🟢🟡🔴 visual tags via ConflictBadge component (3 risk levels)
+- ✅ ConflictGraph visualization (relationship paths with nodes/edges)
+- ✅ Settlement prediction component (ML-powered, R²=0.98)
+- ✅ Case intake form with structured validation
+- ✅ Chat/Form mode toggle on HomePage
+- ✅ Batch conflict checking on search results
+- ✅ Modal display for detailed conflict analysis
+
+❌ **Frontend - Still TODO:**
+- CSV export functionality
+- Fuzzy matching UI integration
 - CSV export button (bulk checker has no download)
 - Fuzzy matching for typos (no Levenshtein distance implementation)
 - Multi-signal bias scores display in UI
