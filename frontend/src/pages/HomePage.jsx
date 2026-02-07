@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { FaComments, FaFileAlt } from 'react-icons/fa';
 import ChatPanel from '../components/ChatPanel';
 import MediatorList from '../components/MediatorList';
+import CaseIntakeForm from '../components/CaseIntakeForm';
 import Header from '../components/Header';
 import StatisticsPanel from '../components/StatisticsPanel';
 import Footer from '../components/Footer';
@@ -13,6 +15,7 @@ const HomePage = () => {
   const [parties, setParties] = useState([]);
   const [startOnboarding, setStartOnboarding] = useState(false);
   const [userStateCode, setUserStateCode] = useState('FL'); // Default to Florida, could come from user profile
+  const [inputMode, setInputMode] = useState('chat'); // 'chat' or 'form'
   const [caseData, setCaseData] = useState({
     political: {
       liberal: 35,
@@ -59,6 +62,34 @@ const HomePage = () => {
     }
   };
 
+  const handleCaseIntakeSubmit = (intakeData) => {
+    // Update parties from intake form
+    setParties(intakeData.parties);
+
+    // Update case data
+    setCaseData(prev => ({
+      ...prev,
+      caseType: intakeData.caseType,
+      jurisdiction: intakeData.jurisdiction,
+      description: intakeData.description,
+      disputeValue: intakeData.disputeValue,
+      prediction: intakeData.prediction
+    }));
+  };
+
+  const handleSearchMediatorsFromForm = (searchData) => {
+    // Update parties and case data, then scroll to mediator list
+    handleCaseIntakeSubmit(searchData);
+
+    // Scroll to mediator list
+    setTimeout(() => {
+      const mediatorSection = document.getElementById('mediator-list-section');
+      if (mediatorSection) {
+        mediatorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
       <WelcomePopup onClose={() => setStartOnboarding(true)} />
@@ -86,18 +117,51 @@ const HomePage = () => {
               />
             </div>
 
-            {/* Chat Panel */}
-            <div className="card-neu">
-              <ChatPanel
-                onResponse={handleChatResponse}
-                parties={parties}
-                setParties={setParties}
-                onDocumentAnalysis={handleDocumentAnalysis}
-              />
+            {/* Input Mode Toggle */}
+            <div className="bg-neu-200 rounded-xl p-2 shadow-neu inline-flex gap-2">
+              <button
+                onClick={() => setInputMode('chat')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 min-h-[44px] ${
+                  inputMode === 'chat'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-neu'
+                    : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
+                }`}
+              >
+                <FaComments />
+                <span>Chat Mode</span>
+              </button>
+              <button
+                onClick={() => setInputMode('form')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 min-h-[44px] ${
+                  inputMode === 'form'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-neu'
+                    : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
+                }`}
+              >
+                <FaFileAlt />
+                <span>Form Mode</span>
+              </button>
             </div>
 
+            {/* Chat Panel or Case Intake Form */}
+            {inputMode === 'chat' ? (
+              <div className="card-neu">
+                <ChatPanel
+                  onResponse={handleChatResponse}
+                  parties={parties}
+                  setParties={setParties}
+                  onDocumentAnalysis={handleDocumentAnalysis}
+                />
+              </div>
+            ) : (
+              <CaseIntakeForm
+                onSubmit={handleCaseIntakeSubmit}
+                onSearchMediators={handleSearchMediatorsFromForm}
+              />
+            )}
+
             {/* Mediator Lists */}
-            <div className="card-neu">
+            <div id="mediator-list-section" className="card-neu">
               <MediatorList
                 parties={parties}
               />
