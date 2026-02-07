@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { FaMapMarkedAlt, FaGraduationCap, FaBalanceScale, FaLandmark, FaGlobeAmericas, FaRobot, FaTools, FaMapPin, FaChartBar, FaSearch } from 'react-icons/fa';
 
 const MediatorsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('all');
@@ -87,28 +88,28 @@ const MediatorsPage = () => {
   const howWeHandle = [
     {
       challenge: 'Different Certification Standards',
-      icon: '🎓',
+      icon: FaGraduationCap,
       problem: 'A mediator certified in Florida might not meet Minnesota\'s insurance requirements',
       solution: 'We tag mediators with all state certifications and display jurisdiction-specific credentials. Users see only mediators authorized for their state.',
       technical: 'Database schema includes certifications[] array with state, type, expiration date, and verification status'
     },
     {
       challenge: 'Varying Conflict-of-Interest Rules',
-      icon: '⚖️',
+      icon: FaBalanceScale,
       problem: 'Texas allows former opposing counsel to mediate. New York has stricter rules about attorney-mediators.',
       solution: 'Our graph analyzer applies state-specific thresholds. A relationship that\'s a 🟡 YELLOW flag in Texas becomes 🔴 RED in New York.',
       technical: 'Risk calculator has state_jurisdiction parameter that adjusts RISK_THRESHOLDS dynamically'
     },
     {
       challenge: 'Court vs. Private Mediation',
-      icon: '🏛️',
+      icon: FaLandmark,
       problem: 'Court-ordered mediations have mandatory reporting. Private mediations are confidential.',
       solution: 'We ask users to specify mediation type. Court-connected sessions include settlement agreement templates compliant with state civil procedure rules.',
       technical: 'mediationType: "court" || "private" determines disclosure requirements and document generation'
     },
     {
       challenge: 'Multi-State Disputes',
-      icon: '🌎',
+      icon: FaGlobeAmericas,
       problem: 'California plaintiff vs. Texas defendant—whose rules apply?',
       solution: 'We follow the Uniform Mediation Act (UMA) principles. Users select governing jurisdiction. Mediator must be credentialed in chosen state.',
       technical: 'governingJurisdiction field + credential validation against selectedState prevents unauthorized practice'
@@ -147,7 +148,7 @@ const MediatorsPage = () => {
         <section className="mb-16">
           <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
-              <span className="text-4xl">🗺️</span>
+              <FaMapMarkedAlt className="text-4xl text-gray-500" />
               The 50-State Mediation Patchwork
             </h2>
             <div className="text-gray-600 space-y-4">
@@ -278,19 +279,21 @@ const MediatorsPage = () => {
           </div>
 
           <div className="space-y-6">
-            {howWeHandle.map((item, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300"
-              >
-                <div className="flex items-start gap-4 mb-4">
-                  <span className="text-4xl flex-shrink-0">{item.icon}</span>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                      Challenge: {item.challenge}
-                    </h3>
+            {howWeHandle.map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300"
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    <IconComponent className="text-4xl text-gray-500 flex-shrink-0" />
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                        Challenge: {item.challenge}
+                      </h3>
+                    </div>
                   </div>
-                </div>
 
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div className="bg-red-50 rounded-xl p-4 border-l-2 border-red-400">
@@ -312,7 +315,8 @@ const MediatorsPage = () => {
                   </p>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </section>
 
@@ -320,7 +324,7 @@ const MediatorsPage = () => {
         <section className="mb-16">
           <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl shadow-neumorphic p-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
-              <span className="text-4xl">🤖</span>
+              <FaRobot className="text-4xl text-gray-500" />
               The One Thing That Stays Consistent: Our AI
             </h2>
             <div className="text-gray-600 space-y-4">
@@ -373,7 +377,7 @@ const MediatorsPage = () => {
         <section className="mb-12">
           <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
-              <span className="text-3xl">🚧</span>
+              <FaTools className="text-3xl text-gray-500" />
               Coming Soon: State-Specific AI Features
             </h2>
             <div className="text-gray-600 space-y-4">
@@ -383,25 +387,37 @@ const MediatorsPage = () => {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl p-4 shadow-sm border-l-2 border-gray-300">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm">📍 State Bar Scraping</h4>
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                    <FaMapPin className="text-gray-500" />
+                    State Bar Scraping
+                  </h4>
                   <p className="text-xs text-gray-600">
                     Auto-verify mediator certifications against state bar databases (CA, NY, FL, TX initially)
                   </p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm border-l-2 border-gray-300">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm">⚖️ State-Specific Conflict Rules</h4>
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                    <FaBalanceScale className="text-gray-500" />
+                    State-Specific Conflict Rules
+                  </h4>
                   <p className="text-xs text-gray-600">
                     Adjust risk thresholds based on state ethical opinions (e.g., ABA Formal Opinion 17-462)
                   </p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm border-l-2 border-gray-300">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm">📊 Local Settlement Data</h4>
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                    <FaChartBar className="text-gray-500" />
+                    Local Settlement Data
+                  </h4>
                   <p className="text-xs text-gray-600">
                     Scrape state court settlement data (where publicly available) for better predictions
                   </p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm border-l-2 border-gray-300">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm">🔍 Jurisdiction-Specific Search</h4>
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm flex items-center gap-2">
+                    <FaSearch className="text-gray-500" />
+                    Jurisdiction-Specific Search
+                  </h4>
                   <p className="text-xs text-gray-600">
                     Filter mediators by court-approved lists (e.g., NYC Supreme Court roster)
                   </p>

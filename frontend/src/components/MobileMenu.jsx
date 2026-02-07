@@ -20,10 +20,10 @@ const MobileMenu = () => {
 
   return (
     <>
-      {/* Hamburger Button - Only visible on mobile */}
+      {/* Hamburger Button - Only visible on mobile - Neomorphism */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden flex items-center justify-center w-11 h-11 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+        className="md:hidden flex items-center justify-center w-11 h-11 bg-neu-200 text-neu-700 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200"
         aria-label="Open menu"
       >
         <FaBars className="text-lg" />
@@ -37,81 +37,81 @@ const MobileMenu = () => {
         />
       )}
 
-      {/* Drawer - Slides in from right - RULE 5 Compliant */}
+      {/* Drawer - Slides in from right - RULE 5 Compliant - Neomorphism Theme */}
       <div
-        className={`fixed top-0 right-0 h-full w-[280px] bg-dark-neu-300 shadow-2xl z-[70] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col max-h-screen ${
+        className={`fixed top-0 right-0 h-full w-[280px] bg-gradient-to-b from-neu-200 to-neu-300 shadow-neu-lg z-[70] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col max-h-screen border-l-2 border-neu-400 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* Header - Fixed */}
-        <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-dark-neu-500">
-          <h2 className="text-lg font-bold text-white">Menu</h2>
+        {/* Header - Fixed - Neomorphism */}
+        <div className="flex-shrink-0 flex items-center justify-between p-4 bg-neu-200 shadow-neu-inset">
+          <h2 className="text-lg font-bold text-neu-800">Menu</h2>
           <button
             onClick={() => setIsOpen(false)}
-            className="flex items-center justify-center w-11 h-11 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200"
+            className="flex items-center justify-center w-11 h-11 bg-neu-200 text-neu-700 rounded-xl shadow-neu hover:shadow-neu-inset active:shadow-neu-inset transition-all duration-200"
             aria-label="Close menu"
           >
             <FaTimes className="text-lg" />
           </button>
         </div>
 
-        {/* Navigation Links - Scrollable Content */}
-        <nav className="flex-1 overflow-y-auto flex flex-col p-4 gap-3">
+        {/* Navigation Links - Scrollable Content - Neomorphism */}
+        <nav className="flex-1 overflow-y-auto flex flex-col p-4 gap-3 bg-neu-200">
           {user ? (
             <>
-              {/* User Info */}
-              <div className="mb-4 p-4 bg-dark-neu-400 rounded-xl shadow-dark-neu border border-dark-neu-200">
-                <p className="text-sm font-semibold text-white mb-1">{user.name}</p>
-                <p className="text-xs text-gray-400">{user.email}</p>
+              {/* User Info - Neomorphism Card */}
+              <div className="mb-2 p-4 bg-neu-200 rounded-xl shadow-neu-inset">
+                <p className="text-sm font-semibold text-neu-800 mb-1">{user.name}</p>
+                <p className="text-xs text-neu-600">{user.email}</p>
                 <div className="mt-2">
-                  <span className="text-xs px-3 py-1 bg-blue-500 text-white rounded-full font-medium">
+                  <span className="text-xs px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-medium shadow-neu">
                     {user.subscriptionTier === 'premium' ? 'Premium' : 'Free'}
                   </span>
                 </div>
               </div>
 
-              {/* Home Link */}
+              {/* Home Link - Neomorphism */}
               <Link
                 to="/"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaHome className="text-lg text-blue-400" />
+                <FaHome className="text-lg text-blue-500" />
                 <span className="font-medium text-base">Home</span>
               </Link>
 
-              {/* Safeguards Link */}
+              {/* Safeguards Link - Neomorphism */}
               <Link
                 to="/safeguards"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Safeguards</span>
               </Link>
 
-              {/* Mediators Link */}
+              {/* Mediators Link - Neomorphism */}
               <Link
                 to="/mediators"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Mediators</span>
               </Link>
 
-              {/* Dashboard Link */}
+              {/* Dashboard Link - Neomorphism */}
               <Link
                 to="/dashboard"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaChartLine className="text-lg text-blue-400" />
+                <FaChartLine className="text-lg text-blue-500" />
                 <span className="font-medium text-base">Dashboard</span>
               </Link>
 
-              {/* Logout Button */}
+              {/* Logout Button - Neomorphism */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaSignOutAlt className="text-lg" />
                 <span className="font-medium text-base">Logout</span>
@@ -119,60 +119,60 @@ const MobileMenu = () => {
             </>
           ) : (
             <>
-              {/* Home Link */}
+              {/* Home Link - Neomorphism */}
               <Link
                 to="/"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaHome className="text-lg text-blue-400" />
+                <FaHome className="text-lg text-blue-500" />
                 <span className="font-medium text-base">Home</span>
               </Link>
 
-              {/* Safeguards Link */}
+              {/* Safeguards Link - Neomorphism */}
               <Link
                 to="/safeguards"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Safeguards</span>
               </Link>
 
-              {/* Mediators Link */}
+              {/* Mediators Link - Neomorphism */}
               <Link
                 to="/mediators"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <span className="font-medium text-base">Mediators</span>
               </Link>
 
-              {/* Login Link */}
+              {/* Login Button - Blue CTA like navbar - 3D Neomorphism */}
               <Link
                 to="/login"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200 min-h-[44px]"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white rounded-xl shadow-[0_8px_16px_rgba(59,130,246,0.3),0_4px_8px_rgba(0,0,0,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4),0_6px_12px_rgba(0,0,0,0.15),inset_0_-2px_4px_rgba(0,0,0,0.25),inset_0_2px_4px_rgba(255,255,255,0.25)] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.3),inset_0_-2px_4px_rgba(255,255,255,0.1)] transition-all duration-200 min-h-[44px] transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                <FaUser className="text-lg text-white" />
-                <span className="font-medium text-base">Login</span>
+                <FaUser className="text-base" />
+                <span className="font-semibold text-base">Login</span>
               </Link>
 
-              {/* Register Link */}
+              {/* Register Link - Neomorphism */}
               <Link
                 to="/register"
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 min-h-[44px]"
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaUser className="text-lg" />
+                <FaUser className="text-lg text-neu-600" />
                 <span className="font-medium text-base">Sign Up</span>
               </Link>
             </>
           )}
         </nav>
 
-        {/* Footer - Fixed */}
-        <div className="flex-shrink-0 p-4 border-t border-dark-neu-500">
-          <p className="text-xs text-gray-400 text-center">
+        {/* Footer - Fixed - Neomorphism */}
+        <div className="flex-shrink-0 p-4 bg-neu-200 shadow-neu-inset">
+          <p className="text-xs text-neu-600 text-center font-medium">
             Fair Mediator v1.0
           </p>
         </div>

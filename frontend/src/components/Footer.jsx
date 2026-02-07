@@ -8,10 +8,19 @@ const Footer = () => {
 
       <div className="max-w-[1600px] mx-auto px-6 lg:px-8 py-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-          {/* Copyright - Left/Center on mobile */}
-          <p className="text-white text-sm opacity-70 text-center sm:text-left">
-            © 2025 - 2026 FairMediator.AI. All rights reserved.
-          </p>
+          {/* Tagline + Copyright - Left/Center on mobile */}
+          <div className="text-center sm:text-left">
+            {/* Tagline - Mobile/Tablet only (hidden on desktop where it shows in navbar) */}
+            <p className="lg:hidden text-white text-xs opacity-60">
+              Intelligent Mediator Matching & Screening Platform
+            </p>
+            <p className="text-white text-xs opacity-60 lg:mt-0 mt-0.5">
+              © 2025 - 2026 FairMediator.AI.
+            </p>
+            <p className="text-white text-xs opacity-60">
+              All rights reserved.
+            </p>
+          </div>
 
           {/* Links - Right - Always Column */}
           <div className="flex flex-col items-center sm:items-end gap-1.5">

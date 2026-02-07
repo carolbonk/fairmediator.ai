@@ -1,0 +1,47 @@
+{
+  "timestamp": "20260206_172536",
+  "model_params": {
+    "n_estimators": 100,
+    "max_depth": 20,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "training_stats": {
+    "cross_validation": {
+      "cv_rmse_scores": [
+        0.6296440903382571,
+        0.6945333665937248,
+        1.379577218513863,
+        0.17209854772040145,
+        0.1852979575294846
+      ],
+      "cv_rmse_mean": 0.6122302361391462,
+      "cv_rmse_std": 0.440882186673367
+    },
+    "test_metrics": {
+      "mae": 0.20318032755830018,
+      "mse": 0.056062480979037176,
+      "rmse": 0.23677516968431714,
+      "r2_score": 0.9837559783333717,
+      "mape": 22.731013705259354
+    }
+  },
+  "feature_columns": [
+    "fraud_type_code",
+    "industry_code",
+    "jurisdiction_code",
+    "whistleblower",
+    "defendant_size",
+    "settlement_year",
+    "fraud_severity",
+    "industry_fraud_interaction",
+    "years_since_2010",
+    "whistleblower_fraud_interaction",
+    "jurisdiction_risk",
+    "size_fraud_interaction"
+  ],
+  "model_path": "../models/settlement_model_20260206_172536.joblib",
+  "scaler_path": "../models/feature_scaler_20260206_172536.joblib"
+}

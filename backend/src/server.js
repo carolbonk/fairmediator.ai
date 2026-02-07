@@ -42,6 +42,8 @@ const qaRoutes = require('./routes/qa');
 const monitoringRoutes = require('./routes/monitoring');
 const storageRoutes = require('./routes/storage');
 const modelsRoutes = require('./routes/models');
+const conflictRoutes = require('./graph_analyzer/api/conflict_routes');
+const settlementRoutes = require('./routes/settlement');
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -234,6 +236,8 @@ app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
 app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard + MongoDB Atlas monitoring
 app.use('/api/storage', storageRoutes); // File storage with Netlify Blobs (images, documents)
 app.use('/api/models', modelsRoutes); // AI model versioning, metrics, and active learning
+app.use('/api/graph', conflictRoutes); // AI Conflict Graph Analyzer - relationship detection & COI screening
+app.use('/api/settlement', settlementRoutes); // Settlement Predictor - ML-based FCA settlement range predictions
 
 // CSRF error handler
 app.use(csrfErrorHandler);

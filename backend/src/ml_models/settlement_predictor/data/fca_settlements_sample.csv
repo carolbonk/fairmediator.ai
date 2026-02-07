@@ -1,0 +1,51 @@
+defendant,amount,date,fraud_type,industry,jurisdiction,whistleblower,damages_claimed,defendant_size,years_of_fraud
+Abbott Laboratories,1600000000,2012-05-07,off_label_marketing,healthcare,IL,1,2400000000,large,5
+Pfizer Inc,2300000000,2009-09-02,off_label_marketing,healthcare,MA,1,3500000000,large,8
+GlaxoSmithKline,3000000000,2012-07-02,off_label_marketing,healthcare,MA,1,4200000000,large,9
+Bank of America,16650000000,2014-08-21,mortgage_fraud,financial,NY,0,25000000000,large,7
+JPMorgan Chase,13000000000,2013-11-19,mortgage_fraud,financial,NY,0,18000000000,large,6
+Amgen Inc,762000000,2012-12-19,off_label_marketing,healthcare,CA,1,1100000000,large,7
+Johnson & Johnson,2200000000,2013-11-04,off_label_marketing,healthcare,PA,1,3000000000,large,8
+AstraZeneca,520000000,2010-04-27,off_label_marketing,healthcare,DE,1,750000000,large,5
+Eli Lilly,1415000000,2009-01-15,off_label_marketing,healthcare,IN,1,2000000000,large,6
+Merck & Co,950000000,2011-11-22,off_label_marketing,healthcare,NJ,1,1400000000,large,5
+TAP Pharmaceutical,875000000,2001-10-03,kickbacks,healthcare,IL,1,1200000000,large,6
+HCA Inc,1700000000,2000-12-14,upcoding,healthcare,TN,1,2500000000,large,8
+Tenet Healthcare,900000000,2006-06-28,upcoding,healthcare,TX,1,1350000000,large,7
+Community Health Systems,98000000,2014-08-04,admissions_fraud,healthcare,TN,1,150000000,large,4
+HealthSouth,1700000000,2004-12-30,medicare_fraud,healthcare,AL,1,2400000000,large,9
+Lockheed Martin,37800000,2003-08-01,procurement_fraud,defense,MD,0,55000000,large,3
+Boeing Company,54000000,2006-05-15,procurement_fraud,defense,CA,1,75000000,large,2
+Raytheon Technologies,27500000,2008-02-13,defective_pricing,defense,MA,0,40000000,large,3
+General Dynamics,4050000,2010-03-22,procurement_fraud,defense,VA,0,6000000,medium,2
+Northrop Grumman,27500000,2005-04-05,procurement_fraud,defense,VA,1,38000000,large,3
+DynCorp International,7500000,2011-06-17,overbilling,defense,VA,1,11000000,medium,4
+L-3 Communications,4000000,2007-09-12,defective_pricing,defense,NY,0,6000000,large,2
+Booz Allen Hamilton,377000,2012-07-26,overbilling,defense,VA,1,550000,medium,1
+CACI International,4000000,2010-01-29,overbilling,defense,VA,1,6000000,medium,3
+ManTech International,2250000,2012-06-04,overbilling,defense,VA,1,3500000,medium,2
+Quest Diagnostics,302000000,2009-04-16,kickbacks,healthcare,NJ,1,450000000,large,5
+LabCorp,49500000,2011-11-01,kickbacks,healthcare,NC,1,75000000,large,3
+Omnicare Inc,98000000,2009-09-30,kickbacks,healthcare,KY,1,145000000,large,4
+Schering-Plough,435000000,2006-08-29,pricing_fraud,healthcare,NJ,1,650000000,large,5
+Novartis,422500000,2010-09-30,kickbacks,healthcare,NY,1,630000000,large,6
+Sanofi-Aventis,109000000,2009-09-02,pricing_fraud,healthcare,NJ,1,160000000,large,4
+Bristol-Myers Squibb,515000000,2007-09-28,pricing_fraud,healthcare,NY,1,770000000,large,6
+Forest Laboratories,313000000,2010-09-15,off_label_marketing,healthcare,NY,1,470000000,large,4
+Cephalon Inc,425000000,2008-09-29,off_label_marketing,healthcare,PA,1,635000000,large,5
+King Pharmaceuticals,124000000,2009-02-25,pricing_fraud,healthcare,TN,1,185000000,medium,3
+Warner Chilcott,125000000,2010-10-01,kickbacks,healthcare,NJ,1,188000000,medium,3
+Actavis Inc,84000000,2012-11-08,pricing_fraud,healthcare,NJ,1,125000000,medium,3
+Par Pharmaceutical,45000000,2013-07-09,pricing_fraud,healthcare,NJ,1,68000000,medium,2
+Mylan Inc,465000000,2016-10-07,pricing_fraud,healthcare,PA,1,700000000,large,4
+Endo Pharmaceuticals,192700000,2014-02-12,pricing_fraud,healthcare,PA,1,290000000,medium,3
+Wells Fargo,1200000000,2016-02-09,mortgage_fraud,financial,CA,0,1800000000,large,5
+Citigroup,7000000000,2014-07-14,mortgage_fraud,financial,NY,0,10000000000,large,6
+Goldman Sachs,5060000000,2014-04-11,mortgage_fraud,financial,NY,0,7500000000,large,4
+Deutsche Bank,7200000000,2017-01-17,mortgage_fraud,financial,NY,0,10500000000,large,5
+Credit Suisse,5280000000,2017-01-18,mortgage_fraud,financial,NY,0,7800000000,large,4
+Morgan Stanley,2600000000,2016-02-11,mortgage_fraud,financial,NY,0,3900000000,large,3
+Barclays,2000000000,2018-03-29,mortgage_fraud,financial,NY,0,3000000000,large,3
+Royal Bank of Scotland,4900000000,2018-05-09,mortgage_fraud,financial,NY,0,7200000000,large,5
+UBS,1435000000,2018-08-14,mortgage_fraud,financial,NY,0,2100000000,large,3
+Ally Financial,3200000000,2013-12-23,mortgage_fraud,financial,MI,0,4800000000,large,4
