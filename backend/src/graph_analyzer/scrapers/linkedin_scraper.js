@@ -12,7 +12,7 @@
 
 const axios = require('axios');
 const BaseScraper = require('./base_scraper');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 const { Entity, Relationship } = require('../models/graph_schema');
 
 class LinkedInScraper extends BaseScraper {

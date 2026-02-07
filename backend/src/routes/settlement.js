@@ -9,7 +9,7 @@
 const express = require('express');
 const router = express.Router();
 const predictorClient = require('../ml_models/settlement_predictor/serving/model_loader');
-const logger = require('../utils/logger');
+const logger = require('../config/logger');
 const { authenticate } = require('../middleware/auth');
 const { requirePremium } = require('../middleware/premiumFeatures');
 

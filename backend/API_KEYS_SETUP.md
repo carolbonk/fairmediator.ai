@@ -1,15 +1,15 @@
-# API Keys Setup Guide - AI Features
+# API Keys Setup Guide
 
-This guide walks you through obtaining **FREE** API keys for the AI Conflict Graph Analyzer and Settlement Predictor features.
+Quick guide to obtain **FREE** API keys for conflict detection.
 
----
+## Required APIs (2)
 
-## Overview
+- **FEC API**: Unlimited requests, campaign finance data
+- **CourtListener RECAP**: 5,000 requests/day, federal court records
 
-All three APIs are **100% FREE** for production use:
-- **FEC API**: Unlimited requests, no rate limits
-- **CourtListener RECAP**: 5,000 requests/day (enough for 150+ mediators/day)
-- **OpenSecrets**: 200 requests/day (sufficient for our needs)
+## ❌ OpenSecrets API - DISCONTINUED (April 15, 2025)
+
+OpenSecrets shut down their public API after 17 years. If you need lobbying data, contact commercial@opensecrets.org for custom solutions. Our platform works without it.
 
 ---
 
@@ -86,44 +86,7 @@ All three APIs are **100% FREE** for production use:
 
 ---
 
-## 3. OpenSecrets API
-
-**What it does**: Tracks lobbying disclosures to detect corporate influence and potential conflicts.
-
-**Cost**: FREE, 200 requests/day
-
-### Step-by-Step Setup:
-
-1. **Sign Up for API Access**:
-   - Go to: https://www.opensecrets.org/api/admin/index.php?function=signup
-   - Fill out the form:
-     - **Name**: Your full name
-     - **Email**: Your email address
-     - **Organization**: (optional - you can put "Personal Project" or "Fair Mediator")
-     - **Use Case**: "Mediator conflict of interest detection for legal mediation platform"
-   - Click "Submit"
-
-2. **Wait for Email** (usually within 1 hour, check spam folder):
-   - Subject: "OpenSecrets.org API Registration"
-   - Contains your API key (looks like: `abcdef1234567890`)
-
-3. **Add to .env File**:
-   ```bash
-   OPENSECRETS_API_KEY=abcdef1234567890
-   ```
-
-4. **Test Your Key**:
-   ```bash
-   curl "http://www.opensecrets.org/api/?method=getLegislators&id=CA&apikey=YOUR_KEY&output=json"
-   ```
-
-**Rate Limit**: 200 requests/day (resets at midnight EST)
-
-**Important**: If you don't receive the email within 24 hours, email api@crp.org with your registration details.
-
----
-
-## 4. Verify All Keys Are Working
+## 3. Verify Keys Are Working
 
 Once you've added all three keys to your `.env` file, test them:
 
@@ -149,13 +112,12 @@ curl -X POST http://localhost:5001/api/graph/scrape-mediator \
 
 ---
 
-## Rate Limit Summary
+## Rate Limits
 
-| API | Daily Limit | Hourly Limit | Cost |
-|-----|-------------|--------------|------|
-| **FEC** | Unlimited | Unlimited | FREE |
-| **CourtListener** | 5,000 | ~208 | FREE |
-| **OpenSecrets** | 200 | ~8 | FREE |
+| API | Daily Limit | Cost |
+|-----|-------------|------|
+| **FEC** | Unlimited | FREE |
+| **CourtListener** | 5,000 | FREE |
 
 **Total Cost**: $0/month
 
@@ -163,44 +125,10 @@ curl -X POST http://localhost:5001/api/graph/scrape-mediator \
 
 ## Troubleshooting
 
-### "API key not found" error
-- Check that you've added the key to `.env` file (not `.env.example`)
-- Restart your backend server after updating `.env`
-- Verify no extra spaces before/after the key
+**"API key not found"**: Check `.env` file, restart server, verify no extra spaces
 
-### "Rate limit exceeded" error
-- **FEC**: Switch from `DEMO_KEY` to your personal key
-- **CourtListener**: Wait 24 hours for limit reset, or contact support for higher limits
-- **OpenSecrets**: Implement caching (already done in `base_scraper.js`)
+**"Rate limit exceeded"**:
+- FEC: Use personal key (not DEMO_KEY)
+- CourtListener: Wait 24 hours or contact support
 
-### CourtListener token not working
-- Make sure you're using just the token string, not "Token xyz..."
-- Try regenerating your token in account settings
-
-### OpenSecrets key request delayed
-- Check spam folder
-- Wait up to 24 hours (manual approval)
-- Email api@crp.org if no response after 24 hours
-
----
-
-## Security Best Practices
-
-1. **Never commit `.env` to Git** (already in `.gitignore`)
-2. **Use environment variables in production** (Netlify Env Vars)
-3. **Rotate keys every 6 months** for security
-4. **Monitor usage** via our `/api/monitoring` dashboard
-
----
-
-## Next Steps
-
-After adding all keys:
-1. ✅ Test each API endpoint individually
-2. ✅ Run `npm run dev` to start backend
-3. ✅ Check `/api/monitoring` dashboard for usage stats
-4. ✅ Proceed to data collection: `python backend/src/ml_models/settlement_predictor/data/collect_fca_data.py`
-
----
-
-**Questions?** Check the main [AI_FEATURES_README.md](./AI_FEATURES_README.md) for full documentation.
+**CourtListener token not working**: Use token string only (no "Token " prefix)

@@ -9,7 +9,7 @@
 
 const { Entity, Relationship, ConflictPath } = require('../models/graph_schema');
 const { calculateRiskScore } = require('../models/risk_calculator');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 
 class GraphService {
   /**
@@ -349,6 +349,108 @@ class GraphService {
     ]);
 
     logger.info('[GraphService] Graph indexes rebuilt successfully');
+  }
+
+  /**
+   * Check for lobbying conflicts
+   * Detects if mediator has lobbied for organizations involved in dispute
+   *
+   * @param {String} mediatorId - Mediator's entity ID
+   * @param {String} opposingEntityId - Opposing party's entity ID or organization ID
+   * @param {Object} options - Additional options
+   * @returns {Object} Lobbying conflict analysis
+   */
+  async checkLobbyingConflicts(mediatorId, opposingEntityId, options = {}) {
+    try {
+      logger.info(`[GraphService] Checking lobbying conflicts: ${mediatorId} vs ${opposingEntityId}`);
+
+      // Find all LOBBIED_FOR relationships from mediator
+      const lobbyingRelationships = await Relationship.find({
+        sourceId: mediatorId,
+        relationshipType: 'LOBBIED_FOR',
+        isActive: true
+      });
+
+      // Check for direct lobbying relationship with opposing party
+      const directConflict = lobbyingRelationships.find(
+        rel => rel.targetId === opposingEntityId
+      );
+
+      // Get entities that mediator lobbied for
+      const lobbyingClients = await Promise.all(
+        lobbyingRelationships.map(async (rel) => {
+          const entity = await Entity.findOne({ entityId: rel.targetId });
+          return {
+            entityId: rel.targetId,
+            entityName: entity?.name || 'Unknown',
+            entityType: entity?.entityType,
+            filings: rel.metadata.filingId ? 1 : 0,
+            totalAmount: rel.metadata.amount || 0,
+            issueAreas: rel.metadata.issueAreas || [],
+            mostRecentFiling: rel.metadata.filingYear,
+            filingPeriod: rel.metadata.filingPeriod,
+            lastVerified: rel.lastVerified
+          };
+        })
+      );
+
+      // Check for indirect conflicts (mediator lobbied for related entities)
+      const relatedEntities = await this.findPaths(opposingEntityId, mediatorId, {
+        maxDepth: 2,
+        relationshipTypes: ['WORKED_AT', 'SHARED_CASE', 'LOBBIED_FOR']
+      });
+
+      const indirectLobbyingConflicts = [];
+      for (const path of relatedEntities) {
+        const hasLobbyingLink = path.relationships.some(
+          rel => rel.type === 'LOBBIED_FOR' && rel.from === mediatorId
+        );
+        if (hasLobbyingLink) {
+          indirectLobbyingConflicts.push({
+            path: path.nodes,
+            relationships: path.relationships,
+            totalWeight: path.totalWeight
+          });
+        }
+      }
+
+      // Calculate lobbying conflict score
+      let conflictScore = 0;
+      if (directConflict) {
+        conflictScore = 50; // Direct lobbying = HIGH risk
+      } else if (indirectLobbyingConflicts.length > 0) {
+        conflictScore = 25 + (indirectLobbyingConflicts.length * 5); // Indirect = MEDIUM risk
+      }
+
+      const hasConflict = conflictScore > 0;
+      const conflictLevel = conflictScore >= 50 ? 'HIGH' :
+                           conflictScore >= 25 ? 'MEDIUM' : 'LOW';
+
+      return {
+        hasLobbyingConflict: hasConflict,
+        conflictLevel,
+        conflictScore,
+        directConflict: directConflict ? {
+          organization: directConflict.metadata.registrantName || 'Unknown',
+          filingYear: directConflict.metadata.filingYear,
+          filingPeriod: directConflict.metadata.filingPeriod,
+          issueAreas: directConflict.metadata.issueAreas || [],
+          amount: directConflict.metadata.amount,
+          filingId: directConflict.metadata.filingId
+        } : null,
+        indirectConflicts: indirectLobbyingConflicts,
+        totalLobbyingClients: lobbyingClients.length,
+        lobbyingClients: lobbyingClients.slice(0, 10), // Top 10 clients
+        recommendation: hasConflict ?
+          'DISCLOSURE REQUIRED: Mediator has lobbied for organization(s) involved in dispute' :
+          'No lobbying conflicts detected',
+        analyzedAt: new Date()
+      };
+
+    } catch (error) {
+      logger.error('[GraphService] Error checking lobbying conflicts:', error);
+      throw error;
+    }
   }
 }
 
