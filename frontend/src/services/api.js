@@ -255,4 +255,57 @@ export const getStorageStats = async () => {
   return response.data;
 };
 
+// Conflict Detection API (Graph-based)
+/**
+ * Check for conflicts between a mediator and parties
+ * @param {string} mediatorId - Mediator's ID
+ * @param {Array<string>} parties - Array of party names
+ * @returns {Promise} Conflict analysis with paths and risk score
+ */
+export const checkConflicts = async (mediatorId, parties) => {
+  const response = await api.post('/graph/check-conflicts', {
+    mediatorId,
+    parties
+  });
+  return response.data;
+};
+
+/**
+ * Batch check conflicts for multiple mediators
+ * @param {Array<string>} mediatorIds - Array of mediator IDs
+ * @param {Array<string>} parties - Array of party names
+ * @returns {Promise} Map of mediatorId -> conflict results
+ */
+export const batchCheckConflicts = async (mediatorIds, parties) => {
+  const response = await api.post('/graph/batch-check-conflicts', {
+    mediatorIds,
+    parties
+  });
+  return response.data;
+};
+
+/**
+ * Get detailed relationship paths between entities
+ * @param {string} entity1 - First entity name
+ * @param {string} entity2 - Second entity name
+ * @returns {Promise} Detailed relationship paths
+ */
+export const getRelationshipPaths = async (entity1, entity2) => {
+  const response = await api.get('/graph/relationships', {
+    params: { entity1, entity2 }
+  });
+  return response.data;
+};
+
+// Settlement Prediction API
+/**
+ * Predict settlement amount and likelihood for a case
+ * @param {object} caseData - Case details (type, disputeValue, etc.)
+ * @returns {Promise} Prediction with confidence intervals
+ */
+export const predictSettlement = async (caseData) => {
+  const response = await api.post('/settlement/predict', caseData);
+  return response.data;
+};
+
 export default api;

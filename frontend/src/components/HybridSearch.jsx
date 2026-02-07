@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { FaSearch, FaSpinner, FaTimes } from 'react-icons/fa';
-import { hybridSearch } from '../services/api';
+import { useState, useEffect } from 'react';
+import { FaSearch, FaSpinner, FaTimes, FaTimesCircle } from 'react-icons/fa';
+import { hybridSearch, batchCheckConflicts } from '../services/api';
 import MediatorCard from './MediatorCard';
+import ConflictGraph from './ConflictGraph';
 
 /**
  * Hybrid Search Component
@@ -13,6 +14,9 @@ const HybridSearch = ({ parties = [] }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchMetadata, setSearchMetadata] = useState(null);
+  const [conflictData, setConflictData] = useState({});
+  const [conflictLoading, setConflictLoading] = useState(false);
+  const [selectedMediatorConflict, setSelectedMediatorConflict] = useState(null);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -37,6 +41,29 @@ const HybridSearch = ({ parties = [] }) => {
     }
   };
 
+  // Check conflicts when results and parties are available
+  useEffect(() => {
+    const checkConflictsForResults = async () => {
+      if (!results || results.length === 0 || !parties || parties.length === 0) {
+        return;
+      }
+
+      setConflictLoading(true);
+      try {
+        const mediatorIds = results.map(r => r.mediatorId);
+        const conflictResults = await batchCheckConflicts(mediatorIds, parties);
+        setConflictData(conflictResults);
+      } catch (err) {
+        console.error('Conflict check error:', err);
+        // Don't show error to user - conflicts are optional enhancement
+      } finally {
+        setConflictLoading(false);
+      }
+    };
+
+    checkConflictsForResults();
+  }, [results, parties]);
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -49,6 +76,19 @@ const HybridSearch = ({ parties = [] }) => {
     setResults(null);
     setSearchMetadata(null);
     setError(null);
+    setConflictData({});
+    setSelectedMediatorConflict(null);
+  };
+
+  const handleConflictClick = (mediatorId) => {
+    const conflict = conflictData[mediatorId];
+    if (conflict) {
+      setSelectedMediatorConflict({ mediatorId, ...conflict });
+    }
+  };
+
+  const closeConflictModal = () => {
+    setSelectedMediatorConflict(null);
   };
 
   return (
@@ -137,27 +177,37 @@ const HybridSearch = ({ parties = [] }) => {
             Search Results (Hybrid Scoring)
           </h3>
           <div className="space-y-2">
-            {results.map((result) => (
-              <div key={result.mediatorId} className="relative">
-                <MediatorCard
-                  mediator={result.mediator}
-                  onClick={() => {
-                    console.log('Mediator clicked:', result.mediator.name);
-                    // TODO: Open modal with mediator details
-                  }}
-                  variant="compact"
-                />
-                {/* Show hybrid score badge */}
-                <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">
-                  {(result.hybridScore * 100).toFixed(0)}% match
+            {results.map((result) => {
+              const conflict = conflictData[result.mediatorId];
+              const conflictRisk = conflict ? {
+                riskLevel: conflict.riskLevel,
+                riskScore: conflict.riskScore
+              } : null;
+
+              return (
+                <div key={result.mediatorId} className="relative">
+                  <MediatorCard
+                    mediator={result.mediator}
+                    conflictRisk={conflictRisk}
+                    onConflictClick={() => handleConflictClick(result.mediatorId)}
+                    onClick={() => {
+                      console.log('Mediator clicked:', result.mediator.name);
+                      // TODO: Open modal with mediator details
+                    }}
+                    variant="compact"
+                  />
+                  {/* Show hybrid score badge */}
+                  <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">
+                    {(result.hybridScore * 100).toFixed(0)}% match
+                  </div>
+                  {/* Score breakdown (expandable) */}
+                  <div className="mt-1 text-xs text-neu-600 px-2">
+                    Vector: {(result.vectorScore * 100).toFixed(0)}% | Keyword: {(result.keywordScore * 100).toFixed(0)}%
+                    {result.foundIn.vector && result.foundIn.keyword && ' | Found in both'}
+                  </div>
                 </div>
-                {/* Score breakdown (expandable) */}
-                <div className="mt-1 text-xs text-neu-600 px-2">
-                  Vector: {(result.vectorScore * 100).toFixed(0)}% | Keyword: {(result.keywordScore * 100).toFixed(0)}%
-                  {result.foundIn.vector && result.foundIn.keyword && ' | Found in both'}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -167,6 +217,36 @@ const HybridSearch = ({ parties = [] }) => {
         <div className="bg-neu-200 rounded-xl p-8 shadow-neu text-center">
           <p className="text-neu-600">No mediators found for "{query}"</p>
           <p className="text-xs text-neu-500 mt-2">Try adjusting your search terms or using different keywords</p>
+        </div>
+      )}
+
+      {/* Conflict Details Modal */}
+      {selectedMediatorConflict && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-neu-200 rounded-xl shadow-neu-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-neu-200 p-4 border-b border-neu-300 flex items-center justify-between shadow-neu-inset z-10">
+              <h2 className="text-lg font-bold text-neu-800">
+                Conflict Analysis Details
+              </h2>
+              <button
+                onClick={closeConflictModal}
+                className="p-2 rounded-lg bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200"
+                aria-label="Close conflict details"
+              >
+                <FaTimesCircle className="text-xl" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-4">
+              <ConflictGraph
+                paths={selectedMediatorConflict.paths}
+                riskLevel={selectedMediatorConflict.riskLevel}
+                riskScore={selectedMediatorConflict.riskScore}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
