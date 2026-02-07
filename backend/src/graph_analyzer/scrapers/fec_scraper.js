@@ -13,8 +13,9 @@
 
 const axios = require('axios');
 const BaseScraper = require('./base_scraper');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 const { Entity, Relationship } = require('../models/graph_schema');
+const { classifyFECContribution, getIndustryDistribution } = require('../services/industry_classifier');
 
 const FEC_API_BASE = 'https://api.open.fec.gov/v1';
 const FEC_API_KEY = process.env.FEC_API_KEY || 'DEMO_KEY'; // Get free key at api.data.gov
@@ -138,7 +139,7 @@ class FECScraper extends BaseScraper {
    * @param {Object} options - Search options
    * @returns {Object} Summary of stored relationships
    */
-  async storeMediator DonationData(mediatorId, mediatorName, options = {}) {
+  async storeMediatorDonationData(mediatorId, mediatorName, options = {}) {
     try {
       // Fetch donations
       const donations = await this.searchIndividualDonations(mediatorName, options);
@@ -166,6 +167,9 @@ class FECScraper extends BaseScraper {
       // Store each donation as a relationship
       for (const donation of donations) {
         const committeeId = `fec_committee_${donation.committee_id}`;
+
+        // Classify by industry
+        const industryClassification = classifyFECContribution(donation);
 
         // Create entity for committee/candidate
         await Entity.findOneAndUpdate(
@@ -206,7 +210,13 @@ class FECScraper extends BaseScraper {
               date: donation.contribution_receipt_date,
               candidateName: donation.candidate_name,
               candidateParty: donation.candidate_party,
-              fecId: donation.committee_id
+              fecId: donation.committee_id,
+              // Industry classification
+              industry: industryClassification.industry,
+              industryCategory: industryClassification.category,
+              industryConfidence: industryClassification.confidence,
+              employer: donation.contributor_employer,
+              occupation: donation.contributor_occupation
             },
             confidence: 1.0, // FEC data is verified
             dataSource: 'FEC',
@@ -221,10 +231,15 @@ class FECScraper extends BaseScraper {
 
       logger.info(`[FEC] Stored ${storedRelationships.length} donation relationships for ${mediatorName}`);
 
+      // Get industry distribution
+      const industryStats = getIndustryDistribution(donations);
+
       return {
         stored: storedRelationships.length,
         donations: donations.slice(0, 10), // Return top 10 for display
-        totalAmount: donations.reduce((sum, d) => sum + (d.contribution_receipt_amount || 0), 0)
+        totalAmount: donations.reduce((sum, d) => sum + (d.contribution_receipt_amount || 0), 0),
+        industryDistribution: industryStats.distribution,
+        topIndustries: industryStats.topIndustries
       };
 
     } catch (error) {

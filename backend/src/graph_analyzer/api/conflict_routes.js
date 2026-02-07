@@ -17,9 +17,12 @@ const { validateRiskInputs } = require('../models/risk_calculator');
 const FECScraper = require('../scrapers/fec_scraper');
 const PACERScraper = require('../scrapers/pacer_scraper');
 const LinkedInScraper = require('../scrapers/linkedin_scraper');
-const LobbyingScraper = require('../scrapers/lobbying_scraper');
+const SenateLDAScraper = require('../scrapers/senate_lda_scraper');
 
-const logger = require('../../utils/logger');
+// Services
+const DataAggregator = require('../services/data_aggregator');
+
+const logger = require('../../config/logger');
 const { authenticate } = require('../../middleware/auth');
 const { requirePremium } = require('../../middleware/premiumFeatures');
 
@@ -27,7 +30,7 @@ const { requirePremium } = require('../../middleware/premiumFeatures');
 const fecScraper = new FECScraper();
 const pacerScraper = new PACERScraper();
 const linkedinScraper = new LinkedInScraper();
-const lobbyingScraper = new LobbyingScraper();
+const senateLDAScraper = new SenateLDAScraper();
 
 /**
  * POST /api/graph/check-conflicts
@@ -113,7 +116,7 @@ router.post('/scrape-mediator', authenticate, requirePremium, async (req, res) =
 
     if (sources.includes('lobbying')) {
       promises.push(
-        lobbyingScraper.scrape({ mediatorId, mediatorName })
+        senateLDAScraper.storeMediatorLobbyingData(mediatorId, mediatorName)
           .then(result => { results.lobbying = result; })
           .catch(err => { results.lobbying = { error: err.message }; })
       );
@@ -412,6 +415,107 @@ router.get('/stats', authenticate, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch graph statistics',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/graph/mediator-profile/:mediatorId
+ * Get comprehensive mediator profile with aggregated data
+ *
+ * Query params: startDate, endDate (optional)
+ */
+router.get('/mediator-profile/:mediatorId', authenticate, async (req, res) => {
+  try {
+    const { mediatorId } = req.params;
+    const { startDate, endDate } = req.query;
+
+    const options = {};
+    if (startDate) options.startDate = new Date(startDate);
+    if (endDate) options.endDate = new Date(endDate);
+
+    const profile = await DataAggregator.buildMediatorProfile(mediatorId, options);
+
+    res.json({
+      success: true,
+      data: profile
+    });
+
+  } catch (error) {
+    logger.error('[ConflictRoutes] Error fetching mediator profile:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch mediator profile',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/graph/industry-trends/:industry
+ * Get historical trends for a specific industry
+ *
+ * Query params: startDate, endDate (optional)
+ */
+router.get('/industry-trends/:industry', authenticate, async (req, res) => {
+  try {
+    const { industry } = req.params;
+    const { startDate, endDate } = req.query;
+
+    const options = {};
+    if (startDate) options.startDate = new Date(startDate);
+    if (endDate) options.endDate = new Date(endDate);
+
+    const trends = await DataAggregator.getIndustryTrends(industry, options);
+
+    res.json({
+      success: true,
+      data: trends
+    });
+
+  } catch (error) {
+    logger.error('[ConflictRoutes] Error fetching industry trends:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch industry trends',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/graph/check-lobbying-conflicts
+ * Check specifically for lobbying conflicts
+ *
+ * Body: {
+ *   mediatorId: string,
+ *   opposingEntityId: string
+ * }
+ */
+router.post('/check-lobbying-conflicts', authenticate, async (req, res) => {
+  try {
+    const { mediatorId, opposingEntityId } = req.body;
+
+    if (!mediatorId || !opposingEntityId) {
+      return res.status(400).json({
+        success: false,
+        error: 'mediatorId and opposingEntityId are required'
+      });
+    }
+
+    const lobbyingAnalysis = await graphService.checkLobbyingConflicts(mediatorId, opposingEntityId);
+
+    res.json({
+      success: true,
+      data: lobbyingAnalysis
+    });
+
+  } catch (error) {
+    logger.error('[ConflictRoutes] Error checking lobbying conflicts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to check lobbying conflicts',
       message: error.message
     });
   }

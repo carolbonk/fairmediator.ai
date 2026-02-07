@@ -8,7 +8,7 @@
  */
 
 const { RISK_WEIGHTS, RISK_THRESHOLDS } = require('./graph_schema');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 
 /**
  * Calculate risk score based on relationship paths

@@ -8,7 +8,7 @@
  */
 
 const { Entity, Relationship, RISK_WEIGHTS } = require('../models/graph_schema');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 
 class RelationshipDetector {
   /**

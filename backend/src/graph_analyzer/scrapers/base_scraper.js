@@ -7,7 +7,7 @@
  * @module graph_analyzer/scrapers/base_scraper
  */
 
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 const { trackAPICall } = require('../../utils/freeTierMonitor');
 
 /**

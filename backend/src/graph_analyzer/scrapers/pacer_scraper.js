@@ -16,7 +16,7 @@
 
 const axios = require('axios');
 const BaseScraper = require('./base_scraper');
-const logger = require('../../utils/logger');
+const logger = require('../../config/logger');
 const { Entity, Relationship } = require('../models/graph_schema');
 
 const RECAP_API_BASE = 'https://www.courtlistener.com/api/rest/v3';

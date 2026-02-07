@@ -9,7 +9,7 @@
 
 const axios = require('axios');
 const { spawn } = require('child_process');
-const logger = require('../../../utils/logger');
+const logger = require('../../../config/logger');
 
 const PREDICTOR_API_URL = process.env.PREDICTOR_API_URL || 'http://localhost:8001';
 
