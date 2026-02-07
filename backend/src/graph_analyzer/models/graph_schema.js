@@ -17,6 +17,8 @@ const mongoose = require('mongoose');
  * - Contractor: Private contractor
  * - Publication: Co-authored work
  * - Conference: Event attendance
+ * - Candidate: Political candidate (FEC data)
+ * - Organization: Organization/client entity (lobbying, general purpose)
  */
 
 /**
@@ -25,6 +27,7 @@ const mongoose = require('mongoose');
  * - CO_AUTHORED: Shared publication (weight: 7)
  * - SHARED_CASE: Collaborated on same case (weight: 8)
  * - DONATED_TO: Campaign finance donation (weight: 6)
+ * - LOBBIED_FOR: Lobbying relationship (weight: 40)
  * - ATTENDED_TOGETHER: Shared conference/event (weight: 5)
  * - OPPOSING_COUNSEL: Adversarial relationship (weight: -5)
  */
@@ -36,7 +39,7 @@ const mongoose = require('mongoose');
 const RelationshipSchema = new mongoose.Schema({
   sourceType: {
     type: String,
-    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference'],
+    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference', 'Candidate', 'Organization'],
     required: true,
     index: true
   },
@@ -47,7 +50,7 @@ const RelationshipSchema = new mongoose.Schema({
   },
   targetType: {
     type: String,
-    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference'],
+    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference', 'Candidate', 'Organization'],
     required: true,
     index: true
   },
@@ -58,7 +61,7 @@ const RelationshipSchema = new mongoose.Schema({
   },
   relationshipType: {
     type: String,
-    enum: ['WORKED_AT', 'CO_AUTHORED', 'SHARED_CASE', 'DONATED_TO', 'ATTENDED_TOGETHER', 'OPPOSING_COUNSEL'],
+    enum: ['WORKED_AT', 'CO_AUTHORED', 'SHARED_CASE', 'DONATED_TO', 'LOBBIED_FOR', 'ATTENDED_TOGETHER', 'OPPOSING_COUNSEL'],
     required: true,
     index: true
   },
@@ -112,7 +115,7 @@ RelationshipSchema.index({ sourceType: 1, targetType: 1 });
 const EntitySchema = new mongoose.Schema({
   entityType: {
     type: String,
-    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference'],
+    enum: ['Mediator', 'LawFirm', 'Agency', 'Contractor', 'Publication', 'Conference', 'Candidate', 'Organization'],
     required: true,
     index: true
   },

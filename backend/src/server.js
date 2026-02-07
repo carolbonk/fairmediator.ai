@@ -43,7 +43,9 @@ const monitoringRoutes = require('./routes/monitoring');
 const storageRoutes = require('./routes/storage');
 const modelsRoutes = require('./routes/models');
 const conflictRoutes = require('./graph_analyzer/api/conflict_routes');
+const graphRoutes = require('./routes/graph'); // Simplified graph routes for frontend
 const settlementRoutes = require('./routes/settlement');
+const settlementWrapperRoutes = require('./routes/settlement_wrapper'); // Simplified settlement predictor
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -236,8 +238,10 @@ app.use('/api/qa', qaRoutes); // Quality Assurance - automated validation
 app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard + MongoDB Atlas monitoring
 app.use('/api/storage', storageRoutes); // File storage with Netlify Blobs (images, documents)
 app.use('/api/models', modelsRoutes); // AI model versioning, metrics, and active learning
-app.use('/api/graph', conflictRoutes); // AI Conflict Graph Analyzer - relationship detection & COI screening
-app.use('/api/settlement', settlementRoutes); // Settlement Predictor - ML-based FCA settlement range predictions
+app.use('/api/graph', graphRoutes); // Simplified graph API for frontend conflict checking
+app.use('/api/graph/admin', conflictRoutes); // Advanced graph admin routes (scraping, entity management)
+app.use('/api/settlement', settlementWrapperRoutes); // Simplified settlement predictor for general mediation
+app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement predictor (ML-based)
 
 // CSRF error handler
 app.use(csrfErrorHandler);
