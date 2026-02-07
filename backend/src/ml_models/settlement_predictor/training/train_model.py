@@ -296,8 +296,10 @@ class SettlementPredictor:
 
         return grid_search.best_params_
 
-    def save_model(self, model_dir: str = 'backend/src/ml_models/settlement_predictor/models'):
+    def save_model(self, model_dir: str = '../models'):
         """Save trained model and feature engine"""
+        import os
+        os.makedirs(model_dir, exist_ok=True)
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
         # Save model
@@ -348,7 +350,7 @@ def main():
     predictor = SettlementPredictor()
 
     # Load data
-    data_path = 'backend/src/ml_models/settlement_predictor/data/fca_settlements_clean.csv'
+    data_path = '../data/fca_settlements_clean.csv'
     data = predictor.load_data(data_path)
 
     # Prepare features
