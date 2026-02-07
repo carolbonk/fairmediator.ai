@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { FaProjectDiagram, FaChartLine, FaBalanceScale, FaDollarSign, FaDatabase } from 'react-icons/fa';
 
 const SafeguardsPage = () => {
   const [activeTab, setActiveTab] = useState('ethics');
@@ -57,7 +58,7 @@ const SafeguardsPage = () => {
   const aiFeatures = [
     {
       title: 'Conflict Graph Intelligence',
-      icon: '🕸️',
+      icon: FaProjectDiagram,
       description: 'When you select a mediator, we don\'t just check their LinkedIn—we analyze hidden networks.',
       technical: 'Our graph database traces relationships across 6 degrees of connection: employment history, shared court cases, co-authored publications, campaign donations, and conference attendance. Think of it as "Six Degrees of Kevin Bacon," but for detecting bias in legal professionals.',
       howItWorks: [
@@ -70,7 +71,7 @@ const SafeguardsPage = () => {
     },
     {
       title: 'Settlement Range Predictions',
-      icon: '📊',
+      icon: FaChartLine,
       description: 'Ever wonder what your case is actually worth? Our ML model has analyzed 500+ False Claims Act settlements.',
       technical: 'We built a Random Forest Regressor trained on DOJ press releases spanning 5 years. The model considers 12 features including fraud type, industry, damages claimed, jurisdiction, and whether a whistleblower is involved. It predicts the 25th, 50th, and 75th percentile settlement amounts.',
       howItWorks: [
@@ -83,7 +84,7 @@ const SafeguardsPage = () => {
     },
     {
       title: 'Case Outcome Pattern Analysis',
-      icon: '⚖️',
+      icon: FaBalanceScale,
       description: 'This is the nuclear option: we track how often opposing counsel WINS when they\'re in front of specific mediators.',
       technical: 'We parse federal court RECAP data to determine case outcomes (settlement, dismissal, judgment). If your opposing counsel has won 75%+ of cases with a specific mediator, that\'s not coincidence—that\'s statistical bias.',
       howItWorks: [
@@ -294,22 +295,24 @@ const SafeguardsPage = () => {
               </div>
 
               <div className="space-y-8">
-                {aiFeatures.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300"
-                  >
-                    <div className="flex items-start gap-4 mb-6">
-                      <span className="text-5xl flex-shrink-0">{feature.icon}</span>
-                      <div>
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-                          {feature.title}
-                        </h3>
-                        <p className="text-base text-gray-600 leading-relaxed">
-                          {feature.description}
-                        </p>
+                {aiFeatures.map((feature, index) => {
+                  const IconComponent = feature.icon;
+                  return (
+                    <div
+                      key={index}
+                      className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300"
+                    >
+                      <div className="flex items-start gap-4 mb-6">
+                        <IconComponent className="text-5xl text-gray-500 flex-shrink-0" />
+                        <div>
+                          <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                            {feature.title}
+                          </h3>
+                          <p className="text-base text-gray-600 leading-relaxed">
+                            {feature.description}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
                     <div className="bg-white rounded-xl p-6 mb-4 shadow-inner">
                       <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
@@ -340,14 +343,15 @@ const SafeguardsPage = () => {
                       </p>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
             {/* Cost Transparency */}
             <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 mb-12">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <span className="text-3xl">💰</span>
+                <FaDollarSign className="text-3xl text-gray-500" />
                 Why This is Free (And How We Keep It That Way)
               </h3>
               <div className="text-gray-600 space-y-4">
@@ -376,7 +380,7 @@ const SafeguardsPage = () => {
             {/* Data Sources */}
             <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <span className="text-3xl">📚</span>
+                <FaDatabase className="text-3xl text-gray-500" />
                 Where We Get Our Data
               </h3>
               <div className="text-gray-600 space-y-4">
