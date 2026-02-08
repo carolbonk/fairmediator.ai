@@ -22,7 +22,7 @@ if (isStripeEnabled()) {
   stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
   console.log('✅ Stripe enabled - Premium subscriptions available');
 } else {
-  console.log('ℹ️  Stripe not configured - Running in free-only mode');
+  // console.log('ℹ️  Stripe not configured - Running in free-only mode');
 }
 
 class StripeService {
