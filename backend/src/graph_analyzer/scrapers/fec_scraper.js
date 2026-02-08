@@ -175,7 +175,7 @@ class FECScraper extends BaseScraper {
         await Entity.findOneAndUpdate(
           { entityId: committeeId },
           {
-            entityType: 'Campaign',
+            entityType: 'Candidate',
             entityId: committeeId,
             name: donation.committee_name,
             metadata: {
@@ -201,7 +201,7 @@ class FECScraper extends BaseScraper {
           {
             sourceType: 'Mediator',
             sourceId: mediatorId,
-            targetType: 'Campaign',
+            targetType: 'Candidate',
             targetId: committeeId,
             relationshipType: 'DONATED_TO',
             weight: 6, // Donation weight
