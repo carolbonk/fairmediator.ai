@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { FaStar, FaStarHalfAlt, FaMapMarkerAlt, FaBriefcase, FaDollarSign } from 'react-icons/fa';
 import ConflictBadge from './ConflictBadge';
+import LobbyingBadge from './LobbyingBadge';
 
 // Star Rating Component - Memoized for performance
 const StarRating = memo(({ rating, totalMediations }) => {
@@ -30,6 +31,8 @@ const MediatorCard = memo(({
   affiliationFlag, // Legacy prop - kept for backwards compatibility
   conflictRisk = null, // New: { riskLevel: 'GREEN'|'YELLOW'|'RED', riskScore: number }
   onConflictClick = null, // Callback when conflict badge is clicked
+  lobbyingData = null, // New: { count: number, totalAmount: number, industries: string[], latestYear: number }
+  onLobbyingClick = null, // Callback when lobbying badge is clicked
   onClick,
   variant = 'compact' // 'compact' or 'expanded'
 }) => {
@@ -106,25 +109,41 @@ const MediatorCard = memo(({
           )}
         </div>
 
-        {/* Conflict Risk Badge */}
-        {(conflictRisk || affiliationFlag) && (
-          <div className="mt-2 pt-2 border-t border-neu-300">
-            {conflictRisk ? (
-              <ConflictBadge
-                riskLevel={conflictRisk.riskLevel}
-                riskScore={conflictRisk.riskScore}
-                size="sm"
-                variant="square"
-                onClick={onConflictClick}
-                showScore={false}
-              />
-            ) : (
-              // Legacy affiliation flag fallback
-              <div className="flex items-center gap-1.5 text-xs flex-wrap">
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
-                  ⚠️ Conflict
-                </span>
-                <span className="text-neu-600 flex-shrink-0">Check affiliations</span>
+        {/* Conflict Risk Badge & Lobbying Badge */}
+        {(conflictRisk || affiliationFlag || lobbyingData) && (
+          <div className="mt-2 pt-2 border-t border-neu-300 space-y-2">
+            {(conflictRisk || affiliationFlag) && (
+              <div>
+                {conflictRisk ? (
+                  <ConflictBadge
+                    riskLevel={conflictRisk.riskLevel}
+                    riskScore={conflictRisk.riskScore}
+                    size="sm"
+                    variant="square"
+                    onClick={onConflictClick}
+                    showScore={false}
+                  />
+                ) : (
+                  // Legacy affiliation flag fallback
+                  <div className="flex items-center gap-1.5 text-xs flex-wrap">
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md font-semibold flex-shrink-0">
+                      ⚠️ Conflict
+                    </span>
+                    <span className="text-neu-600 flex-shrink-0">Check affiliations</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {lobbyingData && (
+              <div>
+                <LobbyingBadge
+                  lobbyingData={lobbyingData}
+                  size="sm"
+                  variant="square"
+                  onClick={onLobbyingClick}
+                  showDetails={true}
+                />
               </div>
             )}
           </div>
@@ -194,32 +213,53 @@ const MediatorCard = memo(({
         )}
       </div>
 
-      {/* Conflict Risk Badge */}
-      {(conflictRisk || affiliationFlag) && (
-        <div className="mt-3 pt-3 border-t border-neu-300">
-          {conflictRisk ? (
-            <div className="flex items-center gap-3">
-              <ConflictBadge
-                riskLevel={conflictRisk.riskLevel}
-                riskScore={conflictRisk.riskScore}
-                size="md"
-                variant="pill"
-                onClick={onConflictClick}
-                showScore={true}
-              />
-              {onConflictClick && (
-                <span className="text-xs text-neu-600">
-                  Click to view details
-                </span>
+      {/* Conflict Risk Badge & Lobbying Badge */}
+      {(conflictRisk || affiliationFlag || lobbyingData) && (
+        <div className="mt-3 pt-3 border-t border-neu-300 space-y-3">
+          {(conflictRisk || affiliationFlag) && (
+            <div>
+              {conflictRisk ? (
+                <div className="flex items-center gap-3">
+                  <ConflictBadge
+                    riskLevel={conflictRisk.riskLevel}
+                    riskScore={conflictRisk.riskScore}
+                    size="md"
+                    variant="pill"
+                    onClick={onConflictClick}
+                    showScore={true}
+                  />
+                  {onConflictClick && (
+                    <span className="text-xs text-neu-600">
+                      Click to view details
+                    </span>
+                  )}
+                </div>
+              ) : (
+                // Legacy affiliation flag fallback
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg font-semibold shadow-neu-sm">
+                    ⚠️ Potential Conflict
+                  </span>
+                  <span className="text-neu-600">Review affiliations carefully</span>
+                </div>
               )}
             </div>
-          ) : (
-            // Legacy affiliation flag fallback
-            <div className="flex items-center gap-2 text-sm">
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg font-semibold shadow-neu-sm">
-                ⚠️ Potential Conflict
-              </span>
-              <span className="text-neu-600">Review affiliations carefully</span>
+          )}
+
+          {lobbyingData && (
+            <div className="flex items-center gap-3">
+              <LobbyingBadge
+                lobbyingData={lobbyingData}
+                size="md"
+                variant="pill"
+                onClick={onLobbyingClick}
+                showDetails={true}
+              />
+              {onLobbyingClick && (
+                <span className="text-xs text-neu-600">
+                  Click to view lobbying history
+                </span>
+              )}
             </div>
           )}
         </div>
