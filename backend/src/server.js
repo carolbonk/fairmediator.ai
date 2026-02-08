@@ -46,6 +46,7 @@ const conflictRoutes = require('./graph_analyzer/api/conflict_routes');
 const graphRoutes = require('./routes/graph'); // Simplified graph routes for frontend
 const settlementRoutes = require('./routes/settlement');
 const settlementWrapperRoutes = require('./routes/settlement_wrapper'); // Simplified settlement predictor
+const dataPopulationRoutes = require('./routes/dataPopulation'); // Data population status API
 
 // Import cron scheduler
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -242,6 +243,7 @@ app.use('/api/graph', graphRoutes); // Simplified graph API for frontend conflic
 app.use('/api/graph/admin', conflictRoutes); // Advanced graph admin routes (scraping, entity management)
 app.use('/api/settlement', settlementWrapperRoutes); // Simplified settlement predictor for general mediation
 app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement predictor (ML-based)
+app.use('/api/data-population', dataPopulationRoutes); // Data population status and progress tracking
 
 // CSRF error handler
 app.use(csrfErrorHandler);
