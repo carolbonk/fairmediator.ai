@@ -18,7 +18,8 @@ async function inspect() {
     const entities = await Entity.find().limit(5);
     entities.forEach(e => {
       console.log(`\nEntity ID: ${e._id}`);
-      console.log(`  Type: ${e.type}`);
+      console.log(`  Entity Type: ${e.entityType}`);
+      console.log(`  Entity ID: ${e.entityId}`);
       console.log(`  Name: ${e.name}`);
       console.log(`  Metadata: ${JSON.stringify(e.metadata)}`);
     });
@@ -28,9 +29,12 @@ async function inspect() {
     const relationships = await Relationship.find().limit(5);
     for (const rel of relationships) {
       console.log(`\nRelationship ID: ${rel._id}`);
-      console.log(`  Type: ${rel.type}`);
-      console.log(`  From: ${rel.fromId}`);
-      console.log(`  To: ${rel.toId}`);
+      console.log(`  Relationship Type: ${rel.relationshipType}`);
+      console.log(`  Source Type: ${rel.sourceType}`);
+      console.log(`  Source ID: ${rel.sourceId}`);
+      console.log(`  Target Type: ${rel.targetType}`);
+      console.log(`  Target ID: ${rel.targetId}`);
+      console.log(`  Weight: ${rel.weight}`);
       console.log(`  Metadata: ${JSON.stringify(rel.metadata)}`);
     }
 
