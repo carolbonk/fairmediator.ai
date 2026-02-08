@@ -1,0 +1,252 @@
+[
+  {
+    "name": "Kenneth Feinberg",
+    "location": { "city": "Washington", "state": "DC" },
+    "practiceAreas": ["Mass Torts", "Corporate Disputes", "Government Compensation"],
+    "yearsExperience": 45,
+    "hourlyRate": 850,
+    "rating": 4.8,
+    "totalMediations": 250,
+    "bio": "Special Master for 9/11 Victim Compensation Fund, BP oil spill mediator"
+  },
+  {
+    "name": "Eric Green",
+    "location": { "city": "Boston", "state": "MA" },
+    "practiceAreas": ["Commercial Litigation", "Healthcare", "Technology"],
+    "yearsExperience": 40,
+    "hourlyRate": 750,
+    "rating": 4.7,
+    "totalMediations": 320,
+    "bio": "Former professor, extensive corporate mediation experience"
+  },
+  {
+    "name": "Layn Phillips",
+    "location": { "city": "Newport Beach", "state": "CA" },
+    "practiceAreas": ["Entertainment", "Business", "Securities"],
+    "yearsExperience": 38,
+    "hourlyRate": 800,
+    "rating": 4.9,
+    "totalMediations": 410,
+    "bio": "Former federal judge, entertainment industry mediator"
+  },
+  {
+    "name": "Rodney Max",
+    "location": { "city": "Los Angeles", "state": "CA" },
+    "practiceAreas": ["Entertainment", "Real Estate", "Employment"],
+    "yearsExperience": 35,
+    "hourlyRate": 725,
+    "rating": 4.6,
+    "totalMediations": 285,
+    "bio": "Specializes in Hollywood disputes and talent contracts"
+  },
+  {
+    "name": "Francis McGovern",
+    "location": { "city": "Durham", "state": "NC" },
+    "practiceAreas": ["Mass Torts", "Environmental", "Product Liability"],
+    "yearsExperience": 42,
+    "hourlyRate": 775,
+    "rating": 4.8,
+    "totalMediations": 190,
+    "bio": "Duke Law professor, asbestos litigation mediator"
+  },
+  {
+    "name": "Sheila Purcell",
+    "location": { "city": "San Francisco", "state": "CA" },
+    "practiceAreas": ["Employment", "Healthcare", "Civil Rights"],
+    "yearsExperience": 28,
+    "hourlyRate": 650,
+    "rating": 4.7,
+    "totalMediations": 340,
+    "bio": "Former labor attorney, employment discrimination specialist"
+  },
+  {
+    "name": "James Henry",
+    "location": { "city": "New York", "state": "NY" },
+    "practiceAreas": ["Securities", "Banking", "Corporate"],
+    "yearsExperience": 33,
+    "hourlyRate": 825,
+    "rating": 4.5,
+    "totalMediations": 220,
+    "bio": "Wall Street disputes, corporate governance mediator"
+  },
+  {
+    "name": "Robert Meyer",
+    "location": { "city": "Chicago", "state": "IL" },
+    "practiceAreas": ["Construction", "Real Estate", "Insurance"],
+    "yearsExperience": 30,
+    "hourlyRate": 675,
+    "rating": 4.6,
+    "totalMediations": 295,
+    "bio": "Construction defect and commercial real estate specialist"
+  },
+  {
+    "name": "Jill Slansky",
+    "location": { "city": "Atlanta", "state": "GA" },
+    "practiceAreas": ["Family Law", "Employment", "Business"],
+    "yearsExperience": 25,
+    "hourlyRate": 625,
+    "rating": 4.8,
+    "totalMediations": 380,
+    "bio": "Family law and divorce mediation expert"
+  },
+  {
+    "name": "David Geronemus",
+    "location": { "city": "New York", "state": "NY" },
+    "practiceAreas": ["Securities", "Arbitration", "Complex Commercial"],
+    "yearsExperience": 37,
+    "hourlyRate": 800,
+    "rating": 4.7,
+    "totalMediations": 265,
+    "bio": "Former FINRA arbitrator, securities dispute mediator"
+  },
+  {
+    "name": "Susan Hackett",
+    "location": { "city": "Boulder", "state": "CO" },
+    "practiceAreas": ["Healthcare", "Technology", "IP"],
+    "yearsExperience": 27,
+    "hourlyRate": 700,
+    "rating": 4.6,
+    "totalMediations": 210,
+    "bio": "Former general counsel, tech industry mediator"
+  },
+  {
+    "name": "William Slate",
+    "location": { "city": "Washington", "state": "DC" },
+    "practiceAreas": ["Government Contracts", "International", "Commercial"],
+    "yearsExperience": 40,
+    "hourlyRate": 825,
+    "rating": 4.5,
+    "totalMediations": 185,
+    "bio": "Former AAA president, international arbitration expert"
+  },
+  {
+    "name": "Nancy Yeend",
+    "location": { "city": "Los Angeles", "state": "CA" },
+    "practiceAreas": ["Entertainment", "Media", "Technology"],
+    "yearsExperience": 32,
+    "hourlyRate": 750,
+    "rating": 4.7,
+    "totalMediations": 305,
+    "bio": "Hollywood talent disputes, media industry mediator"
+  },
+  {
+    "name": "Daniel Weinstein",
+    "location": { "city": "San Francisco", "state": "CA" },
+    "practiceAreas": ["Personal Injury", "Medical Malpractice", "Product Liability"],
+    "yearsExperience": 44,
+    "hourlyRate": 775,
+    "rating": 4.9,
+    "totalMediations": 425,
+    "bio": "Former judge, personal injury specialist"
+  },
+  {
+    "name": "Deborah Rothman",
+    "location": { "city": "Miami", "state": "FL" },
+    "practiceAreas": ["Real Estate", "Construction", "Banking"],
+    "yearsExperience": 29,
+    "hourlyRate": 700,
+    "rating": 4.6,
+    "totalMediations": 245,
+    "bio": "Commercial real estate and construction mediator"
+  },
+  {
+    "name": "Michael Young",
+    "location": { "city": "Houston", "state": "TX" },
+    "practiceAreas": ["Energy", "Oil & Gas", "Environmental"],
+    "yearsExperience": 36,
+    "hourlyRate": 800,
+    "rating": 4.7,
+    "totalMediations": 230,
+    "bio": "Energy sector disputes, oil & gas contracts specialist"
+  },
+  {
+    "name": "Lisa Klerman",
+    "location": { "city": "Boston", "state": "MA" },
+    "practiceAreas": ["Healthcare", "Medical Malpractice", "Insurance"],
+    "yearsExperience": 31,
+    "hourlyRate": 725,
+    "rating": 4.8,
+    "totalMediations": 310,
+    "bio": "Medical malpractice and healthcare compliance mediator"
+  },
+  {
+    "name": "Jeffrey Krivis",
+    "location": { "city": "Los Angeles", "state": "CA" },
+    "practiceAreas": ["Business", "Real Estate", "Employment"],
+    "yearsExperience": 35,
+    "hourlyRate": 750,
+    "rating": 4.6,
+    "totalMediations": 340,
+    "bio": "Commercial and employment mediation specialist"
+  },
+  {
+    "name": "Gail Funke",
+    "location": { "city": "Seattle", "state": "WA" },
+    "practiceAreas": ["Technology", "IP", "Employment"],
+    "yearsExperience": 26,
+    "hourlyRate": 675,
+    "rating": 4.7,
+    "totalMediations": 275,
+    "bio": "Tech industry disputes, intellectual property mediator"
+  },
+  {
+    "name": "Victoria Pynchon",
+    "location": { "city": "Los Angeles", "state": "CA" },
+    "practiceAreas": ["Insurance", "Employment", "Business"],
+    "yearsExperience": 28,
+    "hourlyRate": 700,
+    "rating": 4.8,
+    "totalMediations": 295,
+    "bio": "Insurance coverage and employment law mediator"
+  },
+  {
+    "name": "Peter Robinson",
+    "location": { "city": "Minneapolis", "state": "MN" },
+    "practiceAreas": ["Civil Rights", "Employment", "Education"],
+    "yearsExperience": 34,
+    "hourlyRate": 650,
+    "rating": 4.6,
+    "totalMediations": 260,
+    "bio": "Civil rights and workplace discrimination specialist"
+  },
+  {
+    "name": "Margaret Shaw",
+    "location": { "city": "Portland", "state": "OR" },
+    "practiceAreas": ["Environmental", "Land Use", "Government"],
+    "yearsExperience": 30,
+    "hourlyRate": 725,
+    "rating": 4.7,
+    "totalMediations": 205,
+    "bio": "Environmental law and land use mediator"
+  },
+  {
+    "name": "Thomas Stipanowich",
+    "location": { "city": "Malibu", "state": "CA" },
+    "practiceAreas": ["Construction", "Engineering", "Commercial"],
+    "yearsExperience": 39,
+    "hourlyRate": 800,
+    "rating": 4.5,
+    "totalMediations": 195,
+    "bio": "Pepperdine professor, construction law mediator"
+  },
+  {
+    "name": "Karen Mathis",
+    "location": { "city": "Denver", "state": "CO" },
+    "practiceAreas": ["Business", "Professional Liability", "Healthcare"],
+    "yearsExperience": 32,
+    "hourlyRate": 725,
+    "rating": 4.8,
+    "totalMediations": 285,
+    "bio": "Former ABA president, professional liability mediator"
+  },
+  {
+    "name": "John Bickerman",
+    "location": { "city": "Washington", "state": "DC" },
+    "practiceAreas": ["Government Contracts", "Regulatory", "Administrative"],
+    "yearsExperience": 41,
+    "hourlyRate": 825,
+    "rating": 4.6,
+    "totalMediations": 215,
+    "bio": "Government contracts and regulatory disputes mediator"
+  }
+]
