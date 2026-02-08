@@ -41,6 +41,55 @@ const stats = {
   errors: []
 };
 
+// Status file path
+const STATUS_FILE = path.join(__dirname, '../../data/population_status.json');
+
+/**
+ * Update status file for frontend popup
+ */
+function updateStatus(status, message, currentIndex = 0) {
+  const statusData = {
+    status, // 'loading', 'rate_limited', 'complete', 'error'
+    message,
+    progress: {
+      mediators: currentIndex,
+      total: stats.mediators.total
+    },
+    stats: {
+      fec: {
+        found: stats.fec.found,
+        donations: stats.fec.donations
+      },
+      lda: {
+        found: stats.lda.found,
+        filings: stats.lda.filings
+      }
+    },
+    lastUpdated: new Date().toISOString()
+  };
+
+  // Add ETA if loading
+  if (status === 'loading' && currentIndex > 0) {
+    const avgTimePerMediator = 15; // ~15 seconds per mediator with delays
+    const remaining = stats.mediators.total - currentIndex;
+    const etaSeconds = remaining * avgTimePerMediator;
+    statusData.eta = new Date(Date.now() + etaSeconds * 1000).toISOString();
+  }
+
+  // Add retry time if rate-limited
+  if (status === 'rate_limited') {
+    statusData.retryAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
+  }
+
+  // Ensure data directory exists
+  const dataDir = path.dirname(STATUS_FILE);
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  fs.writeFileSync(STATUS_FILE, JSON.stringify(statusData, null, 2));
+}
+
 /**
  * Connect to MongoDB
  */
@@ -299,13 +348,22 @@ async function main() {
     stats.mediators.total = seedMediators.length;
     console.log(`📄 Loaded ${seedMediators.length} mediators from seed file\n`);
 
+    // Update status: Starting
+    updateStatus('loading', `Loading data for ${seedMediators.length} mediators...`, 0);
+
     // Process each mediator
     for (let i = 0; i < seedMediators.length; i++) {
       await processMediator(seedMediators[i], i, seedMediators.length);
+
+      // Update status after each mediator
+      updateStatus('loading', `Processing mediator ${i + 1}/${seedMediators.length}...`, i + 1);
     }
 
     // Print statistics
     printStats();
+
+    // Update status: Complete
+    updateStatus('complete', `Data population complete! Loaded ${stats.fec.found} with FEC data, ${stats.lda.found} with lobbying data.`, seedMediators.length);
 
     // Close database connection
     await mongoose.connection.close();
