@@ -79,14 +79,14 @@ const Onboarding = ({ shouldStart, onComplete }) => {
       {/* Onboarding Popup */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 md:p-8">
         <div
-          className="bg-gray-50 rounded-3xl shadow-neumorphic w-[85%] max-w-md max-h-[85vh] mx-auto flex flex-col overflow-hidden"
+          className="bg-dark-neu-300 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] mx-auto flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-6 sm:p-8">
-            <div className="text-center mb-6 flex flex-col items-center">
-              <h2 className="text-fluid-2xl font-bold text-gray-800 mb-3">{currentStepData.title}</h2>
-              <p className="text-gray-600 text-fluid-base leading-relaxed text-center max-w-md mx-auto">
+          <div className="flex-1 overflow-y-auto p-8 sm:p-10 md:p-12">
+            <div className="text-center mb-8 flex flex-col items-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{currentStepData.title}</h2>
+              <p className="text-white text-base sm:text-lg leading-relaxed text-center max-w-xl mx-auto">
                 {currentStepData.content}
               </p>
             </div>
@@ -98,10 +98,10 @@ const Onboarding = ({ shouldStart, onComplete }) => {
                   key={index}
                   className={`h-2 rounded-full transition-all duration-300 ${
                     index === currentStep
-                      ? 'w-8 bg-blue-500'
+                      ? 'w-8 bg-white'
                       : index < currentStep
-                      ? 'w-2 bg-blue-300'
-                      : 'w-2 bg-gray-300'
+                      ? 'w-2 bg-dark-neu-100'
+                      : 'w-2 bg-dark-neu-500'
                   }`}
                 />
               ))}
@@ -109,18 +109,18 @@ const Onboarding = ({ shouldStart, onComplete }) => {
           </div>
 
           {/* Fixed Buttons at Bottom */}
-          <div className="flex gap-3 p-6 sm:p-8 pt-0 flex-shrink-0">
+          <div className="flex gap-3 p-8 sm:p-10 md:p-12 pt-0 flex-shrink-0">
             {currentStepData.showSkip ? (
               <>
                 <button
                   onClick={handleSkip}
-                  className="flex-1 py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-2xl shadow-neumorphic-inset hover:shadow-neumorphic transition-all duration-200"
+                  className="flex-1 py-4 px-6 bg-dark-neu-400 text-white font-semibold text-base rounded-2xl border border-dark-neu-500 hover:bg-dark-neu-500 transition-all duration-200"
                 >
                   Skip Tour
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+                  className="flex-1 py-4 px-6 bg-white text-dark-neu-300 font-semibold text-base rounded-2xl shadow-lg hover:bg-neu-100 transition-all duration-200"
                 >
                   Start Tour
                 </button>
@@ -130,14 +130,14 @@ const Onboarding = ({ shouldStart, onComplete }) => {
                 {currentStep > 0 && (
                   <button
                     onClick={handlePrevious}
-                    className="py-3 px-6 bg-gray-200 text-gray-700 font-semibold rounded-2xl shadow-neumorphic-inset hover:shadow-neumorphic transition-all duration-200"
+                    className="py-4 px-6 bg-dark-neu-400 text-white font-semibold text-base rounded-2xl border border-dark-neu-500 hover:bg-dark-neu-500 transition-all duration-200"
                   >
                     Back
                   </button>
                 )}
                 <button
                   onClick={handleNext}
-                  className="flex-1 py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+                  className="flex-1 py-4 px-6 bg-white text-dark-neu-300 font-semibold text-base rounded-2xl shadow-lg hover:bg-neu-100 transition-all duration-200"
                 >
                   {currentStep === steps.length - 1 ? "Get Started" : "Next"}
                 </button>

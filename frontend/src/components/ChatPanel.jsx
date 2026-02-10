@@ -17,7 +17,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   };
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             <div
               className={`max-w-[75%] px-3 py-2 rounded-xl break-words ${
                 msg.role === 'user'
-                  ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-neu'
+                  ? 'bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-neu'
                   : 'bg-neu-100 text-neu-800 shadow-neu'
               }`}
             >
@@ -192,8 +192,8 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')"
-            className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[60px]"
-            rows="2"
+            className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[80px]"
+            rows="3"
             disabled={loading}
           />
           <button

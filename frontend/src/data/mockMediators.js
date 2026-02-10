@@ -36,6 +36,7 @@ const CITIES = {
   'Colorado': ['Denver', 'Colorado Springs'],
   'Connecticut': ['Hartford', 'New Haven'],
   'Delaware': ['Wilmington', 'Dover'],
+  'District of Columbia': ['Washington'],
   'Florida': ['Miami', 'Tampa'],
   'Georgia': ['Atlanta', 'Savannah'],
   'Hawaii': ['Honolulu', 'Hilo'],
@@ -178,6 +179,54 @@ export const generateMockMediators = () => {
       mediators.push(mediator);
       globalIndex++;
     }
+  });
+
+  // Add 2 special featured mediators
+  mediators.push({
+    _id: 'mediator_featured_1',
+    name: 'Dr. Maya Rodriguez',
+    location: {
+      city: 'San Francisco',
+      state: 'California'
+    },
+    yearsExperience: 22,
+    rating: 4.9,
+    totalMediations: 184,
+    practiceAreas: ['Technology', 'Intellectual Property', 'Commercial Disputes', 'Contract Disputes'],
+    ideologyScore: -0.3,
+    ideology: 'moderated',
+    hourlyRate: 395,
+    certifications: [
+      'Certified Mediator',
+      'Advanced Mediation Certification',
+      'Master Mediator',
+      'Silicon Valley ADR Specialist'
+    ],
+    bio: 'Renowned mediator with expertise in high-stakes technology disputes and intellectual property matters. Former Silicon Valley attorney with deep understanding of startup ecosystems.'
+  });
+
+  mediators.push({
+    _id: 'mediator_featured_2',
+    name: 'Hon. Marcus Thompson (Ret.)',
+    location: {
+      city: 'Washington',
+      state: 'District of Columbia'
+    },
+    yearsExperience: 28,
+    rating: 4.95,
+    totalMediations: 312,
+    practiceAreas: ['Securities', 'Banking & Finance', 'Commercial Disputes', 'Healthcare'],
+    ideologyScore: 0.2,
+    ideology: 'moderated',
+    hourlyRate: 425,
+    certifications: [
+      'Certified Mediator',
+      'Advanced Mediation Certification',
+      'Master Mediator',
+      'AAA Distinguished Neutral',
+      'FINRA Arbitrator'
+    ],
+    bio: 'Retired federal judge with extensive experience in complex commercial litigation and securities matters. Respected for fair and efficient dispute resolution in high-value cases.'
   });
 
   return mediators;

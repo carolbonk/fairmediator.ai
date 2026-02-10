@@ -64,7 +64,7 @@ const MobileMenu = () => {
                 <p className="text-sm font-semibold text-neu-800 mb-1">{user.name}</p>
                 <p className="text-xs text-neu-600">{user.email}</p>
                 <div className="mt-2">
-                  <span className="text-xs px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-medium shadow-neu">
+                  <span className="text-xs px-3 py-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-full font-medium shadow-neu">
                     {user.subscriptionTier === 'premium' ? 'Premium' : 'Free'}
                   </span>
                 </div>
@@ -104,7 +104,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaChartLine className="text-lg text-blue-500" />
+                <FaChartLine className="text-lg text-slate-600" />
                 <span className="font-medium text-base">Dashboard</span>
               </Link>
 
@@ -125,7 +125,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <FaHome className="text-lg text-blue-500" />
+                <FaHome className="text-lg text-slate-600" />
                 <span className="font-medium text-base">Home</span>
               </Link>
 
@@ -147,11 +147,11 @@ const MobileMenu = () => {
                 <span className="font-medium text-base">Mediators</span>
               </Link>
 
-              {/* Login Button - Blue CTA like navbar - 3D Neomorphism */}
+              {/* Login Button - Dark blueish gray CTA - 3D Neomorphism */}
               <Link
                 to="/login"
                 onClick={handleLinkClick}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white rounded-xl shadow-[0_8px_16px_rgba(59,130,246,0.3),0_4px_8px_rgba(0,0,0,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4),0_6px_12px_rgba(0,0,0,0.15),inset_0_-2px_4px_rgba(0,0,0,0.25),inset_0_2px_4px_rgba(255,255,255,0.25)] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.3),inset_0_-2px_4px_rgba(255,255,255,0.1)] transition-all duration-200 min-h-[44px] transform hover:-translate-y-0.5 active:translate-y-0"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 text-white rounded-xl shadow-[0_8px_16px_rgba(71,85,105,0.3),0_4px_8px_rgba(0,0,0,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] hover:shadow-[0_12px_24px_rgba(71,85,105,0.4),0_6px_12px_rgba(0,0,0,0.15),inset_0_-2px_4px_rgba(0,0,0,0.25),inset_0_2px_4px_rgba(255,255,255,0.25)] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.3),inset_0_-2px_4px_rgba(255,255,255,0.1)] transition-all duration-200 min-h-[44px] transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <FaUser className="text-base" />
                 <span className="font-semibold text-base">Login</span>

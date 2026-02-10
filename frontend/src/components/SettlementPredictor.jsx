@@ -110,7 +110,7 @@ const SettlementPredictor = ({
         <button
           onClick={handlePredict}
           disabled={loading || !caseType || !disputeValue}
-          className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[44px]"
+          className="w-full px-4 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl font-semibold shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[44px]"
           aria-label="Generate settlement prediction"
         >
           {loading ? (
