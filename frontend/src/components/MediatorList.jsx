@@ -40,7 +40,7 @@ const MediatorList = ({ parties }) => {
   const [modalPage, setModalPage] = useState(1);
   const [selectedMediator, setSelectedMediator] = useState(null);
   const [showMediatorDetail, setShowMediatorDetail] = useState(false);
-  const ITEMS_PER_PAGE = 3;
+  const ITEMS_PER_PAGE = 4;
 
   // Get mediators from mock data
   const allMockMediators = MOCK_MEDIATORS;
@@ -161,13 +161,13 @@ const MediatorList = ({ parties }) => {
 
         {/* Pagination Controls - Compact */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-neu-200">
+          <div className="flex items-center justify-center gap-1 mt-2 pt-2 border-t border-neu-200">
             <button
               onClick={() => {
                 setModalPage(Math.max(1, currentPage - 1));
                 setShowModal(true);
               }}
-              className="px-3 py-2.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[44px] min-w-[44px]"
+              className="px-2.5 py-1.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[36px] min-w-[36px]"
               aria-label="Previous page"
             >
               ←
@@ -181,7 +181,7 @@ const MediatorList = ({ parties }) => {
                     setModalPage(i + 1);
                     setShowModal(true);
                   }}
-                  className={`min-w-[44px] min-h-[44px] rounded-md text-xs font-medium transition-all ${
+                  className={`min-w-[36px] min-h-[36px] rounded-md text-xs font-medium transition-all ${
                     currentPage === i + 1
                       ? 'shadow-neu-inset bg-neu-200 text-neu-800'
                       : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -198,7 +198,7 @@ const MediatorList = ({ parties }) => {
                 setModalPage(Math.min(totalPages, currentPage + 1));
                 setShowModal(true);
               }}
-              className="px-3 py-2.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[44px] min-w-[44px]"
+              className="px-2.5 py-1.5 rounded-md text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all min-h-[36px] min-w-[36px]"
               aria-label="Next page"
             >
               →
@@ -267,7 +267,7 @@ const MediatorList = ({ parties }) => {
                       }}
                       className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
                         selectedState === 'all'
-                          ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 shadow-neu-inset'
+                          ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
                           : 'text-neu-700 hover:bg-neu-200'
                       }`}
                     >
@@ -282,7 +282,7 @@ const MediatorList = ({ parties }) => {
                         }}
                         className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
                           selectedState === state
-                            ? 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 shadow-neu-inset'
+                            ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
                             : 'text-neu-700 hover:bg-neu-200'
                         }`}
                       >
@@ -325,7 +325,7 @@ const MediatorList = ({ parties }) => {
             onClick={() => setActiveTab('liberal')}
             className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
               activeTab === 'liberal'
-                ? 'shadow-neu-inset bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800'
+                ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
                 : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
             }`}
           >
@@ -432,7 +432,7 @@ const MediatorList = ({ parties }) => {
             </div>
 
             {/* Modal Footer with Pagination - Fixed at Bottom */}
-            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100 flex-shrink-0">
+            <div className="border-t border-neu-200 px-8 py-3 bg-neu-100 flex-shrink-0">
               {(() => {
                 const currentMediators = activeTab === 'liberal' ? liberal : activeTab === 'moderated' ? moderated : conservative;
                 const filteredMediators = applyFilters(currentMediators);
@@ -445,27 +445,27 @@ const MediatorList = ({ parties }) => {
                         setShowModal(false);
                         setCurrentPage(modalPage);
                       }}
-                      className="px-5 py-2.5 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+                      className="px-4 py-2 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
                     >
                       Close
                     </button>
 
                     {totalPages > 1 && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => setModalPage(prev => Math.max(1, prev - 1))}
                           disabled={modalPage === 1}
-                          className="px-4 py-2.5 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-3 py-1.5 rounded-xl text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           Previous
                         </button>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           {[...Array(totalPages)].map((_, i) => (
                             <button
                               key={i}
                               onClick={() => setModalPage(i + 1)}
-                              className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
+                              className={`w-8 h-8 rounded-xl text-xs font-medium transition-all ${
                                 modalPage === i + 1
                                   ? 'shadow-neu-inset bg-neu-200 text-neu-800'
                                   : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
@@ -479,7 +479,7 @@ const MediatorList = ({ parties }) => {
                         <button
                           onClick={() => setModalPage(prev => Math.min(totalPages, prev + 1))}
                           disabled={modalPage === totalPages}
-                          className="px-4 py-2.5 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-3 py-1.5 rounded-xl text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           Next
                         </button>
@@ -576,7 +576,7 @@ const MediatorList = ({ parties }) => {
                       <h3 className="text-lg font-semibold text-neu-800 mb-4">Practice Areas</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedMediator.practiceAreas.map((area, i) => (
-                          <span key={i} className="px-4 py-2 text-sm bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800 rounded-lg shadow-neu-sm font-medium">
+                          <span key={i} className="px-4 py-2 text-sm bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 rounded-lg shadow-neu-sm font-medium">
                             {area}
                           </span>
                         ))}
@@ -624,7 +624,7 @@ const MediatorList = ({ parties }) => {
                 {/* Right Column - Availability & Booking */}
                 <div className="space-y-6">
                   {/* Free Video Call */}
-                  <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl p-6 shadow-neu-lg text-white">
+                  <div className="bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl p-6 shadow-neu-lg text-white">
                     <h3 className="text-xl font-bold mb-3">Free 15-Minute Video Consultation</h3>
                     <p className="mb-5 text-blue-50">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
                     <button
@@ -699,7 +699,7 @@ const MediatorList = ({ parties }) => {
               </button>
               <button
                 onClick={() => trackSelection(selectedMediator, 'hired')}
-                className="px-8 py-2.5 rounded-xl text-sm font-bold shadow-neu-lg bg-gradient-to-br from-blue-400 to-blue-600 text-white hover:shadow-neu-lg hover:scale-105 transition-all"
+                className="px-8 py-2.5 rounded-xl text-sm font-bold shadow-neu-lg bg-gradient-to-br from-slate-600 to-slate-800 text-white hover:shadow-neu-lg hover:scale-105 transition-all"
               >
                 Book Paid Session
               </button>

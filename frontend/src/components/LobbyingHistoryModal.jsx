@@ -126,61 +126,61 @@ const LobbyingHistoryModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-neu-200 p-6 text-left align-middle shadow-neu-lg transition-all border-2 border-neu-300">
+              <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden rounded-2xl bg-dark-neu-300 p-8 sm:p-10 text-left align-middle shadow-2xl transition-all">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-purple-100 rounded-xl shadow-neu">
-                      <FaLandmark className="text-2xl text-purple-600" />
+                <div className="flex items-start justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500">
+                      <FaLandmark className="text-2xl text-white" />
                     </div>
                     <div>
                       <Dialog.Title
                         as="h3"
-                        className="text-xl font-bold text-neu-800"
+                        className="text-2xl font-bold text-white"
                       >
                         Lobbying Disclosure History
                       </Dialog.Title>
-                      <p className="text-sm text-neu-600 mt-1">{mediatorName}</p>
+                      <p className="text-base text-neu-200 mt-1">{mediatorName}</p>
                     </div>
                   </div>
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-lg hover:bg-neu-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="p-2 rounded-lg hover:bg-dark-neu-400 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
                     aria-label="Close modal"
                   >
-                    <FaTimes className="text-xl text-neu-600" />
+                    <FaTimes className="text-xl text-white" />
                   </button>
                 </div>
 
                 {/* Summary Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-neu-100 rounded-xl p-4 shadow-neu">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  <div className="bg-dark-neu-400/50 rounded-xl p-5 border border-dark-neu-500">
                     <div className="flex items-center gap-2 mb-2">
-                      <FaFileAlt className="text-purple-500" />
-                      <span className="text-sm text-neu-600">Total Filings</span>
+                      <FaFileAlt className="text-white" />
+                      <span className="text-base text-neu-200">Total Filings</span>
                     </div>
-                    <p className="text-2xl font-bold text-neu-800">{filings.length}</p>
+                    <p className="text-3xl font-bold text-white">{filings.length}</p>
                   </div>
-                  <div className="bg-neu-100 rounded-xl p-4 shadow-neu">
+                  <div className="bg-dark-neu-400/50 rounded-xl p-5 border border-dark-neu-500">
                     <div className="flex items-center gap-2 mb-2">
-                      <FaDollarSign className="text-green-500" />
-                      <span className="text-sm text-neu-600">Total Amount</span>
+                      <FaDollarSign className="text-white" />
+                      <span className="text-base text-neu-200">Total Amount</span>
                     </div>
-                    <p className="text-2xl font-bold text-neu-800">{formatCurrency(totalAmount)}</p>
+                    <p className="text-3xl font-bold text-white">{formatCurrency(totalAmount)}</p>
                   </div>
-                  <div className="bg-neu-100 rounded-xl p-4 shadow-neu">
+                  <div className="bg-dark-neu-400/50 rounded-xl p-5 border border-dark-neu-500">
                     <div className="flex items-center gap-2 mb-2">
-                      <FaBuilding className="text-blue-500" />
-                      <span className="text-sm text-neu-600">Industries</span>
+                      <FaBuilding className="text-white" />
+                      <span className="text-base text-neu-200">Industries</span>
                     </div>
-                    <p className="text-2xl font-bold text-neu-800">{Object.keys(industries).length}</p>
+                    <p className="text-3xl font-bold text-white">{Object.keys(industries).length}</p>
                   </div>
                 </div>
 
                 {/* Industry Breakdown Pie Chart */}
                 {pieSegments.length > 0 && (
-                  <div className="bg-neu-100 rounded-xl p-6 shadow-neu mb-6">
-                    <h4 className="text-lg font-bold text-neu-800 mb-4">Industry Breakdown</h4>
+                  <div className="bg-dark-neu-400/50 rounded-xl p-6 border border-dark-neu-500 mb-8">
+                    <h4 className="text-xl font-bold text-white mb-6">Industry Breakdown</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Pie Chart */}
                       <div className="flex items-center justify-center">
@@ -190,18 +190,18 @@ const LobbyingHistoryModal = ({
                               <path
                                 d={getPieSlicePath(segment.startAngle, segment.endAngle)}
                                 fill={segment.color}
-                                stroke="#E5E7EB"
+                                stroke="#475569"
                                 strokeWidth="2"
                               />
                             </g>
                           ))}
                           {/* Center circle for donut effect */}
-                          <circle cx="100" cy="100" r="40" fill="#F3F4F6" />
+                          <circle cx="100" cy="100" r="40" fill="#1e293b" />
                           <text
                             x="100"
                             y="95"
                             textAnchor="middle"
-                            className="text-xs font-semibold fill-neu-600"
+                            className="text-xs font-semibold fill-slate-300"
                           >
                             Total
                           </text>
@@ -209,7 +209,7 @@ const LobbyingHistoryModal = ({
                             x="100"
                             y="110"
                             textAnchor="middle"
-                            className="text-sm font-bold fill-neu-800"
+                            className="text-sm font-bold fill-white"
                           >
                             {formatCurrency(totalIndustryAmount)}
                           </text>
@@ -225,13 +225,13 @@ const LobbyingHistoryModal = ({
                                 className="w-3 h-3 rounded-sm flex-shrink-0"
                                 style={{ backgroundColor: segment.color }}
                               />
-                              <span className="text-neu-700 truncate">{segment.industry}</span>
+                              <span className="text-white truncate">{segment.industry}</span>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              <span className="text-neu-600 font-mono text-xs">
+                              <span className="text-neu-200 font-mono text-xs">
                                 {segment.percentage.toFixed(1)}%
                               </span>
-                              <span className="text-neu-800 font-semibold">
+                              <span className="text-white font-semibold">
                                 {formatCurrency(segment.amount)}
                               </span>
                             </div>
@@ -244,8 +244,8 @@ const LobbyingHistoryModal = ({
 
                 {/* Quarterly Trends Chart */}
                 {quarterlyTrends.length > 0 && (
-                  <div className="bg-neu-100 rounded-xl p-6 shadow-neu mb-6">
-                    <h4 className="text-lg font-bold text-neu-800 mb-4">Quarterly Lobbying Trends</h4>
+                  <div className="bg-dark-neu-400/50 rounded-xl p-6 border border-dark-neu-500 mb-8">
+                    <h4 className="text-xl font-bold text-white mb-6">Quarterly Lobbying Trends</h4>
                     <div className="h-48 flex items-end justify-between gap-1 px-4">
                       {quarterlyTrends.map((quarter, index) => {
                         const height = (quarter.amount / maxQuarterlyAmount) * 100;
@@ -253,18 +253,18 @@ const LobbyingHistoryModal = ({
                           <div key={index} className="flex-1 flex flex-col items-center gap-2">
                             <div className="w-full flex items-end justify-center" style={{ height: '160px' }}>
                               <div
-                                className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg shadow-neu transition-all hover:from-purple-600 hover:to-purple-500 group relative"
+                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all hover:from-blue-600 hover:to-blue-500 group relative"
                                 style={{ height: `${height}%`, minHeight: height > 0 ? '4px' : '0' }}
                               >
                                 {/* Tooltip on hover */}
                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                  <div className="bg-neu-800 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                                  <div className="bg-slate-900 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
                                     {formatCurrency(quarter.amount)}
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <span className="text-xs text-neu-600 font-medium">
+                            <span className="text-xs text-white font-medium">
                               {quarter.quarter}
                             </span>
                           </div>
@@ -275,69 +275,69 @@ const LobbyingHistoryModal = ({
                 )}
 
                 {/* Filings List */}
-                <div className="bg-neu-100 rounded-xl p-6 shadow-neu">
-                  <h4 className="text-lg font-bold text-neu-800 mb-4">
+                <div className="bg-dark-neu-400/50 rounded-xl p-6 border border-dark-neu-500">
+                  <h4 className="text-xl font-bold text-white mb-6">
                     Lobbying Filings ({filings.length})
                   </h4>
                   <div className="space-y-3 max-h-96 overflow-y-auto">
                     {filings.length === 0 ? (
-                      <p className="text-sm text-neu-600 text-center py-8">
+                      <p className="text-base text-neu-200 text-center py-8">
                         No lobbying filings found
                       </p>
                     ) : (
                       filings.map((filing, index) => (
                         <div
                           key={index}
-                          className="bg-neu-200 rounded-lg p-4 shadow-neu-sm border border-neu-300"
+                          className="bg-dark-neu-500/50 rounded-lg p-4 border border-dark-neu-600"
                         >
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <FaBuilding className="text-neu-400 text-xs" />
-                                <span className="text-xs text-neu-600 font-semibold">
+                                <FaBuilding className="text-dark-neu-100 text-xs" />
+                                <span className="text-xs text-neu-200 font-semibold">
                                   Registrant
                                 </span>
                               </div>
-                              <p className="text-sm text-neu-800 font-medium">
+                              <p className="text-sm text-white font-medium">
                                 {filing.registrant || 'Unknown'}
                               </p>
                             </div>
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <FaCalendar className="text-neu-400 text-xs" />
-                                <span className="text-xs text-neu-600 font-semibold">
+                                <FaCalendar className="text-dark-neu-100 text-xs" />
+                                <span className="text-xs text-neu-200 font-semibold">
                                   Filing Date
                                 </span>
                               </div>
-                              <p className="text-sm text-neu-800 font-medium">
+                              <p className="text-sm text-white font-medium">
                                 {formatDate(filing.filingDate)}
                               </p>
                             </div>
                           </div>
                           {filing.client && (
                             <div className="mb-2">
-                              <span className="text-xs text-neu-600 font-semibold">Client: </span>
-                              <span className="text-sm text-neu-800">{filing.client}</span>
+                              <span className="text-xs text-neu-200 font-semibold">Client: </span>
+                              <span className="text-sm text-white">{filing.client}</span>
                             </div>
                           )}
                           {filing.amount && (
                             <div className="mb-2">
-                              <span className="text-xs text-neu-600 font-semibold">Amount: </span>
-                              <span className="text-sm text-green-700 font-bold">
+                              <span className="text-xs text-neu-200 font-semibold">Amount: </span>
+                              <span className="text-sm text-green-400 font-bold">
                                 {formatCurrency(filing.amount)}
                               </span>
                             </div>
                           )}
                           {filing.issueAreas && filing.issueAreas.length > 0 && (
                             <div>
-                              <span className="text-xs text-neu-600 font-semibold block mb-1">
+                              <span className="text-xs text-neu-200 font-semibold block mb-1">
                                 Issue Areas:
                               </span>
                               <div className="flex flex-wrap gap-1">
                                 {filing.issueAreas.map((area, i) => (
                                   <span
                                     key={i}
-                                    className="px-2 py-1 text-xs bg-neu-300 text-neu-700 rounded-md"
+                                    className="px-2 py-1 text-xs bg-dark-neu-400 text-white rounded-md border border-dark-neu-500"
                                   >
                                     {area}
                                   </span>
@@ -352,8 +352,8 @@ const LobbyingHistoryModal = ({
                 </div>
 
                 {/* Footer */}
-                <div className="mt-6 pt-4 border-t border-neu-300">
-                  <p className="text-xs text-neu-600 text-center">
+                <div className="mt-8 pt-4 border-t border-dark-neu-500">
+                  <p className="text-sm text-neu-200 text-center">
                     Data source: Senate Lobbying Disclosure Act Database (LDA)
                   </p>
                 </div>
