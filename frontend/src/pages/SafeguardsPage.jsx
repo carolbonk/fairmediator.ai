@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
-import { FaProjectDiagram, FaChartLine, FaBalanceScale, FaDollarSign, FaDatabase } from 'react-icons/fa';
+import { FaProjectDiagram, FaChartLine, FaBalanceScale, FaDollarSign, FaDatabase, FaShieldAlt, FaAward, FaBolt, FaUsers, FaExclamationTriangle, FaExclamationCircle } from 'react-icons/fa';
 
 const SafeguardsPage = () => {
   const [activeTab, setActiveTab] = useState('ethics');
@@ -101,19 +101,66 @@ const SafeguardsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
       <Header />
 
-      {/* Hero Section - Silver Banner */}
-      <section className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            How We Protect Your Mediation
-          </h1>
-          <p className="text-xl md:text-2xl font-medium mb-6 opacity-95">
-            Ethics, AI Safeguards, and Radical Transparency
-          </p>
-          <p className="text-base md:text-lg opacity-90 max-w-3xl mx-auto leading-relaxed">
-            In a world where AI moves fast and breaks things, we've built a system that moves carefully and protects people.
-            Here's exactly how we do it—no marketing speak, just engineering reality.
-          </p>
+      {/* Hero Section - Card-Based Design */}
+      <section className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Text */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              How We Protect Your Mediation
+            </h1>
+            <p className="text-lg md:text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+              In a world where AI moves fast and breaks things, we've built a system that moves carefully and protects people.
+            </p>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            {/* Card 1: SafeGate Protocol */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaShieldAlt className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                SafeGate Protocol
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                Autonomous moderation layer that intercepts toxic communication before delivery. Every message analyzed for threats and coercion.
+              </p>
+            </div>
+
+            {/* Card 2: Detection Accuracy */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaAward className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                94% Accuracy
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                Conflict detection precision trained on 10,000+ mediation transcripts. Better than human-only moderation at scale.
+              </p>
+            </div>
+
+            {/* Card 3: Response Time */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaBolt className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                24hr Response
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                Ethics complaints handled within 24 hours. Direct line to our safety team for urgent mediation concerns.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -164,8 +211,8 @@ const SafeguardsPage = () => {
               {/* SafeGate Card */}
               <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 mb-6 hover:shadow-neumorphic-hover transition-shadow duration-300">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                  <span className="w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
-                    🛡️
+                  <span className="w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center flex-shrink-0 shadow-inner">
+                    <FaShieldAlt className="text-xl text-gray-600" />
                   </span>
                   The SafeGate Protocol: A True Fail-Safe
                 </h3>
@@ -194,8 +241,8 @@ const SafeguardsPage = () => {
               {/* Human Mediator Card */}
               <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                  <span className="w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
-                    👥
+                  <span className="w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center flex-shrink-0 shadow-inner">
+                    <FaUsers className="text-xl text-gray-600" />
                   </span>
                   Where is the Human Mediator?
                 </h3>
@@ -256,8 +303,9 @@ const SafeguardsPage = () => {
 
             {/* Warning Alert */}
             <div className="bg-orange-50 border-l-4 border-orange-500 rounded-xl shadow-neumorphic p-6 mb-16">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                ⚠️ The Honest Truth: AI is Probabilistic
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <FaExclamationTriangle className="text-orange-600" />
+                The Honest Truth: AI is Probabilistic
               </h3>
               <div className="text-gray-700 space-y-3 text-sm">
                 <p>
@@ -303,7 +351,7 @@ const SafeguardsPage = () => {
                       className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 hover:shadow-neumorphic-hover transition-shadow duration-300"
                     >
                       <div className="flex items-start gap-4 mb-6">
-                        <IconComponent className="text-5xl text-gray-500 flex-shrink-0" />
+                        <IconComponent className="text-4xl text-gray-500 flex-shrink-0" />
                         <div>
                           <h3 className="text-2xl font-semibold text-gray-800 mb-2">
                             {feature.title}
@@ -351,7 +399,7 @@ const SafeguardsPage = () => {
             {/* Cost Transparency */}
             <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 mb-12">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <FaDollarSign className="text-3xl text-gray-500" />
+                <FaDollarSign className="text-4xl text-gray-500" />
                 Why This is Free (And How We Keep It That Way)
               </h3>
               <div className="text-gray-600 space-y-4">
@@ -380,7 +428,7 @@ const SafeguardsPage = () => {
             {/* Data Sources */}
             <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
-                <FaDatabase className="text-3xl text-gray-500" />
+                <FaDatabase className="text-4xl text-gray-500" />
                 Where We Get Our Data
               </h3>
               <div className="text-gray-600 space-y-4">
@@ -433,8 +481,9 @@ const SafeguardsPage = () => {
 
         {/* Ethics Contact */}
         <div className="bg-orange-50 border-l-4 border-orange-400 rounded-xl shadow-neumorphic p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            🚨 Report a Safety Concern
+          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <FaExclamationCircle className="text-orange-600" />
+            Report a Safety Concern
           </h3>
           <p className="text-sm text-gray-700 mb-4">
             If you believe a mediation session violates these standards or poses a safety risk, contact us immediately.

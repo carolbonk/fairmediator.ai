@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
-import { FaMapMarkedAlt, FaGraduationCap, FaBalanceScale, FaLandmark, FaGlobeAmericas, FaRobot, FaTools, FaMapPin, FaChartBar, FaSearch } from 'react-icons/fa';
+import { FaMapMarkedAlt, FaGraduationCap, FaBalanceScale, FaLandmark, FaGlobeAmericas, FaRobot, FaTools, FaMapPin, FaChartBar, FaSearch, FaUsers, FaShieldAlt } from 'react-icons/fa';
 
 const MediatorsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('all');
@@ -125,19 +125,66 @@ const MediatorsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
       <Header />
 
-      {/* Hero Section - Silver Banner */}
-      <section className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            How Mediators Differ Across America
-          </h1>
-          <p className="text-xl md:text-2xl font-medium mb-6 opacity-95">
-            State-by-State Rules, Requirements, and What It Means for You
-          </p>
-          <p className="text-base md:text-lg opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Mediation isn't federally regulated like law or medicine. Every state makes its own rules—and they're wildly different.
-            Here's how we navigate that complexity so you don't have to.
-          </p>
+      {/* Hero Section - Card-Based Design */}
+      <section className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Text */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              How Mediators Differ Across America
+            </h1>
+            <p className="text-lg md:text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+              Mediation isn't federally regulated. Every state makes its own rules—and they're wildly different. Here's how we navigate that complexity.
+            </p>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            {/* Card 1: 50 States */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaMapMarkedAlt className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                50 States
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                We track certification requirements, ethical standards, and conflict-of-interest rules across all US jurisdictions.
+              </p>
+            </div>
+
+            {/* Card 2: Verified Mediators */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaUsers className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                1,000+ Mediators
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                Every mediator tagged with state certifications, specialties, and jurisdiction-specific credentials for transparency.
+              </p>
+            </div>
+
+            {/* Card 3: Zero Bias */}
+            <div className="bg-white rounded-2xl p-8 shadow-[8px_8px_20px_rgba(0,0,0,0.3),-4px_-4px_16px_rgba(255,255,255,0.1)] hover:shadow-[12px_12px_28px_rgba(0,0,0,0.4),-6px_-6px_20px_rgba(255,255,255,0.15)] hover:-translate-y-2 transition-all duration-300 group">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-neu flex items-center justify-center group-hover:shadow-neu-lg transition-all duration-300">
+                  <FaShieldAlt className="text-3xl text-slate-700" />
+                </div>
+              </div>
+              <h3 className="text-center text-2xl font-bold text-slate-800 mb-3">
+                Zero Bias
+              </h3>
+              <p className="text-center text-sm text-slate-600 leading-relaxed">
+                Consistent conflict detection nationwide using federal records. State borders don't matter—bias is bias.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -248,8 +295,9 @@ const MediatorsPage = () => {
                 </div>
 
                 <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl p-4 border-l-4 border-gray-400">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                    📌 Unique Requirement: {region.example.state}
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <FaMapPin className="text-gray-600" />
+                    Unique Requirement: {region.example.state}
                   </h4>
                   <p className="text-sm text-gray-700 leading-relaxed">
                     {region.example.detail}

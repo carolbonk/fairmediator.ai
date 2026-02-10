@@ -342,7 +342,7 @@ const CaseIntakeForm = ({ onSubmit, onSearchMediators, className = '' }) => {
                 setShowPrediction(true);
               }
             }}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
+            className="flex-1 px-4 py-3 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl font-semibold shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
           >
             Get Settlement Prediction
           </button>

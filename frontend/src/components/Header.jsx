@@ -77,7 +77,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm font-medium rounded-lg transition-all duration-200"
               >
                 <FaUser className="text-sm" />
                 <span>Login</span>
@@ -91,7 +91,7 @@ const Header = () => {
       </div>
 
       {/* Graffiti-style bottom accent line */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30"></div>
+      <div className="h-1 bg-gradient-to-r from-transparent via-slate-600 to-transparent opacity-30"></div>
     </header>
   );
 };

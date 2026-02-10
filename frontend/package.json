@@ -29,3 +29,4 @@
     "test": "echo \"Frontend tests not yet configured. See TESTING.md for setup.\" && exit 0"
   }
 }
+

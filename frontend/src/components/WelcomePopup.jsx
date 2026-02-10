@@ -33,34 +33,34 @@ const WelcomePopup = ({ onClose }) => {
       {/* Popup */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 md:p-8">
         <div
-          className="bg-gray-50 rounded-3xl shadow-neumorphic w-[85%] max-w-md max-h-[85vh] mx-auto flex flex-col overflow-hidden"
+          className="bg-dark-neu-300 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] mx-auto flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-6 sm:p-8">
-            <div className="text-center mb-6 flex flex-col items-center">
-              <h2 className="text-fluid-2xl font-bold text-gray-800 mb-3">Welcome to FairMediator</h2>
-              <p className="text-gray-600 text-fluid-base leading-relaxed text-center max-w-md">
+          <div className="flex-1 overflow-y-auto p-8 sm:p-10 md:p-12">
+            <div className="text-center mb-8 flex flex-col items-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Welcome to FairMediator</h2>
+              <p className="text-white text-base sm:text-lg leading-relaxed text-center max-w-xl">
                 Platform designed for transparent and fair mediator selection with screening & matching
               </p>
             </div>
 
             {/* Privacy Information */}
-            <div className="mt-6 p-4 bg-white rounded-xl shadow-sm">
-              <p className="text-gray-700 text-fluid-sm leading-relaxed text-center">
+            <div className="mt-8 p-6 bg-dark-neu-400/50 rounded-2xl border border-dark-neu-500">
+              <p className="text-white text-base leading-relaxed text-center font-medium">
                 We do value your privacy.
               </p>
-              <p className="text-gray-600 text-fluid-sm leading-relaxed text-center mt-3">
+              <p className="text-slate-200 text-base leading-relaxed text-center mt-4">
                 Every dispute in production stays confidential, protected by strong security safeguards, and all conversation data is automatically deleted 30 days after your case reaches an attempted outcome.
               </p>
             </div>
           </div>
 
           {/* Fixed Button at Bottom */}
-          <div className="p-6 sm:p-8 pt-0 flex-shrink-0">
+          <div className="p-8 sm:p-10 md:p-12 pt-0 flex-shrink-0">
             <button
               onClick={handleClose}
-              className="w-full py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
+              className="w-full py-4 px-6 bg-white text-slate-800 font-semibold text-lg rounded-2xl shadow-lg hover:bg-slate-100 transition-all duration-200"
             >
               Get Started
             </button>

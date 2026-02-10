@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
 
             <Link
               to="/forgot-password"
-              className="block w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover text-center transition-all duration-200 transform hover:-translate-y-0.5"
+              className="block w-full py-3 px-4 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover text-center transition-all duration-200 transform hover:-translate-y-0.5"
             >
               Request New Link
             </Link>
@@ -108,7 +108,7 @@ const ResetPasswordPage = () => {
 
             <Link
               to="/login"
-              className="block w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover text-center transition-all duration-200 transform hover:-translate-y-0.5"
+              className="block w-full py-3 px-4 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover text-center transition-all duration-200 transform hover:-translate-y-0.5"
             >
               Go to Login
             </Link>
@@ -173,7 +173,7 @@ const ResetPasswordPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full py-3 px-4 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
             >
               {loading ? (
                 <span className="flex items-center justify-center">

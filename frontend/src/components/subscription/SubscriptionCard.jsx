@@ -36,7 +36,7 @@ const SubscriptionCard = ({
       {highlighted && !currentTier && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold
-                         bg-gradient-to-r from-blue-500 to-blue-600 text-white
+                         bg-gradient-to-r from-slate-600 to-slate-700 text-white
                          shadow-lg">
             Recommended
           </span>
@@ -109,7 +109,7 @@ const SubscriptionCard = ({
             currentTier
               ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-neumorphic-inset'
               : isPremiumTier || highlighted
-              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-neumorphic hover:shadow-neumorphic-hover focus:ring-blue-500'
+              ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-neumorphic hover:shadow-neumorphic-hover focus:ring-slate-600'
               : 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-neumorphic hover:shadow-neumorphic-hover focus:ring-gray-500'
           }
           ${!onUpgrade && !currentTier ? 'opacity-50 cursor-not-allowed' : ''}

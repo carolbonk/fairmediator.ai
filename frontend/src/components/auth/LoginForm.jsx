@@ -88,7 +88,7 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all"
-                  placeholder="you@example.com"
+                  placeholder="demo@fairmediator.ai"
                   disabled={loading}
                   autoComplete="email"
                 />

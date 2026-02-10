@@ -128,24 +128,24 @@ const Drawer = ({
         aria-hidden="true"
       />
 
-      {/* Drawer panel - Neomorphism Style */}
+      {/* Drawer panel - Dark Blue Style */}
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        className="fixed right-0 top-0 bottom-0 w-[500px] max-w-[90vw] bg-neu-100 shadow-neu-xl z-50 flex flex-col overflow-hidden"
+        className="fixed right-0 top-0 bottom-0 w-[600px] max-w-[90vw] bg-dark-neu-300 shadow-2xl z-50 flex flex-col overflow-hidden"
       >
         {/* Header */}
-        <div className="px-6 py-5 bg-neu-100 border-b border-neu-200 flex justify-between items-start">
+        <div className="px-8 py-6 bg-dark-neu-300 border-b border-dark-neu-500 flex justify-between items-start">
           <div>
             <h2
               id="drawer-title"
-              className="text-lg font-semibold text-neu-800"
+              className="text-2xl font-semibold text-white"
             >
               {title}
             </h2>
             {citationLabel && (
-              <span className="inline-block mt-2 px-3 py-1.5 bg-neu-200 text-neu-700 text-xs rounded-full font-semibold shadow-neu-inset-sm">
+              <span className="inline-block mt-3 px-4 py-2 bg-dark-neu-400 text-white text-sm rounded-full font-semibold border border-dark-neu-500">
                 {citationLabel}
               </span>
             )}
@@ -153,52 +153,52 @@ const Drawer = ({
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-neu-100 text-neu-500 hover:text-neu-700 hover:shadow-neu-sm transition-all text-xl"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-dark-neu-400 text-white hover:bg-dark-neu-500 transition-all text-2xl border border-dark-neu-500"
           >
             ×
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto px-6 py-5 bg-neu-100">
-          <p className="text-neu-700 leading-relaxed text-[15px]">
+        <div className="flex-1 overflow-auto px-8 py-6 bg-dark-neu-300">
+          <p className="text-white leading-relaxed text-base">
             {summary}
           </p>
 
           {/* Optional: Display screening criteria */}
           {screeningCriteria && (
-            <div className="mt-6 p-4 bg-neu-100 rounded-neu shadow-neu-inset">
-              <h3 className="text-sm font-semibold text-neu-800 mb-3">
+            <div className="mt-8 p-6 bg-dark-neu-400/50 rounded-xl border border-dark-neu-500">
+              <h3 className="text-lg font-semibold text-white mb-4">
                 Key Requirements
               </h3>
-              <ul className="space-y-2.5 text-sm text-neu-700">
+              <ul className="space-y-3 text-base text-neu-200">
                 {screeningCriteria.minTrainingHours && (
                   <li className="flex items-start gap-2">
-                    <span className="text-liberal mt-0.5 font-bold">•</span>
-                    <span>Minimum training: <strong className="text-neu-800">{screeningCriteria.minTrainingHours} hours</strong></span>
+                    <span className="text-white mt-0.5 font-bold">•</span>
+                    <span>Minimum training: <strong className="text-white">{screeningCriteria.minTrainingHours} hours</strong></span>
                   </li>
                 )}
                 {screeningCriteria.requiresCourtRoster && (
                   <li className="flex items-start gap-2">
-                    <span className="text-liberal mt-0.5 font-bold">•</span>
+                    <span className="text-white mt-0.5 font-bold">•</span>
                     <span>Court roster membership required</span>
                   </li>
                 )}
                 {screeningCriteria.continuingEdHoursPerYear && (
                   <li className="flex items-start gap-2">
-                    <span className="text-liberal mt-0.5 font-bold">•</span>
-                    <span>Continuing education: <strong className="text-neu-800">{screeningCriteria.continuingEdHoursPerYear} hours/year</strong></span>
+                    <span className="text-white mt-0.5 font-bold">•</span>
+                    <span>Continuing education: <strong className="text-white">{screeningCriteria.continuingEdHoursPerYear} hours/year</strong></span>
                   </li>
                 )}
                 {screeningCriteria.backgroundCheckRequired && (
                   <li className="flex items-start gap-2">
-                    <span className="text-liberal mt-0.5 font-bold">•</span>
+                    <span className="text-white mt-0.5 font-bold">•</span>
                     <span>Background check required</span>
                   </li>
                 )}
                 {screeningCriteria.stateCertificationRequired && (
                   <li className="flex items-start gap-2">
-                    <span className="text-liberal mt-0.5 font-bold">•</span>
+                    <span className="text-white mt-0.5 font-bold">•</span>
                     <span>State certification required</span>
                   </li>
                 )}
@@ -206,12 +206,12 @@ const Drawer = ({
             </div>
           )}
 
-          {/* CTA button - Neomorphism style */}
+          {/* CTA button - White button */}
           <a
             href={fullDocumentUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-6 px-5 py-3 bg-gradient-to-br from-liberal-light to-liberal text-white rounded-neu text-sm font-medium transition-all shadow-neu hover:shadow-neu-lg"
+            className="inline-block mt-8 px-6 py-4 bg-white text-dark-neu-300 rounded-2xl text-base font-semibold transition-all shadow-lg hover:bg-slate-100"
           >
             {fullDocumentLabel} →
           </a>

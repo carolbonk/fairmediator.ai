@@ -117,35 +117,50 @@ const HomePage = () => {
               />
             </div>
 
-            {/* Input Mode Toggle */}
-            <div className="bg-neu-200 rounded-xl p-2 shadow-neu inline-flex gap-2">
-              <button
-                onClick={() => setInputMode('chat')}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 min-h-[44px] ${
-                  inputMode === 'chat'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-neu'
-                    : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
-                }`}
-              >
-                <FaComments />
-                <span>Chat Mode</span>
-              </button>
-              <button
-                onClick={() => setInputMode('form')}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 min-h-[44px] ${
-                  inputMode === 'form'
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-neu'
-                    : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
-                }`}
-              >
-                <FaFileAlt />
-                <span>Form Mode</span>
-              </button>
+            {/* Describe Your Legal Dispute Section */}
+            <div>
+              <h2 className="text-2xl font-bold text-neu-800 mb-4">Describe your legal dispute</h2>
+
+              {/* Input Mode Toggle */}
+              <div className="bg-neu-200 rounded-2xl p-4 shadow-[8px_8px_16px_rgba(163,177,198,0.6),-8px_-8px_16px_rgba(255,255,255,0.5)]">
+                <div className="text-center mb-3">
+                  <p className="text-neu-600 text-xs">
+                    Choose how you'd like to describe your case.{' '}
+                    <span className="font-medium">Chat</span> for conversational analysis or{' '}
+                    <span className="font-medium">Form</span> for structured input.
+                  </p>
+                </div>
+                <div className="inline-flex gap-2 w-full">
+                  <button
+                    onClick={() => setInputMode('chat')}
+                    className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs transition-all duration-200 flex-1 ${
+                      inputMode === 'chat'
+                        ? 'bg-gradient-to-r from-slate-600 to-slate-800 text-white shadow-neu'
+                        : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
+                    }`}
+                  >
+                    <FaComments className="text-sm" />
+                    <span>Chat Mode</span>
+                  </button>
+                  <button
+                    onClick={() => setInputMode('form')}
+                    className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs transition-all duration-200 flex-1 ${
+                      inputMode === 'form'
+                        ? 'bg-gradient-to-r from-slate-600 to-slate-800 text-white shadow-neu'
+                        : 'bg-neu-200 text-neu-700 shadow-neu hover:shadow-neu-lg'
+                    }`}
+                  >
+                    <FaFileAlt className="text-sm" />
+                    <span>Form Mode</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Chat Panel or Case Intake Form */}
             {inputMode === 'chat' ? (
               <div className="card-neu">
+                <h3 className="text-xl font-semibold text-neu-800 mb-1 px-3 pt-3 text-center">AI Chat Assistant</h3>
                 <ChatPanel
                   onResponse={handleChatResponse}
                   parties={parties}
@@ -154,10 +169,13 @@ const HomePage = () => {
                 />
               </div>
             ) : (
-              <CaseIntakeForm
-                onSubmit={handleCaseIntakeSubmit}
-                onSearchMediators={handleSearchMediatorsFromForm}
-              />
+              <div>
+                <h3 className="text-xl font-semibold text-neu-800 mb-1 text-center">Case Intake Form</h3>
+                <CaseIntakeForm
+                  onSubmit={handleCaseIntakeSubmit}
+                  onSearchMediators={handleSearchMediatorsFromForm}
+                />
+              </div>
             )}
 
             {/* Mediator Lists */}

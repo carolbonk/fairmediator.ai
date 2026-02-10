@@ -468,11 +468,11 @@ const MediatorApplicationPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white
+                className="w-full py-3 px-6 bg-gradient-to-r from-slate-600 to-slate-700 text-white
                          font-medium rounded-xl shadow-neumorphic hover:shadow-neumorphic-hover
                          transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
                          disabled:shadow-neumorphic focus:outline-none focus:ring-2
-                         focus:ring-blue-500 focus:ring-offset-2"
+                         focus:ring-slate-600 focus:ring-offset-2"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">
