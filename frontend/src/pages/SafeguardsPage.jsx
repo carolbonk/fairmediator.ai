@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { FaProjectDiagram, FaChartLine, FaBalanceScale, FaDollarSign, FaDatabase, FaShieldAlt, FaAward, FaBolt, FaUsers, FaExclamationTriangle, FaExclamationCircle } from 'react-icons/fa';
+import SEO from '../components/SEO/SEO';
 
 const SafeguardsPage = () => {
   const [activeTab, setActiveTab] = useState('ethics');
@@ -99,6 +100,11 @@ const SafeguardsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+      <SEO
+        title="Safeguards"
+        description="AI safeguards for secure mediation. SafeGate Protocol with 94% accuracy, conflict detection, and autonomous moderation to protect every dispute resolution."
+        keywords={['mediation safeguards', 'AI conflict detection', 'secure mediation', 'mediator screening', 'dispute resolution safety']}
+      />
       <Header />
 
       {/* Hero Section - Card-Based Design */}

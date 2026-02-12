@@ -10,6 +10,8 @@ import WelcomePopup from '../components/WelcomePopup';
 import Onboarding from '../components/Onboarding';
 import StateMediationInfo from '../components/StateMediationInfo';
 import { getStateMediationData } from '../data/stateMediationData';
+import SEO from '../components/SEO/SEO';
+import { getOrganizationSchema } from '../components/SEO/schemas';
 
 const HomePage = () => {
   const [parties, setParties] = useState([]);
@@ -92,6 +94,12 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+      <SEO
+        title="Home"
+        description="Find qualified, unbiased mediators using AI-powered conflict analysis. Transparent matching for family, business, and civil disputes with real-time conflict detection."
+        keywords={['mediator', 'mediation', 'conflict resolution', 'AI matching', 'dispute resolution', 'mediator selection', 'conflict detection']}
+        jsonLd={getOrganizationSchema()}
+      />
       <WelcomePopup onClose={() => setStartOnboarding(true)} />
       <Onboarding shouldStart={startOnboarding} onComplete={() => setStartOnboarding(false)} />
       <Header />

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -20,9 +21,10 @@ const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Suspense fallback={<LoadingSpinner />}>
+    <HelmetProvider>
+      <Router>
+        <AuthProvider>
+          <Suspense fallback={<LoadingSpinner />}>
           <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -57,9 +59,10 @@ function App() {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        </Suspense>
-      </AuthProvider>
-    </Router>
+          </Suspense>
+        </AuthProvider>
+      </Router>
+    </HelmetProvider>
   );
 }
 

@@ -3,7 +3,7 @@
  * These help search engines understand your content for rich snippets
  */
 
-const siteUrl = import.meta.env.VITE_SITE_URL || 'https://fairmediator.netlify.app';
+const siteUrl = import.meta.env.VITE_SITE_URL || 'https://fairmediator.ai';
 
 /**
  * Organization Schema - For homepage and site-wide identity
