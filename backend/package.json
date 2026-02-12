@@ -38,7 +38,7 @@
     "pdf-parse": "^2.4.5",
     "resend": "^6.4.2",
     "sanitize-html": "^2.11.0",
-    "stripe": "^19.3.1",
+    "stripe": "^20.2.0",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
