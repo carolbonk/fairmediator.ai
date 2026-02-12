@@ -3,6 +3,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { FaMapMarkedAlt, FaGraduationCap, FaBalanceScale, FaLandmark, FaGlobeAmericas, FaRobot, FaTools, FaMapPin, FaChartBar, FaSearch, FaUsers, FaShieldAlt } from 'react-icons/fa';
+import SEO from '../components/SEO/SEO';
+import { getLocalBusinessSchema } from '../components/SEO/schemas';
 
 const MediatorsPage = () => {
   const [selectedRegion, setSelectedRegion] = useState('all');
@@ -123,6 +125,12 @@ const MediatorsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+      <SEO
+        title="Mediators"
+        description="Mediation isn't federally regulated. Every state makes its own rules. Compare mediator requirements, certification standards, and costs across all 50 states."
+        keywords={['state mediator requirements', 'mediator certification', 'mediation by state', 'mediator credentials', 'state mediation laws']}
+        jsonLd={getLocalBusinessSchema()}
+      />
       <Header />
 
       {/* Hero Section - Card-Based Design */}
