@@ -126,5 +126,34 @@
     "privacy": "Política de Privacidad",
     "terms": "Términos de Servicio",
     "contact": "Contáctanos"
+  },
+  "homepage": {
+    "disputeTitle": "Describe tu disputa legal",
+    "inputModeDescription": "Elige cómo te gustaría describir tu caso. Chat para análisis conversacional o Formulario para entrada estructurada.",
+    "chatMode": "Modo Chat",
+    "formMode": "Modo Formulario",
+    "aiChatTitle": "Asistente de Chat IA",
+    "caseIntakeTitle": "Formulario de Ingreso de Caso",
+    "mediatorListTitle": "Mediadores Recomendados"
+  },
+  "errors": {
+    "networkError": "Conexión perdida. Por favor verifica tu conexión a internet e inténtalo de nuevo.",
+    "rateLimitError": "Demasiadas solicitudes. Por favor espera un momento e inténtalo de nuevo.",
+    "serverError": "Nuestros servidores están experimentando problemas. Por favor inténtalo de nuevo en unos momentos.",
+    "timeoutError": "Se agotó el tiempo de espera. Tu consulta podría ser demasiado compleja. Intenta simplificarla.",
+    "genericError": "Lo siento, algo salió mal. Por favor inténtalo de nuevo o reformula tu pregunta.",
+    "retry": "Reintentar",
+    "suggestions": {
+      "network": "Verifica tu conexión a internet o intenta refrescar la página.",
+      "rateLimit": "Has excedido el límite de solicitudes. Por favor espera 5 minutos antes de intentarlo de nuevo.",
+      "server": "Nuestros servidores están experimentando alta carga. La solicitud se reintentará automáticamente.",
+      "timeout": "Tu consulta fue demasiado compleja. Intenta usar menos términos de búsqueda o simplificar tu solicitud."
+    }
+  },
+  "offline": {
+    "youAreOffline": "Estás Sin Conexión",
+    "checkConnection": "Verifica tu conexión a internet",
+    "backOnline": "De Vuelta en Línea",
+    "connectionRestored": "Conexión restaurada exitosamente"
   }
 }

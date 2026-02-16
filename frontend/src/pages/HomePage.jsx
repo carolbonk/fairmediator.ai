@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaComments, FaFileAlt } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import ChatPanel from '../components/ChatPanel';
 import MediatorList from '../components/MediatorList';
 import CaseIntakeForm from '../components/CaseIntakeForm';
@@ -14,6 +15,7 @@ import SEO from '../components/SEO/SEO';
 import { getOrganizationSchema } from '../components/SEO/schemas';
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [parties, setParties] = useState([]);
   const [startOnboarding, setStartOnboarding] = useState(false);
   const [userStateCode, setUserStateCode] = useState('FL'); // Default to Florida, could come from user profile
@@ -127,15 +129,13 @@ const HomePage = () => {
 
             {/* Describe Your Legal Dispute Section */}
             <div>
-              <h2 className="text-2xl font-bold text-neu-800 mb-4">Describe your legal dispute</h2>
+              <h2 className="text-2xl font-bold text-neu-800 mb-4">{t('homepage.disputeTitle')}</h2>
 
               {/* Input Mode Toggle */}
               <div className="bg-neu-200 rounded-2xl p-4 shadow-[8px_8px_16px_rgba(163,177,198,0.6),-8px_-8px_16px_rgba(255,255,255,0.5)]">
                 <div className="text-center mb-3">
                   <p className="text-neu-600 text-xs">
-                    Choose how you'd like to describe your case.{' '}
-                    <span className="font-medium">Chat</span> for conversational analysis or{' '}
-                    <span className="font-medium">Form</span> for structured input.
+                    {t('homepage.inputModeDescription')}
                   </p>
                 </div>
                 <div className="inline-flex gap-2 w-full">
@@ -148,7 +148,7 @@ const HomePage = () => {
                     }`}
                   >
                     <FaComments className="text-sm" />
-                    <span>Chat Mode</span>
+                    <span>{t('homepage.chatMode')}</span>
                   </button>
                   <button
                     onClick={() => setInputMode('form')}
@@ -159,7 +159,7 @@ const HomePage = () => {
                     }`}
                   >
                     <FaFileAlt className="text-sm" />
-                    <span>Form Mode</span>
+                    <span>{t('homepage.formMode')}</span>
                   </button>
                 </div>
               </div>
@@ -168,7 +168,7 @@ const HomePage = () => {
             {/* Chat Panel or Case Intake Form */}
             {inputMode === 'chat' ? (
               <div className="card-neu">
-                <h3 className="text-xl font-semibold text-neu-800 mb-1 px-3 pt-3 text-center">AI Chat Assistant</h3>
+                <h3 className="text-xl font-semibold text-neu-800 mb-1 px-3 pt-3 text-center">{t('homepage.aiChatTitle')}</h3>
                 <ChatPanel
                   onResponse={handleChatResponse}
                   parties={parties}

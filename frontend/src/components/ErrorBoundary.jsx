@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FaExclamationTriangle } from 'react-icons/fa';
 
 class ErrorBoundary extends React.Component {
@@ -97,5 +98,10 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+// PropTypes validation
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired
+};
 
 export default ErrorBoundary;

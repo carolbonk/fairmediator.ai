@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
+import OfflineDetector from './components/OfflineDetector';
 import './i18n/config';
 
 // Lazy load pages for code splitting and better performance
@@ -24,6 +25,7 @@ const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 function App() {
   return (
     <ErrorBoundary>
+      <OfflineDetector />
       <HelmetProvider>
         <Router>
           <AuthProvider>

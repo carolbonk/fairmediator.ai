@@ -126,5 +126,34 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "contact": "Contact Us"
+  },
+  "homepage": {
+    "disputeTitle": "Describe your legal dispute",
+    "inputModeDescription": "Choose how you'd like to describe your case. Chat for conversational analysis or Form for structured input.",
+    "chatMode": "Chat Mode",
+    "formMode": "Form Mode",
+    "aiChatTitle": "AI Chat Assistant",
+    "caseIntakeTitle": "Case Intake Form",
+    "mediatorListTitle": "Recommended Mediators"
+  },
+  "errors": {
+    "networkError": "Connection lost. Please check your internet connection and try again.",
+    "rateLimitError": "Too many requests. Please wait a moment and try again.",
+    "serverError": "Our servers are experiencing issues. Please try again in a few moments.",
+    "timeoutError": "Request timed out. Your query might be too complex. Try simplifying it.",
+    "genericError": "Sorry, something went wrong. Please try again or rephrase your question.",
+    "retry": "Retry",
+    "suggestions": {
+      "network": "Check your internet connection or try refreshing the page.",
+      "rateLimit": "You've exceeded the request limit. Please wait 5 minutes before trying again.",
+      "server": "Our servers are experiencing high load. The request will retry automatically.",
+      "timeout": "Your query was too complex. Try using fewer search terms or simplifying your request."
+    }
+  },
+  "offline": {
+    "youAreOffline": "You're Offline",
+    "checkConnection": "Check your internet connection",
+    "backOnline": "Back Online",
+    "connectionRestored": "Connection restored successfully"
   }
 }

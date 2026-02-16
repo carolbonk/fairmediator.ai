@@ -1,20 +1,25 @@
 import { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { FaPaperPlane } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { sendChatMessage } from '../services/api';
+import { withRetry } from '../utils/retryHelper';
 import FileUpload from './FileUpload';
 import Tooltip from './Tooltip';
 import CircularLoader from './common/CircularLoader';
 
 const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your AI assistant. I can help you find the right mediator for your case. Just describe your needs in natural language, and I\'ll search our database for the best matches.'
+      content: t('chat.greeting')
     }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [partyInput, setPartyInput] = useState('');
+  const [lastFailedInput, setLastFailedInput] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -28,38 +33,46 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const getErrorMessage = (error) => {
     // Network errors
     if (error.message === 'Failed to fetch' || error.name === 'NetworkError') {
-      return '🔌 Connection lost. Please check your internet connection and try again.';
+      return '🔌 ' + t('errors.networkError');
     }
 
     // API rate limiting
     if (error.message?.includes('429') || error.message?.includes('rate limit')) {
-      return '⏱️ Too many requests. Please wait a moment and try again.';
+      return '⏱️ ' + t('errors.rateLimitError');
     }
 
     // Server errors
     if (error.message?.includes('500') || error.message?.includes('server error')) {
-      return '🔧 Our servers are experiencing issues. Please try again in a few moments.';
+      return '🔧 ' + t('errors.serverError');
     }
 
     // Timeout errors
     if (error.message?.includes('timeout')) {
-      return '⏰ Request timed out. Your query might be too complex. Try simplifying it.';
+      return '⏰ ' + t('errors.timeoutError');
     }
 
     // Generic fallback
-    return '❌ Sorry, something went wrong. Please try again or rephrase your question.';
+    return '❌ ' + t('errors.genericError');
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+  const handleSend = async (messageToSend = null) => {
+    const actualMessage = messageToSend || input.trim();
+    if (!actualMessage || loading) return;
 
-    const userMessage = { role: 'user', content: input };
+    const userMessage = { role: 'user', content: actualMessage };
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
+
+    // Only clear input if sending from input field
+    if (!messageToSend) {
+      setInput('');
+    }
+
     setLoading(true);
 
     try {
-      const response = await sendChatMessage(input, messages);
+      // Wrap API call with retry logic (max 2 retries, 1s delay)
+      const sendChatWithRetry = withRetry(sendChatMessage, { retries: 2, delay: 1000 });
+      const response = await sendChatWithRetry(actualMessage, messages);
 
       const assistantMessage = {
         role: 'assistant',
@@ -67,10 +80,12 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      setLastFailedInput(null); // Clear failed input on success
 
       onResponse(response);
     } catch (error) {
       console.error('Chat error:', error);
+      setLastFailedInput(actualMessage); // Store for retry
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: getErrorMessage(error),
@@ -78,6 +93,12 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       }]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (lastFailedInput) {
+      handleSend(lastFailedInput);
     }
   };
 
@@ -169,12 +190,22 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               className={`max-w-[75%] px-3 py-2 rounded-xl break-words ${
                 msg.role === 'user'
                   ? 'bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-neu'
+                  : msg.isError
+                  ? 'bg-red-50 text-red-800 shadow-neu border border-red-200'
                   : 'bg-neu-100 text-neu-800 shadow-neu'
               }`}
             >
               <p className="text-xs leading-relaxed whitespace-pre-wrap break-words">
                 {msg.content}
               </p>
+              {msg.isError && lastFailedInput && (
+                <button
+                  onClick={handleRetry}
+                  className="mt-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  {t('errors.retry')}
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -237,6 +268,14 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       </div>
     </div>
   );
+};
+
+// PropTypes validation
+ChatPanel.propTypes = {
+  onResponse: PropTypes.func.isRequired,
+  parties: PropTypes.arrayOf(PropTypes.string).isRequired,
+  setParties: PropTypes.func.isRequired,
+  onDocumentAnalysis: PropTypes.func
 };
 
 export default ChatPanel;

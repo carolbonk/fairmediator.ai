@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 
 const ConflictBadge = ({
@@ -191,6 +192,19 @@ const ConflictBadge = ({
       </div>
     </div>
   );
+};
+
+// PropTypes validation
+ConflictBadge.propTypes = {
+  riskLevel: PropTypes.string,
+  riskScore: PropTypes.number,
+  showScore: PropTypes.bool,
+  showIcon: PropTypes.bool,
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  variant: PropTypes.oneOf(['pill', 'square', 'minimal']),
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  ariaLabel: PropTypes.string
 };
 
 // Export as default and named export

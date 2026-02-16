@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { FaFileUpload, FaSpinner, FaCheckCircle, FaTimes } from 'react-icons/fa';
 import Tooltip from './Tooltip';
 
@@ -239,6 +240,11 @@ const FileUpload = ({ onAnalysisComplete }) => {
       )}
     </div>
   );
+};
+
+// PropTypes validation
+FileUpload.propTypes = {
+  onAnalysisComplete: PropTypes.func
 };
 
 export default FileUpload;
