@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "mediators": "Mediadores",
+    "safeguards": "Salvaguardas",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "signup": "Registrarse",
+    "dashboard": "Panel"
+  },
+  "home": {
+    "hero": {
+      "title": "Encuentra el Mediador Adecuado",
+      "subtitle": "Plataforma impulsada por IA para la selección transparente de mediadores y resolución de conflictos",
+      "cta": "Comenzar",
+      "demo": "Ver Demo"
+    },
+    "features": {
+      "title": "¿Por Qué Elegir FairMediator?",
+      "conflict": {
+        "title": "Detección de Conflictos",
+        "description": "Identifica automáticamente posibles conflictos de interés"
+      },
+      "ai": {
+        "title": "Búsqueda con IA",
+        "description": "Búsqueda en lenguaje natural impulsada por IA avanzada"
+      },
+      "transparent": {
+        "title": "Selección Transparente",
+        "description": "Toma decisiones informadas con datos completos de mediadores"
+      },
+      "data": {
+        "title": "Datos en Tiempo Real",
+        "description": "Accede a información actualizada de bases de datos legales públicas"
+      }
+    },
+    "stats": {
+      "mediators": "Mediadores Calificados",
+      "checks": "Verificaciones de Conflictos",
+      "accuracy": "Precisión de Detección"
+    }
+  },
+  "mediators": {
+    "title": "Buscar Mediadores",
+    "search": "Buscar mediadores...",
+    "filter": "Filtrar por",
+    "specialization": "Especialización",
+    "location": "Ubicación",
+    "experience": "Experiencia",
+    "noResults": "No se encontraron mediadores",
+    "viewProfile": "Ver Perfil",
+    "checkConflict": "Verificar Conflicto",
+    "clear": "Limpiar",
+    "red": "Alto Riesgo",
+    "yellow": "Precaución",
+    "green": "Claro"
+  },
+  "safeguards": {
+    "title": "Nuestras Salvaguardas",
+    "subtitle": "Cómo garantizamos la selección transparente e imparcial de mediadores",
+    "dataIntegrity": {
+      "title": "Integridad de Datos",
+      "description": "Todos los datos de mediadores se verifican de bases de datos legales públicas y fuentes oficiales"
+    },
+    "conflictDetection": {
+      "title": "Detección de Conflictos",
+      "description": "Algoritmos avanzados de IA escanean posibles conflictos de interés en múltiples fuentes de datos"
+    },
+    "transparency": {
+      "title": "Transparencia",
+      "description": "Visibilidad completa de antecedentes, afiliaciones e historial de casos de mediadores"
+    },
+    "privacy": {
+      "title": "Protección de Privacidad",
+      "description": "Tus consultas de búsqueda y detalles de casos permanecen completamente confidenciales"
+    }
+  },
+  "chat": {
+    "title": "Asistente de Chat IA",
+    "subtitle": "Describe tu disputa legal",
+    "placeholder": "Describe tus necesidades de mediación... (ej., 'Necesito un mediador para una disputa de propiedad intelectual tecnológica')",
+    "send": "Enviar",
+    "poweredBy": "Impulsado por Hugging Face (100% GRATIS)",
+    "tooltip": "Nuestro asistente de IA te ayuda a describir tu caso y encontrar el mediador perfecto. Impulsado por Hugging Face - ¡completamente gratis!",
+    "parties": "Partes/Firmas para Verificar Conflictos:",
+    "partyPlaceholder": "ej., BigLaw LLC",
+    "addParty": "Agregar",
+    "greeting": "¡Hola! Soy tu asistente de IA. Puedo ayudarte a encontrar el mediador adecuado para tu caso. Solo describe tus necesidades en lenguaje natural y buscaré en nuestra base de datos las mejores coincidencias.",
+    "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
+    "uploadDocument": "Subir Documento",
+    "analyzing": "Analizando..."
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu Contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "loginSuccess": "Sesión iniciada exitosamente",
+    "signupSuccess": "Cuenta creada exitosamente",
+    "error": "Ocurrió un error"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "search": "Buscar"
+  },
+  "footer": {
+    "copyright": "© 2026 FairMediator. Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "contact": "Contáctanos"
+  }
+}
