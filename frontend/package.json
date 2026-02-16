@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^2.2.9",
     "@sentry/react": "^10.39.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "axios": "^1.13.5",
