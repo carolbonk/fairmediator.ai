@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { Sentry, logError } from '../utils/sentry';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error to console (in production, send to error tracking service)
+    // Log error to console
     console.error('ErrorBoundary caught an error:', error, errorInfo);
 
     this.setState({
@@ -22,8 +23,15 @@ class ErrorBoundary extends React.Component {
       errorInfo
     });
 
-    // TODO: Log to error tracking service (e.g., Sentry, LogRocket)
-    // logErrorToService(error, errorInfo);
+    // Send error to Sentry
+    Sentry.withScope((scope) => {
+      scope.setExtra('componentStack', errorInfo.componentStack);
+      scope.setTag('error_boundary', 'true');
+      logError(error, {
+        errorInfo: errorInfo.componentStack,
+        timestamp: new Date().toISOString()
+      });
+    });
   }
 
   handleReset = () => {

@@ -15,6 +15,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const UpgradePage = lazy(() => import('./components/subscription/UpgradePage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 const MediatorApplicationPage = lazy(() => import('./pages/MediatorApplicationPage'));
@@ -49,6 +50,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />

@@ -3,6 +3,8 @@
  * Provides retry logic for failed API calls with exponential backoff
  */
 
+import logger from './logger';
+
 /**
  * Retry a promise-based function with exponential backoff
  * @param {Function} fn - Async function to retry
@@ -42,7 +44,7 @@ export const retryWithBackoff = async (fn, options = {}) => {
 
       // Wait before retrying with exponential backoff
       const waitTime = delay * Math.pow(backoff, attempt);
-      console.log(`Retry attempt ${attempt + 1}/${retries} after ${waitTime}ms`);
+      logger.debug(`Retry attempt ${attempt + 1}/${retries} after ${waitTime}ms`);
       await sleep(waitTime);
     }
   }

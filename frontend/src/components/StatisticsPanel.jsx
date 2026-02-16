@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Tooltip from './Tooltip';
 import BulkConflictChecker from './BulkConflictChecker';
+import logger from '../utils/logger';
 
 const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
   const [selectedIdeology, setSelectedIdeology] = useState('neutral');
@@ -74,13 +75,32 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
     }
   };
 
-  const handleWaitlistSubmit = (e) => {
+  const handleWaitlistSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Submit to API
-    console.log('Waitlist submission:', waitlistForm);
-    setShowWaitlist(false);
-    setAiMediatorsEnabled(true);
-    setWaitlistForm({ name: '', email: '', deadline: '' });
+
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${API_BASE_URL}/api/waitlist/ai-mediators`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(waitlistForm)
+      });
+
+      if (response.ok) {
+        logger.info('AI Mediator waitlist submission successful', { email: waitlistForm.email });
+        alert('Thank you! You\'ve been added to the AI Mediator waitlist. We\'ll notify you when it\'s available.');
+        setShowWaitlist(false);
+        setAiMediatorsEnabled(true);
+        setWaitlistForm({ name: '', email: '', deadline: '' });
+      } else {
+        throw new Error('Failed to submit waitlist form');
+      }
+    } catch (error) {
+      logger.error('Waitlist submission error:', error);
+      alert('Failed to submit waitlist form. Please try again later.');
+    }
   };
 
   return (

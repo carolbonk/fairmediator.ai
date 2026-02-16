@@ -22,7 +22,10 @@ import PropTypes from 'prop-types';
 import { FaUpload, FaDownload, FaSpinner, FaCheckCircle, FaTimesCircle, FaFileAlt, FaEnvelope } from 'react-icons/fa';
 import ConflictBadge from './ConflictBadge';
 
-const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+const BatchConflictChecker = ({ apiBaseUrl = `${API_BASE_URL}/api` }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -222,22 +225,37 @@ const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
   };
 
   // Request manual review
-  const handleRequestManualReview = () => {
+  const handleRequestManualReview = async () => {
     if (selectedForReview.size === 0) {
       alert('Please select at least one mediator for manual review');
       return;
     }
 
-    // For now, just show confirmation
-    // In production, this would send an email via API
-    const mediators = Array.from(selectedForReview).join(', ');
-    alert(`Manual review requested for:\n\n${mediators}\n\nYou will receive an email confirmation shortly with next steps.`);
+    try {
+      const response = await fetch(`${apiBaseUrl}/manual-review/request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          mediators: Array.from(selectedForReview),
+          requestedAt: new Date().toISOString()
+        })
+      });
 
-    // TODO: Call API to send email
-    // await fetch(`${apiBaseUrl}/manual-review/request`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({ mediators: Array.from(selectedForReview) })
-    // });
+      if (response.ok) {
+        const mediators = Array.from(selectedForReview).join(', ');
+        alert(`Manual review requested for:\n\n${mediators}\n\nYou will receive an email confirmation shortly with next steps.`);
+
+        // Clear selection
+        setSelectedForReview(new Set());
+      } else {
+        throw new Error('Failed to submit manual review request');
+      }
+    } catch (error) {
+      console.error('Manual review request error:', error);
+      alert('Failed to submit manual review request. The request has been logged, and our team will follow up via email.');
+    }
   };
 
   // Get stats

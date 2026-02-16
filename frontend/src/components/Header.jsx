@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaChartLine, FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import MobileMenu from './MobileMenu';
@@ -68,6 +68,13 @@ const Header = () => {
                 >
                   <FaChartLine className="text-sm" />
                   <span>{t('nav.dashboard')}</span>
+                </Link>
+                <Link
+                  to="/settings"
+                  className="flex items-center gap-1.5 px-3 py-2 text-white text-sm font-medium hover:text-blue-300 transition-colors duration-200"
+                >
+                  <FaCog className="text-sm" />
+                  <span>Settings</span>
                 </Link>
                 <button
                   onClick={handleLogout}
