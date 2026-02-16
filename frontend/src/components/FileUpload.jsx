@@ -9,6 +9,9 @@ import PropTypes from 'prop-types';
 import { FaFileUpload, FaSpinner, FaCheckCircle, FaTimes } from 'react-icons/fa';
 import Tooltip from './Tooltip';
 
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 const FileUpload = ({ onAnalysisComplete }) => {
   const [uploading, setUploading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
@@ -45,7 +48,7 @@ const FileUpload = ({ onAnalysisComplete }) => {
       const formData = new FormData();
       formData.append('document', file);
 
-      const response = await fetch('http://localhost:5001/api/analysis/document', {
+      const response = await fetch(`${API_BASE_URL}/api/analysis/document`, {
         method: 'POST',
         body: formData
       });

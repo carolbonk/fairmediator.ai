@@ -3,6 +3,8 @@ import { FaSearch, FaSpinner, FaTimes, FaTimesCircle } from 'react-icons/fa';
 import { hybridSearch, batchCheckConflicts } from '../services/api';
 import MediatorCard from './MediatorCard';
 import ConflictGraph from './ConflictGraph';
+import MediatorDetailModal from './MediatorDetailModal';
+import logger from '../utils/logger';
 
 /**
  * Hybrid Search Component
@@ -17,6 +19,7 @@ const HybridSearch = ({ parties = [] }) => {
   const [conflictData, setConflictData] = useState({});
   const [conflictLoading, setConflictLoading] = useState(false);
   const [selectedMediatorConflict, setSelectedMediatorConflict] = useState(null);
+  const [selectedMediatorDetail, setSelectedMediatorDetail] = useState(null);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -191,8 +194,11 @@ const HybridSearch = ({ parties = [] }) => {
                     conflictRisk={conflictRisk}
                     onConflictClick={() => handleConflictClick(result.mediatorId)}
                     onClick={() => {
-                      console.log('Mediator clicked:', result.mediator.name);
-                      // TODO: Open modal with mediator details
+                      logger.debug('Mediator clicked:', result.mediator.name);
+                      setSelectedMediatorDetail({
+                        mediator: result.mediator,
+                        conflictRisk: conflictRisk
+                      });
                     }}
                     variant="compact"
                   />
@@ -248,6 +254,20 @@ const HybridSearch = ({ parties = [] }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Mediator Detail Modal */}
+      {selectedMediatorDetail && (
+        <MediatorDetailModal
+          mediator={selectedMediatorDetail.mediator}
+          conflictRisk={selectedMediatorDetail.conflictRisk}
+          onClose={() => setSelectedMediatorDetail(null)}
+          onConflictClick={() => {
+            const mediatorId = selectedMediatorDetail.mediator._id || selectedMediatorDetail.mediator.id;
+            handleConflictClick(mediatorId);
+            setSelectedMediatorDetail(null);
+          }}
+        />
       )}
     </div>
   );

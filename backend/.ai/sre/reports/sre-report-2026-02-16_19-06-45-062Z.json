@@ -1,0 +1,902 @@
+{
+  "timestamp": "2026-02-16T19:06:45.061Z",
+  "summary": {
+    "total_issues": 34,
+    "auto_fixed": 7,
+    "fix_errors": 0,
+    "needs_review": 18,
+    "manual_only": 9,
+    "by_severity": {
+      "critical": 0,
+      "high": 18,
+      "medium": 9,
+      "low": 7,
+      "unknown": 0
+    },
+    "by_category": {
+      "dependencies": 34
+    }
+  },
+  "issues": {
+    "security": [],
+    "dependencies": [
+      {
+        "id": "dependency-backend-@babel/core",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: @babel/core",
+        "description": "@babel/core is outdated: 7.28.5 → 7.29.0",
+        "package": "@babel/core",
+        "currentVersion": "7.28.5",
+        "latestVersion": "7.29.0",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @babel/core"
+        }
+      },
+      {
+        "id": "dependency-backend-@babel/preset-env",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: @babel/preset-env",
+        "description": "@babel/preset-env is outdated: 7.28.6 → 7.29.0",
+        "package": "@babel/preset-env",
+        "currentVersion": "7.28.6",
+        "latestVersion": "7.29.0",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @babel/preset-env"
+        }
+      },
+      {
+        "id": "dependency-backend-@huggingface/inference",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: @huggingface/inference",
+        "description": "@huggingface/inference is outdated: 4.13.9 → 4.13.12",
+        "package": "@huggingface/inference",
+        "currentVersion": "4.13.9",
+        "latestVersion": "4.13.12",
+        "updateType": "patch",
+        "location": "backend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @huggingface/inference"
+        }
+      },
+      {
+        "id": "dependency-backend-@netlify/blobs",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: @netlify/blobs",
+        "description": "@netlify/blobs is outdated: 10.5.0 → 10.7.0",
+        "package": "@netlify/blobs",
+        "currentVersion": "10.5.0",
+        "latestVersion": "10.7.0",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @netlify/blobs"
+        }
+      },
+      {
+        "id": "dependency-backend-babel-jest",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: babel-jest",
+        "description": "babel-jest is outdated: 29.7.0 → 30.2.0",
+        "package": "babel-jest",
+        "currentVersion": "29.7.0",
+        "latestVersion": "30.2.0",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update babel-jest"
+        }
+      },
+      {
+        "id": "dependency-backend-bcryptjs",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: bcryptjs",
+        "description": "bcryptjs is outdated: 2.4.3 → 3.0.3",
+        "package": "bcryptjs",
+        "currentVersion": "2.4.3",
+        "latestVersion": "3.0.3",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update bcryptjs"
+        }
+      },
+      {
+        "id": "dependency-backend-cheerio",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: cheerio",
+        "description": "cheerio is outdated: 1.1.2 → 1.2.0",
+        "package": "cheerio",
+        "currentVersion": "1.1.2",
+        "latestVersion": "1.2.0",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update cheerio"
+        }
+      },
+      {
+        "id": "dependency-backend-cors",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: cors",
+        "description": "cors is outdated: 2.8.5 → 2.8.6",
+        "package": "cors",
+        "currentVersion": "2.8.5",
+        "latestVersion": "2.8.6",
+        "updateType": "patch",
+        "location": "backend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update cors"
+        }
+      },
+      {
+        "id": "dependency-backend-dotenv",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: dotenv",
+        "description": "dotenv is outdated: 16.6.1 → 17.3.1",
+        "package": "dotenv",
+        "currentVersion": "16.6.1",
+        "latestVersion": "17.3.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update dotenv"
+        }
+      },
+      {
+        "id": "dependency-backend-eslint",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: eslint",
+        "description": "eslint is outdated: 9.39.2 → 10.0.0",
+        "package": "eslint",
+        "currentVersion": "9.39.2",
+        "latestVersion": "10.0.0",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update eslint"
+        }
+      },
+      {
+        "id": "dependency-backend-express",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: express",
+        "description": "express is outdated: 4.22.1 → 5.2.1",
+        "package": "express",
+        "currentVersion": "4.22.1",
+        "latestVersion": "5.2.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update express"
+        }
+      },
+      {
+        "id": "dependency-backend-express-rate-limit",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: express-rate-limit",
+        "description": "express-rate-limit is outdated: 7.5.1 → 8.2.1",
+        "package": "express-rate-limit",
+        "currentVersion": "7.5.1",
+        "latestVersion": "8.2.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update express-rate-limit"
+        }
+      },
+      {
+        "id": "dependency-backend-helmet",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: helmet",
+        "description": "helmet is outdated: 7.2.0 → 8.1.0",
+        "package": "helmet",
+        "currentVersion": "7.2.0",
+        "latestVersion": "8.1.0",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update helmet"
+        }
+      },
+      {
+        "id": "dependency-backend-isomorphic-dompurify",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: isomorphic-dompurify",
+        "description": "isomorphic-dompurify is outdated: 2.35.0 → 3.0.0-rc.2",
+        "package": "isomorphic-dompurify",
+        "currentVersion": "2.35.0",
+        "latestVersion": "3.0.0-rc.2",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update isomorphic-dompurify"
+        }
+      },
+      {
+        "id": "dependency-backend-mongodb",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: mongodb",
+        "description": "mongodb is outdated: 7.0.0 → 7.1.0",
+        "package": "mongodb",
+        "currentVersion": "7.0.0",
+        "latestVersion": "7.1.0",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update mongodb"
+        }
+      },
+      {
+        "id": "dependency-backend-mongodb-memory-server",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: mongodb-memory-server",
+        "description": "mongodb-memory-server is outdated: 9.5.0 → 11.0.1",
+        "package": "mongodb-memory-server",
+        "currentVersion": "9.5.0",
+        "latestVersion": "11.0.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update mongodb-memory-server"
+        }
+      },
+      {
+        "id": "dependency-backend-mongoose",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: mongoose",
+        "description": "mongoose is outdated: 9.1.5 → 9.2.1",
+        "package": "mongoose",
+        "currentVersion": "9.1.5",
+        "latestVersion": "9.2.1",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update mongoose"
+        }
+      },
+      {
+        "id": "dependency-backend-node-cron",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: node-cron",
+        "description": "node-cron is outdated: 3.0.3 → 4.2.1",
+        "package": "node-cron",
+        "currentVersion": "3.0.3",
+        "latestVersion": "4.2.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update node-cron"
+        }
+      },
+      {
+        "id": "dependency-backend-prettier",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: prettier",
+        "description": "prettier is outdated: 3.7.4 → 3.8.1",
+        "package": "prettier",
+        "currentVersion": "3.7.4",
+        "latestVersion": "3.8.1",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update prettier"
+        }
+      },
+      {
+        "id": "dependency-backend-resend",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: resend",
+        "description": "resend is outdated: 6.4.2 → 6.9.2",
+        "package": "resend",
+        "currentVersion": "6.4.2",
+        "latestVersion": "6.9.2",
+        "updateType": "minor",
+        "location": "backend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update resend"
+        }
+      },
+      {
+        "id": "dependency-backend-stripe",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: stripe",
+        "description": "stripe is outdated: 19.3.1 → 20.3.1",
+        "package": "stripe",
+        "currentVersion": "19.3.1",
+        "latestVersion": "20.3.1",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update stripe"
+        }
+      },
+      {
+        "id": "dependency-backend-winston-daily-rotate-file",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: winston-daily-rotate-file",
+        "description": "winston-daily-rotate-file is outdated: 4.7.1 → 5.0.0",
+        "package": "winston-daily-rotate-file",
+        "currentVersion": "4.7.1",
+        "latestVersion": "5.0.0",
+        "updateType": "major",
+        "location": "backend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update winston-daily-rotate-file"
+        }
+      },
+      {
+        "id": "dependency-frontend-@headlessui/react",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: @headlessui/react",
+        "description": "@headlessui/react is outdated: 1.7.19 → 2.2.9",
+        "package": "@headlessui/react",
+        "currentVersion": "1.7.19",
+        "latestVersion": "2.2.9",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @headlessui/react"
+        }
+      },
+      {
+        "id": "dependency-frontend-@testing-library/react",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: @testing-library/react",
+        "description": "@testing-library/react is outdated: 16.3.1 → 16.3.2",
+        "package": "@testing-library/react",
+        "currentVersion": "16.3.1",
+        "latestVersion": "16.3.2",
+        "updateType": "patch",
+        "location": "frontend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @testing-library/react"
+        }
+      },
+      {
+        "id": "dependency-frontend-@vitejs/plugin-react",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: @vitejs/plugin-react",
+        "description": "@vitejs/plugin-react is outdated: 4.7.0 → 5.1.4",
+        "package": "@vitejs/plugin-react",
+        "currentVersion": "4.7.0",
+        "latestVersion": "5.1.4",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update @vitejs/plugin-react"
+        }
+      },
+      {
+        "id": "dependency-frontend-autoprefixer",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: autoprefixer",
+        "description": "autoprefixer is outdated: 10.4.22 → 10.4.24",
+        "package": "autoprefixer",
+        "currentVersion": "10.4.22",
+        "latestVersion": "10.4.24",
+        "updateType": "patch",
+        "location": "frontend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update autoprefixer"
+        }
+      },
+      {
+        "id": "dependency-frontend-i18next",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: i18next",
+        "description": "i18next is outdated: 25.8.7 → 25.8.10",
+        "package": "i18next",
+        "currentVersion": "25.8.7",
+        "latestVersion": "25.8.10",
+        "updateType": "patch",
+        "location": "frontend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update i18next"
+        }
+      },
+      {
+        "id": "dependency-frontend-react",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: react",
+        "description": "react is outdated: 18.3.1 → 19.2.4",
+        "package": "react",
+        "currentVersion": "18.3.1",
+        "latestVersion": "19.2.4",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update react"
+        }
+      },
+      {
+        "id": "dependency-frontend-react-dom",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: react-dom",
+        "description": "react-dom is outdated: 18.3.1 → 19.2.4",
+        "package": "react-dom",
+        "currentVersion": "18.3.1",
+        "latestVersion": "19.2.4",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update react-dom"
+        }
+      },
+      {
+        "id": "dependency-frontend-react-icons",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: react-icons",
+        "description": "react-icons is outdated: 4.12.0 → 5.5.0",
+        "package": "react-icons",
+        "currentVersion": "4.12.0",
+        "latestVersion": "5.5.0",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update react-icons"
+        }
+      },
+      {
+        "id": "dependency-frontend-react-router-dom",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "medium",
+        "title": "Outdated dependency: react-router-dom",
+        "description": "react-router-dom is outdated: 7.12.0 → 7.13.0",
+        "package": "react-router-dom",
+        "currentVersion": "7.12.0",
+        "latestVersion": "7.13.0",
+        "updateType": "minor",
+        "location": "frontend",
+        "autoFixable": false,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update react-router-dom"
+        }
+      },
+      {
+        "id": "dependency-frontend-tailwindcss",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "high",
+        "title": "Outdated dependency: tailwindcss",
+        "description": "tailwindcss is outdated: 3.4.18 → 4.1.18",
+        "package": "tailwindcss",
+        "currentVersion": "3.4.18",
+        "latestVersion": "4.1.18",
+        "updateType": "major",
+        "location": "frontend",
+        "autoFixable": "review",
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update tailwindcss"
+        }
+      },
+      {
+        "id": "dependency-frontend-vite",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: vite",
+        "description": "vite is outdated: 7.3.0 → 7.3.1",
+        "package": "vite",
+        "currentVersion": "7.3.0",
+        "latestVersion": "7.3.1",
+        "updateType": "patch",
+        "location": "frontend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update vite"
+        }
+      },
+      {
+        "id": "dependency-frontend-vitest",
+        "type": "dependency",
+        "category": "dependencies",
+        "severity": "low",
+        "title": "Outdated dependency: vitest",
+        "description": "vitest is outdated: 4.0.16 → 4.0.18",
+        "package": "vitest",
+        "currentVersion": "4.0.16",
+        "latestVersion": "4.0.18",
+        "updateType": "patch",
+        "location": "frontend",
+        "autoFixable": true,
+        "fix": {
+          "type": "npm-update",
+          "command": "npm update vitest"
+        }
+      }
+    ],
+    "code_quality": []
+  },
+  "fixes": [
+    {
+      "id": "dependency-backend-@huggingface/inference",
+      "title": "Outdated dependency: @huggingface/inference",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update @huggingface/inference in backend"
+    },
+    {
+      "id": "dependency-backend-cors",
+      "title": "Outdated dependency: cors",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update cors in backend"
+    },
+    {
+      "id": "dependency-frontend-@testing-library/react",
+      "title": "Outdated dependency: @testing-library/react",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update @testing-library/react in frontend"
+    },
+    {
+      "id": "dependency-frontend-autoprefixer",
+      "title": "Outdated dependency: autoprefixer",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update autoprefixer in frontend"
+    },
+    {
+      "id": "dependency-frontend-i18next",
+      "title": "Outdated dependency: i18next",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update i18next in frontend"
+    },
+    {
+      "id": "dependency-frontend-vite",
+      "title": "Outdated dependency: vite",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update vite in frontend"
+    },
+    {
+      "id": "dependency-frontend-vitest",
+      "title": "Outdated dependency: vitest",
+      "type": "dependency",
+      "severity": "low",
+      "applied": true,
+      "message": "Would run: npm update vitest in frontend"
+    }
+  ],
+  "errors": [],
+  "needsReview": [
+    {
+      "id": "dependency-backend-babel-jest",
+      "title": "Outdated dependency: babel-jest",
+      "type": "dependency",
+      "severity": "high",
+      "description": "babel-jest is outdated: 29.7.0 → 30.2.0"
+    },
+    {
+      "id": "dependency-backend-bcryptjs",
+      "title": "Outdated dependency: bcryptjs",
+      "type": "dependency",
+      "severity": "high",
+      "description": "bcryptjs is outdated: 2.4.3 → 3.0.3"
+    },
+    {
+      "id": "dependency-backend-dotenv",
+      "title": "Outdated dependency: dotenv",
+      "type": "dependency",
+      "severity": "high",
+      "description": "dotenv is outdated: 16.6.1 → 17.3.1"
+    },
+    {
+      "id": "dependency-backend-eslint",
+      "title": "Outdated dependency: eslint",
+      "type": "dependency",
+      "severity": "high",
+      "description": "eslint is outdated: 9.39.2 → 10.0.0"
+    },
+    {
+      "id": "dependency-backend-express",
+      "title": "Outdated dependency: express",
+      "type": "dependency",
+      "severity": "high",
+      "description": "express is outdated: 4.22.1 → 5.2.1"
+    },
+    {
+      "id": "dependency-backend-express-rate-limit",
+      "title": "Outdated dependency: express-rate-limit",
+      "type": "dependency",
+      "severity": "high",
+      "description": "express-rate-limit is outdated: 7.5.1 → 8.2.1"
+    },
+    {
+      "id": "dependency-backend-helmet",
+      "title": "Outdated dependency: helmet",
+      "type": "dependency",
+      "severity": "high",
+      "description": "helmet is outdated: 7.2.0 → 8.1.0"
+    },
+    {
+      "id": "dependency-backend-isomorphic-dompurify",
+      "title": "Outdated dependency: isomorphic-dompurify",
+      "type": "dependency",
+      "severity": "high",
+      "description": "isomorphic-dompurify is outdated: 2.35.0 → 3.0.0-rc.2"
+    },
+    {
+      "id": "dependency-backend-mongodb-memory-server",
+      "title": "Outdated dependency: mongodb-memory-server",
+      "type": "dependency",
+      "severity": "high",
+      "description": "mongodb-memory-server is outdated: 9.5.0 → 11.0.1"
+    },
+    {
+      "id": "dependency-backend-node-cron",
+      "title": "Outdated dependency: node-cron",
+      "type": "dependency",
+      "severity": "high",
+      "description": "node-cron is outdated: 3.0.3 → 4.2.1"
+    },
+    {
+      "id": "dependency-backend-stripe",
+      "title": "Outdated dependency: stripe",
+      "type": "dependency",
+      "severity": "high",
+      "description": "stripe is outdated: 19.3.1 → 20.3.1"
+    },
+    {
+      "id": "dependency-backend-winston-daily-rotate-file",
+      "title": "Outdated dependency: winston-daily-rotate-file",
+      "type": "dependency",
+      "severity": "high",
+      "description": "winston-daily-rotate-file is outdated: 4.7.1 → 5.0.0"
+    },
+    {
+      "id": "dependency-frontend-@headlessui/react",
+      "title": "Outdated dependency: @headlessui/react",
+      "type": "dependency",
+      "severity": "high",
+      "description": "@headlessui/react is outdated: 1.7.19 → 2.2.9"
+    },
+    {
+      "id": "dependency-frontend-@vitejs/plugin-react",
+      "title": "Outdated dependency: @vitejs/plugin-react",
+      "type": "dependency",
+      "severity": "high",
+      "description": "@vitejs/plugin-react is outdated: 4.7.0 → 5.1.4"
+    },
+    {
+      "id": "dependency-frontend-react",
+      "title": "Outdated dependency: react",
+      "type": "dependency",
+      "severity": "high",
+      "description": "react is outdated: 18.3.1 → 19.2.4"
+    },
+    {
+      "id": "dependency-frontend-react-dom",
+      "title": "Outdated dependency: react-dom",
+      "type": "dependency",
+      "severity": "high",
+      "description": "react-dom is outdated: 18.3.1 → 19.2.4"
+    },
+    {
+      "id": "dependency-frontend-react-icons",
+      "title": "Outdated dependency: react-icons",
+      "type": "dependency",
+      "severity": "high",
+      "description": "react-icons is outdated: 4.12.0 → 5.5.0"
+    },
+    {
+      "id": "dependency-frontend-tailwindcss",
+      "title": "Outdated dependency: tailwindcss",
+      "type": "dependency",
+      "severity": "high",
+      "description": "tailwindcss is outdated: 3.4.18 → 4.1.18"
+    }
+  ],
+  "manualOnly": [
+    {
+      "id": "dependency-backend-@babel/core",
+      "title": "Outdated dependency: @babel/core",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "@babel/core is outdated: 7.28.5 → 7.29.0"
+    },
+    {
+      "id": "dependency-backend-@babel/preset-env",
+      "title": "Outdated dependency: @babel/preset-env",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "@babel/preset-env is outdated: 7.28.6 → 7.29.0"
+    },
+    {
+      "id": "dependency-backend-@netlify/blobs",
+      "title": "Outdated dependency: @netlify/blobs",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "@netlify/blobs is outdated: 10.5.0 → 10.7.0"
+    },
+    {
+      "id": "dependency-backend-cheerio",
+      "title": "Outdated dependency: cheerio",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "cheerio is outdated: 1.1.2 → 1.2.0"
+    },
+    {
+      "id": "dependency-backend-mongodb",
+      "title": "Outdated dependency: mongodb",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "mongodb is outdated: 7.0.0 → 7.1.0"
+    },
+    {
+      "id": "dependency-backend-mongoose",
+      "title": "Outdated dependency: mongoose",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "mongoose is outdated: 9.1.5 → 9.2.1"
+    },
+    {
+      "id": "dependency-backend-prettier",
+      "title": "Outdated dependency: prettier",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "prettier is outdated: 3.7.4 → 3.8.1"
+    },
+    {
+      "id": "dependency-backend-resend",
+      "title": "Outdated dependency: resend",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "resend is outdated: 6.4.2 → 6.9.2"
+    },
+    {
+      "id": "dependency-frontend-react-router-dom",
+      "title": "Outdated dependency: react-router-dom",
+      "type": "dependency",
+      "severity": "medium",
+      "description": "react-router-dom is outdated: 7.12.0 → 7.13.0"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "high",
+      "action": "Review and manually apply fixes",
+      "details": "18 issues need human review before applying fixes"
+    },
+    {
+      "priority": "medium",
+      "action": "Plan major dependency updates",
+      "details": "18 packages have major version updates available"
+    }
+  ]
+}
