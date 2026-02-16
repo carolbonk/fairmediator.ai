@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.fairmediator.ai">
-    <img src="./GitHub_Banner.png" alt="FairMediator Banner" width="100%"/>
+    <img src="./frontend/public/og-image.png" alt="FairMediator Banner" width="100%"/>
   </a>
 </p>
 

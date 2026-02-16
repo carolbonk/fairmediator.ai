@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "home": "Home",
+    "mediators": "Mediators",
+    "safeguards": "Safeguards",
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "hero": {
+      "title": "Find the Right Mediator",
+      "subtitle": "AI-powered platform for transparent mediator selection and conflict resolution",
+      "cta": "Get Started",
+      "demo": "View Demo"
+    },
+    "features": {
+      "title": "Why Choose FairMediator?",
+      "conflict": {
+        "title": "Conflict Detection",
+        "description": "Identify potential conflicts of interest automatically"
+      },
+      "ai": {
+        "title": "AI-Powered Search",
+        "description": "Natural language search powered by advanced AI"
+      },
+      "transparent": {
+        "title": "Transparent Selection",
+        "description": "Make informed decisions with comprehensive mediator data"
+      },
+      "data": {
+        "title": "Real-Time Data",
+        "description": "Access up-to-date information from public legal databases"
+      }
+    },
+    "stats": {
+      "mediators": "Qualified Mediators",
+      "checks": "Conflict Checks",
+      "accuracy": "Detection Accuracy"
+    }
+  },
+  "mediators": {
+    "title": "Find Mediators",
+    "search": "Search mediators...",
+    "filter": "Filter by",
+    "specialization": "Specialization",
+    "location": "Location",
+    "experience": "Experience",
+    "noResults": "No mediators found",
+    "viewProfile": "View Profile",
+    "checkConflict": "Check Conflict",
+    "clear": "Clear",
+    "red": "High Risk",
+    "yellow": "Caution",
+    "green": "Clear"
+  },
+  "safeguards": {
+    "title": "Our Safeguards",
+    "subtitle": "How we ensure transparent and unbiased mediator selection",
+    "dataIntegrity": {
+      "title": "Data Integrity",
+      "description": "All mediator data is verified from public legal databases and official sources"
+    },
+    "conflictDetection": {
+      "title": "Conflict Detection",
+      "description": "Advanced AI algorithms scan for potential conflicts of interest across multiple data sources"
+    },
+    "transparency": {
+      "title": "Transparency",
+      "description": "Complete visibility into mediator backgrounds, affiliations, and case history"
+    },
+    "privacy": {
+      "title": "Privacy Protection",
+      "description": "Your search queries and case details remain completely confidential"
+    }
+  },
+  "chat": {
+    "title": "AI Chat Assistant",
+    "subtitle": "Describe your legal dispute",
+    "placeholder": "Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')",
+    "send": "Send",
+    "poweredBy": "Powered by Hugging Face (100% FREE)",
+    "tooltip": "Our AI assistant helps you describe your case and find the perfect mediator. Powered by Hugging Face - completely free!",
+    "parties": "Parties/Firms to Check for Conflicts:",
+    "partyPlaceholder": "e.g., BigLaw LLC",
+    "addParty": "Add",
+    "greeting": "Hello! I'm your AI assistant. I can help you find the right mediator for your case. Just describe your needs in natural language, and I'll search our database for the best matches.",
+    "error": "Sorry, I encountered an error. Please try again.",
+    "uploadDocument": "Upload Document",
+    "analyzing": "Analyzing..."
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Successfully logged in",
+    "signupSuccess": "Account created successfully",
+    "error": "An error occurred"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "search": "Search"
+  },
+  "footer": {
+    "copyright": "© 2026 FairMediator. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact Us"
+  }
+}

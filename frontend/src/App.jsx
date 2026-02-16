@@ -4,6 +4,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import ErrorBoundary from './components/ErrorBoundary';
+import './i18n/config';
 
 // Lazy load pages for code splitting and better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -21,48 +23,50 @@ const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 
 function App() {
   return (
-    <HelmetProvider>
-      <Router>
-        <AuthProvider>
-          <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/feedback" element={<FeedbackPage />} />
-          <Route path="/mediators/apply" element={<MediatorApplicationPage />} />
-          <Route path="/ethics" element={<EthicsPage />} />
-          <Route path="/safeguards" element={<SafeguardsPage />} />
-          <Route path="/mediators" element={<MediatorsPage />} />
+    <ErrorBoundary>
+      <HelmetProvider>
+        <Router>
+          <AuthProvider>
+            <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/mediators/apply" element={<MediatorApplicationPage />} />
+            <Route path="/ethics" element={<EthicsPage />} />
+            <Route path="/safeguards" element={<SafeguardsPage />} />
+            <Route path="/mediators" element={<MediatorsPage />} />
 
-          {/* Protected Routes - Require Authentication */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/upgrade"
-            element={
-              <ProtectedRoute>
-                <UpgradePage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Routes - Require Authentication */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/upgrade"
+              element={
+                <ProtectedRoute>
+                  <UpgradePage />
+                </ProtectedRoute>
+                }
+            />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-          </Suspense>
-        </AuthProvider>
-      </Router>
-    </HelmetProvider>
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+            </Suspense>
+          </AuthProvider>
+        </Router>
+      </HelmetProvider>
+    </ErrorBoundary>
   );
 }
 
