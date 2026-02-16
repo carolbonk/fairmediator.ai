@@ -1,0 +1,41 @@
+{
+  "autoFix": {
+    "enabled": true,
+    "dryRun": false,
+    "createBackup": true,
+    "requireApproval": ["dependencies:major", "security:breaking"]
+  },
+  "detectors": {
+    "security": {
+      "enabled": true,
+      "severity": ["low", "moderate", "high", "critical"]
+    },
+    "dependencies": {
+      "enabled": true,
+      "maxAgeDays": 180,
+      "autoUpdateTypes": ["patch", "minor"]
+    },
+    "codeQuality": {
+      "enabled": true,
+      "checks": ["console.log", "unused-imports", "eslint"]
+    },
+    "build": {
+      "enabled": true,
+      "testBefore": true,
+      "testAfter": true
+    },
+    "config": {
+      "enabled": true,
+      "requiredFiles": [".env.example", "README.md"]
+    }
+  },
+  "notifications": {
+    "slack": false,
+    "email": false,
+    "console": true
+  },
+  "thresholds": {
+    "maxAutoFixes": 20,
+    "maxFileChanges": 50
+  }
+}

@@ -10,7 +10,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "retrain:export": "node src/scripts/retrainConflictModel.js --export-only",
-    "retrain:full": "node src/scripts/retrainConflictModel.js"
+    "retrain:full": "node src/scripts/retrainConflictModel.js",
+    "sre:scan": "node .ai/sre/cli.js --scan-only",
+    "sre:fix": "node .ai/sre/cli.js --fix",
+    "sre:dry-run": "node .ai/sre/cli.js --fix --dry-run"
   },
   "dependencies": {
     "@huggingface/inference": "^4.13.9",
@@ -47,6 +50,7 @@
     "@babel/preset-env": "^7.28.6",
     "babel-jest": "^29.7.0",
     "eslint": "^9.39.2",
+    "glob": "^13.0.3",
     "jest": "^30.2.0",
     "jest-junit": "^16.0.0",
     "mongodb-memory-server": "^9.1.3",

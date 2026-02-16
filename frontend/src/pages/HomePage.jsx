@@ -13,6 +13,7 @@ import StateMediationInfo from '../components/StateMediationInfo';
 import { getStateMediationData } from '../data/stateMediationData';
 import SEO from '../components/SEO/SEO';
 import { getOrganizationSchema } from '../components/SEO/schemas';
+import logger from '../utils/logger';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const HomePage = () => {
 
   const handleIdeologyChange = (ideology) => {
     // Can be used for future features
-    console.log('Ideology changed:', ideology);
+    logger.debug('Ideology changed:', ideology);
   };
 
   const handleDocumentAnalysis = (analysis) => {
@@ -121,7 +122,7 @@ const HomePage = () => {
                 screeningCriteria={stateMediationInfo.screeningCriteria}
                 variant="primary"
                 onDrawerOpen={(type) => {
-                  console.log(`User opened ${type} drawer for ${stateMediationInfo.stateName}`);
+                  logger.debug(`User opened ${type} drawer for ${stateMediationInfo.stateName}`);
                   // TODO: Add analytics tracking here
                 }}
               />

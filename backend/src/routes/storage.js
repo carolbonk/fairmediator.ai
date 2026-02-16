@@ -53,7 +53,13 @@ router.post(
         return sendError(res, 'No image file provided', 400);
       }
 
-      // TODO: Add authorization check (admin or mediator owner)
+      // Authorization check: User must be admin OR own this mediator profile
+      const isAdmin = req.user && req.user.role === 'admin';
+      const isMediatorOwner = req.user && req.user.mediatorId && req.user.mediatorId.toString() === mediatorId;
+
+      if (!isAdmin && !isMediatorOwner) {
+        return sendError(res, 'Unauthorized: You can only upload images for your own mediator profile', 403);
+      }
 
       const url = await netlifyBlobs.uploadMediatorImage(
         mediatorId,
@@ -100,7 +106,13 @@ router.post(
         return sendError(res, 'Document type required (cv, certification, etc.)', 400);
       }
 
-      // TODO: Add authorization check (admin or mediator owner)
+      // Authorization check: User must be admin OR own this mediator profile
+      const isAdmin = req.user && req.user.role === 'admin';
+      const isMediatorOwner = req.user && req.user.mediatorId && req.user.mediatorId.toString() === mediatorId;
+
+      if (!isAdmin && !isMediatorOwner) {
+        return sendError(res, 'Unauthorized: You can only upload documents for your own mediator profile', 403);
+      }
 
       const document = await netlifyBlobs.uploadMediatorDocument(
         mediatorId,

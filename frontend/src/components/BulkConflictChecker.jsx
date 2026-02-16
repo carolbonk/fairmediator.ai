@@ -8,6 +8,9 @@ import React, { useState, useRef } from 'react';
 import { FaFileUpload, FaSpinner, FaCheckCircle, FaTimes, FaExclamationTriangle } from 'react-icons/fa';
 import Tooltip from './Tooltip';
 
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 const BulkConflictChecker = ({ onResultsUpdate, compact = false }) => {
   const [uploading, setUploading] = useState(false);
   const [results, setResults] = useState(null);
@@ -40,7 +43,7 @@ const BulkConflictChecker = ({ onResultsUpdate, compact = false }) => {
       const formData = new FormData();
       formData.append('parties', file);
 
-      const response = await fetch('http://localhost:5001/api/analysis/bulk-conflict', {
+      const response = await fetch(`${API_BASE_URL}/api/analysis/bulk-conflict`, {
         method: 'POST',
         body: formData
       });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaTimes, FaHome, FaChartLine, FaSignOutAlt, FaUser, FaBars } from 'react-icons/fa';
+import { FaTimes, FaHome, FaChartLine, FaSignOutAlt, FaUser, FaBars, FaCog } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -23,10 +23,10 @@ const MobileMenu = () => {
 
   return (
     <>
-      {/* Hamburger Button - Only visible on mobile - Neomorphism */}
+      {/* Hamburger Button - Only visible on mobile - Dark Neomorphism to match header */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden flex items-center justify-center w-11 h-11 bg-neu-200 text-neu-700 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200"
+        className="md:hidden flex items-center justify-center w-11 h-11 bg-dark-neu-400 text-white rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg active:shadow-dark-neu-inset transition-all duration-200 border border-dark-neu-500"
         aria-label="Open menu"
       >
         <FaBars className="text-lg" />
@@ -109,6 +109,16 @@ const MobileMenu = () => {
               >
                 <FaChartLine className="text-lg text-slate-600" />
                 <span className="font-medium text-base">{t('nav.dashboard')}</span>
+              </Link>
+
+              {/* Settings Link - Neomorphism */}
+              <Link
+                to="/settings"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
+              >
+                <FaCog className="text-lg text-blue-600" />
+                <span className="font-medium text-base">Settings</span>
               </Link>
 
               {/* Logout Button - Neomorphism */}

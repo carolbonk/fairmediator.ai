@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const mediatorScraper = require('./mediatorScraper');
 const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
+const SREAgent = require('../../../.ai/sre/agent');
 
 class CronScheduler {
   constructor() {
@@ -90,11 +91,45 @@ class CronScheduler {
   }
 
   /**
+   * Schedule weekly SRE agent scan and auto-fix
+   * Runs every Sunday at 2:00 AM
+   */
+  scheduleWeeklySREAgent() {
+    const job = cron.schedule('0 2 * * 0', async () => {
+      console.log('🔧 Running weekly SRE agent scan and auto-fix...');
+
+      try {
+        const agent = new SREAgent();
+
+        // Run with auto-fix enabled and backup
+        const result = await agent.run({
+          dryRun: false,
+          backup: true
+        });
+
+        console.log(`✅ SRE agent complete: ${result.results.fixed.length} issues fixed`);
+
+        // Log summary
+        if (result.results.needsReview.length > 0) {
+          console.log(`⚠️  ${result.results.needsReview.length} issues need manual review`);
+        }
+
+      } catch (error) {
+        console.error('❌ SRE agent error:', error.message);
+      }
+    });
+
+    this.jobs.push({ name: 'weeklySREAgent', job });
+    console.log('✅ Scheduled weekly SRE agent (Sunday 2:00 AM)');
+  }
+
+  /**
    * Start all scheduled jobs
    */
   startAll() {
     console.log('\n📅 Starting scheduled tasks...');
     this.scheduleDailyRefresh();
+    this.scheduleWeeklySREAgent();
     this.scheduleWeeklyAffiliationAnalysis();
     console.log(`✅ ${this.jobs.length} cron jobs scheduled\n`);
   }
