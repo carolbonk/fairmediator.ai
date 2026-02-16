@@ -126,5 +126,34 @@
     "privacy": "隐私政策",
     "terms": "服务条款",
     "contact": "联系我们"
+  },
+  "homepage": {
+    "disputeTitle": "描述您的法律纠纷",
+    "inputModeDescription": "选择您希望如何描述您的案件。对话分析选择聊天，结构化输入选择表单。",
+    "chatMode": "聊天模式",
+    "formMode": "表单模式",
+    "aiChatTitle": "人工智能聊天助手",
+    "caseIntakeTitle": "案件接收表",
+    "mediatorListTitle": "推荐调解员"
+  },
+  "errors": {
+    "networkError": "连接丢失。请检查您的互联网连接并重试。",
+    "rateLimitError": "请求过多。请稍等片刻后重试。",
+    "serverError": "我们的服务器遇到问题。请稍后重试。",
+    "timeoutError": "请求超时。您的查询可能过于复杂。尝试简化它。",
+    "genericError": "抱歉，出了点问题。请重试或重新表述您的问题。",
+    "retry": "重试",
+    "suggestions": {
+      "network": "检查您的互联网连接或尝试刷新页面。",
+      "rateLimit": "您已超过请求限制。请在5分钟后重试。",
+      "server": "我们的服务器正在经历高负载。请求将自动重试。",
+      "timeout": "您的查询过于复杂。尝试使用更少的搜索词或简化您的请求。"
+    }
+  },
+  "offline": {
+    "youAreOffline": "您已离线",
+    "checkConnection": "检查您的互联网连接",
+    "backOnline": "已重新上线",
+    "connectionRestored": "连接已成功恢复"
   }
 }

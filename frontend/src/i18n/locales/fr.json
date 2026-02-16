@@ -126,5 +126,34 @@
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions d'Utilisation",
     "contact": "Nous Contacter"
+  },
+  "homepage": {
+    "disputeTitle": "Décrivez votre litige juridique",
+    "inputModeDescription": "Choisissez comment vous souhaitez décrire votre cas. Chat pour une analyse conversationnelle ou Formulaire pour une saisie structurée.",
+    "chatMode": "Mode Chat",
+    "formMode": "Mode Formulaire",
+    "aiChatTitle": "Assistant de Chat IA",
+    "caseIntakeTitle": "Formulaire d'Admission de Cas",
+    "mediatorListTitle": "Médiateurs Recommandés"
+  },
+  "errors": {
+    "networkError": "Connexion perdue. Veuillez vérifier votre connexion Internet et réessayer.",
+    "rateLimitError": "Trop de requêtes. Veuillez attendre un moment et réessayer.",
+    "serverError": "Nos serveurs rencontrent des problèmes. Veuillez réessayer dans quelques instants.",
+    "timeoutError": "Délai d'attente dépassé. Votre requête pourrait être trop complexe. Essayez de la simplifier.",
+    "genericError": "Désolé, quelque chose s'est mal passé. Veuillez réessayer ou reformuler votre question.",
+    "retry": "Réessayer",
+    "suggestions": {
+      "network": "Vérifiez votre connexion Internet ou essayez de rafraîchir la page.",
+      "rateLimit": "Vous avez dépassé la limite de requêtes. Veuillez attendre 5 minutes avant de réessayer.",
+      "server": "Nos serveurs subissent une charge élevée. La requête sera automatiquement relancée.",
+      "timeout": "Votre requête était trop complexe. Essayez d'utiliser moins de termes de recherche ou de simplifier votre demande."
+    }
+  },
+  "offline": {
+    "youAreOffline": "Vous êtes Hors Ligne",
+    "checkConnection": "Vérifiez votre connexion Internet",
+    "backOnline": "De Retour en Ligne",
+    "connectionRestored": "Connexion rétablie avec succès"
   }
 }

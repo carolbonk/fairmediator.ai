@@ -1,0 +1,38 @@
+/**
+ * Skeleton Shimmer Animation
+ * Creates a loading shimmer effect for skeleton screens
+ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #e8edf2 0%,
+    #dde3e9 20%,
+    #e8edf2 40%,
+    #e8edf2 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Dark mode variant (if needed) */
+@media (prefers-color-scheme: dark) {
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #2a2e35 0%,
+      #3a3e45 20%,
+      #2a2e35 40%,
+      #2a2e35 100%
+    );
+  }
+}

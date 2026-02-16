@@ -18,6 +18,7 @@
  */
 
 import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { FaUpload, FaDownload, FaSpinner, FaCheckCircle, FaTimesCircle, FaFileAlt, FaEnvelope } from 'react-icons/fa';
 import ConflictBadge from './ConflictBadge';
 
@@ -25,6 +26,7 @@ const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [selectedForReview, setSelectedForReview] = useState(new Set());
@@ -108,8 +110,14 @@ const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
 
       // Run conflict checks
       const checkResults = [];
+      const totalMediators = Object.keys(mediatorMap).length;
+      let currentMediator = 0;
+
+      setProgress({ current: 0, total: totalMediators });
 
       for (const [mediatorName, parties] of Object.entries(mediatorMap)) {
+        currentMediator++;
+        setProgress({ current: currentMediator, total: totalMediators });
         try {
           // Call batch conflict check API
           const response = await fetch(`${apiBaseUrl}/graph/check-conflicts`, {
@@ -287,7 +295,7 @@ const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
                 {uploading || analyzing ? (
                   <>
                     <FaSpinner className="animate-spin" />
-                    {uploading ? 'Uploading...' : 'Analyzing...'}
+                    {uploading ? 'Uploading...' : `Analyzing... (${progress.current}/${progress.total})`}
                   </>
                 ) : (
                   <>
@@ -296,6 +304,22 @@ const BatchConflictChecker = ({ apiBaseUrl = 'http://localhost:5001/api' }) => {
                   </>
                 )}
               </button>
+
+              {/* Progress Bar */}
+              {analyzing && progress.total > 0 && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-xs text-neu-600 mb-1">
+                    <span>Processing mediators</span>
+                    <span>{Math.round((progress.current / progress.total) * 100)}%</span>
+                  </div>
+                  <div className="w-full bg-neu-300 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-green-500 h-full transition-all duration-300 rounded-full"
+                      style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -444,6 +468,11 @@ mediatorName,partyName{'\n'}
       )}
     </div>
   );
+};
+
+// PropTypes validation
+BatchConflictChecker.propTypes = {
+  apiBaseUrl: PropTypes.string
 };
 
 export default BatchConflictChecker;
