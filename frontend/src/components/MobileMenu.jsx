@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaTimes, FaHome, FaChartLine, FaSignOutAlt, FaUser, FaBars } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await logout();
@@ -77,7 +80,7 @@ const MobileMenu = () => {
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaHome className="text-lg text-blue-500" />
-                <span className="font-medium text-base">Home</span>
+                <span className="font-medium text-base">{t('nav.home')}</span>
               </Link>
 
               {/* Safeguards Link - Neomorphism */}
@@ -86,7 +89,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <span className="font-medium text-base">Safeguards</span>
+                <span className="font-medium text-base">{t('nav.safeguards')}</span>
               </Link>
 
               {/* Mediators Link - Neomorphism */}
@@ -95,7 +98,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <span className="font-medium text-base">Mediators</span>
+                <span className="font-medium text-base">{t('nav.mediators')}</span>
               </Link>
 
               {/* Dashboard Link - Neomorphism */}
@@ -105,7 +108,7 @@ const MobileMenu = () => {
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaChartLine className="text-lg text-slate-600" />
-                <span className="font-medium text-base">Dashboard</span>
+                <span className="font-medium text-base">{t('nav.dashboard')}</span>
               </Link>
 
               {/* Logout Button - Neomorphism */}
@@ -114,8 +117,13 @@ const MobileMenu = () => {
                 className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaSignOutAlt className="text-lg" />
-                <span className="font-medium text-base">Logout</span>
+                <span className="font-medium text-base">{t('nav.logout')}</span>
               </button>
+
+              {/* Language Switcher */}
+              <div className="mt-2">
+                <LanguageSwitcher />
+              </div>
             </>
           ) : (
             <>
@@ -126,7 +134,7 @@ const MobileMenu = () => {
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaHome className="text-lg text-slate-600" />
-                <span className="font-medium text-base">Home</span>
+                <span className="font-medium text-base">{t('nav.home')}</span>
               </Link>
 
               {/* Safeguards Link - Neomorphism */}
@@ -135,7 +143,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <span className="font-medium text-base">Safeguards</span>
+                <span className="font-medium text-base">{t('nav.safeguards')}</span>
               </Link>
 
               {/* Mediators Link - Neomorphism */}
@@ -144,7 +152,7 @@ const MobileMenu = () => {
                 onClick={handleLinkClick}
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
-                <span className="font-medium text-base">Mediators</span>
+                <span className="font-medium text-base">{t('nav.mediators')}</span>
               </Link>
 
               {/* Login Button - Dark blueish gray CTA - 3D Neomorphism */}
@@ -154,7 +162,7 @@ const MobileMenu = () => {
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 text-white rounded-xl shadow-[0_8px_16px_rgba(71,85,105,0.3),0_4px_8px_rgba(0,0,0,0.1),inset_0_-2px_4px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] hover:shadow-[0_12px_24px_rgba(71,85,105,0.4),0_6px_12px_rgba(0,0,0,0.15),inset_0_-2px_4px_rgba(0,0,0,0.25),inset_0_2px_4px_rgba(255,255,255,0.25)] active:shadow-[inset_0_4px_8px_rgba(0,0,0,0.3),inset_0_-2px_4px_rgba(255,255,255,0.1)] transition-all duration-200 min-h-[44px] transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <FaUser className="text-base" />
-                <span className="font-semibold text-base">Login</span>
+                <span className="font-semibold text-base">{t('nav.login')}</span>
               </Link>
 
               {/* Register Link - Neomorphism */}
@@ -164,8 +172,13 @@ const MobileMenu = () => {
                 className="flex items-center gap-3 px-4 py-3 bg-neu-200 text-neu-800 rounded-xl shadow-neu hover:shadow-neu-lg active:shadow-neu-inset transition-all duration-200 min-h-[44px]"
               >
                 <FaUser className="text-lg text-neu-600" />
-                <span className="font-medium text-base">Sign Up</span>
+                <span className="font-medium text-base">{t('nav.signup')}</span>
               </Link>
+
+              {/* Language Switcher */}
+              <div className="mt-2">
+                <LanguageSwitcher />
+              </div>
             </>
           )}
         </nav>

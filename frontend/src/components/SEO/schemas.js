@@ -185,7 +185,7 @@ export const getArticleSchema = (article) => ({
   '@type': 'Article',
   headline: article.title,
   description: article.description,
-  image: article.image || `${siteUrl}/og-image.jpg`,
+  image: article.image || `${siteUrl}/og-image.png?v=2`,
   datePublished: article.publishedDate,
   dateModified: article.modifiedDate || article.publishedDate,
   author: {

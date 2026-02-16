@@ -1,0 +1,130 @@
+{
+  "nav": {
+    "home": "首页",
+    "mediators": "调解员",
+    "safeguards": "保障措施",
+    "login": "登录",
+    "logout": "登出",
+    "signup": "注册",
+    "dashboard": "仪表板"
+  },
+  "home": {
+    "hero": {
+      "title": "找到合适的调解员",
+      "subtitle": "人工智能驱动的平台，用于透明的调解员选择和冲突解决",
+      "cta": "开始使用",
+      "demo": "查看演示"
+    },
+    "features": {
+      "title": "为什么选择 FairMediator？",
+      "conflict": {
+        "title": "冲突检测",
+        "description": "自动识别潜在的利益冲突"
+      },
+      "ai": {
+        "title": "人工智能搜索",
+        "description": "由先进人工智能驱动的自然语言搜索"
+      },
+      "transparent": {
+        "title": "透明选择",
+        "description": "通过全面的调解员数据做出明智的决策"
+      },
+      "data": {
+        "title": "实时数据",
+        "description": "访问公共法律数据库的最新信息"
+      }
+    },
+    "stats": {
+      "mediators": "合格调解员",
+      "checks": "冲突检查",
+      "accuracy": "检测准确性"
+    }
+  },
+  "mediators": {
+    "title": "查找调解员",
+    "search": "搜索调解员...",
+    "filter": "筛选",
+    "specialization": "专业领域",
+    "location": "位置",
+    "experience": "经验",
+    "noResults": "未找到调解员",
+    "viewProfile": "查看个人资料",
+    "checkConflict": "检查冲突",
+    "clear": "清除",
+    "red": "高风险",
+    "yellow": "谨慎",
+    "green": "清晰"
+  },
+  "safeguards": {
+    "title": "我们的保障措施",
+    "subtitle": "我们如何确保透明和公正的调解员选择",
+    "dataIntegrity": {
+      "title": "数据完整性",
+      "description": "所有调解员数据均来自公共法律数据库和官方来源的验证"
+    },
+    "conflictDetection": {
+      "title": "冲突检测",
+      "description": "先进的人工智能算法扫描多个数据源的潜在利益冲突"
+    },
+    "transparency": {
+      "title": "透明度",
+      "description": "完全了解调解员的背景、从属关系和案件历史"
+    },
+    "privacy": {
+      "title": "隐私保护",
+      "description": "您的搜索查询和案件详情完全保密"
+    }
+  },
+  "chat": {
+    "title": "人工智能聊天助手",
+    "subtitle": "描述您的法律纠纷",
+    "placeholder": "描述您的调解需求...（例如，'我需要一名调解员处理技术知识产权纠纷'）",
+    "send": "发送",
+    "poweredBy": "由 Hugging Face 提供支持（100% 免费）",
+    "tooltip": "我们的人工智能助手帮助您描述案件并找到完美的调解员。由 Hugging Face 提供支持 - 完全免费！",
+    "parties": "检查冲突的各方/公司：",
+    "partyPlaceholder": "例如，BigLaw LLC",
+    "addParty": "添加",
+    "greeting": "您好！我是您的人工智能助手。我可以帮助您找到适合您案件的调解员。只需用自然语言描述您的需求，我将在我们的数据库中搜索最佳匹配。",
+    "error": "抱歉，我遇到了错误。请重试。",
+    "uploadDocument": "上传文档",
+    "analyzing": "分析中..."
+  },
+  "auth": {
+    "login": "登录",
+    "signup": "注册",
+    "email": "电子邮件",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "没有账户？",
+    "hasAccount": "已有账户？",
+    "loginSuccess": "登录成功",
+    "signupSuccess": "账户创建成功",
+    "error": "发生错误"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "close": "关闭",
+    "confirm": "确认",
+    "yes": "是",
+    "no": "否",
+    "next": "下一个",
+    "previous": "上一个",
+    "submit": "提交",
+    "search": "搜索"
+  },
+  "footer": {
+    "copyright": "© 2026 FairMediator. 保留所有权利。",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "contact": "联系我们"
+  }
+}

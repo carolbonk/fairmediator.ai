@@ -1,12 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import MobileMenu from './MobileMenu';
+import LanguageSwitcher from './LanguageSwitcher';
 import logoBlue from '../images/Fair_Mediator_logoBlue.svg';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await logout();
@@ -46,7 +49,7 @@ const Header = () => {
               to="/safeguards"
               className="px-3 py-2 text-white text-sm font-medium hover:text-gray-300 transition-colors duration-200"
             >
-              Safeguards
+              {t('nav.safeguards')}
             </Link>
 
             {/* Mediators Link - Modern, sleek */}
@@ -54,7 +57,7 @@ const Header = () => {
               to="/mediators"
               className="px-3 py-2 text-white text-sm font-medium hover:text-gray-300 transition-colors duration-200"
             >
-              Mediators
+              {t('nav.mediators')}
             </Link>
 
             {user ? (
@@ -64,14 +67,14 @@ const Header = () => {
                   className="flex items-center gap-1.5 px-3 py-2 text-white text-sm font-medium hover:text-blue-300 transition-colors duration-200"
                 >
                   <FaChartLine className="text-sm" />
-                  <span>Dashboard</span>
+                  <span>{t('nav.dashboard')}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-1.5 px-3 py-2 text-white text-sm font-medium hover:text-red-300 transition-colors duration-200"
                 >
                   <FaSignOutAlt className="text-sm" />
-                  <span>Logout</span>
+                  <span>{t('nav.logout')}</span>
                 </button>
               </>
             ) : (
@@ -80,9 +83,12 @@ const Header = () => {
                 className="flex items-center gap-1.5 px-3 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm font-medium rounded-lg transition-all duration-200"
               >
                 <FaUser className="text-sm" />
-                <span>Login</span>
+                <span>{t('nav.login')}</span>
               </Link>
             )}
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile Menu - Only visible on mobile */}

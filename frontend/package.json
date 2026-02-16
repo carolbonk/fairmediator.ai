@@ -7,9 +7,13 @@
     "@headlessui/react": "^1.7.17",
     "@tailwindcss/container-queries": "^0.1.1",
     "axios": "^1.13.5",
+    "i18next": "^25.8.7",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
+    "react-i18next": "^16.5.4",
     "react-icons": "^4.12.0",
     "react-router-dom": "^7.9.6"
   },
@@ -30,4 +34,3 @@
     "test": "echo \"Frontend tests not yet configured. See TESTING.md for setup.\" && exit 0"
   }
 }
-

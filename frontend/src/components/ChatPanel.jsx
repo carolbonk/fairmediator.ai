@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { FaPaperPlane, FaSpinner } from 'react-icons/fa';
+import { FaPaperPlane } from 'react-icons/fa';
 import { sendChatMessage } from '../services/api';
 import FileUpload from './FileUpload';
 import Tooltip from './Tooltip';
+import CircularLoader from './common/CircularLoader';
 
 const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
   const [messages, setMessages] = useState([
@@ -24,6 +25,31 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
     scrollToBottom();
   }, [messages]);
 
+  const getErrorMessage = (error) => {
+    // Network errors
+    if (error.message === 'Failed to fetch' || error.name === 'NetworkError') {
+      return '🔌 Connection lost. Please check your internet connection and try again.';
+    }
+
+    // API rate limiting
+    if (error.message?.includes('429') || error.message?.includes('rate limit')) {
+      return '⏱️ Too many requests. Please wait a moment and try again.';
+    }
+
+    // Server errors
+    if (error.message?.includes('500') || error.message?.includes('server error')) {
+      return '🔧 Our servers are experiencing issues. Please try again in a few moments.';
+    }
+
+    // Timeout errors
+    if (error.message?.includes('timeout')) {
+      return '⏰ Request timed out. Your query might be too complex. Try simplifying it.';
+    }
+
+    // Generic fallback
+    return '❌ Sorry, something went wrong. Please try again or rephrase your question.';
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -34,7 +60,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
 
     try {
       const response = await sendChatMessage(input, messages);
-      
+
       const assistantMessage = {
         role: 'assistant',
         content: response.message
@@ -47,7 +73,8 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.'
+        content: getErrorMessage(error),
+        isError: true
       }]);
     } finally {
       setLoading(false);
@@ -154,8 +181,8 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
 
         {loading && (
           <div className="flex justify-start animate-fade-in">
-            <div className="bg-neu-100 px-3 py-2 rounded-xl shadow-neu">
-              <FaSpinner className="animate-spin text-blue-500 text-sm" />
+            <div className="bg-neu-100 px-4 py-3 rounded-xl shadow-neu">
+              <CircularLoader />
             </div>
           </div>
         )}
