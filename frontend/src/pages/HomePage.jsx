@@ -179,7 +179,7 @@ const HomePage = () => {
               </div>
             ) : (
               <div>
-                <h3 className="text-xl font-semibold text-neu-800 mb-1 text-center">Case Intake Form</h3>
+                <h3 className="text-xl font-semibold text-neu-800 mb-1 text-center">{t('homepage.caseIntakeTitle')}</h3>
                 <CaseIntakeForm
                   onSubmit={handleCaseIntakeSubmit}
                   onSearchMediators={handleSearchMediatorsFromForm}

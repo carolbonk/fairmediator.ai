@@ -9,10 +9,6 @@ const LanguageSwitcher = () => {
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' },
-    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'pt', name: 'Português', flag: '🇵🇹' },
   ];
 
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -55,19 +51,19 @@ const LanguageSwitcher = () => {
         onKeyDown={(e) => {
           if (e.key === 'Escape') setIsOpen(false);
         }}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex items-center gap-1 px-2 py-2 rounded-lg bg-slate-700 hover:bg-slate-800 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-label="Select language"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <span className="text-xl" role="img" aria-label={currentLanguage.name}>
+        <span className="text-sm leading-none" role="img" aria-label={currentLanguage.name}>
           {currentLanguage.flag}
         </span>
-        <span className="hidden sm:inline text-sm font-medium text-gray-700">
-          {currentLanguage.name}
+        <span className="hidden text-sm font-medium text-white">
+          {currentLanguage.code.toUpperCase()}
         </span>
         <svg
-          className={`w-4 h-4 text-gray-600 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-3 h-3 text-white transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -79,7 +75,7 @@ const LanguageSwitcher = () => {
 
       {isOpen && (
         <ul
-          className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 max-h-64 overflow-y-auto"
+          className="absolute right-0 mt-2 w-40 bg-dark-neu-300 rounded-lg shadow-dark-neu-lg border border-dark-neu-500 py-1 z-50"
           role="listbox"
           aria-label="Language options"
         >
@@ -91,10 +87,10 @@ const LanguageSwitcher = () => {
               role="option"
               aria-selected={currentLanguage.code === language.code}
               tabIndex={0}
-              className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors focus:outline-none focus:bg-blue-50 ${
+              className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors focus:outline-none focus:bg-dark-neu-400 ${
                 currentLanguage.code === language.code
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'hover:bg-gray-100 text-gray-700'
+                  ? 'bg-dark-neu-400 text-blue-400'
+                  : 'hover:bg-dark-neu-400 text-white/80'
               }`}
             >
               <span className="text-xl" role="img" aria-label={language.name}>
@@ -103,7 +99,7 @@ const LanguageSwitcher = () => {
               <span className="text-sm font-medium">{language.name}</span>
               {currentLanguage.code === language.code && (
                 <svg
-                  className="w-4 h-4 ml-auto text-blue-600"
+                  className="w-4 h-4 ml-auto text-blue-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   aria-hidden="true"

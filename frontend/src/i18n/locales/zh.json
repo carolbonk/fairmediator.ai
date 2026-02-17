@@ -6,7 +6,8 @@
     "login": "登录",
     "logout": "登出",
     "signup": "注册",
-    "dashboard": "仪表板"
+    "dashboard": "仪表板",
+    "about": "关于"
   },
   "home": {
     "hero": {
@@ -73,15 +74,71 @@
     "privacy": {
       "title": "隐私保护",
       "description": "您的搜索查询和案件详情完全保密"
+    },
+    "page": {
+      "hero": {
+        "title": "我们如何保护您的调解",
+        "subtitle": "在AI快速发展的世界中，我们构建了一个谨慎行动、保护人们的系统。",
+        "safegate": { "title": "SafeGate协议", "description": "自主审核层，在传递前拦截有害沟通。每条消息都经过威胁和胁迫分析。" },
+        "accuracy": { "title": "94%准确率", "description": "基于10,000+调解记录训练的冲突检测精度，优于仅靠人工的审核。" },
+        "response": { "title": "24小时响应", "description": "伦理投诉在24小时内处理。与我们安全团队直接联系。" }
+      },
+      "tabs": { "ethics": "伦理与标准", "ai": "AI智能" },
+      "ethics": {
+        "govTitle": "我们不是'包装'AI，我们是在治理它。",
+        "govSubtitle": "我们将自己视为您争议中的'第五方'——负责谈判环境的设计者。",
+        "safegateTitle": "SafeGate协议：真正的安全保障",
+        "humanTitle": "人类调解员在哪里？",
+        "standardsTitle": "我们的伦理标准（ICODR 2022）",
+        "standardsSubtitle": "我们与国际在线争议解决委员会的标准保持一致。",
+        "warningTitle": "诚实的真相：AI是概率性的",
+        "activeIntercept": "主动拦截", "brake": "制动踏板", "powerBalance": "权力平衡检测",
+        "thirdParty": "第三方", "fourthParty": "第四方", "virtualFacilitator": "虚拟调解员",
+        "fifthParty": "第五方", "ourRole": "我们的角色", "aiRole": "AI的角色",
+        "standards": [
+          { "name": "可及性", "description": "ODR必须易于查找和使用。", "practice": "我们使用普及平台（移动和短信）确保各方无需昂贵硬件即可参与。" },
+          { "name": "问责制", "description": "系统必须对其结果负责。", "practice": "我们追踪流程完整性，而不仅仅是'成功率'。我们保持完整的审计记录。" },
+          { "name": "能力", "description": "提供商必须具备相关专业知识。", "practice": "我们的AI专注于冲突解决理论，优先考虑程序正义而非速度。" },
+          { "name": "保密性", "description": "数据必须安全且私密。", "practice": "您的数据经过加密和分隔。我们实践信息主权，未经明确同意不会使用您的数据训练模型。" },
+          { "name": "赋权", "description": "各方必须能够做出知情决策。", "practice": "我们使用结果建模帮助您探索最佳替代方案（BATNA），赋予您拒绝不良协议的权力。" },
+          { "name": "平等", "description": "过程必须无偏见。", "practice": "我们追求公正，而非被动的'中立'。我们的AI主动监测权力失衡。" },
+          { "name": "公平", "description": "必须尊重正当程序。", "practice": "我们确保双方有平等的发言机会，防止任何一方垄断谈判。" },
+          { "name": "诚实", "description": "数据和意图必须透明。", "practice": "我们使用'结果'而非'解决'，因为并非每次争议都以协议告终。" },
+          { "name": "透明度", "description": "'第五方'（我们）必须可见。", "practice": "我们披露我们的方法论。您始终知道何时在与AI调解员交谈。" }
+        ]
+      },
+      "ai": {
+        "title": "我们的AI实际上如何工作",
+        "subtitle": "忘记关于'AI驱动洞察'的模糊承诺。这是我们如何检测冲突和预测和解的技术现实。",
+        "technicalDetails": "技术细节", "howItWorks": "工作原理（分步说明）",
+        "realWorldImpact": "现实影响", "freeTitle": "为什么免费（以及我们如何保持免费）",
+        "dataTitle": "我们从哪里获取数据", "transparencyPromise": "透明承诺"
+      },
+      "cta": { "title": "准备好了解各州调解员的差异？", "subtitle": "每个州都有不同的调解规则和伦理标准。", "button": "探索各州差异 →" },
+      "report": { "title": "报告安全问题", "description": "如果您认为调解会议违反了这些标准，请立即联系我们。我们在24小时内回应伦理投诉。", "button": "联系伦理团队" }
     }
+  },
+  "mediatorsPage": {
+    "hero": {
+      "title": "调解员在美国各地的差异",
+      "subtitle": "调解没有联邦监管。每个州都有自己的规则，而且差异很大。以下是我们如何应对这种复杂性。",
+      "states": { "title": "50个州", "description": "我们追踪所有美国司法管辖区的认证要求、伦理标准和利益冲突规则。" },
+      "verified": { "title": "1,000+名调解员", "description": "每位调解员都标有州认证、专业和管辖区特定凭证，确保透明度。" },
+      "bias": { "title": "零偏见", "description": "使用联邦记录在全国范围内进行一致的冲突检测。州界不重要——偏见就是偏见。" }
+    },
+    "patchwork": { "title": "50州调解拼图", "exampleTitle": "真实案例：'40小时问题'" },
+    "regional": { "title": "区域分析", "all": "所有地区", "labels": { "certification": "认证", "courtIntegration": "法院整合", "specialties": "常见专业", "cost": "平均费用", "uniqueRequirement": "特殊要求" } },
+    "complexity": { "title": "我们如何处理这种复杂性", "subtitle": "大多数调解平台只是说'查看您的州律师协会网站'。我们构建了真正解决这个问题的技术。", "challenge": "挑战", "problem": "问题", "solution": "我们的解决方案", "technical": "技术实现" },
+    "aiConsistency": { "title": "保持一致的唯一事物：我们的AI", "subtitle": "虽然各州规则不同，我们的冲突检测和偏见分析在全国范围内以相同方式工作。" },
+    "comingSoon": { "title": "即将推出：特定州的AI功能", "subtitle": "我们正在扩展我们的AI以更好地处理州级变化：" },
+    "cta": { "title": "想了解我们的AI保障措施？", "subtitle": "了解我们的冲突检测、和解预测和偏见分析系统如何真正工作。", "button": "阅读我们的AI文档 →" }
   },
   "chat": {
     "title": "人工智能聊天助手",
     "subtitle": "描述您的法律纠纷",
     "placeholder": "描述您的调解需求...（例如，'我需要一名调解员处理技术知识产权纠纷'）",
     "send": "发送",
-    "poweredBy": "由 Hugging Face 提供支持（100% 免费）",
-    "tooltip": "我们的人工智能助手帮助您描述案件并找到完美的调解员。由 Hugging Face 提供支持 - 完全免费！",
+    "tooltip": "我们的人工智能助手帮助您描述案件并找到完美的调解员。",
     "parties": "检查冲突的各方/公司：",
     "partyPlaceholder": "例如，BigLaw LLC",
     "addParty": "添加",

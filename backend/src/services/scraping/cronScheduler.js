@@ -3,6 +3,7 @@ const mediatorScraper = require('./mediatorScraper');
 const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
 const SREAgent = require('../../../.ai/sre/agent');
+const { monitor } = require('../../utils/freeTierMonitor');
 
 class CronScheduler {
   constructor() {
@@ -124,6 +125,34 @@ class CronScheduler {
   }
 
   /**
+   * Schedule daily free tier counter reset
+   * Runs every day at midnight UTC
+   */
+  scheduleFreeTierReset() {
+    const job = cron.schedule('0 0 * * *', async () => {
+      console.log('🔄 Resetting daily free tier counters...');
+
+      try {
+        // Log usage before reset
+        const stats = monitor.getStats();
+        Object.entries(stats).forEach(([, s]) => {
+          if (s.dailyLimit) {
+            console.log(`  ${s.name}: ${s.current || 0} / ${s.dailyLimit} (${s.percentage || 0}%)`);
+          }
+        });
+
+        monitor.resetDaily();
+        console.log('✅ Free tier daily counters reset');
+      } catch (error) {
+        console.error('❌ Free tier reset error:', error.message);
+      }
+    }, { timezone: 'UTC' });
+
+    this.jobs.push({ name: 'freeTierReset', job });
+    console.log('✅ Scheduled daily free tier reset (midnight UTC)');
+  }
+
+  /**
    * Start all scheduled jobs
    */
   startAll() {
@@ -131,6 +160,7 @@ class CronScheduler {
     this.scheduleDailyRefresh();
     this.scheduleWeeklySREAgent();
     this.scheduleWeeklyAffiliationAnalysis();
+    this.scheduleFreeTierReset();
     console.log(`✅ ${this.jobs.length} cron jobs scheduled\n`);
   }
 

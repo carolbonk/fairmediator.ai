@@ -376,15 +376,15 @@ const MediatorList = ({ parties }) => {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="w-[85%] sm:w-[80%] lg:w-[75%] max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden flex flex-col"
+            className="w-[92%] sm:w-[80%] lg:w-[75%] max-h-[85vh] bg-dark-neu-300 rounded-2xl shadow-dark-neu-lg overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="border-b border-neu-200 px-8 py-6 bg-neu-100 flex items-center justify-between flex-shrink-0">
+            <div className="border-b border-dark-neu-500 px-4 sm:px-8 py-4 sm:py-5 bg-dark-neu-300 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-semibold text-neu-800">
+                <h2 className="text-lg sm:text-xl font-semibold text-white">
                   {activeTab === 'liberal' ? 'Liberal' : activeTab === 'moderated' ? 'Moderated' : 'Conservative'} Mediators
-                  <span className="ml-3 text-lg font-medium text-neu-600">
+                  <span className="ml-2 text-base font-medium text-white/60">
                     ({activeTab === 'liberal' ? filteredLiberalCount : activeTab === 'moderated' ? filteredModeratedCount : filteredConservativeCount})
                   </span>
                 </h2>
@@ -394,16 +394,16 @@ const MediatorList = ({ parties }) => {
                   setShowModal(false);
                   setCurrentPage(modalPage);
                 }}
-                className="w-10 h-10 rounded-full shadow-neu bg-neu-100 hover:shadow-neu-lg transition-all flex items-center justify-center text-neu-600 hover:text-neu-800"
+                className="w-9 h-9 rounded-full bg-dark-neu-400 hover:bg-dark-neu-500 border border-dark-neu-500 transition-all flex items-center justify-center text-white"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Modal Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto px-8 py-6">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6">
               {(() => {
                 const currentMediators = activeTab === 'liberal' ? liberal : activeTab === 'moderated' ? moderated : conservative;
                 const filteredMediators = applyFilters(currentMediators);
@@ -432,7 +432,7 @@ const MediatorList = ({ parties }) => {
             </div>
 
             {/* Modal Footer with Pagination - Fixed at Bottom */}
-            <div className="border-t border-neu-200 px-8 py-3 bg-neu-100 flex-shrink-0">
+            <div className="border-t border-dark-neu-500 px-4 sm:px-8 py-3 bg-dark-neu-300 flex-shrink-0">
               {(() => {
                 const currentMediators = activeTab === 'liberal' ? liberal : activeTab === 'moderated' ? moderated : conservative;
                 const filteredMediators = applyFilters(currentMediators);
@@ -445,7 +445,7 @@ const MediatorList = ({ parties }) => {
                         setShowModal(false);
                         setCurrentPage(modalPage);
                       }}
-                      className="px-4 py-2 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+                      className="px-4 py-2 rounded-xl text-sm font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all"
                     >
                       Close
                     </button>
@@ -455,7 +455,7 @@ const MediatorList = ({ parties }) => {
                         <button
                           onClick={() => setModalPage(prev => Math.max(1, prev - 1))}
                           disabled={modalPage === 1}
-                          className="px-3 py-1.5 rounded-xl text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-3 py-1.5 rounded-xl text-xs font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           Previous
                         </button>
@@ -465,10 +465,10 @@ const MediatorList = ({ parties }) => {
                             <button
                               key={i}
                               onClick={() => setModalPage(i + 1)}
-                              className={`w-8 h-8 rounded-xl text-xs font-medium transition-all ${
+                              className={`w-8 h-8 rounded-xl text-xs font-medium transition-all border ${
                                 modalPage === i + 1
-                                  ? 'shadow-neu-inset bg-neu-200 text-neu-800'
-                                  : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+                                  ? 'bg-blue-600 text-white border-blue-500'
+                                  : 'bg-dark-neu-400 text-white/70 border-dark-neu-500 hover:bg-dark-neu-500'
                               }`}
                             >
                               {i + 1}
@@ -479,7 +479,7 @@ const MediatorList = ({ parties }) => {
                         <button
                           onClick={() => setModalPage(prev => Math.min(totalPages, prev + 1))}
                           disabled={modalPage === totalPages}
-                          className="px-3 py-1.5 rounded-xl text-xs font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-3 py-1.5 rounded-xl text-xs font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           Next
                         </button>
@@ -503,14 +503,14 @@ const MediatorList = ({ parties }) => {
           }}
         >
           <div
-            className="w-[85%] sm:w-[90%] max-w-4xl max-h-[85vh] bg-neu-100 rounded-2xl shadow-neu-lg overflow-hidden flex flex-col"
+            className="w-[92%] sm:w-[90%] max-w-4xl max-h-[85vh] bg-dark-neu-300 rounded-2xl shadow-dark-neu-lg overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="border-b border-neu-200 px-8 py-6 bg-gradient-to-r from-neu-100 to-neu-200 flex-shrink-0">
+            <div className="border-b border-dark-neu-500 px-4 sm:px-8 py-4 sm:py-5 bg-dark-neu-300 flex-shrink-0">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h2 className="text-3xl font-bold text-neu-800 mb-2">{selectedMediator.name}</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">{selectedMediator.name}</h2>
                   <div className="flex items-center gap-4">
                     <StarRating rating={selectedMediator.rating} totalMediations={selectedMediator.totalMediations} />
                     {selectedMediator.ideologyScore !== undefined && (
@@ -531,9 +531,9 @@ const MediatorList = ({ parties }) => {
                     setShowMediatorDetail(false);
                     setSelectedMediator(null);
                   }}
-                  className="w-12 h-12 rounded-full shadow-neu bg-neu-100 hover:shadow-neu-lg transition-all flex items-center justify-center text-neu-600 hover:text-neu-800"
+                  className="w-9 h-9 rounded-full bg-dark-neu-400 hover:bg-dark-neu-500 border border-dark-neu-500 transition-all flex items-center justify-center text-white flex-shrink-0"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -541,30 +541,30 @@ const MediatorList = ({ parties }) => {
             </div>
 
             {/* Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto px-8 py-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 sm:py-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Left Column - Details */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Basic Info */}
-                  <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                    <h3 className="text-lg font-semibold text-neu-800 mb-4">Mediator Information</h3>
-                    <div className="space-y-3">
+                  <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                    <h3 className="text-sm font-semibold text-white mb-3">Mediator Information</h3>
+                    <div className="space-y-2">
                       {selectedMediator.location && (
                         <div className="flex items-center gap-3">
-                          <FaMapMarkerAlt className="text-neu-400 text-lg" />
-                          <span className="text-neu-700">{selectedMediator.location.city}, {selectedMediator.location.state}</span>
+                          <FaMapMarkerAlt className="text-white/40 text-base flex-shrink-0" />
+                          <span className="text-white/80 text-sm">{selectedMediator.location.city}, {selectedMediator.location.state}</span>
                         </div>
                       )}
                       {selectedMediator.yearsExperience && (
                         <div className="flex items-center gap-3">
-                          <FaBriefcase className="text-neu-400 text-lg" />
-                          <span className="text-neu-700">{selectedMediator.yearsExperience} years of experience</span>
+                          <FaBriefcase className="text-white/40 text-base flex-shrink-0" />
+                          <span className="text-white/80 text-sm">{selectedMediator.yearsExperience} years of experience</span>
                         </div>
                       )}
                       {selectedMediator.hourlyRate && (
                         <div className="flex items-center gap-3">
-                          <FaDollarSign className="text-neu-400 text-lg" />
-                          <span className="text-neu-700 font-semibold">${selectedMediator.hourlyRate}/hour</span>
+                          <FaDollarSign className="text-white/40 text-base flex-shrink-0" />
+                          <span className="text-white font-semibold text-sm">${selectedMediator.hourlyRate}/hour</span>
                         </div>
                       )}
                     </div>
@@ -572,11 +572,11 @@ const MediatorList = ({ parties }) => {
 
                   {/* Practice Areas */}
                   {selectedMediator.practiceAreas && selectedMediator.practiceAreas.length > 0 && (
-                    <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                      <h3 className="text-lg font-semibold text-neu-800 mb-4">Practice Areas</h3>
+                    <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                      <h3 className="text-sm font-semibold text-white mb-3">Practice Areas</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedMediator.practiceAreas.map((area, i) => (
-                          <span key={i} className="px-4 py-2 text-sm bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 rounded-lg shadow-neu-sm font-medium">
+                          <span key={i} className="px-3 py-1.5 text-xs bg-dark-neu-500 text-white/80 rounded-lg border border-dark-neu-400 font-medium">
                             {area}
                           </span>
                         ))}
@@ -586,12 +586,12 @@ const MediatorList = ({ parties }) => {
 
                   {/* Certifications */}
                   {selectedMediator.certifications && selectedMediator.certifications.length > 0 && (
-                    <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                      <h3 className="text-lg font-semibold text-neu-800 mb-4">Certifications</h3>
+                    <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                      <h3 className="text-sm font-semibold text-white mb-3">Certifications</h3>
                       <ul className="space-y-2">
                         {selectedMediator.certifications.map((cert, i) => (
-                          <li key={i} className="flex items-center gap-2 text-neu-700">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                          <li key={i} className="flex items-center gap-2 text-white/80 text-sm">
+                            <span className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></span>
                             {cert}
                           </li>
                         ))}
@@ -601,20 +601,20 @@ const MediatorList = ({ parties }) => {
 
                   {/* Bio */}
                   {selectedMediator.bio && (
-                    <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                      <h3 className="text-lg font-semibold text-neu-800 mb-3">About</h3>
-                      <p className="text-neu-700 leading-relaxed">{selectedMediator.bio}</p>
+                    <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                      <h3 className="text-sm font-semibold text-white mb-2">About</h3>
+                      <p className="text-white/70 leading-relaxed text-sm">{selectedMediator.bio}</p>
                     </div>
                   )}
 
                   {/* Affiliation Warning */}
                   {affiliationFlags[selectedMediator._id] && (
-                    <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-5 shadow-neu">
+                    <div className="bg-yellow-900/40 border border-yellow-500/50 rounded-xl p-4">
                       <div className="flex items-start gap-3">
-                        <span className="text-2xl">⚠️</span>
+                        <span className="text-xl flex-shrink-0">⚠️</span>
                         <div>
-                          <h3 className="text-lg font-semibold text-yellow-800 mb-2">Potential Conflict of Interest</h3>
-                          <p className="text-yellow-700">This mediator may have affiliations with parties in your case. Please review carefully before proceeding.</p>
+                          <h3 className="text-sm font-semibold text-yellow-300 mb-1">Potential Conflict of Interest</h3>
+                          <p className="text-yellow-200/80 text-xs">This mediator may have affiliations with parties in your case. Please review carefully before proceeding.</p>
                         </div>
                       </div>
                     </div>
@@ -622,33 +622,32 @@ const MediatorList = ({ parties }) => {
                 </div>
 
                 {/* Right Column - Availability & Booking */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Free Video Call */}
-                  <div className="bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl p-6 shadow-neu-lg text-white">
-                    <h3 className="text-xl font-bold mb-3">Free 15-Minute Video Consultation</h3>
-                    <p className="mb-5 text-blue-50">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
+                  <div className="bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl p-4 text-white border border-blue-600/30">
+                    <h3 className="text-base font-bold mb-2">Free 15-Minute Video Consultation</h3>
+                    <p className="mb-4 text-blue-200 text-sm">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
                     <button
                       onClick={() => trackSelection(selectedMediator, 'scheduled_call')}
-                      className="w-full bg-white text-blue-600 font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                      className="w-full bg-white text-blue-700 font-bold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm"
                     >
                       Schedule Free Consultation
                     </button>
                   </div>
 
                   {/* Availability Calendar */}
-                  <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                    <h3 className="text-lg font-semibold text-neu-800 mb-4 flex items-center gap-2">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                    <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       Upcoming Availability
                     </h3>
-                    <div className="space-y-3">
-                      {/* Mock availability slots */}
+                    <div className="space-y-2">
                       {['Monday, Jan 22 - 2:00 PM', 'Tuesday, Jan 23 - 10:00 AM', 'Wednesday, Jan 24 - 3:30 PM', 'Thursday, Jan 25 - 1:00 PM', 'Friday, Jan 26 - 11:00 AM'].map((slot, i) => (
                         <button
                           key={i}
-                          className="w-full text-left px-4 py-3 bg-neu-100 rounded-lg shadow-neu hover:shadow-neu-lg transition-all text-neu-700 font-medium"
+                          className="w-full text-left px-3 py-2.5 bg-dark-neu-500 rounded-lg hover:bg-dark-neu-400 transition-all text-white/80 text-xs font-medium border border-dark-neu-400"
                         >
                           {slot}
                         </button>
@@ -657,29 +656,29 @@ const MediatorList = ({ parties }) => {
                   </div>
 
                   {/* Contact Info */}
-                  <div className="bg-neu-200 rounded-xl p-5 shadow-neu">
-                    <h3 className="text-lg font-semibold text-neu-800 mb-4">Contact Information</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-neu-700">
-                        <svg className="w-5 h-5 text-neu-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-dark-neu-400 rounded-xl p-4 border border-dark-neu-500">
+                    <h3 className="text-sm font-semibold text-white mb-3">Contact Information</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 text-white/70">
+                        <svg className="w-4 h-4 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        <span>{selectedMediator.name.toLowerCase().replace(' ', '.')}@fairmediator.com</span>
+                        <span className="text-xs">{selectedMediator.name.toLowerCase().replace(' ', '.')}@fairmediator.com</span>
                       </div>
-                      <div className="flex items-center gap-3 text-neu-700">
-                        <svg className="w-5 h-5 text-neu-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex items-center gap-3 text-white/70">
+                        <svg className="w-4 h-4 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
-                        <span>(555) {Math.floor(Math.random() * 900 + 100)}-{Math.floor(Math.random() * 9000 + 1000)}</span>
+                        <span className="text-xs">(555) {Math.floor(Math.random() * 900 + 100)}-{Math.floor(Math.random() * 9000 + 1000)}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Response Time */}
-                  <div className="bg-green-50 border-2 border-green-300 rounded-xl p-4 shadow-neu">
+                  <div className="bg-green-900/30 border border-green-500/40 rounded-xl p-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-green-800 font-semibold">Usually responds within 24 hours</span>
+                      <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse flex-shrink-0"></div>
+                      <span className="text-green-300 font-semibold text-sm">Usually responds within 24 hours</span>
                     </div>
                   </div>
                 </div>
@@ -687,19 +686,19 @@ const MediatorList = ({ parties }) => {
             </div>
 
             {/* Footer - Fixed at Bottom */}
-            <div className="border-t border-neu-200 px-8 py-5 bg-neu-100 flex items-center justify-between flex-shrink-0">
+            <div className="border-t border-dark-neu-500 px-4 sm:px-8 py-4 bg-dark-neu-300 flex items-center justify-between flex-shrink-0">
               <button
                 onClick={() => {
                   setShowMediatorDetail(false);
                   setSelectedMediator(null);
                 }}
-                className="px-6 py-2.5 rounded-xl text-sm font-medium shadow-neu bg-neu-100 text-neu-700 hover:shadow-neu-lg transition-all"
+                className="px-5 py-2.5 rounded-xl text-sm font-medium bg-dark-neu-400 text-white hover:bg-dark-neu-500 border border-dark-neu-500 transition-all"
               >
                 Close
               </button>
               <button
                 onClick={() => trackSelection(selectedMediator, 'hired')}
-                className="px-8 py-2.5 rounded-xl text-sm font-bold shadow-neu-lg bg-gradient-to-br from-slate-600 to-slate-800 text-white hover:shadow-neu-lg hover:scale-105 transition-all"
+                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg"
               >
                 Book Paid Session
               </button>

@@ -10,6 +10,11 @@ const { monitor } = require('../../utils/freeTierMonitor');
  * Call Hugging Face API with retry logic
  */
 async function callAPI(model, payload, retryCount = 0) {
+  // Kill switch: set AI_MODE=off to disable all HuggingFace calls instantly
+  if (process.env.AI_MODE === 'off') {
+    throw new Error('AI features are currently disabled (AI_MODE=off).');
+  }
+
   try {
     // Track HuggingFace API usage for free tier monitoring
     const allowed = monitor.track('huggingface');

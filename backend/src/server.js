@@ -48,8 +48,9 @@ const settlementRoutes = require('./routes/settlement');
 const settlementWrapperRoutes = require('./routes/settlement_wrapper'); // Simplified settlement predictor
 const dataPopulationRoutes = require('./routes/dataPopulation'); // Data population status API
 
-// Import cron scheduler
+// Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
+const { monitor } = require('./utils/freeTierMonitor');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -198,9 +199,12 @@ const mongooseOptions = {
 // Connect to MongoDB (skip in test mode - tests use MongoDB Memory Server)
 if (process.env.NODE_ENV !== 'test') {
   mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
-  .then(() => {
+  .then(async () => {
     logger.info('MongoDB connected successfully');
     console.log('MongoDB connected successfully');
+
+    // Restore today's free tier quota counts from MongoDB after restart
+    await monitor.initFromDB();
   })
   .catch(err => {
     logger.error('MongoDB connection error', { error: err.message, stack: err.stack });

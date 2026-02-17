@@ -33,35 +33,34 @@ const Tooltip = memo(({ text, position = 'top' }) => {
 
       {show && (
         <div
-          className={`absolute ${positionClasses[position]} z-50 animate-fade-in`}
-          style={{ width: '300px' }}
+          className={`absolute ${positionClasses[position]} z-50 animate-fade-in w-max max-w-[220px]`}
         >
-          {/* Neumorphism tooltip card */}
-          <div className="relative bg-neu-100 rounded-2xl shadow-neu-lg p-4 border border-neu-200">
+          {/* Dark tooltip card */}
+          <div className="relative bg-dark-neu-300 rounded-xl shadow-dark-neu-lg px-3 py-2 border border-dark-neu-500">
             {/* Content */}
-            <p className="text-xs leading-relaxed text-neu-700 font-medium break-words overflow-wrap-anywhere">
+            <p className="text-xs leading-relaxed text-white/80 font-medium break-words">
               {text}
             </p>
 
             {/* Arrow indicator based on position */}
             {position === 'top' && (
               <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
-                <div className="w-3 h-3 bg-neu-100 border-r border-b border-neu-200 transform rotate-45"></div>
+                <div className="w-3 h-3 bg-dark-neu-300 border-r border-b border-dark-neu-500 transform rotate-45"></div>
               </div>
             )}
             {position === 'bottom' && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 -mb-1">
-                <div className="w-3 h-3 bg-neu-100 border-l border-t border-neu-200 transform rotate-45"></div>
+                <div className="w-3 h-3 bg-dark-neu-300 border-l border-t border-dark-neu-500 transform rotate-45"></div>
               </div>
             )}
             {position === 'left' && (
               <div className="absolute left-full top-1/2 -translate-y-1/2 -ml-1">
-                <div className="w-3 h-3 bg-neu-100 border-t border-r border-neu-200 transform rotate-45"></div>
+                <div className="w-3 h-3 bg-dark-neu-300 border-t border-r border-dark-neu-500 transform rotate-45"></div>
               </div>
             )}
             {position === 'right' && (
               <div className="absolute right-full top-1/2 -translate-y-1/2 -mr-1">
-                <div className="w-3 h-3 bg-neu-100 border-b border-l border-neu-200 transform rotate-45"></div>
+                <div className="w-3 h-3 bg-dark-neu-300 border-b border-l border-dark-neu-500 transform rotate-45"></div>
               </div>
             )}
           </div>
