@@ -136,7 +136,7 @@ const BulkConflictChecker = ({ onResultsUpdate, compact = false }) => {
           onDrop={handleDrop}
         >
           {compact ? (
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center justify-center gap-2 mb-3">
               <h3 className="text-xs font-semibold text-neu-700">
                 Bulk Conflict Checker
               </h3>

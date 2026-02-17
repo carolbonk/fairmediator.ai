@@ -289,7 +289,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
 
         {/* Ideology Filter integrated into Conflict Risk */}
         <div className="mb-5">
-          <label className="block text-sm font-semibold text-neu-700 mb-3 flex items-center gap-1.5">
+          <label className="block text-sm font-semibold text-neu-700 mb-3 flex items-center justify-center gap-1.5">
             Filter by Mediator Ideology
             <Tooltip text="Select a mediator ideology to see how it affects conflict risk. Neutral mediators typically reduce risk, while ideologically mismatched mediators may increase it." position="right" />
           </label>
@@ -494,70 +494,72 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
       {/* Waitlist Modal */}
       {showWaitlist && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fade-in p-0 sm:p-4"
           onClick={() => setShowWaitlist(false)}
         >
           <div
-            className="bg-gray-50 rounded-3xl shadow-neumorphic max-w-md w-full mx-4 p-8"
+            className="bg-dark-neu-300 rounded-t-2xl sm:rounded-2xl shadow-dark-neu-lg w-full sm:max-w-md max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">Join the Waitlist</h2>
-              <p className="text-gray-600">Be the first to access AI-powered mediator matching</p>
+            <div className="p-5 sm:p-8">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Join the Waitlist</h2>
+                <p className="text-white/70">Be the first to access AI-powered mediator matching</p>
+              </div>
+
+              <form onSubmit={handleWaitlistSubmit} className="space-y-4 sm:space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={waitlistForm.name}
+                    onChange={(e) => setWaitlistForm({...waitlistForm, name: e.target.value})}
+                    className="w-full px-4 py-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-white/40 transition-all"
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={waitlistForm.email}
+                    onChange={(e) => setWaitlistForm({...waitlistForm, email: e.target.value})}
+                    className="w-full px-4 py-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-white/40 transition-all"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Deadline</label>
+                  <textarea
+                    required
+                    value={waitlistForm.deadline}
+                    onChange={(e) => setWaitlistForm({...waitlistForm, deadline: e.target.value})}
+                    className="w-full px-4 py-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white placeholder-white/40 transition-all min-h-[80px] resize-none"
+                    placeholder="When do you need a mediator? Any specific requirements?"
+                  ></textarea>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowWaitlist(false)}
+                    className="flex-1 py-3 px-4 bg-dark-neu-500 text-white font-semibold rounded-xl border border-dark-neu-400 hover:bg-dark-neu-400 transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
+                  >
+                    Join Waitlist
+                  </button>
+                </div>
+              </form>
             </div>
-
-            <form onSubmit={handleWaitlistSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                <input
-                  type="text"
-                  required
-                  value={waitlistForm.name}
-                  onChange={(e) => setWaitlistForm({...waitlistForm, name: e.target.value})}
-                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all"
-                  placeholder="Your full name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  required
-                  value={waitlistForm.email}
-                  onChange={(e) => setWaitlistForm({...waitlistForm, email: e.target.value})}
-                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all"
-                  placeholder="your@email.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Deadline</label>
-                <textarea
-                  required
-                  value={waitlistForm.deadline}
-                  onChange={(e) => setWaitlistForm({...waitlistForm, deadline: e.target.value})}
-                  className="w-full px-4 py-3 bg-gray-50 rounded-2xl shadow-neumorphic-inset border-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all min-h-[100px] resize-none"
-                  placeholder="When do you need a mediator? Any specific requirements?"
-                ></textarea>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowWaitlist(false)}
-                  className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-semibold rounded-2xl shadow-neumorphic hover:shadow-neumorphic-lg transition-all duration-200"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-3 px-4 bg-dark-neu-400 text-white font-semibold rounded-2xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all duration-200 border border-dark-neu-200"
-                >
-                  Join Waitlist
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

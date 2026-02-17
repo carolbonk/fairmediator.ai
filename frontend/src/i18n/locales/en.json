@@ -6,7 +6,11 @@
     "login": "Login",
     "logout": "Logout",
     "signup": "Sign Up",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "about": "About",
+    "settings": "Settings",
+    "brandName": "Fair Mediator",
+    "tagline": "Intelligent Mediator Matching & Screening Platform"
   },
   "home": {
     "hero": {
@@ -73,22 +77,332 @@
     "privacy": {
       "title": "Privacy Protection",
       "description": "Your search queries and case details remain completely confidential"
+    },
+    "page": {
+      "hero": {
+        "title": "How We Protect Your Mediation",
+        "subtitle": "In a world where AI moves fast and breaks things, we've built a system that moves carefully and protects people.",
+        "safegate": { "title": "SafeGate Protocol", "description": "Autonomous moderation layer that intercepts toxic communication before delivery. Every message analyzed for threats and coercion." },
+        "accuracy": { "title": "94% Accuracy", "description": "Conflict detection precision trained on 10,000+ mediation transcripts. Better than human-only moderation at scale." },
+        "response": { "title": "24hr Response", "description": "Ethics complaints handled within 24 hours. Direct line to our safety team for urgent mediation concerns." }
+      },
+      "tabs": { "ethics": "Ethics & Standards", "ai": "AI Intelligence" },
+      "ethics": {
+        "govTitle": "We Don't \"Wrap\" AI. We Govern It.",
+        "govSubtitle": "Most AI companies slap a chatbot interface on GPT-4 and call it a day. We view ourselves as the \"Fifth Party\" in your dispute — the architects responsible for the environment in which you negotiate.",
+        "safegateTitle": "The SafeGate Protocol: A True Fail-Safe",
+        "humanTitle": "Where is the Human Mediator?",
+        "standardsTitle": "Our Ethical Standards (ICODR 2022)",
+        "standardsSubtitle": "We align with the International Council for Online Dispute Resolution standards. Here's how abstract principles become actual code:",
+        "warningTitle": "The Honest Truth: AI is Probabilistic",
+        "activeIntercept": "Active Intercept",
+        "brake": "The Brake Pedal",
+        "powerBalance": "Power Balance Detection",
+        "thirdParty": "Third Party",
+        "fourthParty": "Fourth Party",
+        "virtualFacilitator": "Virtual Facilitator",
+        "fifthParty": "Fifth Party",
+        "ourRole": "Our Role",
+        "aiRole": "The AI's Role",
+        "safegateOnLoop": "Most AI agents operate \"On the Loop\"—they generate text instantly, hoping you'll catch errors. That's fast, but dangerous when lives and livelihoods are at stake.",
+        "safegateProprietary": "FairMediator.AI runs on SafeGate, a proprietary autonomous moderation layer that forces our system \"In the Loop\" whenever risk is detected. Think of it as a circuit breaker for toxic communication.",
+        "activeInterceptDesc": "Every message is analyzed for threats, coercion, intimidation, and self-harm signals before delivery.",
+        "brakeDesc": "If SafeGate flags a violation, mediation stops. The sender must rewrite or end the session. No guessing.",
+        "powerBalanceDesc": "We scan for subtle dominance tactics—not just profanity, but patterns that silence negotiation.",
+        "technicalNote": "Technical note: SafeGate uses a secondary LLM fine-tuned on 10,000+ mediation transcripts to detect coercion with 94% precision. It's not perfect, but it's better than human-only moderation at scale.",
+        "humanMediatorText1": "Traditional mediation has a",
+        "humanMediatorText2": "(human mediator) and a",
+        "humanMediatorText3": "(technology like Zoom). We combine these into a single",
+        "humanMediatorText4": "—but we (the developers) remain the",
+        "ourRoleDesc": "We design the SafeGate architecture that governs the AI. We're the constitutional framers of your mediation environment.",
+        "aiRoleDesc": "It acts as an impartial guide within our ethical boundaries. It has no agency—it's a tool, not a decision-maker.",
+        "humanMediatorFunFact": "Fun fact: The AI doesn't \"want\" anything. It can't be bribed, intimidated, or fatigued. It just follows the rules we coded. That's actually its superpower.",
+        "warningPara1": "We use Large Language Models. They're pattern-matching machines, not truth oracles. While we aggressively tune for accuracy, \"hallucinations\" (confident BS) can still happen.",
+        "warningPara2Label": "Your Responsibility:",
+        "warningPara2": "Verify all settlement terms, dates, and legal claims before signing anything. The AI provides process guidance, not legal advice.",
+        "warningPara3Label": "Limitation of Liability:",
+        "warningPara3": "We provide the negotiation platform (Process Integrity). We're not liable for the substance of agreements you reach. Read your contracts.",
+        "warningTranslation": "Translation: We built a really good mediator robot. But you're still a human making human decisions. Act accordingly.",
+        "standards": [
+          { "name": "Accessibility", "description": "ODR must be easy to find and use.", "practice": "We use ubiquitous platforms (Mobile & SMS) to ensure parties can participate without expensive hardware. We do not assume high technical literacy." },
+          { "name": "Accountability", "description": "The system must be answerable for its outcomes.", "practice": "We track Process Integrity, not just \"Success Rates.\" If a dispute ends because of a safety violation, we log it as a \"Protective Pause,\" not a failure. We maintain a full audit trail." },
+          { "name": "Competence", "description": "The provider must have relevant expertise.", "practice": "Our AI is specialized in conflict resolution theory, prioritizing Procedural Justice over speed. It is tuned to minimize fabrication and ask for clarification rather than guess." },
+          { "name": "Confidentiality", "description": "Data must be secure and private.", "practice": "Your data is encrypted and compartmentalized. We practice Informational Sovereignty — we do not train our public models on your private dispute details without explicit consent." },
+          { "name": "Empowerment", "description": "Parties must be able to make informed decisions.", "practice": "We use Outcome Modeling to help you explore your \"Best Alternative to a Negotiated Agreement\" (BATNA). We empower you to say \"No\" to a bad deal." },
+          { "name": "Equality", "description": "The process must be free of bias.", "practice": "We strive for Impartiality, not passive \"Neutrality.\" Our AI actively monitors for power imbalances to ensure neither side dominates the conversation." },
+          { "name": "Fairness", "description": "Due process must be respected.", "practice": "We ensure both parties have equal opportunity to speak. Our \"Turn-Taking\" architecture prevents one party from filibustering the negotiation." },
+          { "name": "Honesty", "description": "Data and intentions must be transparent.", "practice": "We use the term \"Outcome,\" not \"Resolution,\" because not every dispute ends in agreement. We do not promise legal binding authority where none exists." },
+          { "name": "Transparency", "description": "The \"Fifth Party\" (us) must be visible.", "practice": "We disclose our methodology. You always know when you are speaking to the AI Facilitator. We clearly mark generated suggestions as \"Proposals,\" not legal rulings." }
+        ]
+      },
+      "ai": {
+        "title": "How Our AI Actually Works",
+        "subtitle": "Forget vague promises about \"AI-powered insights.\" Here's the technical reality of how we detect conflicts, predict settlements, and analyze mediator bias — all while staying 100% free tier.",
+        "technicalDetails": "The Technical Details",
+        "howItWorks": "How It Works (Step-by-Step)",
+        "realWorldImpact": "Real-World Impact",
+        "freeTitle": "Why This is Free (And How We Keep It That Way)",
+        "dataTitle": "Where We Get Our Data",
+        "transparencyPromise": "Transparency Promise",
+        "costIntroLabel": "Zero API Costs:",
+        "costIntro": "We use free-tier APIs exclusively:",
+        "costApis": [
+          "FEC API (campaign finance) – FREE, no rate limits",
+          "RECAP/CourtListener (federal court records) – FREE, 5,000 requests/day",
+          "OpenSecrets API (lobbying data) – FREE with attribution",
+          "MongoDB Atlas (database) – FREE M0 tier (512MB)",
+          "Self-Hosted ML Models – We train once, serve forever (no per-request charges)"
+        ],
+        "costFunFact": "We're geeks who love optimization challenges. Building a $0/month AI conflict detector? That's our kind of puzzle.",
+        "transparencyNote": "If we ever charge for premium features, core conflict detection will ALWAYS remain free. You'll never pay to find out a mediator is biased.",
+        "dataIntro": "All our data comes from public federal records. No shady scraping, no privacy violations. Here's the exact sources:",
+        "dataSources": [
+          { "title": "FEC Campaign Finance", "description": "Who donated to which political campaigns. Updated monthly by the Federal Election Commission." },
+          { "title": "RECAP Court Records", "description": "Federal court case filings. Maintained by Free Law Project (non-profit)." },
+          { "title": "DOJ Press Releases", "description": "Department of Justice settlement announcements. Public domain." },
+          { "title": "OpenSecrets Lobbying", "description": "Corporate lobbying disclosures. Aggregated by Center for Responsive Politics." }
+        ],
+        "dataNote": "Note: LinkedIn data is manually provided by users, not scraped. We respect robots.txt.",
+        "features": [
+          {
+            "title": "Conflict Graph Intelligence",
+            "description": "When you select a mediator, we don't just check their LinkedIn—we analyze hidden networks.",
+            "technical": "Our graph database traces relationships across 6 degrees of connection: employment history, shared court cases, co-authored publications, campaign donations, and conference attendance. Think of it as \"Six Degrees of Kevin Bacon,\" but for detecting bias in legal professionals.",
+            "howItWorks": [
+              "We scrape public federal records: FEC campaign finance data, RECAP court filings, and DOJ lobbying disclosures",
+              "Every relationship gets a weighted risk score (working at the same firm = 10 points, attending the same conference = 5 points)",
+              "If a mediator has a total score >15 with your opposing counsel, you get a RED flag",
+              "We cache results for 7 days, so checking conflicts is instant"
+            ],
+            "impact": "In pilot testing, we discovered 3 out of 10 \"neutral\" mediators had previously worked at the opposing firm—relationships invisible on their public profiles."
+          },
+          {
+            "title": "Settlement Range Predictions",
+            "description": "Ever wonder what your case is actually worth? Our ML model has analyzed 500+ False Claims Act settlements.",
+            "technical": "We built a Random Forest Regressor trained on DOJ press releases spanning 5 years. The model considers 12 features including fraud type, industry, damages claimed, jurisdiction, and whether a whistleblower is involved. It predicts the 25th, 50th, and 75th percentile settlement amounts.",
+            "howItWorks": [
+              "We adjust historical settlements for inflation to 2024 dollars",
+              "The model learns that healthcare fraud settles differently than defense contractor fraud",
+              "Whistleblower cases get a ~15% boost in predicted settlement (data-proven)",
+              "You get three numbers: conservative, likely, and optimistic settlement ranges"
+            ],
+            "impact": "Average prediction accuracy: 82% R² score, meaning we're within 18% of actual settlements. That's better than most lawyers' gut estimates."
+          },
+          {
+            "title": "Case Outcome Pattern Analysis",
+            "description": "This is the nuclear option: we track how often opposing counsel WINS when they're in front of specific mediators.",
+            "technical": "We parse federal court RECAP data to determine case outcomes (settlement, dismissal, judgment). If your opposing counsel has won 75%+ of cases with a specific mediator, that's not coincidence—that's statistical bias.",
+            "howItWorks": [
+              "We categorize outcomes: plaintiff win, defendant win, settlement, dismissal",
+              "We calculate win rates only when there are 3+ cases (statistical significance)",
+              "We flag mediators where opposing counsel has >60% win rate",
+              "This gets the highest weight (0.8) in our final conflict risk score"
+            ],
+            "impact": "One mediator in our database had a 90% win rate for Big Pharma defendants. Users avoided them, saving potentially millions in unfair rulings."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ready to See How Mediators Differ by State?",
+        "subtitle": "Every state has different mediation rules, certification requirements, and ethical standards. Learn how we handle these variations while keeping bias detection consistent nationwide.",
+        "button": "Explore State-by-State Differences →"
+      },
+      "report": {
+        "title": "Report a Safety Concern",
+        "description": "If you believe a mediation session violates these standards or poses a safety risk, contact us immediately. We respond to ethics complaints within 24 hours.",
+        "button": "Contact Ethics Team"
+      }
     }
+  },
+  "mediatorsPage": {
+    "hero": {
+      "title": "How Mediators Differ Across America",
+      "subtitle": "Mediation isn't federally regulated. Every state makes its own rules — and they're wildly different. Here's how we navigate that complexity.",
+      "states": { "title": "50 States", "description": "We track certification requirements, ethical standards, and conflict-of-interest rules across all US jurisdictions." },
+      "verified": { "title": "1,000+ Mediators", "description": "Every mediator tagged with state certifications, specialties, and jurisdiction-specific credentials for transparency." },
+      "bias": { "title": "Zero Bias", "description": "Consistent conflict detection nationwide using federal records. State borders don't matter — bias is bias." }
+    },
+    "patchwork": {
+      "title": "The 50-State Mediation Patchwork",
+      "exampleTitle": "Real Example: The \"40-Hour Problem\"",
+      "para1Pre": "Unlike doctors (who must pass USMLE) or lawyers (who must pass the bar), there's",
+      "para1Bold": "no national mediator license",
+      "para1Post": ". What qualifies someone to mediate in Florida might be illegal in Minnesota. What's considered a conflict in California might be fine in Texas.",
+      "box": "Most states require 40 hours of mediation training to handle court-connected cases. But what counts as \"training\"? Florida requires in-person mentorship. Texas accepts online courses. Minnesota demands annual continuing education. Georgia has no requirement at all for private mediations. One mediator, four different standards.",
+      "para2Pre": "This creates a",
+      "para2Bold": "verification nightmare",
+      "para2Post": ". How do you know if your mediator is actually qualified under YOUR state's rules? That's where we come in."
+    },
+    "regional": {
+      "title": "Regional Breakdown",
+      "all": "All Regions",
+      "noteLabel": "Note:",
+      "labels": {
+        "certification": "Certification",
+        "courtIntegration": "Court Integration",
+        "specialties": "Common Specialties",
+        "cost": "Average Cost",
+        "uniqueRequirement": "Unique Requirement"
+      }
+    },
+    "complexity": {
+      "title": "How We Handle This Complexity",
+      "subtitle": "Most mediation platforms throw up their hands and say \"check your state bar website.\" We built tech to actually solve this problem.",
+      "challenge": "Challenge",
+      "problem": "The Problem",
+      "solution": "Our Solution",
+      "technical": "Technical Implementation"
+    },
+    "aiConsistency": {
+      "title": "The One Thing That Stays Consistent: Our AI",
+      "subtitle": "While state rules vary, our conflict detection, settlement predictions, and bias analysis work the same way nationwide.",
+      "translationLabel": "Translation:",
+      "translation": "You get the same level of conflict detection whether you're in rural Montana or Manhattan. The AI doesn't care about state borders—bias is bias.",
+      "cards": [
+        { "title": "Conflict Graph Analyzer", "description": "Scans federal records (FEC, RECAP, DOJ) that are consistent across all states", "italic": "Campaign donations in California are reported the same as Texas donations" },
+        { "title": "Settlement Predictor", "description": "Trained on DOJ settlements that follow federal False Claims Act standards", "italic": "Healthcare fraud penalties are federal, not state-specific" },
+        { "title": "Bias Detection", "description": "Uses statistical win/loss analysis that's jurisdiction-agnostic", "italic": "A 90% win rate is suspicious whether it's in NY or TX" }
+      ]
+    },
+    "comingSoon": {
+      "title": "Coming Soon: State-Specific AI Features",
+      "subtitle": "We're expanding our AI to handle state-level variations better:",
+      "release": "Estimated release: Q2 2026. We're collecting state bar APIs and public records now.",
+      "cards": [
+        { "title": "State Bar Scraping", "description": "Auto-verify mediator certifications against state bar databases (CA, NY, FL, TX initially)" },
+        { "title": "State-Specific Conflict Rules", "description": "Adjust risk thresholds based on state ethical opinions (e.g., ABA Formal Opinion 17-462)" },
+        { "title": "Local Settlement Data", "description": "Scrape state court settlement data (where publicly available) for better predictions" },
+        { "title": "Jurisdiction-Specific Search", "description": "Filter mediators by court-approved lists (e.g., NYC Supreme Court roster)" }
+      ]
+    },
+    "cta": {
+      "title": "Want to Understand Our AI Safeguards?",
+      "subtitle": "Learn how our conflict detection, settlement prediction, and bias analysis systems actually work — with full transparency about data sources, algorithms, and limitations.",
+      "button": "Read Our AI Documentation →"
+    },
+    "stateVariations": [
+      {
+        "key": "northeast",
+        "name": "Northeast",
+        "characteristics": {
+          "certification": "Typically requires 40+ hours of mediation training plus ongoing CLE credits",
+          "courtIntegration": "Strong court-connected ADR programs (NYC has dedicated mediation centers)",
+          "specialty": "Commercial and employment disputes dominate; high concentration of JD-required mediators",
+          "averageCost": "$350-$500/hour for experienced mediators",
+          "uniqueRequirement": "New York requires mediators to register with the Unified Court System"
+        },
+        "example": {
+          "state": "New York",
+          "detail": "The New York State Unified Court System requires all mediators in court-connected programs to complete a minimum of 40 hours of training. Mediators handling commercial cases often have law degrees and 10+ years of practice experience."
+        }
+      },
+      {
+        "key": "southeast",
+        "name": "Southeast",
+        "characteristics": {
+          "certification": "Florida Supreme Court certification is considered the gold standard",
+          "courtIntegration": "Florida pioneered mandatory mediation for certain case types in the 1980s",
+          "specialty": "Personal injury, real estate, and family law mediation are heavily regulated",
+          "averageCost": "$250-$400/hour; Florida-certified mediators command premium rates",
+          "uniqueRequirement": "Florida requires county-specific certification for family mediators"
+        },
+        "example": {
+          "state": "Florida",
+          "detail": "Florida has the most comprehensive mediator certification system in the US. Circuit mediators need 40 training hours + mentorship. Family mediators need mental health background OR law degree + supervised practice."
+        }
+      },
+      {
+        "key": "midwest",
+        "name": "Midwest",
+        "characteristics": {
+          "certification": "Varies widely; Minnesota has robust standards, others rely on organizational credentials",
+          "courtIntegration": "Chicago and Minneapolis have extensive ADR infrastructure",
+          "specialty": "Agricultural disputes, labor relations, and commercial mediation",
+          "averageCost": "$200-$350/hour; lower than coastal states",
+          "uniqueRequirement": "Minnesota requires mediators to maintain $1M liability insurance"
+        },
+        "example": {
+          "state": "Minnesota",
+          "detail": "Minnesota Statute §114.37 mandates ethical standards for \"neutrals\" in environmental disputes. Mediators must disclose any conflicts within 10 days of appointment or face disqualification."
+        }
+      },
+      {
+        "key": "southwest",
+        "name": "Southwest",
+        "characteristics": {
+          "certification": "Texas has no statewide certification; relies on private credentialing organizations",
+          "courtIntegration": "Strong emphasis on court-annexed arbitration over mediation",
+          "specialty": "Oil & gas, construction defects, and cross-border (Mexico) disputes",
+          "averageCost": "$250-$450/hour in major metro areas",
+          "uniqueRequirement": "Texas allows retired judges to mediate without additional training"
+        },
+        "example": {
+          "state": "Texas",
+          "detail": "Texas has NO mandatory mediator qualifications for private mediations. However, court-ordered mediations require 40 hours of training + 3 years of legal practice (if lawyer) or equivalent professional experience."
+        }
+      },
+      {
+        "key": "west",
+        "name": "West",
+        "characteristics": {
+          "certification": "California has separate tracks for civil vs. family mediation",
+          "courtIntegration": "Mandatory mediation for custody/visitation disputes in CA",
+          "specialty": "Tech sector disputes, environmental law, and tribal sovereignty conflicts",
+          "averageCost": "$400-$600/hour in Bay Area/Seattle; $250-$350 elsewhere",
+          "uniqueRequirement": "California family mediators must have 12 hours of domestic violence training"
+        },
+        "example": {
+          "state": "California",
+          "detail": "California Family Code §3164 requires family law mediators to detect power imbalances and domestic violence indicators. Our AI includes this as a core feature for all mediations, not just family law."
+        }
+      }
+    ],
+    "howWeHandle": [
+      {
+        "challenge": "Different Certification Standards",
+        "problem": "A mediator certified in Florida might not meet Minnesota's insurance requirements",
+        "solution": "We tag mediators with all state certifications and display jurisdiction-specific credentials. Users see only mediators authorized for their state.",
+        "technical": "Database schema includes certifications[] array with state, type, expiration date, and verification status"
+      },
+      {
+        "challenge": "Varying Conflict-of-Interest Rules",
+        "problem": "Texas allows former opposing counsel to mediate. New York has stricter rules about attorney-mediators.",
+        "solution": "Our graph analyzer applies state-specific thresholds. A relationship that's a YELLOW flag in Texas becomes RED in New York.",
+        "technical": "Risk calculator has state_jurisdiction parameter that adjusts RISK_THRESHOLDS dynamically"
+      },
+      {
+        "challenge": "Court vs. Private Mediation",
+        "problem": "Court-ordered mediations have mandatory reporting. Private mediations are confidential.",
+        "solution": "We ask users to specify mediation type. Court-connected sessions include settlement agreement templates compliant with state civil procedure rules.",
+        "technical": "mediationType: \"court\" || \"private\" determines disclosure requirements and document generation"
+      },
+      {
+        "challenge": "Multi-State Disputes",
+        "problem": "California plaintiff vs. Texas defendant—whose rules apply?",
+        "solution": "We follow the Uniform Mediation Act (UMA) principles. Users select governing jurisdiction. Mediator must be credentialed in chosen state.",
+        "technical": "governingJurisdiction field + credential validation against selectedState prevents unauthorized practice"
+      }
+    ]
   },
   "chat": {
     "title": "AI Chat Assistant",
     "subtitle": "Describe your legal dispute",
     "placeholder": "Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')",
     "send": "Send",
-    "poweredBy": "Powered by Hugging Face (100% FREE)",
-    "tooltip": "Our AI assistant helps you describe your case and find the perfect mediator. Powered by Hugging Face - completely free!",
+    "tooltip": "Our AI assistant helps you describe your case and find the perfect mediator.",
     "parties": "Parties/Firms to Check for Conflicts:",
     "partyPlaceholder": "e.g., BigLaw LLC",
     "addParty": "Add",
     "greeting": "Hello! I'm your AI assistant. I can help you find the right mediator for your case. Just describe your needs in natural language, and I'll search our database for the best matches.",
     "error": "Sorry, I encountered an error. Please try again.",
     "uploadDocument": "Upload Document",
-    "analyzing": "Analyzing..."
+    "analyzing": "Analyzing...",
+    "keyboardSend": "send",
+    "keyboardNewLine": "new line",
+    "uploadedDoc": "I've uploaded a document.",
+    "caseTypeLabel": "Case Type:",
+    "jurisdictionLabel": "Jurisdiction:",
+    "recommendMediators": "Can you recommend suitable mediators?"
   },
   "auth": {
     "login": "Log In",
@@ -155,5 +469,34 @@
     "checkConnection": "Check your internet connection",
     "backOnline": "Back Online",
     "connectionRestored": "Connection restored successfully"
+  },
+  "onboarding": {
+    "dismiss": "Dismiss",
+    "back": "Back",
+    "skip": "Skip",
+    "getStarted": "Get Started",
+    "continue": "Continue",
+    "steps": [
+      {
+        "label": "Overview",
+        "title": "Transparent Mediator Selection",
+        "content": "FairMediator surfaces conflicts of interest, lobbying ties, and political alignment before you engage — giving you the independent assessment your case requires."
+      },
+      {
+        "label": "Step 1 of 3",
+        "title": "Submit Case Details",
+        "content": "Describe your dispute via structured input or document upload. Our system extracts key variables — industry, jurisdiction, dispute value, and complexity — to inform mediator matching."
+      },
+      {
+        "label": "Step 2 of 3",
+        "title": "Conflict Screening",
+        "content": "Each candidate is cross-referenced against FEC campaign finance records, Senate lobbying disclosures, and federal court history to identify prior associations or financial ties."
+      },
+      {
+        "label": "Step 3 of 3",
+        "title": "Review & Appoint",
+        "content": "Compare candidates by conflict risk, ideological alignment, case-type specialization, and fee structure. Full disclosure data is available on every profile."
+      }
+    ]
   }
 }

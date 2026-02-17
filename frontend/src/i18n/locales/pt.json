@@ -6,7 +6,8 @@
     "login": "Entrar",
     "logout": "Sair",
     "signup": "Cadastrar",
-    "dashboard": "Painel"
+    "dashboard": "Painel",
+    "about": "Sobre"
   },
   "home": {
     "hero": {
@@ -73,15 +74,71 @@
     "privacy": {
       "title": "Proteção de Privacidade",
       "description": "Suas consultas de busca e detalhes de casos permanecem completamente confidenciais"
+    },
+    "page": {
+      "hero": {
+        "title": "Como Protegemos Sua Mediação",
+        "subtitle": "Em um mundo onde a IA avança rapidamente, construímos um sistema que age com cuidado e protege as pessoas.",
+        "safegate": { "title": "Protocolo SafeGate", "description": "Camada de moderação autônoma que intercepta comunicações tóxicas antes da entrega." },
+        "accuracy": { "title": "94% de Precisão", "description": "Precisão na detecção de conflitos treinada em mais de 10.000 transcrições de mediação." },
+        "response": { "title": "Resposta em 24h", "description": "Reclamações éticas tratadas em 24 horas. Linha direta com nossa equipe de segurança." }
+      },
+      "tabs": { "ethics": "Ética e Padrões", "ai": "Inteligência IA" },
+      "ethics": {
+        "govTitle": "Não 'Embrulhamos' a IA. Nós a Governamos.",
+        "govSubtitle": "Nos vemos como a 'Quinta Parte' em sua disputa — os arquitetos responsáveis pelo ambiente de negociação.",
+        "safegateTitle": "O Protocolo SafeGate: Um Verdadeiro Sistema de Segurança",
+        "humanTitle": "Onde Está o Mediador Humano?",
+        "standardsTitle": "Nossos Padrões Éticos (ICODR 2022)",
+        "standardsSubtitle": "Nos alinhamos com os padrões do Conselho Internacional para Resolução de Disputas Online.",
+        "warningTitle": "A Verdade Honesta: A IA é Probabilística",
+        "activeIntercept": "Interceptação Ativa", "brake": "O Pedal de Freio", "powerBalance": "Detecção de Equilíbrio de Poder",
+        "thirdParty": "Terceira Parte", "fourthParty": "Quarta Parte", "virtualFacilitator": "Facilitador Virtual",
+        "fifthParty": "Quinta Parte", "ourRole": "Nosso Papel", "aiRole": "O Papel da IA",
+        "standards": [
+          { "name": "Acessibilidade", "description": "O ODR deve ser fácil de encontrar e usar.", "practice": "Usamos plataformas ubíquas para garantir que as partes possam participar sem hardware caro." },
+          { "name": "Responsabilidade", "description": "O sistema deve responder por seus resultados.", "practice": "Rastreamos a Integridade do Processo, não apenas 'Taxas de Sucesso'. Mantemos trilha de auditoria completa." },
+          { "name": "Competência", "description": "O provedor deve ter expertise relevante.", "practice": "Nossa IA é especializada em teoria de resolução de conflitos, priorizando a Justiça Processual." },
+          { "name": "Confidencialidade", "description": "Os dados devem ser seguros e privados.", "practice": "Seus dados são criptografados e compartimentados. Praticamos a Soberania Informacional." },
+          { "name": "Empoderamento", "description": "As partes devem poder tomar decisões informadas.", "practice": "Usamos Modelagem de Resultados para ajudá-lo a explorar seu BATNA." },
+          { "name": "Igualdade", "description": "O processo deve ser livre de viés.", "practice": "Buscamos Imparcialidade, não 'Neutralidade' passiva. Nossa IA monitora ativamente desequilíbrios de poder." },
+          { "name": "Equidade", "description": "O devido processo deve ser respeitado.", "practice": "Garantimos que ambas as partes tenham igual oportunidade de falar." },
+          { "name": "Honestidade", "description": "Dados e intenções devem ser transparentes.", "practice": "Usamos o termo 'Resultado', não 'Resolução', porque nem toda disputa termina em acordo." },
+          { "name": "Transparência", "description": "A 'Quinta Parte' (nós) deve ser visível.", "practice": "Divulgamos nossa metodologia. Você sempre sabe quando está falando com o Facilitador IA." }
+        ]
+      },
+      "ai": {
+        "title": "Como Nossa IA Realmente Funciona",
+        "subtitle": "Esqueça promessas vagas sobre 'insights baseados em IA'. Esta é a realidade técnica de como detectamos conflitos e prevemos acordos.",
+        "technicalDetails": "Os Detalhes Técnicos", "howItWorks": "Como Funciona (Passo a Passo)",
+        "realWorldImpact": "Impacto no Mundo Real", "freeTitle": "Por Que É Gratuito (E Como Mantemos Assim)",
+        "dataTitle": "De Onde Obtemos Nossos Dados", "transparencyPromise": "Promessa de Transparência"
+      },
+      "cta": { "title": "Pronto para Ver Como os Mediadores Diferem por Estado?", "subtitle": "Cada estado tem regras de mediação e padrões éticos diferentes.", "button": "Explorar Diferenças Estado por Estado →" },
+      "report": { "title": "Reportar uma Preocupação de Segurança", "description": "Se acredita que uma sessão viola estes padrões, entre em contato imediatamente. Respondemos a reclamações em 24 horas.", "button": "Contatar Equipe de Ética" }
     }
+  },
+  "mediatorsPage": {
+    "hero": {
+      "title": "Como os Mediadores Diferem nos EUA",
+      "subtitle": "A mediação não é regulada federalmente. Cada estado tem suas próprias regras. Veja como navegamos essa complexidade.",
+      "states": { "title": "50 Estados", "description": "Rastreamos requisitos de certificação e regras de conflito de interesse em todas as jurisdições dos EUA." },
+      "verified": { "title": "1.000+ Mediadores", "description": "Cada mediador rotulado com certificações estaduais e credenciais específicas de jurisdição." },
+      "bias": { "title": "Zero Viés", "description": "Detecção consistente de conflitos em todo o país usando registros federais." }
+    },
+    "patchwork": { "title": "O Mosaico de Mediação de 50 Estados", "exampleTitle": "Exemplo Real: O 'Problema das 40 Horas'" },
+    "regional": { "title": "Análise Regional", "all": "Todas as Regiões", "labels": { "certification": "Certificação", "courtIntegration": "Integração Judicial", "specialties": "Especialidades Comuns", "cost": "Custo Médio", "uniqueRequirement": "Requisito Único" } },
+    "complexity": { "title": "Como Lidamos com Esta Complexidade", "subtitle": "Construímos tecnologia para realmente resolver este problema.", "challenge": "Desafio", "problem": "O Problema", "solution": "Nossa Solução", "technical": "Implementação Técnica" },
+    "aiConsistency": { "title": "O Que Permanece Consistente: Nossa IA", "subtitle": "Embora as regras estaduais variem, nossa detecção de conflitos funciona da mesma forma em todo o país." },
+    "comingSoon": { "title": "Em Breve: Recursos de IA Específicos por Estado", "subtitle": "Estamos expandindo nossa IA para lidar melhor com variações estaduais:" },
+    "cta": { "title": "Quer Entender Nossas Salvaguardas de IA?", "subtitle": "Saiba como realmente funcionam nossos sistemas de detecção de conflitos e análise de viés.", "button": "Ler Nossa Documentação de IA →" }
   },
   "chat": {
     "title": "Assistente de Chat IA",
     "subtitle": "Descreva sua disputa legal",
     "placeholder": "Descreva suas necessidades de mediação... (ex., 'Preciso de um mediador para uma disputa de propriedade intelectual tecnológica')",
     "send": "Enviar",
-    "poweredBy": "Alimentado por Hugging Face (100% GRÁTIS)",
-    "tooltip": "Nosso assistente de IA ajuda você a descrever seu caso e encontrar o mediador perfeito. Alimentado por Hugging Face - completamente grátis!",
+    "tooltip": "Nosso assistente de IA ajuda você a descrever seu caso e encontrar o mediador perfeito.",
     "parties": "Partes/Escritórios para Verificar Conflitos:",
     "partyPlaceholder": "ex., BigLaw LLC",
     "addParty": "Adicionar",

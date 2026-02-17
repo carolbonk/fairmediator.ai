@@ -133,10 +133,10 @@ const Drawer = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        className="fixed right-0 top-0 bottom-0 w-[600px] max-w-[90vw] bg-dark-neu-300 shadow-2xl z-50 flex flex-col overflow-hidden"
+        className="fixed right-0 top-0 bottom-0 w-full sm:w-[600px] max-w-[95vw] bg-dark-neu-300 shadow-2xl z-50 flex flex-col overflow-hidden"
       >
         {/* Header */}
-        <div className="px-8 py-6 bg-dark-neu-300 border-b border-dark-neu-500 flex justify-between items-start">
+        <div className="px-4 sm:px-8 py-4 sm:py-6 bg-dark-neu-300 border-b border-dark-neu-500 flex justify-between items-start">
           <div>
             <h2
               id="drawer-title"
@@ -160,7 +160,7 @@ const Drawer = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto px-8 py-6 bg-dark-neu-300">
+        <div className="flex-1 overflow-auto px-4 sm:px-8 py-4 sm:py-6 bg-dark-neu-300">
           <p className="text-white leading-relaxed text-base">
             {summary}
           </p>

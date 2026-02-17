@@ -6,7 +6,8 @@
     "login": "Connexion",
     "logout": "Déconnexion",
     "signup": "S'inscrire",
-    "dashboard": "Tableau de bord"
+    "dashboard": "Tableau de bord",
+    "about": "À propos"
   },
   "home": {
     "hero": {
@@ -73,15 +74,71 @@
     "privacy": {
       "title": "Protection de la Vie Privée",
       "description": "Vos requêtes de recherche et détails de cas restent entièrement confidentiels"
+    },
+    "page": {
+      "hero": {
+        "title": "Comment Nous Protégeons Votre Médiation",
+        "subtitle": "Dans un monde où l'IA avance vite, nous avons construit un système qui agit prudemment et protège les personnes.",
+        "safegate": { "title": "Protocole SafeGate", "description": "Couche de modération autonome qui intercepte les communications toxiques avant leur livraison." },
+        "accuracy": { "title": "94% de Précision", "description": "Précision de détection des conflits entraînée sur plus de 10 000 transcriptions de médiation." },
+        "response": { "title": "Réponse en 24h", "description": "Plaintes éthiques traitées en 24 heures. Ligne directe avec notre équipe de sécurité." }
+      },
+      "tabs": { "ethics": "Éthique et Standards", "ai": "Intelligence IA" },
+      "ethics": {
+        "govTitle": "Nous ne 'Wrappons' pas l'IA. Nous la Gouvernons.",
+        "govSubtitle": "Nous nous considérons comme la 'Cinquième Partie' dans votre litige — les architectes responsables de l'environnement de négociation.",
+        "safegateTitle": "Le Protocole SafeGate : Un Véritable Système de Sécurité",
+        "humanTitle": "Où Est le Médiateur Humain ?",
+        "standardsTitle": "Nos Standards Éthiques (ICODR 2022)",
+        "standardsSubtitle": "Nous nous alignons avec les standards du Conseil International pour la Résolution des Litiges en Ligne.",
+        "warningTitle": "La Vérité Honnête : L'IA est Probabiliste",
+        "activeIntercept": "Interception Active", "brake": "La Pédale de Frein", "powerBalance": "Détection de l'Équilibre du Pouvoir",
+        "thirdParty": "Tierce Partie", "fourthParty": "Quatrième Partie", "virtualFacilitator": "Facilitateur Virtuel",
+        "fifthParty": "Cinquième Partie", "ourRole": "Notre Rôle", "aiRole": "Le Rôle de l'IA",
+        "standards": [
+          { "name": "Accessibilité", "description": "La RDL doit être facile à trouver et à utiliser.", "practice": "Nous utilisons des plateformes répandues pour garantir que les parties puissent participer sans matériel coûteux." },
+          { "name": "Responsabilité", "description": "Le système doit répondre de ses résultats.", "practice": "Nous suivons l'Intégrité du Processus, pas seulement les 'Taux de Succès'. Nous maintenons une piste d'audit complète." },
+          { "name": "Compétence", "description": "Le prestataire doit avoir une expertise pertinente.", "practice": "Notre IA est spécialisée dans la théorie de résolution des conflits, en priorisant la Justice Procédurale." },
+          { "name": "Confidentialité", "description": "Les données doivent être sécurisées et privées.", "practice": "Vos données sont chiffrées et compartimentées. Nous pratiquons la Souveraineté Informationnelle." },
+          { "name": "Autonomisation", "description": "Les parties doivent pouvoir prendre des décisions éclairées.", "practice": "Nous utilisons la Modélisation des Résultats pour vous aider à explorer votre BATNA." },
+          { "name": "Égalité", "description": "Le processus doit être exempt de biais.", "practice": "Nous visons l'Impartialité, pas la 'Neutralité' passive. Notre IA surveille activement les déséquilibres de pouvoir." },
+          { "name": "Équité", "description": "Le processus équitable doit être respecté.", "practice": "Nous garantissons que les deux parties ont une opportunité égale de s'exprimer." },
+          { "name": "Honnêteté", "description": "Les données et les intentions doivent être transparentes.", "practice": "Nous utilisons le terme 'Résultat', pas 'Résolution', car tous les litiges ne se terminent pas par un accord." },
+          { "name": "Transparence", "description": "La 'Cinquième Partie' (nous) doit être visible.", "practice": "Nous divulguons notre méthodologie. Vous savez toujours quand vous parlez au Facilitateur IA." }
+        ]
+      },
+      "ai": {
+        "title": "Comment Fonctionne Réellement Notre IA",
+        "subtitle": "Oubliez les vagues promesses sur les 'insights basés sur l'IA'. Voici la réalité technique de comment nous détectons les conflits.",
+        "technicalDetails": "Les Détails Techniques", "howItWorks": "Comment Ça Fonctionne (Étape par Étape)",
+        "realWorldImpact": "Impact dans le Monde Réel", "freeTitle": "Pourquoi C'est Gratuit (Et Comment Nous Maintenons Ça)",
+        "dataTitle": "D'Où Proviennent Nos Données", "transparencyPromise": "Promesse de Transparence"
+      },
+      "cta": { "title": "Prêt à Voir Comment les Médiateurs Diffèrent par État ?", "subtitle": "Chaque état a des règles de médiation et des standards éthiques différents.", "button": "Explorer les Différences État par État →" },
+      "report": { "title": "Signaler une Préoccupation de Sécurité", "description": "Si vous pensez qu'une session viole ces standards, contactez-nous immédiatement. Nous répondons aux plaintes en 24 heures.", "button": "Contacter l'Équipe Éthique" }
     }
+  },
+  "mediatorsPage": {
+    "hero": {
+      "title": "Comment les Médiateurs Diffèrent aux États-Unis",
+      "subtitle": "La médiation n'est pas réglementée au niveau fédéral. Chaque état a ses propres règles. Voici comment nous naviguons cette complexité.",
+      "states": { "title": "50 États", "description": "Nous suivons les exigences de certification et les règles de conflits d'intérêts dans toutes les juridictions américaines." },
+      "verified": { "title": "1 000+ Médiateurs", "description": "Chaque médiateur étiqueté avec certifications d'état et accréditations spécifiques à la juridiction." },
+      "bias": { "title": "Zéro Biais", "description": "Détection cohérente des conflits à l'échelle nationale en utilisant des registres fédéraux." }
+    },
+    "patchwork": { "title": "Le Patchwork de Médiation des 50 États", "exampleTitle": "Exemple Réel : Le 'Problème des 40 Heures'" },
+    "regional": { "title": "Analyse Régionale", "all": "Toutes les Régions", "labels": { "certification": "Certification", "courtIntegration": "Intégration Judiciaire", "specialties": "Spécialités Communes", "cost": "Coût Moyen", "uniqueRequirement": "Exigence Unique" } },
+    "complexity": { "title": "Comment Nous Gérons Cette Complexité", "subtitle": "Nous avons construit la technologie pour vraiment résoudre ce problème.", "challenge": "Défi", "problem": "Le Problème", "solution": "Notre Solution", "technical": "Implémentation Technique" },
+    "aiConsistency": { "title": "Ce Qui Reste Constant : Notre IA", "subtitle": "Bien que les règles d'état varient, notre détection des conflits fonctionne de la même manière dans tout le pays." },
+    "comingSoon": { "title": "Bientôt : Fonctionnalités IA Spécifiques par État", "subtitle": "Nous étendons notre IA pour mieux gérer les variations d'état :" },
+    "cta": { "title": "Voulez-vous Comprendre Nos Protections IA ?", "subtitle": "Découvrez comment fonctionnent réellement nos systèmes de détection des conflits et d'analyse des biais.", "button": "Lire Notre Documentation IA →" }
   },
   "chat": {
     "title": "Assistant de Chat IA",
     "subtitle": "Décrivez votre litige juridique",
     "placeholder": "Décrivez vos besoins en médiation... (par ex., 'J'ai besoin d'un médiateur pour un litige de propriété intellectuelle technologique')",
     "send": "Envoyer",
-    "poweredBy": "Propulsé par Hugging Face (100% GRATUIT)",
-    "tooltip": "Notre assistant IA vous aide à décrire votre cas et à trouver le médiateur parfait. Propulsé par Hugging Face - entièrement gratuit !",
+    "tooltip": "Notre assistant IA vous aide à décrire votre cas et à trouver le médiateur parfait.",
     "parties": "Parties/Cabinets à Vérifier pour les Conflits :",
     "partyPlaceholder": "par ex., BigLaw LLC",
     "addParty": "Ajouter",
