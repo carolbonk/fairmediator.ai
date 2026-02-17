@@ -6,7 +6,11 @@
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
     "signup": "Registrarse",
-    "dashboard": "Panel"
+    "dashboard": "Panel",
+    "about": "Acerca de",
+    "settings": "Configuración",
+    "brandName": "Fair Mediador",
+    "tagline": "Plataforma Inteligente de Selección y Verificación de Mediadores"
   },
   "home": {
     "hero": {
@@ -73,22 +77,323 @@
     "privacy": {
       "title": "Protección de Privacidad",
       "description": "Tus consultas de búsqueda y detalles de casos permanecen completamente confidenciales"
+    },
+    "page": {
+      "hero": {
+        "title": "Cómo Protegemos Tu Mediación",
+        "subtitle": "En un mundo donde la IA se mueve rápido, hemos construido un sistema que se mueve con cuidado y protege a las personas.",
+        "safegate": { "title": "Protocolo SafeGate", "description": "Capa de moderación autónoma que intercepta comunicaciones tóxicas antes de la entrega. Cada mensaje analizado por amenazas y coerción." },
+        "accuracy": { "title": "94% de Precisión", "description": "Precisión de detección de conflictos entrenada en más de 10,000 transcripciones de mediación." },
+        "response": { "title": "Respuesta en 24h", "description": "Quejas éticas gestionadas en 24 horas. Línea directa con nuestro equipo de seguridad." }
+      },
+      "tabs": { "ethics": "Ética y Estándares", "ai": "Inteligencia IA" },
+      "ethics": {
+        "govTitle": "No 'Envolvemos' la IA. La Gobernamos.",
+        "govSubtitle": "La mayoría de las empresas de IA ponen una interfaz de chatbot sobre GPT-4. Nos vemos como la 'Quinta Parte' en tu disputa: los arquitectos responsables del entorno de negociación.",
+        "safegateTitle": "El Protocolo SafeGate: Un Verdadero Sistema de Seguridad",
+        "humanTitle": "¿Dónde Está el Mediador Humano?",
+        "standardsTitle": "Nuestros Estándares Éticos (ICODR 2022)",
+        "standardsSubtitle": "Nos alineamos con los estándares del Consejo Internacional para la Resolución de Disputas en Línea.",
+        "warningTitle": "La Verdad Honesta: La IA es Probabilística",
+        "activeIntercept": "Interceptación Activa",
+        "brake": "El Pedal de Freno",
+        "powerBalance": "Detección de Balance de Poder",
+        "thirdParty": "Tercera Parte",
+        "fourthParty": "Cuarta Parte",
+        "virtualFacilitator": "Facilitador Virtual",
+        "fifthParty": "Quinta Parte",
+        "ourRole": "Nuestro Rol",
+        "aiRole": "El Rol de la IA",
+        "safegateOnLoop": "La mayoría de los agentes de IA operan \"fuera del bucle\"—generan texto instantáneamente esperando que usted detecte los errores. Eso es rápido, pero peligroso cuando hay vidas y medios de vida en juego.",
+        "safegateProprietary": "FairMediator.AI funciona con SafeGate, una capa de moderación autónoma propietaria que fuerza nuestro sistema \"dentro del bucle\" cuando se detecta riesgo. Piénselo como un disyuntor para comunicaciones tóxicas.",
+        "activeInterceptDesc": "Cada mensaje se analiza en busca de amenazas, coerción, intimidación y señales de autolesión antes de ser entregado.",
+        "brakeDesc": "Si SafeGate detecta una infracción, la mediación se detiene. El remitente debe reescribir o finalizar la sesión. Sin conjeturas.",
+        "powerBalanceDesc": "Escaneamos tácticas de dominancia sutiles—no solo palabrotas, sino patrones que silencian la negociación.",
+        "technicalNote": "Nota técnica: SafeGate utiliza un LLM secundario ajustado con más de 10,000 transcripciones de mediación para detectar coerción con un 94% de precisión. No es perfecto, pero es mejor que la moderación solo humana a escala.",
+        "humanMediatorText1": "La mediación tradicional tiene una",
+        "humanMediatorText2": "(mediador humano) y una",
+        "humanMediatorText3": "(tecnología como Zoom). Las combinamos en un solo",
+        "humanMediatorText4": "—pero nosotros (los desarrolladores) seguimos siendo la",
+        "ourRoleDesc": "Diseñamos la arquitectura SafeGate que gobierna la IA. Somos los creadores constitucionales de su entorno de mediación.",
+        "aiRoleDesc": "Actúa como guía imparcial dentro de nuestros límites éticos. No tiene agencia—es una herramienta, no un tomador de decisiones.",
+        "humanMediatorFunFact": "Dato curioso: La IA no \"quiere\" nada. No puede ser sobornada, intimidada ni fatigada. Solo sigue las reglas que programamos. Eso es realmente su superpoder.",
+        "warningPara1": "Usamos Modelos de Lenguaje Grande. Son máquinas de reconocimiento de patrones, no oráculos de verdad. Aunque ajustamos agresivamente para la precisión, las \"alucinaciones\" (tonterías con confianza) aún pueden ocurrir.",
+        "warningPara2Label": "Su Responsabilidad:",
+        "warningPara2": "Verifique todos los términos del acuerdo, fechas y reclamaciones legales antes de firmar cualquier cosa. La IA proporciona orientación sobre el proceso, no asesoramiento legal.",
+        "warningPara3Label": "Limitación de Responsabilidad:",
+        "warningPara3": "Proporcionamos la plataforma de negociación (Integridad del Proceso). No somos responsables del contenido de los acuerdos que alcance. Lea sus contratos.",
+        "warningTranslation": "En resumen: Construimos un robot mediador muy bueno. Pero usted sigue siendo un humano tomando decisiones humanas. Actúe en consecuencia.",
+        "standards": [
+          { "name": "Accesibilidad", "description": "El ODR debe ser fácil de encontrar y usar.", "practice": "Usamos plataformas ubicuas (Móvil y SMS) para garantizar que las partes puedan participar sin hardware costoso." },
+          { "name": "Responsabilidad", "description": "El sistema debe responder por sus resultados.", "practice": "Hacemos seguimiento de la Integridad del Proceso, no solo de las 'Tasas de Éxito'. Mantenemos un registro de auditoría completo." },
+          { "name": "Competencia", "description": "El proveedor debe tener experiencia relevante.", "practice": "Nuestra IA está especializada en teoría de resolución de conflictos, priorizando la Justicia Procesal sobre la velocidad." },
+          { "name": "Confidencialidad", "description": "Los datos deben ser seguros y privados.", "practice": "Tus datos están cifrados y compartimentados. Practicamos la Soberanía Informacional." },
+          { "name": "Empoderamiento", "description": "Las partes deben poder tomar decisiones informadas.", "practice": "Usamos el Modelado de Resultados para ayudarte a explorar tu BATNA. Te empoderamos para decir 'No' a un mal acuerdo." },
+          { "name": "Igualdad", "description": "El proceso debe estar libre de sesgos.", "practice": "Buscamos la Imparcialidad, no la 'Neutralidad' pasiva. Nuestra IA monitorea activamente los desequilibrios de poder." },
+          { "name": "Equidad", "description": "Se debe respetar el debido proceso.", "practice": "Garantizamos que ambas partes tengan igual oportunidad de hablar. Nuestra arquitectura de 'Turnos de Palabra' previene el filibusterismo." },
+          { "name": "Honestidad", "description": "Los datos y las intenciones deben ser transparentes.", "practice": "Usamos el término 'Resultado', no 'Resolución', porque no toda disputa termina en acuerdo." },
+          { "name": "Transparencia", "description": "La 'Quinta Parte' (nosotros) debe ser visible.", "practice": "Divulgamos nuestra metodología. Siempre sabes cuándo hablas con el Facilitador IA." }
+        ]
+      },
+      "ai": {
+        "title": "Cómo Funciona Realmente Nuestra IA",
+        "subtitle": "Olvida las promesas vagas sobre 'perspectivas impulsadas por IA'. Esta es la realidad técnica de cómo detectamos conflictos y predecimos acuerdos.",
+        "technicalDetails": "Los Detalles Técnicos",
+        "howItWorks": "Cómo Funciona (Paso a Paso)",
+        "realWorldImpact": "Impacto en el Mundo Real",
+        "freeTitle": "Por Qué Es Gratuito (Y Cómo Lo Mantenemos Así)",
+        "dataTitle": "De Dónde Obtenemos Nuestros Datos",
+        "transparencyPromise": "Promesa de Transparencia",
+        "costIntroLabel": "Costo Cero de API:",
+        "costIntro": "Usamos exclusivamente APIs de nivel gratuito:",
+        "costApis": [
+          "API de la FEC (finanzas de campaña) – GRATIS, sin límites de velocidad",
+          "RECAP/CourtListener (registros de tribunales federales) – GRATIS, 5,000 solicitudes/día",
+          "API de OpenSecrets (datos de cabildeo) – GRATIS con atribución",
+          "MongoDB Atlas (base de datos) – GRATIS nivel M0 (512MB)",
+          "Modelos ML Propios – Entrenamos una vez, servimos para siempre (sin cargos por solicitud)"
+        ],
+        "costFunFact": "Somos geeks que amamos los desafíos de optimización. ¿Construir un detector de conflictos de IA por $0/mes? Ese es nuestro tipo de rompecabezas.",
+        "transparencyNote": "Si alguna vez cobramos por funciones premium, la detección de conflictos principal SIEMPRE permanecerá gratuita. Nunca pagará para descubrir que un mediador es sesgado.",
+        "dataIntro": "Todos nuestros datos provienen de registros federales públicos. Sin extracción turbia, sin violaciones de privacidad. Aquí están las fuentes exactas:",
+        "dataSources": [
+          { "title": "Finanzas de Campaña de la FEC", "description": "Quién donó a qué campañas políticas. Actualizado mensualmente por la Comisión Federal Electoral." },
+          { "title": "Registros de Tribunales RECAP", "description": "Presentaciones de casos en tribunales federales. Mantenido por Free Law Project (sin fines de lucro)." },
+          { "title": "Comunicados de Prensa del DOJ", "description": "Anuncios de acuerdos del Departamento de Justicia. Dominio público." },
+          { "title": "Cabildeo de OpenSecrets", "description": "Divulgaciones de cabildeo corporativo. Agregado por el Centro para la Política Responsable." }
+        ],
+        "dataNote": "Nota: Los datos de LinkedIn son proporcionados manualmente por los usuarios, no extraídos. Respetamos robots.txt.",
+        "features": [
+          {
+            "title": "Inteligencia de Gráfico de Conflictos",
+            "description": "Cuando selecciona un mediador, no solo verificamos su LinkedIn—analizamos redes ocultas.",
+            "technical": "Nuestra base de datos de grafos rastrea relaciones en 6 grados de conexión: historial laboral, casos judiciales compartidos, publicaciones co-autorizadas, donaciones de campaña y asistencia a conferencias. Piénselo como \"Seis Grados de Kevin Bacon\", pero para detectar sesgos en profesionales legales.",
+            "howItWorks": [
+              "Extraemos registros federales públicos: datos de financiamiento de campaña de la FEC, presentaciones judiciales de RECAP y divulgaciones de cabildeo del DOJ",
+              "Cada relación obtiene una puntuación de riesgo ponderada (trabajar en la misma firma = 10 puntos, asistir a la misma conferencia = 5 puntos)",
+              "Si un mediador tiene una puntuación total >15 con su abogado contrario, recibe una bandera ROJA",
+              "Almacenamos los resultados en caché durante 7 días, por lo que verificar conflictos es instantáneo"
+            ],
+            "impact": "En pruebas piloto, descubrimos que 3 de cada 10 mediadores \"neutrales\" habían trabajado anteriormente en la firma contraria—relaciones invisibles en sus perfiles públicos."
+          },
+          {
+            "title": "Predicciones de Rango de Acuerdo",
+            "description": "¿Alguna vez se preguntó cuánto vale realmente su caso? Nuestro modelo de ML ha analizado más de 500 acuerdos de la Ley de Reclamaciones Falsas.",
+            "technical": "Construimos un Regresor de Bosque Aleatorio entrenado en comunicados de prensa del DOJ de 5 años. El modelo considera 12 características incluyendo tipo de fraude, industria, daños reclamados, jurisdicción y si está involucrado un denunciante. Predice los montos de acuerdo en los percentiles 25, 50 y 75.",
+            "howItWorks": [
+              "Ajustamos los acuerdos históricos por inflación a dólares de 2024",
+              "El modelo aprende que el fraude en salud se acuerda de manera diferente al fraude de contratistas de defensa",
+              "Los casos con denunciantes obtienen un aumento del ~15% en el acuerdo previsto (probado con datos)",
+              "Obtiene tres números: rangos de acuerdo conservador, probable y optimista"
+            ],
+            "impact": "Precisión promedio de predicción: puntuación R² del 82%, lo que significa que estamos dentro del 18% de los acuerdos reales. Eso es mejor que las estimaciones intuitivas de la mayoría de los abogados."
+          },
+          {
+            "title": "Análisis de Patrones de Resultados de Casos",
+            "description": "Esta es la opción extrema: rastreamos con qué frecuencia el abogado contrario GANA cuando está frente a mediadores específicos.",
+            "technical": "Analizamos datos de RECAP de tribunales federales para determinar resultados de casos (acuerdo, desestimación, sentencia). Si su abogado contrario ha ganado más del 75% de los casos con un mediador específico, no es coincidencia—es sesgo estadístico.",
+            "howItWorks": [
+              "Categorizamos resultados: victoria del demandante, victoria del demandado, acuerdo, desestimación",
+              "Calculamos tasas de victoria solo cuando hay 3+ casos (significancia estadística)",
+              "Marcamos mediadores donde el abogado contrario tiene una tasa de victoria >60%",
+              "Esto obtiene el mayor peso (0.8) en nuestra puntuación final de riesgo de conflicto"
+            ],
+            "impact": "Un mediador en nuestra base de datos tenía una tasa de victoria del 90% para los demandados de las grandes farmacéuticas. Los usuarios los evitaron, ahorrando potencialmente millones en fallos injustos."
+          }
+        ]
+      },
+      "cta": {
+        "title": "¿Listo para Ver Cómo Difieren los Mediadores por Estado?",
+        "subtitle": "Cada estado tiene reglas de mediación, requisitos de certificación y estándares éticos diferentes.",
+        "button": "Explorar Diferencias Estado por Estado →"
+      },
+      "report": {
+        "title": "Reportar una Preocupación de Seguridad",
+        "description": "Si crees que una sesión de mediación viola estos estándares, contáctanos de inmediato. Respondemos a quejas éticas en 24 horas.",
+        "button": "Contactar al Equipo de Ética"
+      }
     }
+  },
+  "mediatorsPage": {
+    "hero": {
+      "title": "Cómo Difieren los Mediadores en América",
+      "subtitle": "La mediación no está regulada federalmente. Cada estado tiene sus propias reglas. Así navegamos esa complejidad.",
+      "states": { "title": "50 Estados", "description": "Rastreamos requisitos de certificación, estándares éticos y reglas de conflicto de interés en todas las jurisdicciones de EE.UU." },
+      "verified": { "title": "1,000+ Mediadores", "description": "Cada mediador etiquetado con certificaciones estatales, especialidades y credenciales específicas de jurisdicción." },
+      "bias": { "title": "Cero Sesgo", "description": "Detección de conflictos consistente a nivel nacional usando registros federales. Las fronteras estatales no importan." }
+    },
+    "patchwork": {
+      "title": "El Mosaico de Mediación de 50 Estados",
+      "exampleTitle": "Ejemplo Real: El 'Problema de las 40 Horas'",
+      "para1Pre": "A diferencia de los médicos (que deben aprobar el USMLE) o los abogados (que deben aprobar el examen de barra), no existe",
+      "para1Bold": "ninguna licencia nacional de mediador",
+      "para1Post": ". Lo que califica a alguien para mediar en Florida puede ser ilegal en Minnesota. Lo que se considera un conflicto en California puede estar bien en Texas.",
+      "box": "La mayoría de los estados requieren 40 horas de capacitación en mediación para manejar casos conectados a los tribunales. ¿Pero qué cuenta como \"capacitación\"? Florida requiere mentoría presencial. Texas acepta cursos en línea. Minnesota exige educación continua anual. Georgia no tiene ningún requisito para mediaciones privadas. Un mediador, cuatro estándares diferentes.",
+      "para2Pre": "Esto crea una",
+      "para2Bold": "pesadilla de verificación",
+      "para2Post": ". ¿Cómo sabe si su mediador está realmente calificado según las reglas de SU estado? Ahí es donde entramos nosotros."
+    },
+    "regional": {
+      "title": "Desglose Regional",
+      "all": "Todas las Regiones",
+      "noteLabel": "Nota:",
+      "labels": { "certification": "Certificación", "courtIntegration": "Integración Judicial", "specialties": "Especialidades Comunes", "cost": "Costo Promedio", "uniqueRequirement": "Requisito Único" }
+    },
+    "complexity": {
+      "title": "Cómo Manejamos Esta Complejidad",
+      "subtitle": "La mayoría de las plataformas de mediación dicen 'consulta el sitio web de tu colegio de abogados'. Nosotros construimos tecnología para resolver este problema.",
+      "challenge": "Desafío", "problem": "El Problema", "solution": "Nuestra Solución", "technical": "Implementación Técnica"
+    },
+    "aiConsistency": {
+      "title": "Lo Que Se Mantiene Consistente: Nuestra IA",
+      "subtitle": "Aunque las reglas estatales varían, nuestra detección de conflictos y análisis de sesgo funcionan igual en todo el país.",
+      "translationLabel": "En resumen:",
+      "translation": "Obtiene el mismo nivel de detección de conflictos ya sea que esté en Montana rural o Manhattan. La IA no se preocupa por las fronteras estatales—el sesgo es sesgo.",
+      "cards": [
+        { "title": "Analizador de Gráfico de Conflictos", "description": "Escanea registros federales (FEC, RECAP, DOJ) que son consistentes en todos los estados", "italic": "Las donaciones de campaña en California se reportan de la misma manera que las donaciones en Texas" },
+        { "title": "Predictor de Acuerdos", "description": "Entrenado en acuerdos del DOJ que siguen los estándares federales de la Ley de Reclamaciones Falsas", "italic": "Las penalidades por fraude en salud son federales, no específicas del estado" },
+        { "title": "Detección de Sesgo", "description": "Utiliza análisis estadístico de victoria/derrota que es independiente de la jurisdicción", "italic": "Una tasa de victoria del 90% es sospechosa ya sea en NY o TX" }
+      ]
+    },
+    "comingSoon": {
+      "title": "Próximamente: Funciones de IA Específicas por Estado",
+      "subtitle": "Estamos expandiendo nuestra IA para manejar mejor las variaciones estatales:",
+      "release": "Lanzamiento estimado: Q2 2026. Estamos recopilando APIs de colegios de abogados estatales y registros públicos ahora.",
+      "cards": [
+        { "title": "Extracción de Barras Estatales", "description": "Verificar automáticamente las certificaciones de mediadores contra las bases de datos de colegios de abogados (CA, NY, FL, TX inicialmente)" },
+        { "title": "Reglas de Conflicto Específicas por Estado", "description": "Ajustar umbrales de riesgo según opiniones éticas estatales (ej., Opinión Formal 17-462 de la ABA)" },
+        { "title": "Datos de Acuerdos Locales", "description": "Extraer datos de acuerdos de tribunales estatales (donde estén disponibles públicamente) para mejores predicciones" },
+        { "title": "Búsqueda Específica por Jurisdicción", "description": "Filtrar mediadores por listas aprobadas por el tribunal (ej., lista de la Corte Suprema de NYC)" }
+      ]
+    },
+    "cta": {
+      "title": "¿Quieres Entender Nuestras Salvaguardas de IA?",
+      "subtitle": "Conoce cómo funcionan realmente nuestros sistemas de detección de conflictos, predicción de acuerdos y análisis de sesgo.",
+      "button": "Leer Nuestra Documentación de IA →"
+    },
+    "stateVariations": [
+      {
+        "key": "northeast",
+        "name": "Noreste",
+        "characteristics": {
+          "certification": "Generalmente requiere 40+ horas de capacitación en mediación más créditos CLE continuos",
+          "courtIntegration": "Sólidos programas de ADR conectados a los tribunales (NYC tiene centros de mediación dedicados)",
+          "specialty": "Las disputas comerciales y laborales dominan; alta concentración de mediadores que requieren título de derecho",
+          "averageCost": "$350-$500/hora para mediadores experimentados",
+          "uniqueRequirement": "Nueva York requiere que los mediadores se registren en el Sistema Unificado de Tribunales"
+        },
+        "example": {
+          "state": "Nueva York",
+          "detail": "El Sistema Unificado de Tribunales del Estado de Nueva York requiere que todos los mediadores en programas conectados a los tribunales completen un mínimo de 40 horas de capacitación. Los mediadores que manejan casos comerciales a menudo tienen títulos de derecho y 10+ años de experiencia."
+        }
+      },
+      {
+        "key": "southeast",
+        "name": "Sureste",
+        "characteristics": {
+          "certification": "La certificación de la Corte Suprema de Florida se considera el estándar de oro",
+          "courtIntegration": "Florida fue pionera en la mediación obligatoria para ciertos tipos de casos en la década de 1980",
+          "specialty": "La mediación de lesiones personales, bienes raíces y derecho familiar está muy regulada",
+          "averageCost": "$250-$400/hora; los mediadores certificados en Florida cobran tarifas premium",
+          "uniqueRequirement": "Florida requiere certificación específica por condado para mediadores familiares"
+        },
+        "example": {
+          "state": "Florida",
+          "detail": "Florida tiene el sistema de certificación de mediadores más completo de EE.UU. Los mediadores de circuito necesitan 40 horas de capacitación + mentoría. Los mediadores familiares necesitan formación en salud mental O título de derecho + práctica supervisada."
+        }
+      },
+      {
+        "key": "midwest",
+        "name": "Medio Oeste",
+        "characteristics": {
+          "certification": "Varía ampliamente; Minnesota tiene estándares sólidos, otros dependen de credenciales organizacionales",
+          "courtIntegration": "Chicago y Minneapolis tienen extensa infraestructura de ADR",
+          "specialty": "Disputas agrícolas, relaciones laborales y mediación comercial",
+          "averageCost": "$200-$350/hora; menor que los estados costeros",
+          "uniqueRequirement": "Minnesota requiere que los mediadores mantengan un seguro de responsabilidad de $1M"
+        },
+        "example": {
+          "state": "Minnesota",
+          "detail": "El Estatuto de Minnesota §114.37 exige estándares éticos para los \"neutrales\" en disputas ambientales. Los mediadores deben divulgar cualquier conflicto dentro de los 10 días posteriores al nombramiento o enfrentar la descalificación."
+        }
+      },
+      {
+        "key": "southwest",
+        "name": "Suroeste",
+        "characteristics": {
+          "certification": "Texas no tiene certificación estatal; depende de organizaciones de acreditación privadas",
+          "courtIntegration": "Fuerte énfasis en el arbitraje anexado a los tribunales sobre la mediación",
+          "specialty": "Petróleo y gas, defectos de construcción y disputas transfronterizas (México)",
+          "averageCost": "$250-$450/hora en las principales áreas metropolitanas",
+          "uniqueRequirement": "Texas permite que los jueces jubilados medien sin capacitación adicional"
+        },
+        "example": {
+          "state": "Texas",
+          "detail": "Texas NO tiene requisitos de calificación obligatorios para mediaciones privadas. Sin embargo, las mediaciones ordenadas por el tribunal requieren 40 horas de capacitación + 3 años de práctica legal (si es abogado) o experiencia profesional equivalente."
+        }
+      },
+      {
+        "key": "west",
+        "name": "Oeste",
+        "characteristics": {
+          "certification": "California tiene vías separadas para la mediación civil vs. familiar",
+          "courtIntegration": "Mediación obligatoria para disputas de custodia/visita en California",
+          "specialty": "Disputas del sector tecnológico, derecho ambiental y conflictos de soberanía tribal",
+          "averageCost": "$400-$600/hora en la Bahía de San Francisco/Seattle; $250-$350 en otras áreas",
+          "uniqueRequirement": "Los mediadores familiares de California deben tener 12 horas de capacitación en violencia doméstica"
+        },
+        "example": {
+          "state": "California",
+          "detail": "El Código de Familia de California §3164 requiere que los mediadores de derecho familiar detecten desequilibrios de poder e indicadores de violencia doméstica. Nuestra IA incluye esto como una característica central para todas las mediaciones, no solo el derecho familiar."
+        }
+      }
+    ],
+    "howWeHandle": [
+      {
+        "challenge": "Diferentes Estándares de Certificación",
+        "problem": "Un mediador certificado en Florida podría no cumplir con los requisitos de seguro de Minnesota",
+        "solution": "Etiquetamos a los mediadores con todas las certificaciones estatales y mostramos credenciales específicas de la jurisdicción. Los usuarios solo ven mediadores autorizados para su estado.",
+        "technical": "El esquema de la base de datos incluye un array certifications[] con estado, tipo, fecha de vencimiento y estado de verificación"
+      },
+      {
+        "challenge": "Reglas Variables de Conflicto de Interés",
+        "problem": "Texas permite que el exabogado contrario medie. Nueva York tiene reglas más estrictas sobre abogados-mediadores.",
+        "solution": "Nuestro analizador de grafos aplica umbrales específicos por estado. Una relación que es una bandera AMARILLA en Texas se convierte en ROJA en Nueva York.",
+        "technical": "La calculadora de riesgo tiene el parámetro state_jurisdiction que ajusta RISK_THRESHOLDS dinámicamente"
+      },
+      {
+        "challenge": "Mediación Judicial vs. Privada",
+        "problem": "Las mediaciones ordenadas por el tribunal tienen informes obligatorios. Las mediaciones privadas son confidenciales.",
+        "solution": "Preguntamos a los usuarios que especifiquen el tipo de mediación. Las sesiones conectadas al tribunal incluyen plantillas de acuerdos de conciliación conformes a las reglas de procedimiento civil estatal.",
+        "technical": "mediationType: \"court\" || \"private\" determina los requisitos de divulgación y la generación de documentos"
+      },
+      {
+        "challenge": "Disputas de Múltiples Estados",
+        "problem": "Demandante de California vs. demandado de Texas—¿cuáles reglas aplican?",
+        "solution": "Seguimos los principios de la Ley Uniforme de Mediación (UMA). Los usuarios seleccionan la jurisdicción rectora. El mediador debe tener credenciales en el estado elegido.",
+        "technical": "Campo governingJurisdiction + validación de credenciales contra selectedState previene la práctica no autorizada"
+      }
+    ]
   },
   "chat": {
     "title": "Asistente de Chat IA",
     "subtitle": "Describe tu disputa legal",
     "placeholder": "Describe tus necesidades de mediación... (ej., 'Necesito un mediador para una disputa de propiedad intelectual tecnológica')",
     "send": "Enviar",
-    "poweredBy": "Impulsado por Hugging Face (100% GRATIS)",
-    "tooltip": "Nuestro asistente de IA te ayuda a describir tu caso y encontrar el mediador perfecto. Impulsado por Hugging Face - ¡completamente gratis!",
+    "tooltip": "Nuestro asistente de IA te ayuda a describir tu caso y encontrar el mediador perfecto.",
     "parties": "Partes/Firmas para Verificar Conflictos:",
     "partyPlaceholder": "ej., BigLaw LLC",
     "addParty": "Agregar",
     "greeting": "¡Hola! Soy tu asistente de IA. Puedo ayudarte a encontrar el mediador adecuado para tu caso. Solo describe tus necesidades en lenguaje natural y buscaré en nuestra base de datos las mejores coincidencias.",
     "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
     "uploadDocument": "Subir Documento",
-    "analyzing": "Analizando..."
+    "analyzing": "Analizando...",
+    "keyboardSend": "enviar",
+    "keyboardNewLine": "nueva línea",
+    "uploadedDoc": "He subido un documento.",
+    "caseTypeLabel": "Tipo de caso:",
+    "jurisdictionLabel": "Jurisdicción:",
+    "recommendMediators": "¿Puedes recomendar mediadores adecuados?"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -155,5 +460,34 @@
     "checkConnection": "Verifica tu conexión a internet",
     "backOnline": "De Vuelta en Línea",
     "connectionRestored": "Conexión restaurada exitosamente"
+  },
+  "onboarding": {
+    "dismiss": "Cerrar",
+    "back": "Atrás",
+    "skip": "Omitir",
+    "getStarted": "Comenzar",
+    "continue": "Continuar",
+    "steps": [
+      {
+        "label": "Introducción",
+        "title": "Selección Transparente de Mediadores",
+        "content": "FairMediator detecta conflictos de interés, vínculos de cabildeo y alineación política antes de que intervengas, brindándote la evaluación independiente que tu caso requiere."
+      },
+      {
+        "label": "Paso 1 de 3",
+        "title": "Envía los Detalles del Caso",
+        "content": "Describe tu disputa mediante entrada estructurada o carga de documentos. Nuestro sistema extrae variables clave — industria, jurisdicción, valor de la disputa y complejidad — para informar la selección del mediador."
+      },
+      {
+        "label": "Paso 2 de 3",
+        "title": "Verificación de Conflictos",
+        "content": "Cada candidato es cotejado contra registros de financiamiento de campaña de la FEC, declaraciones de cabildeo del Senado e historial de tribunales federales para identificar asociaciones previas o vínculos financieros."
+      },
+      {
+        "label": "Paso 3 de 3",
+        "title": "Revisa y Designa",
+        "content": "Compara candidatos por riesgo de conflicto, alineación ideológica, especialización por tipo de caso y estructura de honorarios. Los datos completos de divulgación están disponibles en cada perfil."
+      }
+    ]
   }
 }

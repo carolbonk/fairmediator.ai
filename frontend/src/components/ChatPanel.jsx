@@ -124,21 +124,18 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
     <div className="flex flex-col">
       {/* Header - Neumorphism */}
       <div className="px-4 py-3 bg-neu-100 border-b border-neu-200">
-        <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">Describe your legal dispute</h3>
+        <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">{t('chat.subtitle')}</h3>
         <div className="flex items-center gap-2">
           <h2 className="text-base font-semibold text-neu-800">
-            AI Chat Assistant
+            {t('chat.title')}
           </h2>
-          <Tooltip text="Our AI assistant helps you describe your case and find the perfect mediator. Powered by Hugging Face - completely free!" />
+          <Tooltip text={t('chat.tooltip')} />
         </div>
-        <p className="text-xs text-neu-600 mt-0.5">
-          Powered by Hugging Face (100% FREE)
-        </p>
 
         {/* Parties Input - Neumorphism */}
         <div className="mt-3">
           <label className="block text-xs font-semibold text-neu-700 mb-1 uppercase tracking-wide">
-            Parties/Firms to Check for Conflicts:
+            {t('chat.parties')}
           </label>
           <div className="flex gap-1.5">
             <input
@@ -146,14 +143,14 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               value={partyInput}
               onChange={(e) => setPartyInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addParty()}
-              placeholder="e.g., BigLaw LLC"
+              placeholder={t('chat.partyPlaceholder')}
               className="input-neu flex-1 text-sm py-2 min-h-[44px]"
             />
             <button
               onClick={addParty}
               className="btn-neu text-sm px-4 py-2 whitespace-nowrap min-h-[44px] min-w-[44px]"
             >
-              Add
+              {t('chat.addParty')}
             </button>
           </div>
 
@@ -236,11 +233,11 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
               onDocumentAnalysis(analysis);
             }
             // Auto-populate chat with case details
-            const caseTypeText = analysis.caseType ? `Case Type: ${analysis.caseType.replace(/_/g, ' ')}` : '';
+            const caseTypeText = analysis.caseType ? `${t('chat.caseTypeLabel')} ${analysis.caseType.replace(/_/g, ' ')}` : '';
             const jurisdictionText = analysis.jurisdiction
-              ? `\nJurisdiction: ${analysis.jurisdiction.city ? analysis.jurisdiction.city + ', ' : ''}${analysis.jurisdiction.state}`
+              ? `\n${t('chat.jurisdictionLabel')} ${analysis.jurisdiction.city ? analysis.jurisdiction.city + ', ' : ''}${analysis.jurisdiction.state}`
               : '';
-            const autoMessage = `I've uploaded a document. ${caseTypeText}${jurisdictionText}\n\nCan you recommend suitable mediators?`;
+            const autoMessage = `${t('chat.uploadedDoc')} ${caseTypeText}${jurisdictionText}\n\n${t('chat.recommendMediators')}`;
             setInput(autoMessage);
           }} />
         </div>
@@ -249,7 +246,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Describe your mediation needs... (e.g., 'I need a mediator for a tech IP dispute')"
+            placeholder={t('chat.placeholder')}
             className="input-neu flex-1 resize-none text-xs leading-relaxed min-h-[80px]"
             rows="3"
             disabled={loading}
@@ -263,7 +260,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
           </button>
         </div>
         <p className="text-xs text-neu-600 mt-2">
-          <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Enter</kbd> send • <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Shift+Enter</kbd> new line
+          <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Enter</kbd> {t('chat.keyboardSend')} • <kbd className="px-1.5 py-0.5 bg-neu-200 rounded shadow-neu-inset text-neu-700 text-xs">Shift+Enter</kbd> {t('chat.keyboardNewLine')}
         </p>
       </div>
     </div>

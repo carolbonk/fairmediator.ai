@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 16, 2026 (Frontend Complete - All Pages & Features Implemented)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 90%, Data 50%, No Users/Revenue)
+**Last Updated:** February 17, 2026 (i18n complete on SafeguardsPage + MediatorsPage; Backend free-tier hardened)
+**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 92%, Data 50%, No Users/Revenue)
 
 ---
 
@@ -20,7 +20,7 @@
 
 **Completion:**
 - ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation)
-- ✅ Frontend 90% (All pages/features/modals/API integrations, i18n 6 langs, Sentry, neumorphic UX) - Missing: mobile device testing
+- ✅ Frontend 92% (All pages/features/modals/API integrations, i18n EN+ES fully complete, Sentry, neumorphic UX) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
 - 🟡 Data 50% (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
@@ -28,7 +28,7 @@
 - ❌ GTM 0% executed
 
 **Next:** Beta testing (1 week) → First customer (3-4 weeks)
-**Details:** [YC_STATUS.md](./YC_STATUS.md) | [AI_FEATURES.md](./AI_FEATURES.md) | [TODO_ANALYSIS.md](./TODO_ANALYSIS.md)
+**Details:** [YC_STATUS.md](./YC_STATUS.md) | [AI_FEATURES.md](./AI_FEATURES.md)
 
 ---
 
@@ -280,6 +280,20 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 17, 2026: Full EN/ES i18n + Backend Free-Tier Hardening + UI Polish ✅
+- **i18n Complete (EN/ES):** SafeguardsPage, MediatorsPage, ChatPanel, Onboarding, Header — zero hardcoded English visible to user
+- **Languages reduced to 2:** EN + ES only (removed ZH, HI, FR, PT — cleaner focus)
+- **Backend — Free Tier:** 3 critical gaps closed:
+  - `resetFreeTier` cron now scheduled daily at midnight UTC in `cronScheduler.startAll()`
+  - `AI_MODE=off` / `EMAIL_MODE=off` env kill switches added to HuggingFace and Resend
+  - MongoDB persistence for quota counters via `FreeTierQuota` model — counters survive server restarts
+- **New model:** `FreeTierQuota.js` (service + date unique index, async `$max` upsert on every tracked call)
+- **Popup/Modal overhaul:** All popups dark-neu-300 bg + white text (WelcomePopup, Onboarding, MediatorList modals, StatisticsPanel waitlist, StateMediationInfo drawer)
+- **Responsive modals:** All fixed padding replaced with `px-4 sm:px-8`, mobile-first `items-end sm:items-center`, `rounded-t-2xl sm:rounded-2xl`, `w-full sm:w-auto`
+- **Tooltip:** Redesigned — compact dark-neu-300 card, `w-max max-w-[220px]` (was hardcoded 300px light bg)
+- **LanguageSwitcher:** Dropdown now dark-neu-300 themed to match header
+- **Watermarks:** Removed "Claude Code" attribution from INCIDENT_TRIAGE_AUDIT.md
+
 ### February 16, 2026: Mobile UX Optimization + Frontend Feature Complete ✅
 - **Mobile Redesign:** Onboarding & WelcomePopup completely redesigned - modern white cards, 50% less space, bottom-sheet mobile UX
 - **Frontend 90% Complete:** All pages implemented (Settings, Login, Register, Dashboard, Modals)
@@ -290,7 +304,7 @@ git commit -m "Fixed bug (see details in previous message)"
 - **Build:** SUCCESS (375KB, 127.75KB gzipped, 1.54s)
 
 ### February 13, 2026: i18n + Polish Complete ✅
-- **i18n:** 6 languages (EN/ES/ZH/HI/FR/PT), 130 keys each, LanguageSwitcher with flags
+- **i18n foundation:** 6 languages (EN/ES/ZH/HI/FR/PT) set up; narrowed to EN+ES on Feb 17
 - **Error Handling:** Retry logic, offline detection, loading skeletons, PropTypes validation
 - **Quality Metrics:** All at 10/10 (error handling, loading states, code quality, i18n coverage)
 
@@ -308,14 +322,17 @@ git commit -m "Fixed bug (see details in previous message)"
 ### 🎯 **CURRENT PRIORITIES** (Post-Audit Action Plan)
 
 **IMMEDIATE (This Week):**
-- [ ] Fix 4 high-priority issues (3.5hrs): env variables, Sentry, storage auth, npm audit fix
+- [x] H1-H4 security fixes done: env variables, Sentry, storage auth, npm audit fix (commit d7fd979)
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch
 - [ ] SEO: OG image, Google Search Console, Lighthouse audit
 
 **SHORT-TERM (Weeks 1-4):**
 - [ ] First 10 customers: Email 50 lawyers (5), Reddit launch (3), cold email 100 firms (2)
 - [ ] Metrics dashboard: Conflict rate 40%, time <3min, conversion 10-20%, NPS 50+
-- [ ] Week 1 fixes: Remove console.logs, scraper endpoints, password reset emails, PDF/DOCX parsing
+- [ ] Week 1 fixes: Remove console.logs (22 instances), scraper 501 endpoints (implement or remove), password reset emails (`auth.js:343` TODO), PDF/DOCX parsing (`pdf-parse` + `mammoth`)
+- [ ] M6: Create `POST /api/mediators/apply` endpoint + MongoDB MediatorApplication collection + confirmation email
+- [ ] M7: Remove `telephone: '+1-XXX-XXX-XXXX'` placeholder from `SEO/schemas.js:68`
+- [ ] M8: Add analytics (Plausible recommended — GDPR compliant, free) to track drawer opens, conflict checks, conversions
 
 **MEDIUM-TERM (Weeks 5-8):**
 - [ ] YC prep: $2.5K MRR (50 customers), 10+ testimonials, <5% churn, demo video, submit app
@@ -350,8 +367,8 @@ git commit -m "Fixed bug (see details in previous message)"
 ---
 
 ### 🌍 **INTERNATIONALIZATION (i18n)** (100% Complete) ✅
-- 6 languages: EN, ES, ZH, HI, FR, PT (130 keys each)
-- LanguageSwitcher with flag dropdown, localStorage, WCAG compliant
+- 2 languages: EN, ES (all pages fully translated — SafeguardsPage, MediatorsPage, ChatPanel, Onboarding, Header)
+- LanguageSwitcher with flag dropdown (EN 🇺🇸 / ES 🇪🇸), localStorage, WCAG compliant
 - Auto-detects browser language, fully accessible
 
 ---
@@ -398,7 +415,7 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ### 🧩 **BACKEND/FRONTEND STATUS**
 **Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring)
-**Frontend:** 90% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n) - Missing: mobile device testing
+**Frontend:** 92% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups) - Missing: mobile device testing
 **Monetization:** Infrastructure exists, not configured (Stripe service code ready, checkout/billing/gates TODO)
 **Data:** 50% 🟡 (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
 
@@ -406,8 +423,19 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ### 🎯 DEFERRED FEATURES (Post-$50K MRR)
 **State Data (Month 3-6):** CA/TX/FL/NY scrapers exist, not integrated (federal data covers 80%)
-**Advanced Features (Year 2):** Political tracking, ML case matching, anomaly detection, A/B testing, PDF reports
+**Advanced Features (Year 2):** Political tracking, ML case matching, anomaly detection, A/B testing
 **Enterprise Scale (Series A):** API integrations (Clio/MyCase), white-label, mobile app, international, expand to arbitrators/judges
+
+**Unbuilt Premium Revenue Features (backend-ready, high value):**
+- **SettlementCalculator UI** — ML model R²=0.98 exists (`/api/settlement/predict`), interactive frontend not built; scenario builder + prediction range + similar cases + PDF export
+- **PDF Conflict Report** — `pdfkit`/`puppeteer` backend + download button; `GET /api/graph/conflict-report/:mediatorId?format=pdf`
+- **ConflictAlerts System** — daily cron detects new conflicts, alerts schema `{ userId, mediatorId, alertType, severity, isRead }`, bell icon in header
+- **MediatorComparison Tool** — side-by-side compare 2-5 mediators, radar chart, `/compare?ids=med_1,med_2`
+- **API Access (B2B)** — REST API for law firm integrations, highest revenue potential
+
+**Data Gaps (needed before scaling):**
+- FEC scraper needs to run for all 25 mediators (rate-limited, awaiting reset)
+- 500+ FCA settlements needed for stronger ML training (currently 247)
 
 ---
 

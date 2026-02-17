@@ -6,8 +6,10 @@
 
 const { monitor } = require('../../utils/freeTierMonitor');
 
-// Check if Resend is configured
+// Check if Resend is configured and not kill-switched
 const isEmailEnabled = () => {
+  // Kill switch: set EMAIL_MODE=off to disable all outbound email instantly
+  if (process.env.EMAIL_MODE === 'off') return false;
   const key = process.env.RESEND_API_KEY;
   return !!(key && key !== 'your_resend_api_key_here' && key.length > 10);
 };

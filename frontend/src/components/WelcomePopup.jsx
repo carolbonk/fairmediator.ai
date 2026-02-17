@@ -31,67 +31,67 @@ const WelcomePopup = ({ onClose }) => {
       {/* Welcome Card - Modern & Mobile-Optimized */}
       <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
         <div
-          className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-lg mx-auto flex flex-col overflow-hidden animate-slide-up"
+          className="bg-dark-neu-300 rounded-t-2xl sm:rounded-2xl shadow-dark-neu-lg w-full sm:max-w-md mx-auto flex flex-col overflow-hidden animate-slide-up"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Content */}
-          <div className="p-6 sm:p-8">
+          <div className="p-5 sm:p-7">
             {/* Header with Icon */}
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg mb-4">
-                <FaShieldAlt className="text-3xl text-white" />
+            <div className="text-center mb-5">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg mb-3">
+                <FaShieldAlt className="text-2xl text-white" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-neu-800 mb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Welcome to FairMediator
               </h2>
-              <p className="text-sm sm:text-base text-neu-600 leading-relaxed max-w-md mx-auto">
+              <p className="text-sm text-white/70 leading-relaxed max-w-sm mx-auto">
                 Transparent mediator selection with AI-powered screening & matching
               </p>
             </div>
 
             {/* Privacy Features - Compact Grid */}
-            <div className="grid grid-cols-1 gap-3 mb-6">
-              <div className="flex items-start gap-3 p-3 bg-neu-100 rounded-xl">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-0.5">
-                  <FaLock className="text-blue-600 text-sm" />
+            <div className="grid grid-cols-1 gap-2 mb-5">
+              <div className="flex items-start gap-3 p-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500">
+                <div className="flex-shrink-0 w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mt-0.5">
+                  <FaLock className="text-blue-400 text-sm" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-neu-800 text-sm mb-1">Secure & Private</h3>
-                  <p className="text-xs text-neu-600">
+                  <h3 className="font-semibold text-white text-sm mb-0.5">Secure & Private</h3>
+                  <p className="text-xs text-white/60">
                     Strong security safeguards protect your dispute information
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 bg-neu-100 rounded-xl">
-                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mt-0.5">
-                  <FaUserSecret className="text-green-600 text-sm" />
+              <div className="flex items-start gap-3 p-3 bg-dark-neu-400 rounded-xl border border-dark-neu-500">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mt-0.5">
+                  <FaUserSecret className="text-green-400 text-sm" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-neu-800 text-sm mb-1">Auto-Delete</h3>
-                  <p className="text-xs text-neu-600">
+                  <h3 className="font-semibold text-white text-sm mb-0.5">Auto-Delete</h3>
+                  <p className="text-xs text-white/60">
                     Data automatically deleted 30 days after case resolution
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* CTA Button - Modern gradient */}
+            {/* CTA Button */}
             <button
               onClick={handleClose}
-              className="w-full py-3.5 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-base rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all"
+              className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-sm rounded-xl shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all"
             >
               Get Started
             </button>
 
             {/* Footer note */}
-            <p className="text-center text-xs text-neu-500 mt-4">
+            <p className="text-center text-xs text-white/40 mt-3">
               By continuing, you agree to our{' '}
-              <a href="/terms" className="text-blue-600 hover:underline">
+              <a href="/terms" className="text-blue-400 hover:underline">
                 Terms
               </a>
               {' '}and{' '}
-              <a href="/privacy" className="text-blue-600 hover:underline">
+              <a href="/privacy" className="text-blue-400 hover:underline">
                 Privacy Policy
               </a>
             </p>

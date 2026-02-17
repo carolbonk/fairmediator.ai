@@ -1,11 +1,17 @@
 /**
  * Free Tier Monitor
- * Tracks daily usage of all free tier services to prevent exhaustion
+ * Tracks daily usage of all free tier services to prevent exhaustion.
+ * Persists counts to MongoDB so quotas survive server restarts.
  *
  * CRITICAL: Must NOT exhaust free tiers before end of month
  */
 
 const logger = require('../config/logger');
+
+// Lazy-require to avoid issues before mongoose is connected
+function getQuotaModel() {
+  return require('../models/FreeTierQuota');
+}
 
 // Free Tier Limits (from environment variables with fallback defaults)
 const FREE_TIER_LIMITS = {
@@ -68,6 +74,55 @@ class FreeTierMonitor {
   }
 
   /**
+   * Load today's persisted counts from MongoDB and merge into memory.
+   * Call this once after the mongoose connection is established.
+   */
+  async initFromDB() {
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      const FreeTierQuota = getQuotaModel();
+      const records = await FreeTierQuota.find({ date: today });
+
+      records.forEach(record => {
+        if (!this.usage[record.service]) {
+          this.usage[record.service] = {};
+        }
+        // Merge: take the higher of in-memory vs DB (in case of concurrent writes)
+        const inMemory = this.usage[record.service][today]?.count || 0;
+        this.usage[record.service][today] = {
+          count: Math.max(inMemory, record.count),
+          limit: FREE_TIER_LIMITS[record.service]?.daily,
+          started: new Date()
+        };
+      });
+
+      logger.info('Free tier quotas loaded from MongoDB', { date: today, servicesLoaded: records.length });
+      console.log(`✅ Free tier quotas restored from DB (${records.length} services)`);
+    } catch (error) {
+      // Non-fatal: fall back to in-memory tracking
+      logger.warn('Could not load free tier quotas from MongoDB', { error: error.message });
+      console.warn('⚠️  Could not restore free tier quotas from DB:', error.message);
+    }
+  }
+
+  /**
+   * Persist a service's count to MongoDB (async, non-blocking).
+   */
+  _persistToDb(service, date, count) {
+    const FreeTierQuota = getQuotaModel();
+    FreeTierQuota.findOneAndUpdate(
+      { service, date },
+      {
+        $set: { limit: FREE_TIER_LIMITS[service]?.daily },
+        $max: { count } // Only ever increase persisted count
+      },
+      { upsert: true }
+    ).catch(err => {
+      logger.warn('Free tier quota persist failed', { service, error: err.message });
+    });
+  }
+
+  /**
    * Track a service usage
    * @param {string} service - Service name (redis, huggingface, etc)
    * @param {number} count - Number of requests/operations (default: 1)
@@ -94,6 +149,11 @@ class FreeTierMonitor {
 
     const current = this.usage[service][today].count;
     const limit = this.usage[service][today].limit;
+
+    // Async persist to MongoDB (non-blocking — does not affect request latency)
+    if (limit) {
+      this._persistToDb(service, today, current);
+    }
 
     // Check if service has daily limit
     if (!limit) {
@@ -270,7 +330,7 @@ const monitor = new FreeTierMonitor();
 
 // Middleware to track API usage
 function trackMiddleware(service) {
-  return (req, res, next) => {
+  return (_req, res, next) => {
     // Track the request
     if (!monitor.isAllowed(service)) {
       return res.status(429).json({
