@@ -7,12 +7,13 @@ const express = require('express');
 const router = express.Router();
 const qaService = require('../services/ai/qaService');
 const logger = require('../config/logger');
+const { authenticate, requireRole } = require('../middleware/auth');
 
 /**
  * POST /api/qa/validate/:id
  * Validate a specific mediator profile
  */
-router.post('/validate/:id', async (req, res) => {
+router.post('/validate/:id', authenticate, requireRole(['admin']), async (req, res) => {
   try {
     const result = await qaService.validateMediatorProfile(req.params.id);
     return res.json(result);
@@ -26,7 +27,7 @@ router.post('/validate/:id', async (req, res) => {
  * POST /api/qa/validate-all
  * Batch validate all mediators
  */
-router.post('/validate-all', async (req, res) => {
+router.post('/validate-all', authenticate, requireRole(['admin']), async (req, res) => {
   try {
     const { limit = 100, skipPassed = false } = req.body;
     const result = await qaService.validateAllMediators({ limit, skipPassed });

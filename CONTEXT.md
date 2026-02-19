@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 17, 2026 (Full logger migration across all backend services; 5 features shipped)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 92%, Data 50%, No Users/Revenue)
+**Last Updated:** February 18, 2026 (Security audit complete — all CRITICAL/HIGH/MEDIUM/LOW findings resolved)
+**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 98%, Data 50%, No Users/Revenue)
 
 ---
 
@@ -20,7 +20,7 @@
 
 **Completion:**
 - ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation)
-- ✅ Frontend 92% (All pages/features/modals/API integrations, i18n EN+ES fully complete, Sentry, neumorphic UX) - Missing: mobile device testing
+- ✅ Frontend 98% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 4 premium tools) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
 - 🟡 Data 50% (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
@@ -280,6 +280,42 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 18, 2026: Enterprise Security Audit — All Findings Resolved ✅
+
+**Scope:** Full codebase audit (eval, injection, auth gaps, ReDoS, IDOR, stack leakage, CORS, body limits)
+
+**CRITICAL fixed:**
+- `mediators.js` POST / and PUT /:id: added `authenticate, requireRole(['admin'])` (previously unauthenticated)
+- `qa.js` POST /validate/:id and /validate-all: added `authenticate, requireRole(['admin'])`
+- `storage.js` GET /mediator/:mediatorId/documents: added `authenticate`
+
+**HIGH fixed:**
+- `auth.js` forgot-password: removed `resetUrl` from API response body; server-side `logger.debug` only in dev
+- **ReDoS (9 files):** Extracted `escapeRegex()` to `utils/sanitization.js` (DRY); applied to all 26 `new RegExp(userInput)` calls in `ragEngine.js`, `chatService.js`, `keywordSearchService.js`, `matchingEngine.js`, `agentSystem.js`, `hybridSearchService.js`, `contextBuilder.js`, `affiliationDetector.js`
+
+**MEDIUM fixed:**
+- `chat.js`: added `authenticate` to POST /, /stream, /check-conflicts, /analyze-ideology
+- `analysis.js`: added `authenticate` to POST /document, /text, /bulk-conflict
+- `settlement_wrapper.js`: added `authenticate` to POST /predict
+- `alerts.js`: fixed `req.user.userId` → `req.user._id` (5 occurrences — Mongoose doc vs JWT payload)
+
+**LOW fixed:**
+- `server.js`: JSON body limit reduced from 10MB → 100KB; URL-encoded 10MB → 10KB
+- `server.js`: CORS wildcard guard — rejects `CORS_ORIGIN=*` with `credentials: true`, falls back to localhost with warning
+
+**Verified clean (no issues):** `errorMonitoring.js` already gates stack traces behind `isDevelopment`
+
+---
+
+### February 18, 2026: 4 Premium Revenue Features Shipped ✅
+- **Settlement Calculator UI:** `SettlementCalculatorPage.jsx` at `/settlement-calculator` (protected) — scenario builder form (case type, dispute value, state, parties), live `SettlementPredictor` results panel, PDF export via `window.print()`, responsive 1→2 col layout, "How does this work?" accordion
+- **Dependabot disabled:** `.github/dependabot.yml` — `open-pull-requests-limit: 0` on all 3 ecosystems; stops wasting Netlify build minutes on failed previews
+- **PDF Conflict Report:** `pdfkit` installed; `GET /api/graph/conflict-report/:mediatorId` added to `graph.js` — auth-protected, streams styled A4 PDF with mediator profile, ideology score bar, donations, affiliations, public statements, conflict risk, disclaimer; `downloadConflictReport()` in `api.js`; "Download Report" button in `MediatorDetailModal` with spinner + error state
+- **ConflictAlerts System:** `ConflictAlert` model (30-day TTL); `GET /api/alerts`, `GET /api/alerts/unread-count`, `PATCH /api/alerts/:id/read`, `PATCH /api/alerts/read-all`; registered at `/api/alerts` in `server.js`; daily cron at 6AM UTC in `cronScheduler.js` scans UsageLog profile views → creates alerts for HIGH ideology, known affiliations, HIGH conflict risk (deduped per 7-day window); bell icon in `Header.jsx` with red unread badge, dropdown, mark-all-read, polls every 60s
+- **MediatorComparison Tool:** `SimpleRadarChart.jsx` (pure SVG, no deps, 6 axes); `MediatorComparisonPage.jsx` at `/compare?ids=id1,id2,...` (protected) — search to add up to 5 mediators, header score cards, radar chart + score breakdown legend, detail comparison table, print export; "Compare" button added to `MediatorDetailModal`; Compare Mediators card added to Dashboard Tools
+- **Dashboard Tools section:** Settlement Calculator + Compare Mediators cards with "Feature Coming Soon!" hover tooltip
+- **Build:** ✓ 1.36s, all chunks code-split, zero errors
+
 ### February 17, 2026 (Session 3): Final Pre-Launch Cleanup ✅
 - **Password reset emails wired up:** `auth.js:343` TODO resolved — `sendPasswordResetEmail` now called non-blocking after token is saved; failure logged but doesn't leak whether email exists
 - **Schema.org phone placeholder removed:** `SEO/schemas.js` — fake `+1-XXX-XXX-XXXX` telephone field dropped entirely (no phone number = no field, not a placeholder)
@@ -428,7 +464,7 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ### 🧩 **BACKEND/FRONTEND STATUS**
 **Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring)
-**Frontend:** 92% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups) - Missing: mobile device testing
+**Frontend:** 98% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 4 premium tools) - Missing: mobile device testing
 **Monetization:** Infrastructure exists, not configured (Stripe service code ready, checkout/billing/gates TODO)
 **Data:** 50% 🟡 (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
 
@@ -439,12 +475,12 @@ git commit -m "Fixed bug (see details in previous message)"
 **Advanced Features (Year 2):** Political tracking, ML case matching, anomaly detection, A/B testing
 **Enterprise Scale (Series A):** API integrations (Clio/MyCase), white-label, mobile app, international, expand to arbitrators/judges
 
-**Unbuilt Premium Revenue Features (backend-ready, high value):**
-- **SettlementCalculator UI** — ML model R²=0.98 exists (`/api/settlement/predict`), interactive frontend not built; scenario builder + prediction range + similar cases + PDF export
-- **PDF Conflict Report** — `pdfkit`/`puppeteer` backend + download button; `GET /api/graph/conflict-report/:mediatorId?format=pdf`
-- **ConflictAlerts System** — daily cron detects new conflicts, alerts schema `{ userId, mediatorId, alertType, severity, isRead }`, bell icon in header
-- **MediatorComparison Tool** — side-by-side compare 2-5 mediators, radar chart, `/compare?ids=med_1,med_2`
-- **API Access (B2B)** — REST API for law firm integrations, highest revenue potential
+**Premium Revenue Features:**
+- ✅ **SettlementCalculator UI** — `/settlement-calculator`, scenario builder, live ML prediction, PDF export
+- ✅ **PDF Conflict Report** — `GET /api/graph/conflict-report/:mediatorId`, pdfkit, download button in MediatorDetailModal
+- ✅ **ConflictAlerts System** — `ConflictAlert` model, 4 API routes, daily cron, bell icon in Header
+- ✅ **MediatorComparison Tool** — `/compare?ids=...`, SimpleRadarChart, detail table, print export
+- [ ] **API Access (B2B)** — REST API for law firm integrations, highest revenue potential
 
 **Data Gaps (needed before scaling):**
 - FEC scraper needs to run for all 25 mediators (rate-limited, awaiting reset)

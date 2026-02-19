@@ -1,11 +1,35 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { FaTimes, FaEnvelope, FaPhone, FaMapMarkerAlt, FaExternalLinkAlt, FaGavel, FaBriefcase } from 'react-icons/fa';
+import { FaTimes, FaEnvelope, FaPhone, FaMapMarkerAlt, FaExternalLinkAlt, FaGavel, FaBriefcase, FaFilePdf, FaSpinner, FaBalanceScale } from 'react-icons/fa';
 import ConflictBadge from './ConflictBadge';
 import LobbyingBadge from './LobbyingBadge';
+import { downloadConflictReport } from '../services/api';
 
 const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState(null);
+
+  const handleDownloadReport = async () => {
+    if (!mediator?._id) return;
+    setDownloading(true);
+    setDownloadError(null);
+    try {
+      const blob = await downloadConflictReport(mediator._id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `FairMediator-Report-${mediator.name?.replace(/\s+/g, '-') || 'mediator'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setDownloadError('Download failed. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (!mediator) return null;
 
@@ -267,7 +291,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
               {/* Action Buttons */}
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <button
-                  className="flex-1 px-6 py-3 bg-dark-neu-400 text-white font-semibold rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all border border-dark-neu-500"
+                  className="flex-1 px-6 py-3 bg-dark-neu-400 text-white font-semibold rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all border border-dark-neu-500 min-h-[44px]"
                   onClick={() => {
                     // TODO: Implement scheduling
                     alert('Schedule mediation feature coming soon!');
@@ -275,13 +299,40 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                 >
                   Schedule Mediation
                 </button>
+
+                <a
+                  href={`/compare?ids=${mediator?._id}`}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-dark-neu-400 text-white font-semibold rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg transition-all border border-dark-neu-500 min-h-[44px] text-center"
+                  aria-label={`Compare ${mediator?.name} with others`}
+                >
+                  <FaBalanceScale aria-hidden="true" /> Compare
+                </a>
+
                 <button
-                  className="flex-1 px-6 py-3 bg-neu-200 text-neu-800 font-semibold rounded-xl shadow-neu hover:shadow-neu-lg transition-all"
+                  onClick={handleDownloadReport}
+                  disabled={downloading}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-dark-neu-400 text-white font-semibold rounded-xl shadow-dark-neu hover:shadow-dark-neu-lg active:shadow-dark-neu-inset transition-all border border-dark-neu-500 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+                  aria-label="Download PDF conflict report"
+                >
+                  {downloading ? (
+                    <><FaSpinner className="animate-spin" aria-hidden="true" /> Generating...</>
+                  ) : (
+                    <><FaFilePdf aria-hidden="true" /> Download Report</>
+                  )}
+                </button>
+
+                <button
+                  className="flex-1 px-6 py-3 bg-neu-200 text-neu-800 font-semibold rounded-xl shadow-neu hover:shadow-neu-lg transition-all min-h-[44px]"
                   onClick={onClose}
                 >
                   Close
                 </button>
               </div>
+
+              {/* Download error */}
+              {downloadError && (
+                <p className="mt-2 text-xs text-red-400 text-center" role="alert">{downloadError}</p>
+              )}
             </div>
           </div>
         </div>

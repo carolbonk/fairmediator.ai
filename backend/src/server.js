@@ -47,6 +47,7 @@ const graphRoutes = require('./routes/graph'); // Simplified graph routes for fr
 const settlementRoutes = require('./routes/settlement');
 const settlementWrapperRoutes = require('./routes/settlement_wrapper'); // Simplified settlement predictor
 const dataPopulationRoutes = require('./routes/dataPopulation'); // Data population status API
+const alertsRoutes = require('./routes/alerts'); // ConflictAlerts system
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -119,8 +120,15 @@ app.use(helmet({
 }));
 
 // CORS Configuration
+// Reject wildcard origin when credentials: true is set (would be rejected by browsers anyway,
+// but we prevent the misconfiguration at the server level for defense-in-depth).
+const rawCorsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const corsOrigin = rawCorsOrigin === '*'
+  ? (() => { logger.warn('[Security] CORS_ORIGIN=* is unsafe with credentials; falling back to localhost'); return 'http://localhost:3000'; })()
+  : rawCorsOrigin;
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: corsOrigin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -137,8 +145,10 @@ app.use(compression({
 }));
 
 // Body parsing middleware (must come before CSRF)
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// 100kb is generous for chat history and typical JSON payloads.
+// File uploads go through multer (analysis: 1MB, storage: 10MB) and bypass this limit.
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
 // HTTP request logging
@@ -242,6 +252,7 @@ app.use('/api/monitoring', monitoringRoutes); // Free tier monitoring dashboard 
 app.use('/api/storage', storageRoutes); // File storage with Netlify Blobs (images, documents)
 app.use('/api/models', modelsRoutes); // AI model versioning, metrics, and active learning
 app.use('/api/graph', graphRoutes); // Simplified graph API for frontend conflict checking
+app.use('/api/alerts', alertsRoutes); // ConflictAlerts — per-user notifications
 app.use('/api/graph/admin', conflictRoutes); // Advanced graph admin routes (scraping, entity management)
 app.use('/api/settlement', settlementWrapperRoutes); // Simplified settlement predictor for general mediation
 app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement predictor (ML-based)

@@ -308,4 +308,37 @@ export const predictSettlement = async (caseData) => {
   return response.data;
 };
 
+// ── ConflictAlerts ────────────────────────────────────────────────────────────
+
+export const getAlerts = async () => {
+  const response = await api.get('/alerts');
+  return response.data;
+};
+
+export const getUnreadAlertCount = async () => {
+  const response = await api.get('/alerts/unread-count');
+  return response.data;
+};
+
+export const markAlertRead = async (alertId) => {
+  const response = await api.patch(`/alerts/${alertId}/read`);
+  return response.data;
+};
+
+export const markAllAlertsRead = async () => {
+  const response = await api.patch('/alerts/read-all');
+  return response.data;
+};
+
+/**
+ * Download a PDF conflict/bias report for a mediator.
+ * Returns a Blob so the caller can trigger a browser download.
+ */
+export const downloadConflictReport = async (mediatorId) => {
+  const response = await api.get(`/graph/conflict-report/${mediatorId}`, {
+    responseType: 'blob',
+  });
+  return response.data; // Blob
+};
+
 export default api;

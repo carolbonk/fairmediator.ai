@@ -136,9 +136,9 @@ router.post(
 /**
  * GET /api/storage/mediator/:mediatorId/documents
  * List all documents for a mediator
- * Public
+ * Requires authentication — documents may contain PII/confidential files
  */
-router.get('/mediator/:mediatorId/documents', async (req, res) => {
+router.get('/mediator/:mediatorId/documents', authenticate, async (req, res) => {
   try {
     const { mediatorId } = req.params;
     const { type } = req.query;

@@ -81,6 +81,17 @@ const sanitizeRequest = (req, res, next) => {
 };
 
 /**
+ * Escape special regex characters in a string to prevent ReDoS attacks.
+ * Use this whenever building a RegExp from user-supplied or external input.
+ * @param {string} str - Input string (potentially from user)
+ * @returns {string} - String safe to use inside new RegExp()
+ */
+const escapeRegex = (str) => {
+  if (typeof str !== 'string') return str;
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+/**
  * Remove dangerous characters from input
  * @param {string} input - Input string
  * @returns {string} - Sanitized string
@@ -102,5 +113,6 @@ module.exports = {
   sanitizeString,
   sanitizeObject,
   sanitizeRequest,
-  removeDangerousChars
+  removeDangerousChars,
+  escapeRegex
 };

@@ -10,6 +10,7 @@ const keywordSearchService = require('./keywordSearchService');
 const queryExpansion = require('./queryExpansion');
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class HybridSearchService {
   constructor() {
@@ -262,7 +263,7 @@ class HybridSearchService {
     }
 
     if (filters.city) {
-      mongoFilter['location.city'] = new RegExp(filters.city, 'i');
+      mongoFilter['location.city'] = new RegExp(escapeRegex(filters.city), 'i');
     }
 
     if (filters.practiceArea) {

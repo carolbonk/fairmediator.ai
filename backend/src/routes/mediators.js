@@ -10,6 +10,7 @@ const Mediator = require('../models/Mediator');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
 const hybridSearchService = require('../services/ai/hybridSearchService');
 const { validate, schemas } = require('../middleware/validation');
+const { authenticate, requireRole } = require('../middleware/auth');
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
 const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
 const { invalidateMediatorCache } = require('../config/cache');
@@ -143,7 +144,7 @@ router.get('/search/config', asyncHandler(async (req, res) => {
  * POST /api/mediators
  * Create a new mediator profile
  */
-router.post('/', validate(schemas.mediatorCreate, 'body'), asyncHandler(async (req, res) => {
+router.post('/', authenticate, requireRole(['admin']), validate(schemas.mediatorCreate, 'body'), asyncHandler(async (req, res) => {
   const mediator = new Mediator(req.body);
   mediator.calculateDataQuality();
 
@@ -159,7 +160,7 @@ router.post('/', validate(schemas.mediatorCreate, 'body'), asyncHandler(async (r
  * PUT /api/mediators/:id
  * Update a mediator profile
  */
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', authenticate, requireRole(['admin']), asyncHandler(async (req, res) => {
   const mediator = await Mediator.findByIdAndUpdate(
     req.params.id,
     { ...req.body, lastUpdated: Date.now() },
