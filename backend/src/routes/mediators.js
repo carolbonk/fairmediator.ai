@@ -13,6 +13,7 @@ const { validate, schemas } = require('../middleware/validation');
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
 const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
 const { invalidateMediatorCache } = require('../config/cache');
+const logger = require('../config/logger');
 
 /**
  * GET /api/mediators
@@ -437,6 +438,25 @@ router.post('/:id/conflict-feedback', validate(schemas.objectId, 'params'), asyn
 }));
 
 /**
+ * GET /api/conflict-feedback/stats
+ * Get overall conflict feedback statistics (admin only)
+ * Shows how well our conflict detection is performing
+ * NOTE: Must be defined BEFORE /:id routes to avoid Express matching "conflict-feedback" as an ObjectId
+ */
+router.get('/conflict-feedback/stats', asyncHandler(async (req, res) => {
+  const ConflictFeedback = require('../models/ConflictFeedback');
+
+  const metrics = await ConflictFeedback.getPerformanceMetrics();
+  const pendingReviews = await ConflictFeedback.getPendingReviews(10);
+
+  sendSuccess(res, {
+    performance: metrics,
+    pendingReviews: pendingReviews.length,
+    message: `F1 Score: ${metrics.f1Score}% - ${metrics.f1Score >= 75 ? 'Model performing well ✅' : 'Model needs improvement ⚠️'}`
+  });
+}));
+
+/**
  * GET /api/mediators/:id/conflict-feedback
  * Get feedback history for a specific mediator (admin only)
  */
@@ -461,24 +481,6 @@ router.get('/:id/conflict-feedback', validate(schemas.objectId, 'params'), async
   sendSuccess(res, {
     feedbackHistory,
     stats
-  });
-}));
-
-/**
- * GET /api/conflict-feedback/stats
- * Get overall conflict feedback statistics (admin only)
- * Shows how well our conflict detection is performing
- */
-router.get('/conflict-feedback/stats', asyncHandler(async (req, res) => {
-  const ConflictFeedback = require('../models/ConflictFeedback');
-
-  const metrics = await ConflictFeedback.getPerformanceMetrics();
-  const pendingReviews = await ConflictFeedback.getPendingReviews(10);
-
-  sendSuccess(res, {
-    performance: metrics,
-    pendingReviews: pendingReviews.length,
-    message: `F1 Score: ${metrics.f1Score}% - ${metrics.f1Score >= 75 ? 'Model performing well ✅' : 'Model needs improvement ⚠️'}`
   });
 }));
 

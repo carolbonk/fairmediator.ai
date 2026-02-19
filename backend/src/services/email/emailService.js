@@ -179,8 +179,53 @@ const sendWelcomeEmail = async (to, userName) => {
   }
 };
 
+/**
+ * Send mediator application received confirmation
+ */
+const sendApplicationReceivedEmail = async (to, applicantName) => {
+  if (!isEmailEnabled()) {
+    logger.info('DEV MODE: Application received email skipped', { to, applicantName });
+    return { success: true, dev: true };
+  }
+
+  const allowed = monitor.track('resend');
+  if (!allowed) {
+    logger.warn('Email daily limit reached');
+    return { success: false, error: 'Email daily limit reached' };
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'FairMediator <noreply@fairmediator.com>',
+      to: [to],
+      subject: 'Your FairMediator application was received',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #1a1a2e;">Application Received</h2>
+          <p>Hi ${applicantName},</p>
+          <p>We've received your application to be listed on FairMediator. Our team will review it and get back to you within 3-5 business days.</p>
+          <p>If you have any questions in the meantime, reply to this email.</p>
+          <p>— The FairMediator Team</p>
+        </div>
+      `
+    });
+
+    if (error) {
+      logger.error('Application email send error', { error, to });
+      return { success: false, error };
+    }
+
+    logger.info('Application received email sent', { to });
+    return { success: true, data };
+  } catch (error) {
+    logger.error('Application email service error', { error: error.message });
+    return { success: false, error: error.message };
+  }
+};
+
 module.exports = {
   isEmailEnabled,
   sendPasswordResetEmail,
-  sendWelcomeEmail
+  sendWelcomeEmail,
+  sendApplicationReceivedEmail
 };
