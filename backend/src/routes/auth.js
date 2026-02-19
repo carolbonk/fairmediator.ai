@@ -353,10 +353,12 @@ router.post('/forgot-password', validate(schemas.passwordResetRequest), asyncHan
     eventType: 'password_reset_requested'
   });
 
-  sendSuccess(res, {
-    // Remove this in production - only for development
-    ...(process.env.NODE_ENV === 'development' && { resetUrl })
-  }, 200, 'If that email exists, a password reset link has been sent');
+  // Never expose the reset URL or token in the response — log only to server
+  if (process.env.NODE_ENV === 'development') {
+    logger.debug('[Auth] Password reset URL (dev only)', { resetUrl });
+  }
+
+  sendSuccess(res, {}, 200, 'If that email exists, a password reset link has been sent');
 }));
 
 /**

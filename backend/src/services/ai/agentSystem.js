@@ -8,6 +8,7 @@ const hfClient = require('../huggingface/hfClient');
 const memorySystem = require('./memorySystem');
 const chainSystem = require('./chainSystem');
 const logger = require('../../config/logger');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class Agent {
   constructor(config) {
@@ -318,7 +319,7 @@ class AgentSystem {
           description: 'Analyze mediator ideology. Input: mediator name',
           execute: async (name, context) => {
             const Mediator = require('../../models/Mediator');
-            const mediator = await Mediator.findOne({ name: new RegExp(name, 'i') });
+            const mediator = await Mediator.findOne({ name: new RegExp(escapeRegex(name), 'i') });
 
             if (!mediator) {
               return { error: 'Mediator not found' };

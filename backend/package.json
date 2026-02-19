@@ -40,6 +40,7 @@
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.17.2",
     "resend": "^6.4.2",
     "sanitize-html": "^2.11.0",
     "stripe": "^19.3.1",

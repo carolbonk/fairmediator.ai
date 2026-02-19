@@ -12,6 +12,7 @@ const affiliationDetector = require('./affiliationDetector');
 const contextBuilder = require('../learning/contextBuilder');
 const ragEngine = require('../ai/ragEngine');
 const memorySystem = require('../ai/memorySystem');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class ChatService {
   /**
@@ -396,9 +397,9 @@ Case Analysis:
       return {
         results: await Mediator.find({
           $or: [
-            { name: new RegExp(query, 'i') },
-            { expertise: new RegExp(query, 'i') },
-            { location: new RegExp(query, 'i') }
+            { name: new RegExp(escapeRegex(query), 'i') },
+            { expertise: new RegExp(escapeRegex(query), 'i') },
+            { location: new RegExp(escapeRegex(query), 'i') }
           ]
         }).limit(10),
         criteria: { query },
@@ -483,9 +484,9 @@ Focus on recommending mediators with relevant experience in ${caseDetails.caseTy
       // Filter by case type in practice areas or expertise
       if (caseType && caseType !== 'general') {
         query.$or = [
-          { practiceAreas: new RegExp(caseType, 'i') },
-          { expertise: new RegExp(caseType, 'i') },
-          { specializations: new RegExp(caseType, 'i') }
+          { practiceAreas: new RegExp(escapeRegex(caseType), 'i') },
+          { expertise: new RegExp(escapeRegex(caseType), 'i') },
+          { specializations: new RegExp(escapeRegex(caseType), 'i') }
         ];
       }
 
@@ -495,7 +496,7 @@ Focus on recommending mediators with relevant experience in ${caseDetails.caseTy
           query['location.state'] = jurisdiction.state;
         }
         if (jurisdiction.city) {
-          query['location.city'] = new RegExp(jurisdiction.city, 'i');
+          query['location.city'] = new RegExp(escapeRegex(jurisdiction.city), 'i');
         }
       }
 

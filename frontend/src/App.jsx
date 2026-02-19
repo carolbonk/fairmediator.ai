@@ -22,6 +22,8 @@ const MediatorApplicationPage = lazy(() => import('./pages/MediatorApplicationPa
 const EthicsPage = lazy(() => import('./pages/EthicsPage'));
 const SafeguardsPage = lazy(() => import('./pages/SafeguardsPage'));
 const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
+const SettlementCalculatorPage = lazy(() => import('./pages/SettlementCalculatorPage'));
+const MediatorComparisonPage = lazy(() => import('./pages/MediatorComparisonPage'));
 
 function App() {
   return (
@@ -68,6 +70,22 @@ function App() {
                   <UpgradePage />
                 </ProtectedRoute>
                 }
+            />
+            <Route
+              path="/settlement-calculator"
+              element={
+                <ProtectedRoute>
+                  <SettlementCalculatorPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compare"
+              element={
+                <ProtectedRoute>
+                  <MediatorComparisonPage />
+                </ProtectedRoute>
+              }
             />
 
             {/* Fallback */}

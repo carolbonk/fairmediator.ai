@@ -7,6 +7,7 @@ const embeddingService = require('./embeddingService');
 const hfClient = require('../huggingface/hfClient');
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class RAGEngine {
   constructor() {
@@ -237,11 +238,11 @@ GROUNDING RULES:
     // Simple keyword search
     const mediators = await Mediator.find({
       $or: [
-        { name: new RegExp(userQuery, 'i') },
-        { specializations: new RegExp(userQuery, 'i') },
-        { lawFirm: new RegExp(userQuery, 'i') },
-        { 'location.city': new RegExp(userQuery, 'i') },
-        { 'location.state': new RegExp(userQuery, 'i') }
+        { name: new RegExp(escapeRegex(userQuery), 'i') },
+        { specializations: new RegExp(escapeRegex(userQuery), 'i') },
+        { lawFirm: new RegExp(escapeRegex(userQuery), 'i') },
+        { 'location.city': new RegExp(escapeRegex(userQuery), 'i') },
+        { 'location.state': new RegExp(escapeRegex(userQuery), 'i') }
       ],
       isActive: true
     })
@@ -308,16 +309,16 @@ Note: These results are from keyword search. For better semantic matching, ensur
       // Get keyword matches
       const keywordQuery = {
         $or: [
-          { name: new RegExp(userQuery, 'i') },
-          { specializations: new RegExp(userQuery, 'i') },
-          { lawFirm: new RegExp(userQuery, 'i') }
+          { name: new RegExp(escapeRegex(userQuery), 'i') },
+          { specializations: new RegExp(escapeRegex(userQuery), 'i') },
+          { lawFirm: new RegExp(escapeRegex(userQuery), 'i') }
         ],
         isActive: true
       };
 
       // Apply additional filters
       if (filters.state) keywordQuery['location.state'] = filters.state;
-      if (filters.city) keywordQuery['location.city'] = new RegExp(filters.city, 'i');
+      if (filters.city) keywordQuery['location.city'] = new RegExp(escapeRegex(filters.city), 'i');
       if (filters.minExperience) keywordQuery.yearsExperience = { $gte: filters.minExperience };
 
       const keywordResults = await Mediator.find(keywordQuery).limit(10);

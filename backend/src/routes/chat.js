@@ -8,13 +8,14 @@ const router = express.Router();
 const chatService = require('../services/huggingface/chatService');
 const affiliationDetector = require('../services/huggingface/affiliationDetector');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
+const { authenticate } = require('../middleware/auth');
 const { sendSuccess, sendError, sendValidationError, asyncHandler } = require('../utils/responseHandlers');
 
 /**
  * POST /api/chat
  * Process a user chat message and return mediator recommendations
  */
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', authenticate, asyncHandler(async (req, res) => {
   const { message, history = [] } = req.body;
 
   if (!message || typeof message !== 'string') {
@@ -30,7 +31,7 @@ router.post('/', asyncHandler(async (req, res) => {
  * POST /api/chat/stream
  * Stream chat responses for real-time UI
  */
-router.post('/stream', asyncHandler(async (req, res) => {
+router.post('/stream', authenticate, asyncHandler(async (req, res) => {
   const { message, history = [] } = req.body;
 
   if (!message || typeof message !== 'string') {
@@ -62,7 +63,7 @@ router.post('/enrich-mediator', (_req, res) => {
  * POST /api/chat/check-conflicts
  * Deep conflict check using web scraping
  */
-router.post('/check-conflicts', asyncHandler(async (req, res) => {
+router.post('/check-conflicts', authenticate, asyncHandler(async (req, res) => {
   const { mediatorId, parties } = req.body;
 
   if (!mediatorId || !parties || parties.length === 0) {
@@ -82,7 +83,7 @@ router.post('/check-conflicts', asyncHandler(async (req, res) => {
  * POST /api/chat/analyze-ideology
  * Analyze mediator ideology using web scraping
  */
-router.post('/analyze-ideology', asyncHandler(async (req, res) => {
+router.post('/analyze-ideology', authenticate, asyncHandler(async (req, res) => {
   const { mediatorId } = req.body;
 
   if (!mediatorId) {
