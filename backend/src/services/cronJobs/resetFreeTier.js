@@ -11,7 +11,6 @@ const logger = require('../../config/logger');
 async function resetFreeTier() {
   try {
     logger.info('Starting free tier reset job');
-    console.log('🔄 Resetting daily free tier counters...');
 
     // Get stats before reset
     const beforeStats = monitor.getStats();
@@ -30,7 +29,6 @@ async function resetFreeTier() {
           limit: stats.dailyLimit,
           percentage: stats.percentage
         });
-        console.log(`⚠️ ${stats.name}: ${stats.percentage}% used (${stats.current}/${stats.dailyLimit})`);
       }
     });
 
@@ -44,31 +42,17 @@ async function resetFreeTier() {
       before: beforeStats,
       after: afterStats
     });
-    console.log('✅ Daily free tier counters reset successfully');
-
-    // Log summary
-    console.log('\nDaily Usage Summary:');
-    Object.entries(beforeStats).forEach(([service, stats]) => {
-      console.log(`  ${stats.name}: ${stats.current || 0} / ${stats.dailyLimit || 'N/A'}`);
-    });
 
   } catch (error) {
     logger.error('Free tier reset job failed', {
       error: error.message,
       stack: error.stack
     });
-    console.error('❌ Free tier reset error:', error.message);
     process.exit(1);
   }
 }
 
 // Run the job
 resetFreeTier()
-  .then(() => {
-    console.log('Free tier reset job finished successfully');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Free tier reset job failed:', error);
-    process.exit(1);
-  });
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

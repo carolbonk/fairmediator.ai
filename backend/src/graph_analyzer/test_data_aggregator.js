@@ -115,18 +115,18 @@ async function testDataAggregator() {
       endDate: new Date('2025-12-31')
     });
 
-    console.log('\n📊 MEDIATOR PROFILE RESULTS:\n');
-    console.log(JSON.stringify(profile, null, 2));
+    logger.info('Mediator profile results', { profile: JSON.stringify(profile, null, 2) });
 
     // Verify results
-    console.log('\n✅ VERIFICATION:\n');
-    console.log(`Total Donations: ${profile.donations.totalContributions} (expected: 5)`);
-    console.log(`Total Donation Amount: $${profile.donations.totalAmount} (expected: $5000)`);
-    console.log(`Total Lobbying Filings: ${profile.lobbying.totalFilings} (expected: 3)`);
-    console.log(`Total Lobbying Clients: ${profile.lobbying.totalClients} (expected: 3)`);
-    console.log(`Party Breakdown:`, profile.donations.partyBreakdown);
-    console.log(`Industry Breakdown:`, profile.donations.industryBreakdown);
-    console.log(`Trend Data Points: ${profile.trends.length}`);
+    logger.info('Verification', {
+      totalDonations: `${profile.donations.totalContributions} (expected: 5)`,
+      totalAmount: `$${profile.donations.totalAmount} (expected: $5000)`,
+      totalFilings: `${profile.lobbying.totalFilings} (expected: 3)`,
+      totalClients: `${profile.lobbying.totalClients} (expected: 3)`,
+      partyBreakdown: profile.donations.partyBreakdown,
+      industryBreakdown: profile.donations.industryBreakdown,
+      trendDataPoints: profile.trends.length
+    });
 
     // Cleanup test data
     logger.info('\n🧹 Cleaning up test data...');
@@ -140,8 +140,7 @@ async function testDataAggregator() {
     process.exit(0);
 
   } catch (error) {
-    logger.error('❌ Test failed:', error);
-    console.error(error);
+    logger.error('Test failed', { error: error.message, stack: error.stack });
     await mongoose.connection.close();
     process.exit(1);
   }

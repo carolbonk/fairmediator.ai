@@ -52,16 +52,11 @@ router.post('/stream', asyncHandler(async (req, res) => {
 
 /**
  * POST /api/chat/enrich-mediator
- * Scrape and enrich mediator data from web sources
- * TODO: Implement scraper service integration
- * Currently disabled - llamaClient dependency removed during refactoring
+ * Removed - llamaClient dependency removed during refactoring
  */
-router.post('/enrich-mediator', asyncHandler(async (req, res) => {
-  res.status(501).json({
-    error: 'Endpoint not yet implemented',
-    message: 'Scraper service integration pending. See TODO in backend/src/routes/chat.js'
-  });
-}));
+router.post('/enrich-mediator', (_req, res) => {
+  res.status(404).json({ error: 'Endpoint removed' });
+});
 
 /**
  * POST /api/chat/check-conflicts
@@ -105,28 +100,18 @@ router.post('/analyze-ideology', asyncHandler(async (req, res) => {
 
 /**
  * GET /api/chat/scraper-health
- * Check health of the Python scraper service
- * TODO: Implement scraper service health check
- * Currently disabled - llamaClient dependency removed during refactoring
+ * Removed - llamaClient dependency removed during refactoring
  */
-router.get('/scraper-health', asyncHandler(async (_req, res) => {
-  res.status(501).json({
-    error: 'Endpoint not yet implemented',
-    message: 'Scraper health check pending. See TODO in backend/src/routes/chat.js'
-  });
-}));
+router.get('/scraper-health', (_req, res) => {
+  res.status(404).json({ error: 'Endpoint removed' });
+});
 
 /**
  * POST /api/chat/bulk-scrape
- * Scrape multiple URLs for mediator information
- * TODO: Implement bulk scraping service
- * Currently disabled - llamaClient dependency removed during refactoring
+ * Removed - llamaClient dependency removed during refactoring
  */
-router.post('/bulk-scrape', asyncHandler(async (req, res) => {
-  res.status(501).json({
-    error: 'Endpoint not yet implemented',
-    message: 'Bulk scraping service pending. See TODO in backend/src/routes/chat.js'
-  });
-}));
+router.post('/bulk-scrape', (_req, res) => {
+  res.status(404).json({ error: 'Endpoint removed' });
+});
 
 module.exports = router;

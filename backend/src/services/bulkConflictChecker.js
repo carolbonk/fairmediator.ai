@@ -6,6 +6,7 @@
  */
 
 const Mediator = require('../models/Mediator');
+const logger = require('../config/logger');
 
 class BulkConflictChecker {
   /**
@@ -140,7 +141,7 @@ class BulkConflictChecker {
         summary: this.generateSummary(conflicts)
       };
     } catch (error) {
-      console.error('Bulk conflict check error:', error);
+      logger.error('Bulk conflict check error', { error: error.message });
       throw new Error('Failed to check conflicts');
     }
   }

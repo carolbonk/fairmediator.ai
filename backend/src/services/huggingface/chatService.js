@@ -5,6 +5,7 @@
 
 const hfClient = require('./hfClient');
 const Mediator = require('../../models/Mediator');
+const logger = require('../../config/logger');
 const documentParser = require('../documentParser');
 const ideologyClassifier = require('./ideologyClassifier');
 const affiliationDetector = require('./affiliationDetector');
@@ -29,7 +30,7 @@ class ChatService {
       try {
         memoryContext = await memorySystem.buildMemoryContext(userId, conversationId, userMessage);
       } catch (error) {
-        console.warn('Memory system unavailable, continuing without memory:', error.message);
+        logger.warn('Memory system unavailable, continuing without memory', { error: error.message });
       }
 
       // Enhance options with memory context
@@ -75,7 +76,7 @@ class ChatService {
           }
         });
       } catch (error) {
-        console.warn('Failed to store in memory system:', error.message);
+        logger.warn('Failed to store in memory system', { error: error.message });
         // Continue even if memory storage fails
       }
 
@@ -93,7 +94,7 @@ class ChatService {
         memoryEnabled: memoryContext !== null
       };
     } catch (error) {
-      console.error('RAG query error, falling back to traditional:', error);
+      logger.error('RAG query error, falling back to traditional', { error: error.message });
       // Fallback to traditional method if RAG fails
       return await this.processQuery(userMessage, conversationHistory);
     }
@@ -245,7 +246,7 @@ Case Analysis:
           ...conflictResult
         });
       } catch (error) {
-        console.error(`Error checking conflicts for ${mediator.name}:`, error);
+        logger.error(`Error checking conflicts for ${mediator.name}`, { error: error.message });
         results.push({
           mediatorId: mediator._id.toString(),
           mediatorName: mediator.name,
@@ -516,7 +517,7 @@ Focus on recommending mediators with relevant experience in ${caseDetails.caseTy
 
       return mediators;
     } catch (error) {
-      console.error('Error fetching mediators by case type:', error);
+      logger.error('Error fetching mediators by case type', { error: error.message });
       // Fall back to all mediators if query fails
       return await Mediator.find()
         .select('name expertise ideology location ideologyScore hourlyRate practiceAreas yearsExperience rating totalMediations affiliations bio')

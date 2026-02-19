@@ -97,7 +97,7 @@ class MediatorScraper {
   }
 
   async scrapeMediatorProfile(url, sourceType = 'generic', useDynamic = false) {
-    console.log(`Scraping: ${url}`);
+    logger.info(`Scraping: ${url}`);
     
     const $ = useDynamic ? await this.scrapeDynamic(url) : await this.scrapeStatic(url);
     const data = this.extractMediatorData($, url, sourceType);
@@ -113,7 +113,7 @@ class MediatorScraper {
     mediator.calculateDataQuality();
     await mediator.save();
     
-    console.log(`✅ Scraped: ${mediator.name} (${mediator.dataQuality.completeness}% complete)`);
+    logger.info(`Scraped: ${mediator.name}`, { completeness: mediator.dataQuality.completeness });
     return mediator;
   }
 

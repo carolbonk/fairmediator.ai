@@ -7,6 +7,7 @@
  * but the core app functionality remains available.
  */
 
+const logger = require('../../config/logger');
 const User = require('../../models/User');
 const Subscription = require('../../models/Subscription');
 
@@ -20,9 +21,8 @@ const isStripeEnabled = () => {
 let stripe = null;
 if (isStripeEnabled()) {
   stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  console.log('✅ Stripe enabled - Premium subscriptions available');
+  logger.info('Stripe enabled - Premium subscriptions available');
 } else {
-  // console.log('ℹ️  Stripe not configured - Running in free-only mode');
 }
 
 class StripeService {
@@ -51,7 +51,7 @@ class StripeService {
 
       return customer;
     } catch (error) {
-      console.error('Create customer error:', error);
+      logger.error('Create customer error', { error: error.message });
       throw new Error('Failed to create Stripe customer');
     }
   }
@@ -101,7 +101,7 @@ class StripeService {
 
       return session;
     } catch (error) {
-      console.error('Create checkout session error:', error);
+      logger.error('Create checkout session error', { error: error.message });
       throw new Error('Failed to create checkout session');
     }
   }
@@ -129,7 +129,7 @@ class StripeService {
 
       return session;
     } catch (error) {
-      console.error('Create portal session error:', error);
+      logger.error('Create portal session error', { error: error.message });
       throw new Error('Failed to create billing portal session');
     }
   }
@@ -163,12 +163,12 @@ class StripeService {
           break;
 
         default:
-          console.log('Unhandled event type: ' + event.type);
+          logger.warn('Unhandled Stripe event type: ' + event.type);
       }
 
       return { received: true };
     } catch (error) {
-      console.error('Webhook handling error:', error);
+      logger.error('Webhook handling error', { error: error.message });
       throw error;
     }
   }
@@ -208,7 +208,7 @@ class StripeService {
     const user = await User.findOne({ stripeCustomerId: customerId });
 
     if (!user) {
-      console.error('User not found for subscription update');
+      logger.error('User not found for subscription update', { customerId });
       return;
     }
 
@@ -238,7 +238,7 @@ class StripeService {
     const user = await User.findOne({ stripeCustomerId: customerId });
 
     if (!user) {
-      console.error('User not found for subscription cancellation');
+      logger.error('User not found for subscription cancellation', { customerId });
       return;
     }
 
@@ -261,7 +261,7 @@ class StripeService {
    */
   async handlePaymentSuccess(invoice) {
     // Log successful payment for analytics
-    console.log('Payment succeeded for invoice: ' + invoice.id);
+    logger.info('Payment succeeded', { invoiceId: invoice.id });
   }
 
   /**
@@ -278,7 +278,7 @@ class StripeService {
       });
     }
 
-    console.error('Payment failed for invoice: ' + invoice.id);
+    logger.error('Payment failed', { invoiceId: invoice.id });
   }
 
   /**
@@ -333,7 +333,7 @@ class StripeService {
         }
       };
     } catch (error) {
-      console.error('Get subscription error:', error);
+      logger.error('Get subscription error', { error: error.message });
       throw new Error('Failed to retrieve subscription');
     }
   }
@@ -364,7 +364,7 @@ class StripeService {
 
       return { success: true };
     } catch (error) {
-      console.error('Cancel subscription error:', error);
+      logger.error('Cancel subscription error', { error: error.message });
       throw new Error('Failed to cancel subscription');
     }
   }

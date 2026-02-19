@@ -558,4 +558,47 @@ router.post('/:id/track-selection', validate(schemas.objectId, 'params'), asyncH
   });
 }));
 
+/**
+ * POST /api/mediators/apply
+ * Submit a mediator application
+ */
+router.post('/apply', asyncHandler(async (req, res) => {
+  const MediatorApplication = require('../models/MediatorApplication');
+  const { sendApplicationReceivedEmail } = require('../services/email/emailService');
+
+  const {
+    firstName, lastName, email, phone,
+    barNumber, yearsExperience, specializations,
+    linkedinUrl, statement
+  } = req.body;
+
+  if (!firstName || !lastName || !email) {
+    return sendValidationError(res, 'firstName, lastName, and email are required');
+  }
+
+  const existing = await MediatorApplication.findOne({ email });
+  if (existing) {
+    return sendError(res, 'An application with this email already exists', 409);
+  }
+
+  const application = await MediatorApplication.create({
+    firstName, lastName, email, phone,
+    barNumber, yearsExperience,
+    specializations: specializations || [],
+    linkedinUrl, statement,
+    status: 'pending',
+    submittedAt: new Date()
+  });
+
+  // Send confirmation email if email service is available (non-blocking)
+  if (typeof sendApplicationReceivedEmail === 'function') {
+    sendApplicationReceivedEmail(email, `${firstName} ${lastName}`).catch(() => {});
+  }
+
+  sendSuccess(res, {
+    message: 'Application submitted successfully. We will review it and get back to you within 5 business days.',
+    applicationId: application._id
+  }, 201);
+}));
+
 module.exports = router;

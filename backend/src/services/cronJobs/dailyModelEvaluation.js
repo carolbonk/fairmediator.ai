@@ -14,7 +14,6 @@ const logger = require('../../config/logger');
 async function runDailyEvaluation() {
   try {
     logger.info('Starting daily model evaluation job');
-    console.log('🔄 Running daily AI model evaluation...\n');
 
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
@@ -24,21 +23,19 @@ async function runDailyEvaluation() {
     const activeModel = await ModelVersion.getActiveModel('conflict_detection');
 
     if (!activeModel) {
-      console.log('⚠️  No active conflict detection model found');
-      console.log('   Create a model version first: POST /api/models/versions');
-      logger.warn('No active model found for evaluation');
+      logger.warn('No active model found for evaluation — create one via POST /api/models/versions');
       process.exit(0);
     }
 
-    console.log(`📊 Evaluating model: ${activeModel.version}`);
-    console.log(`   Last evaluation: ${activeModel.evaluation?.evaluationDate || 'Never'}`);
-    console.log(`   Current F1: ${activeModel.metrics?.f1Score || 'N/A'}\n`);
+    logger.info('Evaluating model', {
+      version: activeModel.version,
+      lastEvaluation: activeModel.evaluation?.evaluationDate || 'Never',
+      currentF1: activeModel.metrics?.f1Score || 'N/A'
+    });
 
     // Evaluate model using recent feedback (last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    console.log('📈 Calculating metrics from feedback data...');
 
     const evaluation = await modelMetrics.evaluateConflictModel('current', {
       startDate: sevenDaysAgo,
@@ -46,8 +43,6 @@ async function runDailyEvaluation() {
     });
 
     if (!evaluation.success) {
-      console.log(`⚠️  Evaluation skipped: ${evaluation.reason}`);
-      console.log(`   Samples found: ${evaluation.samplesFound || 0}`);
       logger.warn('Evaluation skipped due to insufficient data', {
         reason: evaluation.reason,
         samples: evaluation.samplesFound
@@ -57,19 +52,14 @@ async function runDailyEvaluation() {
 
     // Display results
     const { metrics } = evaluation;
-    console.log('\n✅ Evaluation Complete!\n');
-    console.log('📊 METRICS:');
-    console.log(`   F1 Score:  ${(metrics.f1Score * 100).toFixed(2)}%`);
-    console.log(`   Precision: ${(metrics.precision * 100).toFixed(2)}%`);
-    console.log(`   Recall:    ${(metrics.recall * 100).toFixed(2)}%`);
-    console.log(`   Accuracy:  ${(metrics.accuracy * 100).toFixed(2)}%`);
-    console.log(`   Samples:   ${metrics.samples}\n`);
-
-    console.log('🔢 CONFUSION MATRIX:');
-    console.log(`   True Positives:  ${metrics.confusionMatrix.truePositives}`);
-    console.log(`   False Positives: ${metrics.confusionMatrix.falsePositives}`);
-    console.log(`   True Negatives:  ${metrics.confusionMatrix.trueNegatives}`);
-    console.log(`   False Negatives: ${metrics.confusionMatrix.falseNegatives}\n`);
+    logger.info('Evaluation complete', {
+      f1Score: metrics.f1Score,
+      precision: metrics.precision,
+      recall: metrics.recall,
+      accuracy: metrics.accuracy,
+      samples: metrics.samples,
+      confusionMatrix: metrics.confusionMatrix
+    });
 
     // Update model with new metrics
     activeModel.metrics = metrics;
@@ -81,22 +71,17 @@ async function runDailyEvaluation() {
     };
     await activeModel.save();
 
-    console.log('✅ Model metrics updated in database\n');
+    logger.info('Model metrics updated in database');
 
     // Check if model meets quality threshold
     const threshold = 0.75;
     if (metrics.f1Score < threshold) {
-      console.log(`⚠️  WARNING: F1 score (${(metrics.f1Score * 100).toFixed(2)}%) below threshold (${threshold * 100}%)`);
-      console.log('   Consider retraining the model with new feedback data');
-      console.log('   Run: node backend/src/scripts/retrainConflictModel.js\n');
-
       logger.warn('Model performance below threshold', {
         f1Score: metrics.f1Score,
         threshold,
         version: activeModel.version
       });
     } else {
-      console.log(`✅ Model performing well (F1 > ${threshold * 100}%)\n`);
       logger.info('Model performance acceptable', {
         f1Score: metrics.f1Score,
         version: activeModel.version
@@ -109,16 +94,7 @@ async function runDailyEvaluation() {
       const latest = trends[trends.length - 1];
       const previous = trends[trends.length - 2];
       const change = ((latest.f1Score - previous.f1Score) / previous.f1Score * 100).toFixed(2);
-
-      console.log('📈 TREND (vs. last evaluation):');
-      if (change > 0) {
-        console.log(`   ⬆️  Improved by ${change}%`);
-      } else if (change < 0) {
-        console.log(`   ⬇️  Decreased by ${Math.abs(change)}%`);
-      } else {
-        console.log(`   ➡️  No change`);
-      }
-      console.log('');
+      logger.info('Model performance trend', { change: `${change}%`, direction: change > 0 ? 'improved' : change < 0 ? 'decreased' : 'unchanged' });
     }
 
     // Log summary
@@ -131,7 +107,6 @@ async function runDailyEvaluation() {
       meetsThreshold: metrics.f1Score >= threshold
     });
 
-    console.log('✅ Daily evaluation job complete\n');
 
     await mongoose.disconnect();
     process.exit(0);
@@ -141,8 +116,6 @@ async function runDailyEvaluation() {
       error: error.message,
       stack: error.stack
     });
-    console.error('\n❌ Evaluation error:', error.message);
-    console.error(error.stack);
 
     try {
       await mongoose.disconnect();

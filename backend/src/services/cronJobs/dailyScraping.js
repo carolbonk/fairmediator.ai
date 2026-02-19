@@ -14,7 +14,6 @@ const logger = require('../../config/logger');
 async function runDailyScraping() {
   try {
     logger.info('Starting daily scraping job');
-    console.log('🔄 Running daily mediator data scraping...');
 
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
@@ -23,14 +22,12 @@ async function runDailyScraping() {
     // Check free tier limits
     if (!monitor.isAllowed('scraping')) {
       logger.error('Daily scraping limit reached');
-      console.log('❌ Daily scraping limit reached');
       process.exit(1);
     }
 
     // Get daily scraping targets
     const targets = getTargetsByFrequency('daily');
     logger.info(`Found ${targets.length} daily scraping targets`);
-    console.log(`Found ${targets.length} daily scraping targets`);
 
     let successCount = 0;
     let errorCount = 0;
@@ -41,12 +38,10 @@ async function runDailyScraping() {
         // Check if we still have quota
         if (!monitor.isAllowed('scraping')) {
           logger.warn('Scraping quota exhausted, stopping');
-          console.log('⚠️ Scraping quota exhausted, stopping');
           break;
         }
 
         logger.info(`Scraping ${target.stateName} - ${target.type}`);
-        console.log(`Scraping ${target.stateName} - ${target.type}...`);
 
         await mediatorScraper.scrapeMediatorProfile(
           target.url,
@@ -67,7 +62,6 @@ async function runDailyScraping() {
           stack: error.stack,
           url: target.url
         });
-        console.error(`❌ Failed to scrape ${target.stateName}:`, error.message);
         errorCount++;
       }
     }
@@ -77,14 +71,12 @@ async function runDailyScraping() {
       success: successCount,
       errors: errorCount
     });
-    console.log(`✅ Daily scraping complete: ${successCount} success, ${errorCount} errors`);
 
   } catch (error) {
     logger.error('Daily scraping job failed', {
       error: error.message,
       stack: error.stack
     });
-    console.error('❌ Daily scraping error:', error.message);
     process.exit(1);
 
   } finally {
@@ -97,11 +89,5 @@ async function runDailyScraping() {
 
 // Run the job
 runDailyScraping()
-  .then(() => {
-    console.log('Daily scraping job finished successfully');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Daily scraping job failed:', error);
-    process.exit(1);
-  });
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

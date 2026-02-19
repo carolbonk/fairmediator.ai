@@ -4,6 +4,7 @@
  * Get API key at: https://resend.com/api-keys
  */
 
+const logger = require('../../config/logger');
 const { monitor } = require('../../utils/freeTierMonitor');
 
 // Check if Resend is configured and not kill-switched
@@ -18,9 +19,9 @@ let resend = null;
 if (isEmailEnabled()) {
   const { Resend } = require('resend');
   resend = new Resend(process.env.RESEND_API_KEY);
-  console.log('✅ Resend email service enabled');
+  logger.info('Resend email service enabled');
 } else {
-  console.log('ℹ️  Email service not configured - Password reset emails will be logged only');
+  logger.warn('Email service not configured - password reset emails will be logged only');
 }
 
 /**
@@ -28,16 +29,14 @@ if (isEmailEnabled()) {
  */
 const sendPasswordResetEmail = async (to, resetUrl, userName) => {
   if (!isEmailEnabled()) {
-    console.log('📧 [DEV MODE] Password reset email would be sent to:', to);
-    console.log('   Reset URL:', resetUrl);
-    console.log('   User:', userName);
+    logger.info('DEV MODE: Password reset email skipped', { to, resetUrl, userName });
     return { success: true, dev: true };
   }
 
   // Track email usage for free tier monitoring
   const allowed = monitor.track('resend');
   if (!allowed) {
-    console.log('❌ Email daily limit reached');
+    logger.warn('Email daily limit reached');
     return { success: false, error: 'Email daily limit reached. Try again tomorrow.' };
   }
 
@@ -87,14 +86,14 @@ const sendPasswordResetEmail = async (to, resetUrl, userName) => {
     });
 
     if (error) {
-      console.error('Email send error:', error);
+      logger.error('Email send error', { error, to });
       return { success: false, error };
     }
 
-    console.log('✅ Password reset email sent to:', to);
+    logger.info('Password reset email sent', { to });
     return { success: true, data };
   } catch (error) {
-    console.error('Email service error:', error);
+    logger.error('Email service error', { error: error.message });
     return { success: false, error: error.message };
   }
 };
@@ -104,14 +103,14 @@ const sendPasswordResetEmail = async (to, resetUrl, userName) => {
  */
 const sendWelcomeEmail = async (to, userName) => {
   if (!isEmailEnabled()) {
-    console.log('📧 [DEV MODE] Welcome email would be sent to:', to);
+    logger.info('DEV MODE: Welcome email skipped', { to });
     return { success: true, dev: true };
   }
 
   // Track email usage for free tier monitoring
   const allowed = monitor.track('resend');
   if (!allowed) {
-    console.log('❌ Email daily limit reached');
+    logger.warn('Email daily limit reached');
     return { success: false, error: 'Email daily limit reached. Try again tomorrow.' };
   }
 
@@ -169,13 +168,13 @@ const sendWelcomeEmail = async (to, userName) => {
     });
 
     if (error) {
-      console.error('Email send error:', error);
+      logger.error('Email send error', { error, to });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error('Email service error:', error);
+    logger.error('Email service error', { error: error.message });
     return { success: false, error: error.message };
   }
 };

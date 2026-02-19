@@ -7,6 +7,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
+const logger = require('../config/logger');
 
 /**
  * CASE TYPE PATTERNS
@@ -78,7 +79,7 @@ class DocumentParser {
 
       return result;
     } catch (error) {
-      console.error('Document parsing error:', error);
+      logger.error('Document parsing error', { error: error.message });
       throw new Error('Failed to parse document');
     }
   }
@@ -253,22 +254,14 @@ class DocumentParser {
         text = buffer.toString('utf-8');
       }
       else if (mimetype === 'application/pdf' || filename.endsWith('.pdf')) {
-        // TODO: Integrate pdf-parse package
-        // const pdfParse = require('pdf-parse');
-        // const data = await pdfParse(buffer);
-        // text = data.text;
-
-        // STUB: Return instruction for now
-        throw new Error('PDF parsing requires pdf-parse package. Install with: npm install pdf-parse');
+        const pdfParse = require('pdf-parse');
+        const data = await pdfParse(buffer);
+        text = data.text;
       }
       else if (mimetype.includes('word') || filename.endsWith('.docx')) {
-        // TODO: Integrate mammoth package
-        // const mammoth = require('mammoth');
-        // const result = await mammoth.extractRawText({ buffer });
-        // text = result.value;
-
-        // STUB: Return instruction for now
-        throw new Error('DOCX parsing requires mammoth package. Install with: npm install mammoth');
+        const mammoth = require('mammoth');
+        const result = await mammoth.extractRawText({ buffer });
+        text = result.value;
       }
       else {
         throw new Error('Unsupported file type. Please upload .txt, .pdf, or .docx files.');
@@ -277,7 +270,7 @@ class DocumentParser {
       // Parse the extracted text
       return await this.parseText(text, filename);
     } catch (error) {
-      console.error('File parsing error:', error);
+      logger.error('File parsing error', { error: error.message });
       throw error;
     }
   }

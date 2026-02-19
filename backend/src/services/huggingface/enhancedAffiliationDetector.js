@@ -6,6 +6,7 @@
 
 const hfClient = require('./hfClient');
 const Mediator = require('../../models/Mediator');
+const logger = require('../../config/logger');
 
 class EnhancedAffiliationDetector {
   /**
@@ -57,7 +58,7 @@ class EnhancedAffiliationDetector {
         overallRisk: this.calculateOverallRisk(conflicts)
       };
     } catch (error) {
-      console.error('Conflict detection error:', error);
+      logger.error('Conflict detection error', { error: error.message });
       throw error;
     }
   }
@@ -142,7 +143,7 @@ class EnhancedAffiliationDetector {
         details: result.details || 'No semantic conflict detected'
       };
     } catch (error) {
-      console.error('Semantic match error:', error);
+      logger.error('Semantic match error', { error: error.message });
       return {
         hasConflict: false,
         confidence: 0,

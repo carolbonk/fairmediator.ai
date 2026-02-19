@@ -5,6 +5,7 @@
 
 const sanitizeHtml = require('sanitize-html');
 const mongoSanitize = require('express-mongo-sanitize');
+const logger = require('../config/logger');
 
 /**
  * Sanitize HTML to prevent XSS attacks
@@ -83,7 +84,7 @@ const sanitizeInput = (req, res, next) => {
 const mongoSanitizeMiddleware = mongoSanitize({
   replaceWith: '_',
   onSanitize: ({ req, key }) => {
-    console.warn(`Potential MongoDB injection attempt detected: ${key} in ${req.originalUrl}`);
+    logger.warn('Potential MongoDB injection attempt detected', { key, url: req.originalUrl });
   }
 });
 

@@ -7,6 +7,7 @@
  */
 
 const hfClient = require('./hfClient');
+const logger = require('../../config/logger');
 
 class MultiPerspectiveAgents {
   constructor() {
@@ -73,7 +74,7 @@ Provide balanced, fair mediation while maintaining these values.`,
         timestamp: new Date()
       };
     } catch (error) {
-      console.error('Multi-perspective error:', error);
+      logger.error('Multi-perspective error', { error: error.message });
       throw new Error('Failed to get multi-perspective responses');
     }
   }
@@ -109,7 +110,7 @@ Provide balanced, fair mediation while maintaining these values.`,
         model: response.model
       };
     } catch (error) {
-      console.error('Single perspective error: ' + perspective + ':', error);
+      logger.error(`Single perspective error: ${perspective}`, { error: error.message });
       throw error;
     }
   }
@@ -185,7 +186,7 @@ Provide balanced, fair mediation while maintaining these values.`,
         alternativePerspectives: this.getAlternatives(result.recommendation || 'neutral')
       };
     } catch (error) {
-      console.error('Recommendation error:', error);
+      logger.error('Recommendation error', { error: error.message });
       return {
         recommendation: 'neutral',
         reasoning: 'Default neutral recommendation',
