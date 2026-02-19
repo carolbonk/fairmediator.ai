@@ -201,14 +201,12 @@ if (process.env.NODE_ENV !== 'test') {
   mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
   .then(async () => {
     logger.info('MongoDB connected successfully');
-    console.log('MongoDB connected successfully');
 
     // Restore today's free tier quota counts from MongoDB after restart
     await monitor.initFromDB();
   })
   .catch(err => {
     logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
-    console.error('MongoDB connection error:', err);
     process.exit(1);
   });
 }
@@ -269,9 +267,9 @@ const isServerless = process.env.AWS_LAMBDA_FUNCTION_NAME ||
 // Start server (only if not in test mode AND not in serverless)
 if (process.env.NODE_ENV !== 'test' && !isServerless) {
   app.listen(PORT, async () => {
-    console.log(`FairMediator backend running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
+    logger.info(`FairMediator backend running on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`AI: ${process.env.HUGGINGFACE_API_KEY ? 'Hugging Face configured' : 'Not configured'}`);
 
     // Only start cron jobs in production AND non-serverless environments
     if (process.env.NODE_ENV === 'production' && !isServerless) {

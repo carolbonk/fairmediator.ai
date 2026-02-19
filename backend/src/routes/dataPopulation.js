@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const logger = require('../config/logger');
 
 // Path to status file (updated by population script)
 const STATUS_FILE = path.join(__dirname, '../../data/population_status.json');
@@ -55,7 +56,7 @@ router.get('/status', async (req, res) => {
     res.json(statusData);
 
   } catch (error) {
-    console.error('Error reading population status:', error);
+    logger.error('Error reading population status', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to read population status'
@@ -98,7 +99,7 @@ router.post('/update', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating population status:', error);
+    logger.error('Error updating population status', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to update status'
@@ -122,7 +123,7 @@ router.delete('/status', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error clearing population status:', error);
+    logger.error('Error clearing population status', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to clear status'

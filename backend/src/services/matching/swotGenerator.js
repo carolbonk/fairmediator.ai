@@ -1,4 +1,5 @@
 const Mediator = require('../../models/Mediator');
+const logger = require('../../config/logger');
 
 /**
  * SWOT Analysis Generator
@@ -115,7 +116,7 @@ class SwotGenerator {
           items.push(text);
         }
       } catch (error) {
-        console.error('Error applying SWOT rule:', error.message);
+        logger.error('Error applying SWOT rule', { error: error.message });
       }
     }
 
@@ -210,7 +211,7 @@ class SwotGenerator {
         const swot = await this.generateSwot(mediatorId, contextData);
         comparisons.push(swot);
       } catch (error) {
-        console.error(`Failed to generate SWOT for ${mediatorId}:`, error.message);
+        logger.error(`Failed to generate SWOT for ${mediatorId}`, { error: error.message });
       }
     }
 

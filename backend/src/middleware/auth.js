@@ -6,6 +6,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { getAccessToken } = require('../config/cookies');
+const logger = require('../config/logger');
 
 // Validate JWT_SECRET is set
 if (!process.env.JWT_SECRET) {
@@ -47,7 +48,7 @@ const authenticate = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expired' });
     }
-    console.error('Authentication error:', error);
+    logger.error('Authentication error', { error: error.message });
     return res.status(500).json({ error: 'Authentication failed' });
   }
 };

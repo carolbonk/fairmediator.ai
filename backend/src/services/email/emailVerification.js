@@ -43,16 +43,7 @@ const sendVerificationEmail = async (email, token, userName) => {
 
       logger.info('Email verification sent', { email });
     } else {
-      // Development mode - log to console
-      console.log('\n=================================');
-      console.log('📧 EMAIL VERIFICATION');
-      console.log('=================================');
-      console.log(`To: ${email}`);
-      console.log(`Name: ${userName}`);
-      console.log(`Verification URL: ${verificationUrl}`);
-      console.log('=================================\n');
-
-      logger.info('Email verification (dev mode)', { email, verificationUrl });
+      logger.info('Email verification (dev mode)', { email, userName, verificationUrl });
     }
 
     return true;
@@ -86,7 +77,7 @@ const sendWelcomeEmail = async (email, userName) => {
 
       logger.info('Welcome email sent', { email });
     } else {
-      console.log(`\n📧 Welcome email would be sent to: ${email}\n`);
+      logger.info('Welcome email (dev mode)', { email });
     }
 
     return true;
@@ -123,8 +114,7 @@ const sendPasswordResetEmail = async (email, token, userName) => {
 
       logger.info('Password reset email sent', { email });
     } else {
-      console.log(`\n📧 Password reset email would be sent to: ${email}`);
-      console.log(`Reset URL: ${resetUrl}\n`);
+      logger.info('Password reset email (dev mode)', { email, resetUrl });
     }
 
     return true;
@@ -158,8 +148,7 @@ const sendAccountLockedEmail = async (email, userName, lockDuration) => {
 
       logger.info('Account locked notification sent', { email });
     } else {
-      console.log(`\n🔒 Account locked notification would be sent to: ${email}`);
-      console.log(`Lock duration: ${lockDuration} minutes\n`);
+      logger.info('Account locked email (dev mode)', { email, lockDuration });
     }
 
     return true;

@@ -1,5 +1,6 @@
 const MediatorSelection = require('../../models/MediatorSelection');
 const CaseOutcome = require('../../models/CaseOutcome');
+const logger = require('../../config/logger');
 
 class ContextBuilder {
   async buildContextForQuery(caseType, jurisdiction, ideology) {
@@ -52,7 +53,7 @@ ${insights.keyInsights.map(i => `- ${i}`).join('\n')}
         keyInsights: this.getKeyInsights(mediatorStats, ideologyStats, timingStats)
       };
     } catch (err) {
-      console.error('gatherInsights error:', err);
+      logger.error('gatherInsights error', { error: err.message });
       return { hasData: false };
     }
   }
@@ -160,7 +161,7 @@ NO HISTORICAL DATA YET:
         recentSuccess: outcomes.slice(0, 10).filter(o => o.outcome === 'settled').length >= 7
       };
     } catch (err) {
-      console.error('getMediatorHistory error:', err);
+      logger.error('getMediatorHistory error', { error: err.message });
       return null;
     }
   }

@@ -4,6 +4,8 @@
  * Prevents using fallback secrets in production
  */
 
+const logger = require('./logger');
+
 const requiredEnvVars = [
   'NODE_ENV',
   'PORT',
@@ -88,14 +90,10 @@ function validateEnv() {
   }
 
   if (warnings.length > 0 && process.env.NODE_ENV !== 'test') {
-    console.warn(
-      '\n⚠️  Optional environment variables not set:\n  - ' +
-      warnings.join('\n  - ') +
-      '\n\nSome features may be disabled.\n'
-    );
+    logger.warn('Optional environment variables not set', { missing: warnings });
   }
 
-  console.log('✅ Environment validation passed');
+  logger.info('Environment validation passed');
 }
 
 /**

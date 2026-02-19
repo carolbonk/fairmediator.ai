@@ -38,7 +38,7 @@ const logWAFHeaders = (req, res, next) => {
 
     // Development mode - log all headers
     if (process.env.NODE_ENV === 'development' && wafHeaders['X-Amzn-Waf-Action']) {
-      console.log('AWS WAF Headers:', wafHeaders);
+      logger.debug('AWS WAF Headers', { wafHeaders });
     }
   }
 
