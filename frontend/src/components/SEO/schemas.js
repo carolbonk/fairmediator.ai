@@ -65,7 +65,6 @@ export const getLocalBusinessSchema = () => ({
   name: 'FairMediator',
   description: 'Professional mediator selection platform using AI to match parties with qualified mediators',
   url: siteUrl,
-  telephone: '+1-XXX-XXX-XXXX', // Add your phone number
   email: 'support@fairmediator.com',
   address: {
     '@type': 'PostalAddress',

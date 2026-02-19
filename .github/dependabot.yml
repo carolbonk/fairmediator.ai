@@ -1,56 +1,22 @@
 version: 2
 updates:
-  # Backend dependencies
+  # Dependabot disabled — Netlify build minutes are wasted on failed previews.
+  # Re-enable by setting open-pull-requests-limit to a positive number.
+
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
       interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 5
-    groups:
-      security:
-        patterns:
-          - "*"
-        update-types:
-          - "patch"
-          - "minor"
-    labels:
-      - "dependencies"
-      - "backend"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
+    open-pull-requests-limit: 0
 
-  # Frontend dependencies
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 5
-    groups:
-      security:
-        patterns:
-          - "*"
-        update-types:
-          - "patch"
-          - "minor"
-    labels:
-      - "dependencies"
-      - "frontend"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
+    open-pull-requests-limit: 0
 
-  # Root dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 3
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
+    open-pull-requests-limit: 0
