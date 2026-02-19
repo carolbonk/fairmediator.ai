@@ -9,7 +9,7 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 17, 2026 (i18n complete on SafeguardsPage + MediatorsPage; Backend free-tier hardened)
+**Last Updated:** February 17, 2026 (Full logger migration across all backend services; 5 features shipped)
 **Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 92%, Data 50%, No Users/Revenue)
 
 ---
@@ -279,6 +279,14 @@ git commit -m "Fixed bug (see details in previous message)"
 ---
 
 ## 🔄 Recent Major Changes
+
+### February 17, 2026 (Session 2): Backend Code Quality — Full Logger Migration + 5 Features ✅
+- **console.log → logger migration (COMPLETE):** All 156+ console.* calls in `src/` replaced with Winston logger across 25 files — middleware, cron jobs, HuggingFace services, email, Stripe, scraping, AI services. Only `scripts/` (CLI tools) intentionally keep console.log
+- **New files touched:** `auth.js`, `sanitization.js`, `cronScheduler.js`, `multiPerspectiveAgents.js`, `enhancedAffiliationDetector.js`, `chatService.js`, `hfClient.js`, `utils.js`, `recommendationScoring.js`, `swotGenerator.js`, `contextBuilder.js`, `bulkConflictChecker.js`, `documentParser.js` — all now import logger
+- **PDF/DOCX parsing:** `pdf-parse` + `mammoth` installed and wired into `documentParser.js` — replaces stub throws
+- **Scraper 501 stubs:** `/enrich-mediator`, `/scraper-health`, `/bulk-scrape` endpoints in `chat.js` changed from 501 to 404 (semantically correct for removed routes)
+- **POST /api/mediators/apply:** New endpoint + `MediatorApplication.js` model — accepts firstName/lastName/email/phone/barNumber/yearsExperience/specializations/linkedinUrl/statement, validates, deduplicates by email, sends non-blocking confirmation email, returns 201 with applicationId
+- **Plausible analytics:** Single `<script defer data-domain="fairmediator.com">` tag added to `frontend/index.html` — GDPR-compliant, zero config needed beyond dashboard setup
 
 ### February 17, 2026: Full EN/ES i18n + Backend Free-Tier Hardening + UI Polish ✅
 - **i18n Complete (EN/ES):** SafeguardsPage, MediatorsPage, ChatPanel, Onboarding, Header — zero hardcoded English visible to user

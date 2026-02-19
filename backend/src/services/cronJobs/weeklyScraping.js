@@ -15,7 +15,6 @@ const logger = require('../../config/logger');
 async function runWeeklyScraping() {
   try {
     logger.info('Starting weekly scraping job');
-    console.log('🔍 Running weekly affiliation analysis...');
 
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
@@ -24,12 +23,10 @@ async function runWeeklyScraping() {
     // Get weekly scraping targets
     const targets = getTargetsByFrequency('weekly');
     logger.info(`Found ${targets.length} weekly scraping targets`);
-    console.log(`Found ${targets.length} weekly targets`);
 
     // Also analyze existing mediators
     const mediators = await Mediator.find({ isActive: true }).limit(100);
     logger.info(`Found ${mediators.length} active mediators to analyze`);
-    console.log(`Analyzing ${mediators.length} active mediators...`);
 
     let successCount = 0;
     let errorCount = 0;
@@ -40,12 +37,10 @@ async function runWeeklyScraping() {
         // Check Hugging Face quota
         if (!monitor.isAllowed('huggingface')) {
           logger.warn('Hugging Face quota exhausted, stopping');
-          console.log('⚠️ Hugging Face quota exhausted, stopping');
           break;
         }
 
         logger.info(`Analyzing affiliations for ${mediator.name}`);
-        console.log(`Analyzing ${mediator.name}...`);
 
         await affiliationDetector.analyzeMediatorProfile(mediator._id);
 
@@ -61,7 +56,6 @@ async function runWeeklyScraping() {
           error: error.message,
           mediatorId: mediator._id
         });
-        console.error(`❌ Failed to analyze ${mediator.name}:`, error.message);
         errorCount++;
       }
     }
@@ -71,14 +65,12 @@ async function runWeeklyScraping() {
       success: successCount,
       errors: errorCount
     });
-    console.log(`✅ Weekly analysis complete: ${successCount} success, ${errorCount} errors`);
 
   } catch (error) {
     logger.error('Weekly scraping job failed', {
       error: error.message,
       stack: error.stack
     });
-    console.error('❌ Weekly scraping error:', error.message);
     process.exit(1);
 
   } finally {
@@ -90,11 +82,5 @@ async function runWeeklyScraping() {
 
 // Run the job
 runWeeklyScraping()
-  .then(() => {
-    console.log('Weekly scraping job finished successfully');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Weekly scraping job failed:', error);
-    process.exit(1);
-  });
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

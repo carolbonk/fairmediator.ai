@@ -5,6 +5,7 @@
 const axios = require('axios');
 const config = require('./config');
 const { monitor } = require('../../utils/freeTierMonitor');
+const logger = require('../../config/logger');
 
 /**
  * Call Hugging Face API with retry logic
@@ -45,7 +46,7 @@ async function callAPI(model, payload, retryCount = 0) {
   } catch (error) {
     // Handle model loading (503)
     if (error.response?.status === 503 && retryCount < config.retry.maxRetries) {
-      console.log(`${config.errors.modelLoading} (${retryCount + 1}/${config.retry.maxRetries})`);
+      logger.info(`HF model loading, retry ${retryCount + 1}/${config.retry.maxRetries}`);
       await new Promise(resolve => setTimeout(resolve, config.retry.retryDelay));
       return callAPI(model, payload, retryCount + 1);
     }
@@ -56,7 +57,7 @@ async function callAPI(model, payload, retryCount = 0) {
     }
 
     // Log the actual error for debugging
-    console.error('HF API Error:', error.response?.data || error.message);
+    logger.error('HF API Error', { data: error.response?.data, message: error.message });
     throw new Error(config.errors.requestFailed(error.response?.data?.error || error.message));
   }
 }

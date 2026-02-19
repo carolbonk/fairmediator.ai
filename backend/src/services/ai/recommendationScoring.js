@@ -4,6 +4,7 @@
 
 const Mediator = require('../../models/Mediator');
 const UsageLog = require('../../models/UsageLog');
+const logger = require('../../config/logger');
 
 class RecommendationScoring {
   /**
@@ -51,7 +52,7 @@ class RecommendationScoring {
         recommendation: this.getRecommendationLevel(totalScore)
       };
     } catch (error) {
-      console.error('Scoring error:', error);
+      logger.error('Scoring error', { error: error.message });
       throw error;
     }
   }

@@ -4,6 +4,7 @@ const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
 const SREAgent = require('../../../.ai/sre/agent');
 const { monitor } = require('../../utils/freeTierMonitor');
+const logger = require('../../config/logger');
 
 class CronScheduler {
   constructor() {
@@ -16,18 +17,17 @@ class CronScheduler {
    */
   scheduleDailyRefresh() {
     const job = cron.schedule('0 2 * * *', async () => {
-      console.log('🔄 Running daily mediator data refresh...');
-      
+      logger.info('Running daily mediator data refresh');
+
       try {
-        // Get all mediators that haven't been updated in 7+ days
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        
+
         const staleMediators = await Mediator.find({
           'sources.scrapedAt': { $lt: sevenDaysAgo }
         }).limit(50);
 
-        console.log(`Found ${staleMediators.length} mediators to refresh`);
+        logger.info(`Found ${staleMediators.length} mediators to refresh`);
 
         for (const mediator of staleMediators) {
           if (mediator.sources?.length > 0) {
@@ -36,27 +36,25 @@ class CronScheduler {
               await mediatorScraper.scrapeMediatorProfile(
                 lastSource.url,
                 lastSource.sourceType,
-                true // use dynamic scraping
+                true
               );
-              
-              // Wait 3 seconds between requests
               await new Promise(resolve => setTimeout(resolve, 3000));
             } catch (error) {
-              console.error(`Failed to refresh ${mediator.name}:`, error.message);
+              logger.error(`Failed to refresh ${mediator.name}`, { error: error.message });
             }
           }
         }
 
-        console.log('✅ Daily refresh complete');
+        logger.info('Daily refresh complete');
       } catch (error) {
-        console.error('❌ Daily refresh error:', error.message);
+        logger.error('Daily refresh error', { error: error.message });
       } finally {
         await mediatorScraper.close();
       }
     });
 
     this.jobs.push({ name: 'dailyRefresh', job });
-    console.log('✅ Scheduled daily mediator refresh (2:00 AM)');
+    logger.info('Scheduled daily mediator refresh (2:00 AM)');
   }
 
   /**
@@ -65,30 +63,29 @@ class CronScheduler {
    */
   scheduleWeeklyAffiliationAnalysis() {
     const job = cron.schedule('0 3 * * 0', async () => {
-      console.log('🔍 Running weekly affiliation analysis...');
-      
+      logger.info('Running weekly affiliation analysis');
+
       try {
         const mediators = await Mediator.find({ isActive: true }).limit(100);
-        
-        console.log(`Analyzing ${mediators.length} mediators`);
+        logger.info(`Analyzing ${mediators.length} mediators`);
 
         for (const mediator of mediators) {
           try {
             await affiliationDetector.analyzeMediatorProfile(mediator._id);
             await new Promise(resolve => setTimeout(resolve, 1000));
           } catch (error) {
-            console.error(`Failed to analyze ${mediator.name}:`, error.message);
+            logger.error(`Failed to analyze ${mediator.name}`, { error: error.message });
           }
         }
 
-        console.log('✅ Weekly affiliation analysis complete');
+        logger.info('Weekly affiliation analysis complete');
       } catch (error) {
-        console.error('❌ Affiliation analysis error:', error.message);
+        logger.error('Affiliation analysis error', { error: error.message });
       }
     });
 
     this.jobs.push({ name: 'weeklyAffiliationAnalysis', job });
-    console.log('✅ Scheduled weekly affiliation analysis (Sunday 3:00 AM)');
+    logger.info('Scheduled weekly affiliation analysis (Sunday 3:00 AM)');
   }
 
   /**
@@ -97,31 +94,19 @@ class CronScheduler {
    */
   scheduleWeeklySREAgent() {
     const job = cron.schedule('0 2 * * 0', async () => {
-      console.log('🔧 Running weekly SRE agent scan and auto-fix...');
+      logger.info('Running weekly SRE agent scan and auto-fix');
 
       try {
         const agent = new SREAgent();
-
-        // Run with auto-fix enabled and backup
-        const result = await agent.run({
-          dryRun: false,
-          backup: true
-        });
-
-        console.log(`✅ SRE agent complete: ${result.results.fixed.length} issues fixed`);
-
-        // Log summary
-        if (result.results.needsReview.length > 0) {
-          console.log(`⚠️  ${result.results.needsReview.length} issues need manual review`);
-        }
-
+        const result = await agent.run({ dryRun: false, backup: true });
+        logger.info('SRE agent complete', { fixed: result.results.fixed.length, needsReview: result.results.needsReview.length });
       } catch (error) {
-        console.error('❌ SRE agent error:', error.message);
+        logger.error('SRE agent error', { error: error.message });
       }
     });
 
     this.jobs.push({ name: 'weeklySREAgent', job });
-    console.log('✅ Scheduled weekly SRE agent (Sunday 2:00 AM)');
+    logger.info('Scheduled weekly SRE agent (Sunday 2:00 AM)');
   }
 
   /**
@@ -130,38 +115,29 @@ class CronScheduler {
    */
   scheduleFreeTierReset() {
     const job = cron.schedule('0 0 * * *', async () => {
-      console.log('🔄 Resetting daily free tier counters...');
-
       try {
-        // Log usage before reset
         const stats = monitor.getStats();
-        Object.entries(stats).forEach(([, s]) => {
-          if (s.dailyLimit) {
-            console.log(`  ${s.name}: ${s.current || 0} / ${s.dailyLimit} (${s.percentage || 0}%)`);
-          }
-        });
-
+        logger.info('Resetting daily free tier counters', { stats });
         monitor.resetDaily();
-        console.log('✅ Free tier daily counters reset');
+        logger.info('Free tier daily counters reset');
       } catch (error) {
-        console.error('❌ Free tier reset error:', error.message);
+        logger.error('Free tier reset error', { error: error.message });
       }
     }, { timezone: 'UTC' });
 
     this.jobs.push({ name: 'freeTierReset', job });
-    console.log('✅ Scheduled daily free tier reset (midnight UTC)');
+    logger.info('Scheduled daily free tier reset (midnight UTC)');
   }
 
   /**
    * Start all scheduled jobs
    */
   startAll() {
-    console.log('\n📅 Starting scheduled tasks...');
     this.scheduleDailyRefresh();
     this.scheduleWeeklySREAgent();
     this.scheduleWeeklyAffiliationAnalysis();
     this.scheduleFreeTierReset();
-    console.log(`✅ ${this.jobs.length} cron jobs scheduled\n`);
+    logger.info(`${this.jobs.length} cron jobs scheduled`);
   }
 
   /**
@@ -170,7 +146,7 @@ class CronScheduler {
   stopAll() {
     this.jobs.forEach(({ name, job }) => {
       job.stop();
-      console.log(`Stopped: ${name}`);
+      logger.info(`Cron job stopped: ${name}`);
     });
     this.jobs = [];
   }

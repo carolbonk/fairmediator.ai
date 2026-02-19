@@ -99,7 +99,7 @@ const logCloudflareHeaders = (req, res, next) => {
 
     // Development mode - log all CF headers
     if (process.env.NODE_ENV === 'development') {
-      console.log('Cloudflare Headers:', cfHeaders);
+      logger.debug('Cloudflare Headers', { cfHeaders });
     }
 
     // Store CF headers on request for potential use in other middleware

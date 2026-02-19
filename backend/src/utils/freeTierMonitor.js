@@ -97,11 +97,9 @@ class FreeTierMonitor {
       });
 
       logger.info('Free tier quotas loaded from MongoDB', { date: today, servicesLoaded: records.length });
-      console.log(`✅ Free tier quotas restored from DB (${records.length} services)`);
     } catch (error) {
       // Non-fatal: fall back to in-memory tracking
       logger.warn('Could not load free tier quotas from MongoDB', { error: error.message });
-      console.warn('⚠️  Could not restore free tier quotas from DB:', error.message);
     }
   }
 

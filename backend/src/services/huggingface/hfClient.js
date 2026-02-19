@@ -3,6 +3,7 @@
  */
 
 const { callAPI, validateApiKey, config } = require('./utils');
+const logger = require('../../config/logger');
 
 class HuggingFaceClient {
   constructor() {
@@ -77,7 +78,7 @@ class HuggingFaceClient {
       // Response is an embedding vector (array of numbers)
       return embedding;
     } catch (error) {
-      console.error('Feature extraction error:', error.message);
+      logger.error('Feature extraction error', { error: error.message });
       throw new Error(`Failed to generate embedding: ${error.message}`);
     }
   }
