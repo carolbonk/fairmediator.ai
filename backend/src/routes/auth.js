@@ -10,7 +10,7 @@ const User = require('../models/User');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const { validate, schemas } = require('../middleware/validation');
 const { authLimiter, passwordResetLimiter, emailVerificationLimiter } = require('../middleware/rateLimiting');
-const { generateVerificationToken, sendVerificationEmail, sendWelcomeEmail } = require('../services/email/emailVerification');
+const { generateVerificationToken, sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } = require('../services/email/emailVerification');
 const { setAuthCookies, clearAuthCookies, getRefreshToken } = require('../config/cookies');
 const logger = require('../config/logger');
 const UsageLog = require('../models/UsageLog');
@@ -340,11 +340,12 @@ router.post('/forgot-password', validate(schemas.passwordResetRequest), asyncHan
   user.passwordResetExpires = Date.now() + 3600000; // 1 hour
   await user.save();
 
-  // TODO: Send email with reset link
-  // For now, just return the token (in production, this would be sent via email)
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-  logger.info('Password reset URL generated', { resetUrl });
+  // Send reset email (non-blocking — failure shouldn't expose whether email exists)
+  sendPasswordResetEmail(user.email, resetToken, user.name).catch(err => {
+    logger.error('Failed to send password reset email', { error: err.message });
+  });
 
   // Log password reset request
   await UsageLog.create({

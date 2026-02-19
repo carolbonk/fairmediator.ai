@@ -280,6 +280,11 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 17, 2026 (Session 3): Final Pre-Launch Cleanup ✅
+- **Password reset emails wired up:** `auth.js:343` TODO resolved — `sendPasswordResetEmail` now called non-blocking after token is saved; failure logged but doesn't leak whether email exists
+- **Schema.org phone placeholder removed:** `SEO/schemas.js` — fake `+1-XXX-XXX-XXXX` telephone field dropped entirely (no phone number = no field, not a placeholder)
+- **CONTEXT.md:** All Week 1 fixes + M6/M7/M8 marked complete
+
 ### February 17, 2026 (Session 2): Backend Code Quality — Full Logger Migration + 5 Features ✅
 - **console.log → logger migration (COMPLETE):** All 156+ console.* calls in `src/` replaced with Winston logger across 25 files — middleware, cron jobs, HuggingFace services, email, Stripe, scraping, AI services. Only `scripts/` (CLI tools) intentionally keep console.log
 - **New files touched:** `auth.js`, `sanitization.js`, `cronScheduler.js`, `multiPerspectiveAgents.js`, `enhancedAffiliationDetector.js`, `chatService.js`, `hfClient.js`, `utils.js`, `recommendationScoring.js`, `swotGenerator.js`, `contextBuilder.js`, `bulkConflictChecker.js`, `documentParser.js` — all now import logger
@@ -337,10 +342,10 @@ git commit -m "Fixed bug (see details in previous message)"
 **SHORT-TERM (Weeks 1-4):**
 - [ ] First 10 customers: Email 50 lawyers (5), Reddit launch (3), cold email 100 firms (2)
 - [ ] Metrics dashboard: Conflict rate 40%, time <3min, conversion 10-20%, NPS 50+
-- [ ] Week 1 fixes: Remove console.logs (22 instances), scraper 501 endpoints (implement or remove), password reset emails (`auth.js:343` TODO), PDF/DOCX parsing (`pdf-parse` + `mammoth`)
-- [ ] M6: Create `POST /api/mediators/apply` endpoint + MongoDB MediatorApplication collection + confirmation email
-- [ ] M7: Remove `telephone: '+1-XXX-XXX-XXXX'` placeholder from `SEO/schemas.js:68`
-- [ ] M8: Add analytics (Plausible recommended — GDPR compliant, free) to track drawer opens, conflict checks, conversions
+- [x] Week 1 fixes: Remove console.logs, scraper 501 endpoints → 404, password reset emails (`auth.js:343`), PDF/DOCX parsing (`pdf-parse` + `mammoth`)
+- [x] M6: Create `POST /api/mediators/apply` endpoint + MongoDB MediatorApplication collection + confirmation email
+- [x] M7: Remove `telephone: '+1-XXX-XXX-XXXX'` placeholder from `SEO/schemas.js:68`
+- [x] M8: Add analytics (Plausible recommended — GDPR compliant, free) to track drawer opens, conflict checks, conversions
 
 **MEDIUM-TERM (Weeks 5-8):**
 - [ ] YC prep: $2.5K MRR (50 customers), 10+ testimonials, <5% churn, demo video, submit app
