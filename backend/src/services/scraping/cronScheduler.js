@@ -2,6 +2,8 @@ const cron = require('node-cron');
 const mediatorScraper = require('./mediatorScraper');
 const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
+const UsageLog = require('../../models/UsageLog');
+const ConflictAlert = require('../../models/ConflictAlert');
 const SREAgent = require('../../../.ai/sre/agent');
 const { monitor } = require('../../utils/freeTierMonitor');
 const logger = require('../../config/logger');
@@ -130,6 +132,94 @@ class CronScheduler {
   }
 
   /**
+   * Daily conflict alert scan — runs at 6:00 AM UTC
+   * For each user who viewed a mediator in the last 30 days:
+   *   - If that mediator has a high ideology score or flagged affiliations
+   *     AND no alert was created in the last 7 days for that pair → create one.
+   */
+  scheduleDailyConflictAlerts() {
+    const job = cron.schedule('0 6 * * *', async () => {
+      logger.info('[AlertsCron] Starting daily conflict alert scan');
+      try {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+        // Find (userId, mediatorId) pairs from recent profile views
+        const recentViews = await UsageLog.aggregate([
+          {
+            $match: {
+              type: 'profileView',
+              createdAt: { $gte: thirtyDaysAgo },
+              userId: { $exists: true },
+              resourceId: { $exists: true }
+            }
+          },
+          {
+            $group: {
+              _id: { userId: '$userId', mediatorId: '$resourceId' }
+            }
+          }
+        ]);
+
+        let created = 0;
+
+        for (const view of recentViews) {
+          const { userId, mediatorId } = view._id;
+          if (!userId || !mediatorId) continue;
+
+          // Skip if an alert already exists for this pair in the last 7 days
+          const recentAlert = await ConflictAlert.findOne({
+            userId,
+            mediatorId,
+            createdAt: { $gte: sevenDaysAgo }
+          }).lean();
+          if (recentAlert) continue;
+
+          const mediator = await Mediator.findById(mediatorId)
+            .select('name ideologyScore biasIndicators conflictRisk')
+            .lean();
+          if (!mediator) continue;
+
+          const absScore = Math.abs(mediator.ideologyScore || 0);
+          const hasAffiliations = (mediator.biasIndicators?.politicalAffiliations?.length || 0) > 0;
+          const hasDonations = (mediator.biasIndicators?.donationHistory?.length || 0) > 0;
+          const riskLevel = mediator.conflictRisk?.level;
+
+          let alertType = null;
+          let severity = 'LOW';
+          let message = '';
+
+          if (riskLevel === 'HIGH') {
+            alertType = 'new_conflict';
+            severity = 'HIGH';
+            message = `${mediator.name} has a HIGH conflict risk rating based on recent analysis.`;
+          } else if (absScore >= 6) {
+            alertType = 'high_bias';
+            severity = 'HIGH';
+            message = `${mediator.name} has a strong ideology score (${mediator.ideologyScore > 0 ? '+' : ''}${mediator.ideologyScore?.toFixed(1)}). Review before selecting.`;
+          } else if (hasAffiliations || hasDonations) {
+            alertType = 'new_affiliation';
+            severity = 'MEDIUM';
+            message = `${mediator.name} has political affiliations or donation history on record.`;
+          }
+
+          if (!alertType) continue;
+
+          await ConflictAlert.create({ userId, mediatorId, mediatorName: mediator.name, alertType, severity, message });
+          created++;
+        }
+
+        logger.info(`[AlertsCron] Done — ${created} new alerts created`);
+      } catch (error) {
+        logger.error('[AlertsCron] Error during conflict alert scan', { error: error.message });
+      }
+    }, { timezone: 'UTC' });
+
+    this.jobs.push({ name: 'dailyConflictAlerts', job });
+    logger.info('Scheduled daily conflict alert scan (6:00 AM UTC)');
+  }
+
+  /**
    * Start all scheduled jobs
    */
   startAll() {
@@ -137,6 +227,7 @@ class CronScheduler {
     this.scheduleWeeklySREAgent();
     this.scheduleWeeklyAffiliationAnalysis();
     this.scheduleFreeTierReset();
+    this.scheduleDailyConflictAlerts();
     logger.info(`${this.jobs.length} cron jobs scheduled`);
   }
 

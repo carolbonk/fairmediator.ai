@@ -10,6 +10,7 @@ const multer = require('multer'); // NOTE: Install with: npm install multer
 const documentParser = require('../services/documentParser');
 const bulkConflictChecker = require('../services/bulkConflictChecker');
 const chatService = require('../services/huggingface/chatService');
+const { authenticate } = require('../middleware/auth');
 const { sendSuccess, sendError, sendValidationError, asyncHandler } = require('../utils/responseHandlers');
 
 /**
@@ -56,7 +57,7 @@ const upload = multer({
  *   }
  * }
  */
-router.post('/document', upload.single('document'), asyncHandler(async (req, res) => {
+router.post('/document', authenticate, upload.single('document'), asyncHandler(async (req, res) => {
   if (!req.file) {
     return sendValidationError(res, 'No file uploaded. Please upload a document');
   }
@@ -79,7 +80,7 @@ router.post('/document', upload.single('document'), asyncHandler(async (req, res
  * BODY: { text: string }
  * RESPONSE: Same as /document endpoint
  */
-router.post('/text', asyncHandler(async (req, res) => {
+router.post('/text', authenticate, asyncHandler(async (req, res) => {
   const { text } = req.body;
 
   if (!text || typeof text !== 'string') {
@@ -108,7 +109,7 @@ router.post('/text', asyncHandler(async (req, res) => {
  *   }
  * }
  */
-router.post('/bulk-conflict', upload.single('parties'), asyncHandler(async (req, res) => {
+router.post('/bulk-conflict', authenticate, upload.single('parties'), asyncHandler(async (req, res) => {
   if (!req.file) {
     return sendValidationError(res, 'No file uploaded. Please upload a CSV or TXT file');
   }

@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const Mediator = require('../../models/Mediator');
+const { escapeRegex } = require('../../utils/sanitization');
 
 /**
  * Affiliation & Bias Detection Engine
@@ -66,13 +67,13 @@ class AffiliationDetector {
 
     // Count liberal keywords
     this.liberalKeywords.forEach(keyword => {
-      const matches = (textLower.match(new RegExp(keyword, 'g')) || []).length;
+      const matches = (textLower.match(new RegExp(escapeRegex(keyword), 'g')) || []).length;
       score -= matches * 2;
     });
 
     // Count conservative keywords
     this.conservativeKeywords.forEach(keyword => {
-      const matches = (textLower.match(new RegExp(keyword, 'g')) || []).length;
+      const matches = (textLower.match(new RegExp(escapeRegex(keyword), 'g')) || []).length;
       score += matches * 2;
     });
 

@@ -1,6 +1,7 @@
 const MediatorSelection = require('../../models/MediatorSelection');
 const CaseOutcome = require('../../models/CaseOutcome');
 const logger = require('../../config/logger');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class ContextBuilder {
   async buildContextForQuery(caseType, jurisdiction, ideology) {
@@ -28,7 +29,7 @@ ${insights.keyInsights.map(i => `- ${i}`).join('\n')}
     try {
       const query = { outcome: { $in: ['settled', 'resolved'] } };
 
-      if (caseType) query.caseType = new RegExp(caseType, 'i');
+      if (caseType) query.caseType = new RegExp(escapeRegex(caseType), 'i');
       if (jurisdiction?.state) query['jurisdiction.state'] = jurisdiction.state;
 
       const cases = await CaseOutcome.find(query)

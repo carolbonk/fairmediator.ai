@@ -1,10 +1,52 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { FaSearch, FaEye, FaComments, FaTrophy, FaChartLine, FaUsers } from 'react-icons/fa';
+import { FaSearch, FaEye, FaComments, FaTrophy, FaChartLine, FaUsers, FaCalculator, FaBalanceScale } from 'react-icons/fa';
 import StatCard from '../../components/dashboard/StatCard';
 import SimpleLineChart from '../../components/dashboard/SimpleLineChart';
 import SimpleBarChart from '../../components/dashboard/SimpleBarChart';
 import SimpleDonutChart from '../../components/dashboard/SimpleDonutChart';
+
+/**
+ * ToolCard — card with a "Feature Coming Soon!" hover popup
+ */
+function ToolCard({ icon, label, sublabel, href, tooltip }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Tooltip */}
+      {hovered && tooltip && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-50 pointer-events-none">
+          <div className="relative bg-dark-neu-300 rounded-xl shadow-lg px-3 py-2 border border-dark-neu-500 w-max max-w-[220px]">
+            <p className="text-xs text-white/90 font-medium">{tooltip}</p>
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+              <div className="w-3 h-3 bg-dark-neu-300 border-r border-b border-dark-neu-500 rotate-45" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <a
+        href={href}
+        className="flex items-center gap-4 bg-neu-200 rounded-2xl p-5 shadow-neu hover:shadow-neu-lg transition-all duration-200 group"
+        aria-label={label}
+      >
+        <div className="w-11 h-11 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl flex items-center justify-center shadow-neu flex-shrink-0 group-hover:scale-105 transition-transform duration-150">
+          {icon}
+        </div>
+        <div>
+          <p className="text-sm font-bold text-neu-800">{label}</p>
+          <p className="text-xs text-neu-500 mt-0.5">{sublabel}</p>
+        </div>
+      </a>
+    </div>
+  );
+}
 
 /**
  * DashboardPage - User analytics dashboard
@@ -298,6 +340,29 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Quick Tools */}
+        <div className="mb-8">
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#111827', marginBottom: '1rem' }}>
+            Tools
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ToolCard
+              icon={<FaCalculator className="text-white text-base" aria-hidden="true" />}
+              label="Settlement Calculator"
+              sublabel="ML prediction · R²=0.98"
+              href="/settlement-calculator"
+              tooltip="Feature Coming Soon!"
+            />
+            <ToolCard
+              icon={<FaBalanceScale className="text-white text-base" aria-hidden="true" />}
+              label="Compare Mediators"
+              sublabel="Side-by-side · radar chart"
+              href="/compare"
+              tooltip="Feature Coming Soon!"
+            />
+          </div>
+        </div>
 
         {/* Upgrade CTA for Free Users */}
         {user?.subscriptionTier === 'free' && (

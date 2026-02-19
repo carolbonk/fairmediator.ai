@@ -10,6 +10,7 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../config/logger');
+const { authenticate } = require('../middleware/auth');
 
 // Case type mappings to FCA fraud types
 const CASE_TO_FRAUD_MAPPING = {
@@ -57,7 +58,7 @@ const CASE_TO_INDUSTRY_MAPPING = {
  *   ... other factors
  * }
  */
-router.post('/predict', async (req, res) => {
+router.post('/predict', authenticate, async (req, res) => {
   try {
     const {
       caseType,

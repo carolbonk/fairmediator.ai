@@ -7,6 +7,7 @@
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
 const fuzzyMatch = require('../../utils/fuzzyMatch');
+const { escapeRegex } = require('../../utils/sanitization');
 
 class KeywordSearchService {
   constructor() {
@@ -249,7 +250,7 @@ class KeywordSearchService {
       mongoFilters['location.state'] = filters.state;
     }
     if (filters.city) {
-      mongoFilters['location.city'] = new RegExp(filters.city, 'i');
+      mongoFilters['location.city'] = new RegExp(escapeRegex(filters.city), 'i');
     }
 
     // Practice area filter
@@ -294,7 +295,7 @@ class KeywordSearchService {
   async getSuggestions(partialQuery, limit = 5) {
     try {
       // Find mediators matching partial query
-      const regex = new RegExp(partialQuery, 'i');
+      const regex = new RegExp(escapeRegex(partialQuery), 'i');
 
       const suggestions = await Mediator.aggregate([
         {

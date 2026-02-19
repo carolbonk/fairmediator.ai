@@ -1,4 +1,5 @@
 const Mediator = require('../../models/Mediator');
+const { escapeRegex } = require('../../utils/sanitization');
 
 /**
  * Mediator Matching & Scoring Engine
@@ -180,13 +181,13 @@ class MatchingEngine {
 
     // Filter by location if specified
     if (criteria.location?.state) {
-      query['location.state'] = new RegExp(criteria.location.state, 'i');
+      query['location.state'] = new RegExp(escapeRegex(criteria.location.state), 'i');
     }
 
     // Filter by specializations if specified
     if (criteria.specializations?.length > 0) {
       query.specializations = { 
-        $in: criteria.specializations.map(s => new RegExp(s, 'i'))
+        $in: criteria.specializations.map(s => new RegExp(escapeRegex(s), 'i'))
       };
     }
 
