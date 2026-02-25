@@ -104,7 +104,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 lg:gap-6">
+    <div className="flex flex-col gap-4 lg:gap-6 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:pr-2">
       {/* AI/Human Toggle - Neomorphism Style */}
       <div className="px-5 py-3 bg-neu-100 rounded-neu shadow-neu-inset flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1E3A8A] mb-3">Select your preference</h3>
@@ -149,7 +149,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-neu-800 flex items-center gap-2">
             Political Balance
-            <Tooltip text="Analyzes the political leanings of both sides in your case based on your chat description. This estimation helps match you with mediators whose ideology aligns with achieving a balanced resolution." />
+            <Tooltip text="Analyzes the political leanings of both sides in your case based on your chat description. This estimation helps match you with mediators whose ideology aligns with achieving a balanced resolution. ⚠️ Inferred via keyword analysis. Not verified. May be inaccurate. Not based on donations, memberships, or case history." />
           </h3>
         </div>
 
@@ -291,7 +291,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
         <div className="mb-5">
           <label className="block text-sm font-semibold text-neu-700 mb-3 flex items-center justify-center gap-1.5">
             Filter by Mediator Ideology
-            <Tooltip text="Select a mediator ideology to see how it affects conflict risk. Neutral mediators typically reduce risk, while ideologically mismatched mediators may increase it." position="right" />
+            <Tooltip text="Select a mediator ideology to see how it affects conflict risk. Neutral mediators typically reduce risk, while ideologically mismatched mediators may increase it. ⚠️ Mediator ideology labels are algorithmic estimates. Not all mediators have been verified. Some may opt out of classification." position="right" />
           </label>
           <div className="grid grid-cols-3 gap-2">
             {/* Liberal */}

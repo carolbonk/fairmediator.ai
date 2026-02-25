@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle, FaCopy, FaCheck } from 'react-icons/fa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import CustomSelect from '../components/common/CustomSelect';
 
 const MediatorApplicationPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [submittedAppId, setSubmittedAppId] = useState(null); // drives success popup
+  const [copied, setCopied] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -17,6 +20,7 @@ const MediatorApplicationPage = () => {
     location: '',
     authorized: '',
     preferredState: '',
+    preferredStateReason: '',
     practiceAreas: [],
     experience: '',
     disputeTypes: '',
@@ -24,6 +28,19 @@ const MediatorApplicationPage = () => {
     languages: [],
     comments: ''
   });
+
+  const US_STATES = [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+    'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+    'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
+    'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+    'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+    'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+    'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+    'West Virginia', 'Wisconsin', 'Wyoming'
+  ];
 
   const practiceAreaOptions = [
     'Divorce & Family Law',
@@ -63,9 +80,8 @@ const MediatorApplicationPage = () => {
       ...prev,
       [name]: value
     }));
-    // Clear messages when user starts typing
+    // Clear error when user starts typing
     if (errorMessage) setErrorMessage('');
-    if (successMessage) setSuccessMessage('');
   };
 
   const handleCheckboxChange = (e, field) => {
@@ -125,7 +141,9 @@ const MediatorApplicationPage = () => {
       });
 
       if (response.ok) {
-        setSuccessMessage('Thank you for your application! We will review your information and contact you soon.');
+        const json = await response.json();
+        const appId = json?.data?.applicationId || 'FM-UNKNOWN';
+
         // Reset form
         setFormData({
           firstName: '',
@@ -135,6 +153,7 @@ const MediatorApplicationPage = () => {
           location: '',
           authorized: '',
           preferredState: '',
+          preferredStateReason: '',
           practiceAreas: [],
           experience: '',
           disputeTypes: '',
@@ -143,10 +162,10 @@ const MediatorApplicationPage = () => {
           comments: ''
         });
 
-        // Scroll to top to show success message
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setSubmittedAppId(appId); // opens success popup
       } else {
-        setErrorMessage('Failed to submit application. Please try again.');
+        const errJson = await response.json().catch(() => ({}));
+        setErrorMessage(errJson?.message || 'Failed to submit application. Please try again.');
       }
     } catch (error) {
       console.error('Application submission error:', error);
@@ -156,28 +175,135 @@ const MediatorApplicationPage = () => {
     }
   };
 
+  const handleCopyRef = async () => {
+    try {
+      await navigator.clipboard.writeText(submittedAppId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback: select text
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+
+      {/* ── Success Popup ─────────────────────────────────────────────────── */}
+      {submittedAppId && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            onClick={() => navigate('/')}
+          />
+          <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+            <div
+              className="bg-dark-neu-300 rounded-t-2xl sm:rounded-2xl shadow-dark-neu-lg w-full sm:max-w-md mx-auto flex flex-col overflow-hidden animate-slide-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 sm:p-8">
+                {/* Icon + Title */}
+                <div className="text-center mb-5">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg mb-3">
+                    <FaCheckCircle className="text-2xl text-white" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                    Submitted successfully
+                  </h2>
+                  <p className="text-sm text-white/70 leading-relaxed max-w-sm mx-auto">
+                    We&apos;ve received your application{' '}
+                    <span className="text-white font-semibold">(Ref: {submittedAppId})</span>.
+                    Our team will review it and reply within 2 weeks.
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => navigate('/')}
+                    className="flex-1 py-3 px-5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-semibold rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    Done
+                  </button>
+                  <button
+                    onClick={handleCopyRef}
+                    className="flex-1 py-3 px-5 bg-dark-neu-400 hover:bg-dark-neu-500 text-white/80 hover:text-white text-sm font-semibold rounded-xl border border-dark-neu-500 transition-all duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  >
+                    {copied ? (
+                      <>
+                        <FaCheck className="text-green-400" aria-hidden="true" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <FaCopy aria-hidden="true" />
+                        Copy reference
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <Header />
 
-      <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">
-            Join Our Network of Mediators
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <section className="bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
+          {/* Eyebrow */}
+          <span className="inline-block mb-4 px-3 py-1 text-xs font-semibold tracking-widest uppercase rounded-full bg-white/10 text-gray-300 border border-white/20">
+            Mediator Marketplace
+          </span>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-5">
+            Impartiality is not a feature —<br className="hidden sm:block" />
+            <span className="text-gray-300">it&apos;s the foundation.</span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+
+          <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed">
+            FairMediator exists because disputes deserve a neutral ground. Every mediator
+            on our marketplace is vetted, screened for conflicts of interest, and committed
+            to one thing: a fair process for all parties.
+          </p>
+
+          {/* Trust signals */}
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15 3.293 9.879a1 1 0 011.414-1.414L8.414 12.172l6.879-6.879a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              AI conflict-of-interest screening
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15 3.293 9.879a1 1 0 011.414-1.414L8.414 12.172l6.879-6.879a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Manual review by our team
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 12.172l6.879-6.879a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Reply within 2 weeks
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Section title */}
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+            Join Our Network of Mediators
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Connect with clients seeking fair, unbiased mediation services.
             Fill out the application below to join FairMediator.
           </p>
         </div>
 
-        {/* Success Message */}
-        {successMessage && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
-            {successMessage}
-          </div>
-        )}
 
         {/* Error Message */}
         {errorMessage && (
@@ -259,19 +385,17 @@ const MediatorApplicationPage = () => {
                   <label htmlFor="applyingAs" className="block text-sm font-medium text-gray-700 mb-2">
                     Applying As
                   </label>
-                  <select
+                  <CustomSelect
                     id="applyingAs"
-                    name="applyingAs"
                     value={formData.applyingAs}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-100 border-none rounded-xl shadow-neumorphic-inset
-                             text-gray-800 focus:outline-none focus:ring-2
-                             focus:ring-blue-500 transition-all duration-200"
+                    onChange={(v) => setFormData(prev => ({ ...prev, applyingAs: v }))}
+                    options={[
+                      { value: 'individual', label: 'Individual Mediator' },
+                      { value: 'firm', label: 'Mediation Firm' },
+                    ]}
                     disabled={isLoading}
-                  >
-                    <option value="individual">Individual Mediator</option>
-                    <option value="firm">Mediation Firm</option>
-                  </select>
+                    variant="gray"
+                  />
                 </div>
 
                 {/* Location */}
@@ -305,20 +429,18 @@ const MediatorApplicationPage = () => {
                   <label htmlFor="authorized" className="block text-sm font-medium text-gray-700 mb-2">
                     Are you authorized to work in the US?
                   </label>
-                  <select
+                  <CustomSelect
                     id="authorized"
-                    name="authorized"
                     value={formData.authorized}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-100 border-none rounded-xl shadow-neumorphic-inset
-                             text-gray-800 focus:outline-none focus:ring-2
-                             focus:ring-blue-500 transition-all duration-200"
+                    onChange={(v) => setFormData(prev => ({ ...prev, authorized: v }))}
+                    options={[
+                      { value: 'yes', label: 'Yes' },
+                      { value: 'no', label: 'No' },
+                    ]}
+                    placeholder="Select..."
                     disabled={isLoading}
-                  >
-                    <option value="">Select...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                    variant="gray"
+                  />
                 </div>
 
                 {/* Preferred State */}
@@ -326,16 +448,32 @@ const MediatorApplicationPage = () => {
                   <label htmlFor="preferredState" className="block text-sm font-medium text-gray-700 mb-2">
                     Preferred State to Practice
                   </label>
-                  <input
-                    type="text"
+                  <CustomSelect
                     id="preferredState"
-                    name="preferredState"
                     value={formData.preferredState}
+                    onChange={(v) => setFormData(prev => ({ ...prev, preferredState: v }))}
+                    options={US_STATES}
+                    placeholder="Select a state..."
+                    disabled={isLoading}
+                    variant="gray"
+                  />
+                </div>
+
+                {/* Reason for preferred state */}
+                <div>
+                  <label htmlFor="preferredStateReason" className="block text-sm font-medium text-gray-700 mb-2">
+                    Why did you choose this state? <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <textarea
+                    id="preferredStateReason"
+                    name="preferredStateReason"
+                    value={formData.preferredStateReason}
                     onChange={handleChange}
+                    rows={3}
                     className="w-full px-4 py-3 bg-gray-100 border-none rounded-xl shadow-neumorphic-inset
                              text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2
-                             focus:ring-blue-500 transition-all duration-200"
-                    placeholder="Florida"
+                             focus:ring-blue-500 transition-all duration-200 resize-none"
+                    placeholder="e.g. I have been practicing in Florida for 12 years and have deep connections with the local legal community..."
                     disabled={isLoading}
                   />
                 </div>

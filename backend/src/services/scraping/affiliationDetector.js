@@ -64,17 +64,36 @@ class AffiliationDetector {
   detectIdeology(text) {
     const textLower = text.toLowerCase();
     let score = 0; // -10 = liberal, 0 = neutral, +10 = conservative
+    const evidence = [];
 
     // Count liberal keywords
     this.liberalKeywords.forEach(keyword => {
       const matches = (textLower.match(new RegExp(escapeRegex(keyword), 'g')) || []).length;
-      score -= matches * 2;
+      if (matches > 0) {
+        score -= matches * 2;
+        evidence.push({
+          keyword,
+          type: 'liberal',
+          count: matches,
+          weight: matches * 2,
+          source: 'bio_keyword_match'
+        });
+      }
     });
 
     // Count conservative keywords
     this.conservativeKeywords.forEach(keyword => {
       const matches = (textLower.match(new RegExp(escapeRegex(keyword), 'g')) || []).length;
-      score += matches * 2;
+      if (matches > 0) {
+        score += matches * 2;
+        evidence.push({
+          keyword,
+          type: 'conservative',
+          count: matches,
+          weight: matches * 2,
+          source: 'bio_keyword_match'
+        });
+      }
     });
 
     // Clamp between -10 and 10
@@ -83,7 +102,9 @@ class AffiliationDetector {
     return {
       score,
       sentiment: score < -2 ? 'liberal' : score > 2 ? 'conservative' : 'neutral',
-      confidence: Math.abs(score) > 5 ? 'high' : Math.abs(score) > 2 ? 'medium' : 'low'
+      confidence: Math.abs(score) > 5 ? 'high' : Math.abs(score) > 2 ? 'medium' : 'low',
+      evidence,
+      disclaimer: 'Keyword-based inference. Not verified. Not based on donations, memberships, or verified case history.'
     };
   }
 

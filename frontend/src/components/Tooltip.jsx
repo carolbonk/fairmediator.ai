@@ -33,14 +33,34 @@ const Tooltip = memo(({ text, position = 'top' }) => {
 
       {show && (
         <div
-          className={`absolute ${positionClasses[position]} z-50 animate-fade-in w-max max-w-[220px]`}
+          className={`absolute ${positionClasses[position]} z-50 animate-fade-in w-max max-w-[300px]`}
         >
           {/* Dark tooltip card */}
-          <div className="relative bg-dark-neu-300 rounded-xl shadow-dark-neu-lg px-3 py-2 border border-dark-neu-500">
-            {/* Content */}
-            <p className="text-xs leading-relaxed text-white/80 font-medium break-words">
-              {text}
-            </p>
+          <div className="relative bg-dark-neu-300 rounded-xl shadow-dark-neu-lg px-4 py-3 border border-dark-neu-500">
+            {/* Content - split on ⚠️ to create visual separation */}
+            {(() => {
+              const parts = text.split('⚠️');
+              if (parts.length > 1) {
+                return (
+                  <>
+                    <p className="text-xs leading-relaxed text-white/80 font-medium break-words">
+                      {parts[0].trim()}
+                    </p>
+                    <div className="my-2 border-t border-white/20"></div>
+                    <p className="text-xs leading-relaxed text-yellow-200 font-medium break-words">
+                      <span className="mr-1">⚠️</span>
+                      {parts[1].trim()}
+                    </p>
+                  </>
+                );
+              }
+              return (
+                <p className="text-xs leading-relaxed text-white/80 font-medium break-words">
+                  {text}
+                </p>
+              );
+            })()}
+
 
             {/* Arrow indicator based on position */}
             {position === 'top' && (

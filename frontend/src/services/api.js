@@ -341,4 +341,20 @@ export const downloadConflictReport = async (mediatorId) => {
   return response.data; // Blob
 };
 
+// B2B API Key Management
+export const createApiKey = async (name) => {
+  const response = await api.post('/keys', { name });
+  return response.data;
+};
+
+export const listApiKeys = async () => {
+  const response = await api.get('/keys');
+  return response.data;
+};
+
+export const revokeApiKey = async (id) => {
+  const response = await api.delete(`/keys/${id}`);
+  return response.data;
+};
+
 export default api;

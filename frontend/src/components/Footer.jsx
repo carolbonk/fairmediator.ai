@@ -11,16 +11,16 @@ const Footer = () => {
           {/* Tagline + Copyright - Left/Center on mobile */}
           <div className="text-center sm:text-left">
             {/* Tagline - Mobile/Tablet only (hidden on desktop where it shows in navbar) */}
-            <p className="lg:hidden text-white text-xs opacity-60">
+            <p className="lg:hidden text-white text-xs opacity-80">
               Intelligent Mediator Matching & Screening Platform
             </p>
-            <p className="text-white text-xs opacity-60 lg:mt-0 mt-0.5">
+            <p className="text-white text-xs opacity-80 lg:mt-0 mt-0.5">
               FairMediator.AI.
             </p>
-            <p className="text-white text-xs opacity-60">
+            <p className="text-white text-xs opacity-80">
               © 2025 - 2026
             </p>
-            <p className="text-white text-xs opacity-60">
+            <p className="text-white text-xs opacity-80">
               All rights reserved.
             </p>
           </div>
