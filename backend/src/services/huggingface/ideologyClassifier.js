@@ -75,20 +75,49 @@ class IdeologyClassifier {
 
   _keywordClassification(text) {
     const lower = text.toLowerCase();
-    const libCount = IdeologyClassifier.KEYWORDS.liberal.filter(k => lower.includes(k)).length;
-    const consCount = IdeologyClassifier.KEYWORDS.conservative.filter(k => lower.includes(k)).length;
-    
+
+    // Track which keywords matched
+    const liberalMatches = IdeologyClassifier.KEYWORDS.liberal.filter(k => lower.includes(k));
+    const conservativeMatches = IdeologyClassifier.KEYWORDS.conservative.filter(k => lower.includes(k));
+    const libCount = liberalMatches.length;
+    const consCount = conservativeMatches.length;
+
+    // Build evidence array
+    const evidence = [];
+    liberalMatches.forEach(keyword => {
+      evidence.push({
+        keyword,
+        type: 'liberal',
+        source: 'keyword_match'
+      });
+    });
+    conservativeMatches.forEach(keyword => {
+      evidence.push({
+        keyword,
+        type: 'conservative',
+        source: 'keyword_match'
+      });
+    });
+
     if (!libCount && !consCount) {
-      return { leaning: 'neutral', confidence: 0, reasoning: 'No keywords found' };
+      return {
+        leaning: 'neutral',
+        confidence: 0,
+        reasoning: 'No keywords found',
+        evidence: [],
+        disclaimer: 'Inferred via keyword analysis. Not verified. May be inaccurate.'
+      };
     }
 
     const leaning = libCount > consCount ? 'liberal' : consCount > libCount ? 'conservative' : 'neutral';
     const score = leaning === 'liberal' ? 50 - libCount * 10 : leaning === 'conservative' ? 50 + consCount * 10 : 50;
-    
+
     return {
       leaning,
       confidence: Math.abs(libCount - consCount) * 20,
       reasoning: `${libCount} liberal, ${consCount} conservative keywords`,
+      evidence,
+      disclaimer: 'Inferred via keyword analysis. Not verified. Not based on donations, memberships, or case history.',
       timestamp: new Date()
     };
   }

@@ -44,6 +44,13 @@ const mediatorSchema = new mongoose.Schema({
     max: 10
   }, // -10 = very liberal, 0 = neutral, +10 = very conservative
 
+  ideologyOptOut: {
+    type: Boolean,
+    default: false
+  }, // Mediator has requested removal of ideology classification
+
+  ideologyOptOutDate: Date, // When the opt-out was requested
+
   biasIndicators: {
     politicalAffiliations: [String],
     donationHistory: [{

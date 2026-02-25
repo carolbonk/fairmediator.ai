@@ -24,6 +24,7 @@ const SafeguardsPage = lazy(() => import('./pages/SafeguardsPage'));
 const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 const SettlementCalculatorPage = lazy(() => import('./pages/SettlementCalculatorPage'));
 const MediatorComparisonPage = lazy(() => import('./pages/MediatorComparisonPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/mediators/apply" element={<MediatorApplicationPage />} />
             <Route path="/ethics" element={<EthicsPage />} />
             <Route path="/safeguards" element={<SafeguardsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/mediators" element={<MediatorsPage />} />
 
             {/* Protected Routes - Require Authentication */}

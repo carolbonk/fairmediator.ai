@@ -48,6 +48,8 @@ const settlementRoutes = require('./routes/settlement');
 const settlementWrapperRoutes = require('./routes/settlement_wrapper'); // Simplified settlement predictor
 const dataPopulationRoutes = require('./routes/dataPopulation'); // Data population status API
 const alertsRoutes = require('./routes/alerts'); // ConflictAlerts system
+const apiKeysRoutes = require('./routes/api_keys'); // B2B API key management
+const publicApiRoutes = require('./routes/public_api'); // B2B Public API v1
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -179,7 +181,9 @@ app.use((req, res, next) => {
     req.path.startsWith('/api/chains') ||
     req.path.startsWith('/api/perspectives') ||
     req.path.startsWith('/api/idp') ||
-    req.path.startsWith('/api/qa')
+    req.path.startsWith('/api/qa') ||
+    // B2B Public API uses API key header auth, not cookies — CSRF not applicable
+    req.path.startsWith('/api/v1')
   ) {
     return next();
   }
@@ -257,6 +261,8 @@ app.use('/api/graph/admin', conflictRoutes); // Advanced graph admin routes (scr
 app.use('/api/settlement', settlementWrapperRoutes); // Simplified settlement predictor for general mediation
 app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement predictor (ML-based)
 app.use('/api/data-population', dataPopulationRoutes); // Data population status and progress tracking
+app.use('/api/keys', apiKeysRoutes); // B2B API key management (create, list, revoke)
+app.use('/api/v1', publicApiRoutes); // B2B Public API v1 (API key auth, CSRF-exempt)
 
 // CSRF error handler
 app.use(csrfErrorHandler);

@@ -73,7 +73,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                 <div className="flex flex-col sm:flex-row gap-4 items-start">
                   {/* Profile Image Placeholder */}
                   <div className="flex-shrink-0">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-neu flex items-center justify-center">
+                    <div className="w-24 h-24 bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl shadow-neu flex items-center justify-center">
                       <span className="text-3xl font-bold text-white">
                         {mediator.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                       </span>
@@ -107,7 +107,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
 
                     {mediator.location_city && mediator.location_state && (
                       <div className="flex items-center gap-2 text-neu-600 mb-2">
-                        <FaMapMarkerAlt className="text-blue-600" />
+                        <FaMapMarkerAlt className="text-gray-400" />
                         <span>{mediator.location_city}, {mediator.location_state}</span>
                       </div>
                     )}
@@ -141,7 +141,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-4 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${
                       activeTab === tab.id
-                        ? 'bg-neu-200 shadow-neu-inset text-blue-600'
+                        ? 'bg-neu-200 shadow-neu-inset text-gray-400'
                         : 'bg-neu-200 shadow-neu text-neu-700 hover:shadow-neu-lg'
                     }`}
                   >
@@ -156,7 +156,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                   <div className="space-y-4">
                     <div>
                       <h4 className="text-lg font-bold text-neu-800 mb-2 flex items-center gap-2">
-                        <FaGavel className="text-blue-600" />
+                        <FaGavel className="text-gray-400" />
                         About
                       </h4>
                       {mediator.bio || mediator.description ? (
@@ -190,7 +190,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                         <ul className="space-y-2">
                           {mediator.certifications.map((cert, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-neu-600">
-                              <span className="mt-1.5 w-1.5 h-1.5 bg-blue-600 rounded-full flex-shrink-0"></span>
+                              <span className="mt-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0"></span>
                               <span>{cert}</span>
                             </li>
                           ))}
@@ -203,7 +203,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                 {activeTab === 'experience' && (
                   <div className="space-y-4">
                     <h4 className="text-lg font-bold text-neu-800 mb-2 flex items-center gap-2">
-                      <FaBriefcase className="text-blue-600" />
+                      <FaBriefcase className="text-gray-400" />
                       Professional Experience
                     </h4>
 
@@ -245,7 +245,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                         href={`mailto:${mediator.email}`}
                         className="flex items-center gap-3 p-4 bg-neu-100 rounded-xl shadow-neu-inset hover:shadow-neu transition-all"
                       >
-                        <FaEnvelope className="text-blue-600 text-xl" />
+                        <FaEnvelope className="text-gray-400 text-xl" />
                         <div>
                           <div className="text-sm text-neu-600">Email</div>
                           <div className="font-medium text-neu-800">{mediator.email}</div>
@@ -258,7 +258,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                         href={`tel:${mediator.phone}`}
                         className="flex items-center gap-3 p-4 bg-neu-100 rounded-xl shadow-neu-inset hover:shadow-neu transition-all"
                       >
-                        <FaPhone className="text-blue-600 text-xl" />
+                        <FaPhone className="text-gray-400 text-xl" />
                         <div>
                           <div className="text-sm text-neu-600">Phone</div>
                           <div className="font-medium text-neu-800">{mediator.phone}</div>
@@ -273,7 +273,7 @@ const MediatorDetailModal = ({ mediator, conflictRisk, onClose, onConflictClick 
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-4 bg-neu-100 rounded-xl shadow-neu-inset hover:shadow-neu transition-all"
                       >
-                        <FaExternalLinkAlt className="text-blue-600 text-xl" />
+                        <FaExternalLinkAlt className="text-gray-400 text-xl" />
                         <div>
                           <div className="text-sm text-neu-600">Website</div>
                           <div className="font-medium text-neu-800">{mediator.website}</div>

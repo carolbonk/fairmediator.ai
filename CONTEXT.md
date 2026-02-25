@@ -9,7 +9,7 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 18, 2026 (Security audit complete — all CRITICAL/HIGH/MEDIUM/LOW findings resolved)
+**Last Updated:** February 22, 2026 (Ideology transparency + legal compliance, data organizer service, scroll fixes)
 **Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 98%, Data 50%, No Users/Revenue)
 
 ---
@@ -20,7 +20,7 @@
 
 **Completion:**
 - ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation)
-- ✅ Frontend 98% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 4 premium tools) - Missing: mobile device testing
+- ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, Lighthouse fixes) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
 - 🟡 Data 50% (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
@@ -280,6 +280,69 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 19, 2026: UX Polish, Marketplace Flow, Contact Page, Login Redesign ✅
+
+**CustomSelect reusable component:**
+- `src/components/common/CustomSelect.jsx` — replaces all native `<select>` with the MediatorList State dropdown pattern (white panel, scrollable button list, no native browser UI)
+- Props: `id`, `value`, `onChange(value)`, `options` (string[] or `{value,label}[]`), `placeholder`, `disabled`, `error`, `variant` (`neu` | `gray`)
+- Replaced 7 native selects: MediatorApplicationPage (Applying As, Authorized, Preferred State), FeedbackForm (Feedback Type), CaseIntakeForm (Case Type, Jurisdiction), SettlementCalculatorPage (Case Type, Jurisdiction — removed local `SelectInput` component)
+
+**MediatorApplication backend fully wired:**
+- `MediatorApplication.js` model — added all form fields: `applyingAs`, `location`, `authorized`, `preferredState`, `preferredStateReason`, `practiceAreas`, `experience`, `disputeTypes`, `certifications`, `languages`, `comments`; legacy fields kept (`phone`, `barNumber`, `linkedinUrl`)
+- `applicationId` field added — human-readable `FM-XXXXXXXX` ref (8 uppercase hex chars), unique index, collision retry
+- `POST /api/mediators/apply` — now generates and persists `applicationId`, saves all new fields, returns `applicationId` in response
+- Success popup in `MediatorApplicationPage.jsx` — shows after submit: title "Submitted successfully", ref ID, **Done** (→ `/`) + **Copy reference** (clipboard) buttons; matches dark neumorphic popup pattern
+
+**Apply page hero:**
+- Dark slate hero above the form on `/mediators/apply`
+- Headline: "Impartiality is not a feature — it's the foundation." with `text-gray-300` accent
+- 3 trust signals: AI conflict screening · Manual review · Reply within 2 weeks
+- All blue accents replaced with `text-gray-300` / `bg-white/10` (eyebrow tag + headline span)
+
+**Contact page (`/contact`):**
+- `ContactPage.jsx` — dark slate hero ("We value every conversation."), 4-topic selector (pill buttons, neumorphic selected state), Netlify form (name, email, message), inline success state with green checkmark card
+- Reply time: 1–5 business days
+- Route registered in `App.jsx` (lazy-loaded, public)
+- "Contact" link added to About dropdown in `Header.jsx` (after Safeguards)
+
+**Login redesign (formal/legal tone):**
+- Heading: "Sign in to FairMediator" (removed "Join the waitlist")
+- Role radio: "Signing in as" — Mediator / Attorney / Party (styled pill toggles, hidden radio input, `shadow-neumorphic-inset` on selected)
+- Footer links: "Don't have an account? Create an account" + "Are you a mediator? Apply to join the FairMediator Marketplace" (→ `/mediators/apply`)
+- Focus rings: `slate-400` (was `blue-400`); forgot password: `slate-600` tone; legal note uses "Terms of Service"
+
+**Header:**
+- Home link added to the left of the About dropdown in desktop nav
+- "Apply for Marketplace" renamed to "Apply for Mediators Marketplace"
+
+**MediatorDetailModal + MediatorList — blue → gray:**
+- `MediatorDetailModal.jsx`: avatar gradient `from-blue-400 to-blue-600` → `from-gray-400 to-gray-500`; all 7 `text-blue-600` icons → `text-gray-400`; certification bullet `bg-blue-600` → `bg-gray-400`
+- `MediatorList.jsx`: consultation card `from-blue-700 to-blue-900` → `from-slate-700 to-slate-900`; body text `text-blue-200` → `text-gray-300`; "Schedule Free Consultation" button `text-blue-700` → `text-slate-700`; "Book Paid Session" button `from-blue-600 to-blue-700` → `from-slate-600 to-slate-700`
+
+---
+
+### February 19, 2026: B2B API Access + Lighthouse Performance Fixes ✅
+
+**B2B API Access (5th premium feature):**
+- `ApiKey` model — SHA-256 hashed keys, prefix display, tier (free/pro), sliding-window rate limit (100/hr free, 1000/hr pro), lifetime stats
+- `apiKeyAuth` middleware — `X-API-Key` header auth, rate-limit headers (`X-RateLimit-*`), constant-time lookup
+- `GET/POST/DELETE /api/keys` — create key (raw shown once), list (prefix + stats only), revoke; max 5 per user
+- `GET /api/v1/mediators` — search with q/state/city/minScore/maxScore/verified/page/limit (max 50/page)
+- `GET /api/v1/mediators/:id` — full mediator profile (excluding embeddingVector)
+- `POST /api/v1/conflict-check` — rule-based conflict detection against affiliations/donor history/conflict flags (max 20 parties); severity HIGH/MEDIUM/LOW/NONE
+- `SettingsPage.jsx` — "API Keys" tab with: create form, one-time key display + copy button, active keys list with usage stats + revoke, quick reference docs
+- `api.js` — `createApiKey`, `listApiKeys`, `revokeApiKey`
+- `server.js` — CSRF exempt for `/api/v1/*`, registered at `/api/keys` and `/api/v1`
+
+**Lighthouse Audit Fixes:**
+- **Bundle splitting** (`vite.config.js`) — `manualChunks` splits vendor-react/vendor-i18n/vendor-http/vendor-icons; main `index.js` 455kb → 191kb (58% reduction), full build still 1.3s
+- **Preconnect** (`index.html`) — `<link rel="preconnect">` + `dns-prefetch` for plausible.io; reduces analytics connection latency
+- **Color contrast** (`Footer.jsx`) — `opacity-60` → `opacity-80` on all footer text (4 instances)
+- **Color contrast** (`MediatorCard.jsx`, `MediatorList.jsx`) — empty star `text-gray-300` → `text-gray-400` (WCAG AA compliant)
+- All other checks PASS: alt text, aria-labels, lang attr, viewport, form labels, lazy loading, focus management
+
+---
+
 ### February 18, 2026: Enterprise Security Audit — All Findings Resolved ✅
 
 **Scope:** Full codebase audit (eval, injection, auth gaps, ReDoS, IDOR, stack leakage, CORS, body limits)
@@ -372,6 +435,10 @@ git commit -m "Fixed bug (see details in previous message)"
 
 **IMMEDIATE (This Week):**
 - [x] H1-H4 security fixes done: env variables, Sentry, storage auth, npm audit fix (commit d7fd979)
+- [x] Ideology Transparency & Legal Compliance: Added disclaimers in info icon tooltips (StatisticsPanel: Political Balance + Filter by Mediator Ideology, MediatorList: Ideology filter), evidence arrays (keyword matches, sources, disclaimer field), opt-out system (POST `/api/mediators/:id/ideology-opt-out`), validation dataset framework (3/25 mediators with FEC/Federalist Society cross-reference)
+- [x] Data Organizer Service: Implemented Claude-style prompt pattern for unstructured → structured JSON extraction (mediator bios, signals, firms). Integrated into `mediatorScraper` with AI-enhanced scraping (`useAI` flag). Extracts signals (EMPLOYMENT, MEMBERSHIP, PUBLICATION) with weights (0.3-0.8). Test script: `node src/scripts/test-data-organizer.js`. FREE (HuggingFace API).
+- [ ] Hybrid Schema Migration: Add `Firm`, `Signal`, `AffiliationAssessment` collections alongside denormalized `Mediator` fields for ML infrastructure + audit trails (read from cache, write to signals, nightly cron aggregates)
+- [ ] Deterministic Scoring Pipeline: Implement `extractEntities()`, `scoreLeaning()`, `scoreAffiliation()`, `rankAndSplit()` with explicit disclaimers + evidence arrays
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch
 - [ ] SEO: OG image, Google Search Console, Lighthouse audit
 
@@ -464,7 +531,7 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ### 🧩 **BACKEND/FRONTEND STATUS**
 **Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring)
-**Frontend:** 98% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 4 premium tools) - Missing: mobile device testing
+**Frontend:** 100% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 5 premium tools, Lighthouse optimized) - Missing: mobile device testing
 **Monetization:** Infrastructure exists, not configured (Stripe service code ready, checkout/billing/gates TODO)
 **Data:** 50% 🟡 (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
 
@@ -480,7 +547,7 @@ git commit -m "Fixed bug (see details in previous message)"
 - ✅ **PDF Conflict Report** — `GET /api/graph/conflict-report/:mediatorId`, pdfkit, download button in MediatorDetailModal
 - ✅ **ConflictAlerts System** — `ConflictAlert` model, 4 API routes, daily cron, bell icon in Header
 - ✅ **MediatorComparison Tool** — `/compare?ids=...`, SimpleRadarChart, detail table, print export
-- [ ] **API Access (B2B)** — REST API for law firm integrations, highest revenue potential
+- ✅ **API Access (B2B)** — `ApiKey` model, `apiKeyAuth` middleware, `/api/v1` routes, API Keys tab in Settings
 
 **Data Gaps (needed before scaling):**
 - FEC scraper needs to run for all 25 mediators (rate-limited, awaiting reset)

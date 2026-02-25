@@ -18,7 +18,7 @@ const StarRating = memo(({ rating, totalMediations }) => {
         ))}
         {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-xs" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <FaStar key={`empty-${i}`} className="text-gray-300 text-xs" />
+          <FaStar key={`empty-${i}`} className="text-gray-400 text-xs" />
         ))}
       </div>
       <span className="text-xs text-neu-500">({totalMediations})</span>

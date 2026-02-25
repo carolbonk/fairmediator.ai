@@ -568,11 +568,15 @@ router.post('/:id/track-selection', validate(schemas.objectId, 'params'), asyncH
 router.post('/apply', asyncHandler(async (req, res) => {
   const MediatorApplication = require('../models/MediatorApplication');
   const { sendApplicationReceivedEmail } = require('../services/email/emailService');
+  const crypto = require('crypto');
 
   const {
-    firstName, lastName, email, phone,
-    barNumber, yearsExperience, specializations,
-    linkedinUrl, statement
+    firstName, lastName, email,
+    applyingAs, location,
+    authorized, preferredState, preferredStateReason,
+    practiceAreas, experience, disputeTypes, certifications, languages, comments,
+    // legacy optional fields
+    phone, barNumber, linkedinUrl
   } = req.body;
 
   if (!firstName || !lastName || !email) {
@@ -584,24 +588,81 @@ router.post('/apply', asyncHandler(async (req, res) => {
     return sendError(res, 'An application with this email already exists', 409);
   }
 
+  // Generate human-readable reference ID: FM-XXXXXXXX (8 uppercase alphanumeric chars)
+  const generateAppId = () =>
+    'FM-' + crypto.randomBytes(5).toString('hex').toUpperCase().slice(0, 8);
+
+  // Retry once on the rare chance of a collision
+  let applicationId = generateAppId();
+  if (await MediatorApplication.exists({ applicationId })) {
+    applicationId = generateAppId();
+  }
+
   const application = await MediatorApplication.create({
-    firstName, lastName, email, phone,
-    barNumber, yearsExperience,
-    specializations: specializations || [],
-    linkedinUrl, statement,
+    applicationId,
+    firstName, lastName, email,
+    applyingAs: applyingAs || 'individual',
+    location,
+    authorized,
+    preferredState,
+    preferredStateReason,
+    practiceAreas:  Array.isArray(practiceAreas)  ? practiceAreas  : [],
+    experience:     experience != null ? Number(experience) : undefined,
+    disputeTypes,
+    certifications,
+    languages:      Array.isArray(languages) ? languages : [],
+    comments,
+    // legacy
+    phone, barNumber, linkedinUrl,
     status: 'pending',
     submittedAt: new Date()
   });
 
-  // Send confirmation email if email service is available (non-blocking)
+  // Send confirmation email (non-blocking)
   if (typeof sendApplicationReceivedEmail === 'function') {
     sendApplicationReceivedEmail(email, `${firstName} ${lastName}`).catch(() => {});
   }
 
   sendSuccess(res, {
-    message: 'Application submitted successfully. We will review it and get back to you within 5 business days.',
-    applicationId: application._id
+    message: 'Application submitted successfully.',
+    applicationId: application.applicationId
   }, 201);
+}));
+
+/**
+ * POST /api/mediators/:id/ideology-opt-out
+ * Request removal of ideology classification
+ * Requires authentication (mediator must own the profile)
+ */
+router.post('/:id/ideology-opt-out', authenticate, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const mediator = await Mediator.findById(id);
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator not found');
+  }
+
+  // Only the mediator themselves or an admin can opt out
+  if (req.user.role !== 'admin' && req.user.id !== mediator._id.toString()) {
+    return sendUnauthorized(res, 'You can only opt out your own profile');
+  }
+
+  // Set opt-out flag
+  mediator.ideologyOptOut = true;
+  mediator.ideologyOptOutDate = new Date();
+  await mediator.save();
+
+  logger.info(`Mediator ${mediator.name} opted out of ideology classification`, { mediatorId: id });
+
+  sendSuccess(res, {
+    message: 'Ideology classification removed. Your profile will no longer display political leaning labels.',
+    mediator: {
+      id: mediator._id,
+      name: mediator.name,
+      ideologyOptOut: mediator.ideologyOptOut,
+      ideologyOptOutDate: mediator.ideologyOptOutDate
+    }
+  });
 }));
 
 module.exports = router;

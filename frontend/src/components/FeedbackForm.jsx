@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CustomSelect from './common/CustomSelect';
 
 /**
  * Netlify Forms - Feedback Component
@@ -116,19 +117,18 @@ const FeedbackForm = () => {
             <label htmlFor="feedbackType" className="block text-sm font-medium text-neu-700 mb-1">
               Feedback Type
             </label>
-            <select
+            <CustomSelect
               id="feedbackType"
-              name="feedbackType"
               value={formData.feedbackType}
-              onChange={handleChange}
-              className="input-neu w-full text-sm"
-            >
-              <option value="general">General Feedback</option>
-              <option value="bug">Bug Report</option>
-              <option value="feature">Feature Request</option>
-              <option value="data-issue">Mediator Data Issue</option>
-              <option value="other">Other</option>
-            </select>
+              onChange={(v) => setFormData(prev => ({ ...prev, feedbackType: v }))}
+              options={[
+                { value: 'general', label: 'General Feedback' },
+                { value: 'bug', label: 'Bug Report' },
+                { value: 'feature', label: 'Feature Request' },
+                { value: 'data-issue', label: 'Mediator Data Issue' },
+                { value: 'other', label: 'Other' },
+              ]}
+            />
           </div>
 
           {/* Message */}
