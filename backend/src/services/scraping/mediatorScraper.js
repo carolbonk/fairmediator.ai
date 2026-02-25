@@ -10,6 +10,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const Mediator = require('../../models/Mediator');
 const logger = require('../../config/logger');
+const dataOrganizer = require('../ai/dataOrganizer');
 
 class MediatorScraper {
   constructor() {
@@ -96,24 +97,104 @@ class MediatorScraper {
     return data;
   }
 
-  async scrapeMediatorProfile(url, sourceType = 'generic', useDynamic = false) {
+  /**
+   * Extract bio text from page for AI processing
+   * @private
+   */
+  _extractBioText($) {
+    // Common bio selectors
+    const bioSelectors = [
+      '.bio', '.biography', '.about', '.profile-bio',
+      '.description', '.overview', '.summary',
+      '[itemprop="description"]', 'article.bio'
+    ];
+
+    for (const selector of bioSelectors) {
+      const bioText = $(selector).text().trim();
+      if (bioText && bioText.length > 100) {
+        return bioText;
+      }
+    }
+
+    // Fallback: get all paragraph text
+    const paragraphs = [];
+    $('p').each((i, el) => {
+      const text = $(el).text().trim();
+      if (text.length > 50) paragraphs.push(text);
+    });
+
+    return paragraphs.join('\n\n');
+  }
+
+  async scrapeMediatorProfile(url, sourceType = 'generic', useDynamic = false, useAI = true) {
     logger.info(`Scraping: ${url}`);
-    
+
     const $ = useDynamic ? await this.scrapeDynamic(url) : await this.scrapeStatic(url);
-    const data = this.extractMediatorData($, url, sourceType);
-    
-    if (!data.name) throw new Error('No mediator name found');
-    
+
+    // Traditional CSS-selector extraction
+    const cssData = this.extractMediatorData($, url, sourceType);
+
+    // AI-powered extraction from bio text (if enabled and bio text found)
+    let aiData = {};
+    let signals = [];
+    if (useAI) {
+      const bioText = this._extractBioText($);
+      if (bioText && bioText.length > 100) {
+        try {
+          logger.info('Using AI data organizer for bio extraction', { bioLength: bioText.length });
+          aiData = await dataOrganizer.extractMediatorProfile(bioText);
+
+          // Extract signals (employment, memberships, publications)
+          signals = await dataOrganizer.extractSignals(bioText, null); // mediatorId added after save
+        } catch (error) {
+          logger.warn('AI extraction failed, using CSS data only', { error: error.message });
+        }
+      }
+    }
+
+    // Merge CSS and AI data (AI takes precedence for richer data)
+    const mergedData = {
+      ...cssData,
+      // Override with AI data if available and more complete
+      ...(aiData.credentials?.length > 0 && { certifications: aiData.credentials }),
+      ...(aiData.yearsExperience && { yearsExperience: aiData.yearsExperience }),
+      ...(aiData.practiceAreas?.length > 0 && { specializations: aiData.practiceAreas }),
+      ...(aiData.education?.length > 0 && { barAdmissions: aiData.barAdmissions || [] }),
+      ...(aiData.lawFirm && { lawFirm: aiData.lawFirm }),
+      ...(aiData.previousEmployers?.length > 0 && { previousEmployers: aiData.previousEmployers }),
+      // Store AI-extracted memberships in biasIndicators for now
+      ...(aiData.memberships?.length > 0 && {
+        biasIndicators: {
+          politicalAffiliations: aiData.memberships
+        }
+      })
+    };
+
+    if (!mergedData.name) throw new Error('No mediator name found');
+
     const mediator = await Mediator.findOneAndUpdate(
-      { name: data.name },
-      { $set: data, $addToSet: { sources: data.sources[0] } },
+      { name: mergedData.name },
+      { $set: mergedData, $addToSet: { sources: mergedData.sources[0] } },
       { upsert: true, new: true }
     );
-    
+
+    // TODO: Save signals to Signal collection when that model is created
+    // For now, log them for review
+    if (signals.length > 0) {
+      logger.info(`Extracted ${signals.length} signals for ${mediator.name}`, {
+        signals: signals.map(s => ({ type: s.type, value: s.value }))
+      });
+    }
+
     mediator.calculateDataQuality();
     await mediator.save();
-    
-    logger.info(`Scraped: ${mediator.name}`, { completeness: mediator.dataQuality.completeness });
+
+    logger.info(`Scraped: ${mediator.name}`, {
+      completeness: mediator.dataQuality.completeness,
+      aiEnhanced: Object.keys(aiData).length > 0,
+      signalsFound: signals.length
+    });
+
     return mediator;
   }
 

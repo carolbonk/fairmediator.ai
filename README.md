@@ -4,23 +4,27 @@
   </a>
 </p>
 
-A single-page platform for transparent law firm mediation selection with AI-powered conflict detection and ideological analysis.
+A platform for transparent mediator selection with AI-powered conflict detection, ideological analysis, and a vetted mediator marketplace.
 
 ## 🎯 Overview
 
-FairMediator is a transparent platform that helps law firms, corporations, and individuals select mediators by:
+FairMediator helps law firms, corporations, and individuals select mediators by:
 - **Real-time affiliation flagging** (potential conflicts of interest)
-- **Ideological leaning analysis** (liberal/conservative spectrum)
+- **Ideological leaning analysis** (liberal/conservative spectrum) — checks affiliation between parties
 - **AI-powered chat interface** for natural language mediator search
 - **Automated data aggregation** from public legal databases
+- **Mediator Marketplace** — vetted mediators apply to join; applications reviewed manually with human-readable reference IDs
+- **Settlement Calculator** — ML-based prediction (R²=0.98) with scenario builder and PDF export
+- **B2B API** — public `/api/v1` endpoints with API key auth for enterprise integrations
+- **Contact page** — direct communication channel, no templated responses
 
 ## 🏗️ Architecture
 
 ### Frontend
-- **Framework**: React with Tailwind CSS
-- **Layout**: Horizontal split single-page app
-  - Left: Chat input powered by Llama
-  - Right: Mediator lists with affiliation tags
+- **Framework**: React 18 + Vite + Tailwind CSS
+- **Key pages**: Home, Mediators, Mediator Marketplace (`/mediators/apply`), Settlement Calculator, Dashboard, Settings (API Keys), Contact
+- **Reusable components**: `CustomSelect` (consistent panel dropdowns), `ConflictBadge`, `LobbyingBadge`, `MediatorDetailModal`, `SettlementPredictor`
+- **Auth**: Role-aware login (Mediator / Attorney / Party)
 
 ### Backend
 - **API**: Node.js + Express
@@ -242,9 +246,10 @@ Contributions welcome! Please read CONTRIBUTING.md first.
 - [x] Phase 7: Free tier monitoring system ✅
 - [x] Phase 8: Advanced AI systems (agents, chains, perspectives, IDP, QA) ✅
 - [x] Phase 9: Automated 50-state scraping pipeline ✅
-- [ ] Phase 10: Fine-tuned models for legal domain
-- [ ] Phase 11: Public API for mediator data
-- [ ] Phase 12: Mobile app (React Native)
+- [x] Phase 10: Mediator Marketplace application flow (apply, review, FM- reference IDs) ✅
+- [x] Phase 11: B2B Public API (`/api/v1/mediators`, `/api/v1/conflict-check`, API key management) ✅
+- [ ] Phase 12: Fine-tuned models for legal domain
+- [ ] Phase 13: Mobile app (React Native)
 
 ### Installation
 

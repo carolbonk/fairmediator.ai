@@ -120,6 +120,14 @@ const Header = () => {
 
           {/* Navigation - Desktop only (hidden on mobile, replaced by hamburger) */}
           <div className="hidden md:flex items-center gap-2">
+            {/* Home */}
+            <Link
+              to="/"
+              className="flex items-center px-3 py-2 text-white text-sm font-medium hover:text-gray-300 transition-colors duration-200"
+            >
+              {t('nav.home', 'Home')}
+            </Link>
+
             {/* About Dropdown */}
             <div className="relative" ref={aboutRef}>
               <button
@@ -140,7 +148,7 @@ const Header = () => {
                 </svg>
               </button>
               {aboutOpen && (
-                <div className="absolute left-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
+                <div className="absolute left-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
                   <Link
                     to="/mediators"
                     onClick={() => setAboutOpen(false)}
@@ -149,11 +157,25 @@ const Header = () => {
                     {t('nav.mediators')}
                   </Link>
                   <Link
+                    to="/mediators/apply"
+                    onClick={() => setAboutOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Apply for Mediators Marketplace
+                  </Link>
+                  <Link
                     to="/safeguards"
                     onClick={() => setAboutOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     {t('nav.safeguards')}
+                  </Link>
+                  <Link
+                    to="/contact"
+                    onClick={() => setAboutOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Contact
                   </Link>
                 </div>
               )}

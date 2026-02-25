@@ -6,12 +6,12 @@ export const stateMediationData = {
     stateName: 'Florida',
     stateCode: 'FL',
     mediationStatute: {
-      url: 'http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&Title=-%3E2024-%3EChapter%2044',
+      url: 'https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0000-0099/0044/0044ContentsIndex.html&StatuteYear=2024&Title=-%3E2024-%3EChapter+44',
       citationLabel: 'Florida Statutes Chapter 44',
       summary: 'Florida law requires mediation to be conducted by certified mediators in court-connected cases. Mediation communications are confidential and protected from disclosure in subsequent proceedings. Mediators must remain neutral and cannot impose decisions on parties.',
     },
     mediatorStandards: {
-      url: 'https://www.flcourts.gov/Resources-Services/Alternative-Dispute-Resolution/Certified-Mediators',
+      url: 'https://www.flcourts.gov/Services/alternative-dispute-resolution/mediation/mediator-certification-qualifications-resources',
       citationLabel: 'Florida Supreme Court Certified Mediator Standards',
       summary: 'Florida requires mediators to complete 40 hours of training for circuit civil cases and pass a written examination. Family mediators need 100 hours of training plus additional family law coursework. All certified mediators must complete continuing education and maintain good standing with the Florida Supreme Court.',
     },

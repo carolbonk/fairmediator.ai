@@ -25,6 +25,7 @@ import {
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SettlementPredictor from '../components/SettlementPredictor';
+import CustomSelect from '../components/common/CustomSelect';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -85,29 +86,6 @@ const FormField = ({ label, htmlFor, hint, children }) => (
   </div>
 );
 
-const SelectInput = ({ id, value, onChange, options, placeholder, disabled = false }) => (
-  <div className="relative">
-    <select
-      id={id}
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-      className="w-full appearance-none bg-neu-100 border border-neu-300 rounded-xl px-4 py-3 pr-10 text-neu-800 text-sm shadow-neu-inset focus:outline-none focus:ring-2 focus:ring-slate-500 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
-      aria-label={placeholder}
-    >
-      <option value="">{placeholder}</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-    <FaChevronDown
-      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neu-500 text-xs"
-      aria-hidden="true"
-    />
-  </div>
-);
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -201,10 +179,10 @@ const SettlementCalculatorPage = () => {
 
               {/* Case Type */}
               <FormField label="Case Type" htmlFor="caseType">
-                <SelectInput
+                <CustomSelect
                   id="caseType"
                   value={form.caseType}
-                  onChange={(e) => handleChange('caseType', e.target.value)}
+                  onChange={(v) => handleChange('caseType', v)}
                   options={CASE_TYPES}
                   placeholder="Select case type..."
                 />
@@ -238,10 +216,10 @@ const SettlementCalculatorPage = () => {
                 htmlFor="jurisdiction"
                 hint="Optional — affects settlement multiplier"
               >
-                <SelectInput
+                <CustomSelect
                   id="jurisdiction"
                   value={form.jurisdiction}
-                  onChange={(e) => handleChange('jurisdiction', e.target.value)}
+                  onChange={(v) => handleChange('jurisdiction', v)}
                   options={US_JURISDICTIONS}
                   placeholder="Select state (optional)..."
                 />

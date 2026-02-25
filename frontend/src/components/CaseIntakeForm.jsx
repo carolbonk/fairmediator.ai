@@ -12,6 +12,7 @@
 import React, { useState } from 'react';
 import { FaPlus, FaTimes, FaSearch, FaFileAlt } from 'react-icons/fa';
 import SettlementPredictor from './SettlementPredictor';
+import CustomSelect from './common/CustomSelect';
 
 const CASE_TYPES = [
   'Family Law',
@@ -177,21 +178,14 @@ const CaseIntakeForm = ({ onSubmit, onSearchMediators, className = '' }) => {
           <label htmlFor="caseType" className="block text-sm font-semibold text-neu-800 mb-2">
             Case Type <span className="text-red-500">*</span>
           </label>
-          <select
+          <CustomSelect
             id="caseType"
             value={formData.caseType}
-            onChange={(e) => handleChange('caseType', e.target.value)}
-            className={`w-full px-4 py-3 bg-neu-100 border ${
-              errors.caseType ? 'border-red-500' : 'border-neu-300'
-            } rounded-lg text-neu-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-neu-inset min-h-[44px]`}
-            aria-invalid={errors.caseType ? 'true' : 'false'}
-            aria-describedby={errors.caseType ? 'caseType-error' : undefined}
-          >
-            <option value="">Select case type...</option>
-            {CASE_TYPES.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+            onChange={(v) => handleChange('caseType', v)}
+            options={CASE_TYPES}
+            placeholder="Select case type..."
+            error={!!errors.caseType}
+          />
           {errors.caseType && (
             <p id="caseType-error" className="text-xs text-red-600 mt-1" role="alert">
               {errors.caseType}
@@ -235,21 +229,14 @@ const CaseIntakeForm = ({ onSubmit, onSearchMediators, className = '' }) => {
           <label htmlFor="jurisdiction" className="block text-sm font-semibold text-neu-800 mb-2">
             Jurisdiction (State) <span className="text-red-500">*</span>
           </label>
-          <select
+          <CustomSelect
             id="jurisdiction"
             value={formData.jurisdiction}
-            onChange={(e) => handleChange('jurisdiction', e.target.value)}
-            className={`w-full px-4 py-3 bg-neu-100 border ${
-              errors.jurisdiction ? 'border-red-500' : 'border-neu-300'
-            } rounded-lg text-neu-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-neu-inset min-h-[44px]`}
-            aria-invalid={errors.jurisdiction ? 'true' : 'false'}
-            aria-describedby={errors.jurisdiction ? 'jurisdiction-error' : undefined}
-          >
-            <option value="">Select state...</option>
-            {US_STATES.map(state => (
-              <option key={state} value={state}>{state}</option>
-            ))}
-          </select>
+            onChange={(v) => handleChange('jurisdiction', v)}
+            options={US_STATES}
+            placeholder="Select state..."
+            error={!!errors.jurisdiction}
+          />
           {errors.jurisdiction && (
             <p id="jurisdiction-error" className="text-xs text-red-600 mt-1" role="alert">
               {errors.jurisdiction}

@@ -20,7 +20,7 @@ const StarRating = ({ rating, totalMediations }) => {
         ))}
         {hasHalfStar && <FaStarHalfAlt className="text-[#3B82F6] text-xs" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <FaStar key={`empty-${i}`} className="text-gray-300 text-xs" />
+          <FaStar key={`empty-${i}`} className="text-gray-400 text-xs" />
         ))}
       </div>
       <span className="text-xs text-neu-500">({totalMediations})</span>
@@ -40,7 +40,20 @@ const MediatorList = ({ parties }) => {
   const [modalPage, setModalPage] = useState(1);
   const [selectedMediator, setSelectedMediator] = useState(null);
   const [showMediatorDetail, setShowMediatorDetail] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarSelectedDate, setCalendarSelectedDate] = useState(null);
   const ITEMS_PER_PAGE = 4;
+
+  const AVAILABILITY_SLOTS = [
+    { day: 22, label: 'Monday, Jan 22 - 2:00 PM', time: '2:00 PM' },
+    { day: 23, label: 'Tuesday, Jan 23 - 10:00 AM', time: '10:00 AM' },
+    { day: 24, label: 'Wednesday, Jan 24 - 3:30 PM', time: '3:30 PM' },
+    { day: 25, label: 'Thursday, Jan 25 - 1:00 PM', time: '1:00 PM' },
+    { day: 26, label: 'Friday, Jan 26 - 11:00 AM', time: '11:00 AM' },
+  ];
+
+  const AVAILABLE_DAYS = new Set(AVAILABILITY_SLOTS.map(s => s.day));
 
   // Get mediators from mock data
   const allMockMediators = MOCK_MEDIATORS;
@@ -318,6 +331,12 @@ const MediatorList = ({ parties }) => {
                 />
               </button>
             </label>
+          </div>
+
+          {/* Ideology Filter Label */}
+          <div className="flex items-center gap-1 text-xs font-semibold text-neu-700">
+            <span>Ideology:</span>
+            <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
           </div>
 
           {/* Ideology Tabs */}
@@ -624,12 +643,12 @@ const MediatorList = ({ parties }) => {
                 {/* Right Column - Availability & Booking */}
                 <div className="space-y-4">
                   {/* Free Video Call */}
-                  <div className="bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl p-4 text-white border border-blue-600/30">
+                  <div className="bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl p-4 text-white border border-slate-600/30">
                     <h3 className="text-base font-bold mb-2">Free 15-Minute Video Consultation</h3>
-                    <p className="mb-4 text-blue-200 text-sm">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
+                    <p className="mb-4 text-gray-300 text-sm">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
                     <button
-                      onClick={() => trackSelection(selectedMediator, 'scheduled_call')}
-                      className="w-full bg-white text-blue-700 font-bold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm"
+                      onClick={() => setShowCalendar(true)}
+                      className="w-full bg-white text-slate-700 font-bold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm"
                     >
                       Schedule Free Consultation
                     </button>
@@ -644,12 +663,24 @@ const MediatorList = ({ parties }) => {
                       Upcoming Availability
                     </h3>
                     <div className="space-y-2">
-                      {['Monday, Jan 22 - 2:00 PM', 'Tuesday, Jan 23 - 10:00 AM', 'Wednesday, Jan 24 - 3:30 PM', 'Thursday, Jan 25 - 1:00 PM', 'Friday, Jan 26 - 11:00 AM'].map((slot, i) => (
+                      {AVAILABILITY_SLOTS.map((slot, i) => (
                         <button
                           key={i}
-                          className="w-full text-left px-3 py-2.5 bg-dark-neu-500 rounded-lg hover:bg-dark-neu-400 transition-all text-white/80 text-xs font-medium border border-dark-neu-400"
+                          onClick={() => setSelectedSlot(selectedSlot === i ? null : i)}
+                          className={`w-full text-left px-3 py-2.5 rounded-lg transition-all text-xs font-medium border ${
+                            selectedSlot === i
+                              ? 'bg-white/20 border-white/40 text-white shadow-inner'
+                              : 'bg-dark-neu-500 border-dark-neu-400 text-white/80 hover:bg-dark-neu-400'
+                          }`}
                         >
-                          {slot}
+                          <span className="flex items-center justify-between">
+                            {slot.label}
+                            {selectedSlot === i && (
+                              <svg className="w-3.5 h-3.5 text-green-400 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -678,7 +709,7 @@ const MediatorList = ({ parties }) => {
                   <div className="bg-green-900/30 border border-green-500/40 rounded-xl p-3">
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse flex-shrink-0"></div>
-                      <span className="text-green-300 font-semibold text-sm">Usually responds within 24 hours</span>
+                      <span className="text-green-300 font-semibold text-sm">Usually responds within 48 hours</span>
                     </div>
                   </div>
                 </div>
@@ -691,6 +722,7 @@ const MediatorList = ({ parties }) => {
                 onClick={() => {
                   setShowMediatorDetail(false);
                   setSelectedMediator(null);
+                  setSelectedSlot(null);
                 }}
                 className="px-5 py-2.5 rounded-xl text-sm font-medium bg-dark-neu-400 text-white hover:bg-dark-neu-500 border border-dark-neu-500 transition-all"
               >
@@ -698,13 +730,123 @@ const MediatorList = ({ parties }) => {
               </button>
               <button
                 onClick={() => trackSelection(selectedMediator, 'hired')}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg"
+                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-slate-600 to-slate-700 text-white hover:from-slate-700 hover:to-slate-800 transition-all shadow-lg"
               >
                 Book Paid Session
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Calendar Modal */}
+      {showCalendar && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[110]"
+            onClick={() => { setShowCalendar(false); setCalendarSelectedDate(null); }}
+          />
+          <div className="fixed inset-0 z-[111] flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div
+              className="relative w-full max-w-sm bg-dark-neu-300 rounded-t-2xl sm:rounded-2xl shadow-dark-neu-lg border border-dark-neu-500 overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-dark-neu-500">
+                <h3 className="text-white font-bold text-base">Select a Date</h3>
+                <button
+                  onClick={() => { setShowCalendar(false); setCalendarSelectedDate(null); }}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-dark-neu-400 text-white/60 hover:text-white border border-dark-neu-500 transition-all"
+                  aria-label="Close calendar"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Calendar Grid */}
+              <div className="px-6 py-4">
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-white font-semibold text-sm">January 2026</span>
+                </div>
+
+                {/* Day labels */}
+                <div className="grid grid-cols-7 mb-2">
+                  {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
+                    <div key={d} className="text-center text-white/40 text-xs font-medium py-1">{d}</div>
+                  ))}
+                </div>
+
+                {/* Date grid — January 2026 starts on Thursday (day index 4) */}
+                <div className="grid grid-cols-7 gap-1">
+                  {/* Empty cells for offset: Jan 1 2026 = Thursday */}
+                  {[...Array(4)].map((_, i) => <div key={`empty-${i}`} />)}
+                  {[...Array(31)].map((_, i) => {
+                    const day = i + 1;
+                    const isAvailable = AVAILABLE_DAYS.has(day);
+                    const isSelected = calendarSelectedDate === day;
+                    const isPast = day < 22;
+                    return (
+                      <button
+                        key={day}
+                        disabled={!isAvailable}
+                        onClick={() => setCalendarSelectedDate(day)}
+                        className={`aspect-square rounded-lg text-xs font-medium transition-all ${
+                          isSelected
+                            ? 'bg-white text-dark-neu-300 font-bold shadow-lg'
+                            : isAvailable
+                            ? 'bg-dark-neu-400 text-white border border-white/30 hover:bg-white/20'
+                            : isPast
+                            ? 'text-white/20 cursor-default'
+                            : 'text-white/20 cursor-default'
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selected slot confirmation */}
+              {calendarSelectedDate && (() => {
+                const slot = AVAILABILITY_SLOTS.find(s => s.day === calendarSelectedDate);
+                return slot ? (
+                  <div className="mx-6 mb-4 p-3 bg-dark-neu-400 rounded-xl border border-white/20">
+                    <p className="text-white/60 text-xs mb-1">Available time</p>
+                    <p className="text-white font-semibold text-sm">{slot.label}</p>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Footer */}
+              <div className="px-6 pb-6 flex gap-3">
+                <button
+                  onClick={() => { setShowCalendar(false); setCalendarSelectedDate(null); }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={!calendarSelectedDate}
+                  onClick={() => {
+                    if (calendarSelectedDate) {
+                      const slot = AVAILABILITY_SLOTS.find(s => s.day === calendarSelectedDate);
+                      if (slot) setSelectedSlot(AVAILABILITY_SLOTS.indexOf(slot));
+                      trackSelection(selectedMediator, 'scheduled_call');
+                      setShowCalendar(false);
+                      setCalendarSelectedDate(null);
+                    }
+                  }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Confirm Booking
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
