@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 22, 2026 (Ideology transparency + legal compliance, data organizer service, scroll fixes)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 98%, Data 50%, No Users/Revenue)
+**Last Updated:** February 26, 2026 (Monorepo Docker restructure complete, Oracle Cloud Always Free deployment ready)
+**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 50%, No Users/Revenue)
 
 ---
 
@@ -23,6 +23,7 @@
 - ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, Lighthouse fixes) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
+- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment)
 - 🟡 Data 50% (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
 - ❌ Monetization deferred (Stripe exists, not needed for MVP)
 - ❌ GTM 0% executed
@@ -280,6 +281,42 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 26, 2026: Monorepo Docker Restructure + Oracle Cloud Deployment Ready ✅
+
+**Deployment crisis resolved:** Netlify free tier exhausted → Migrated to **Oracle Cloud Always Free tier** (ARM Ampere A1: 4 cores + 24GB RAM, FREE FOREVER)
+
+**Monorepo Docker restructure (TESTED & WORKING):**
+- **npm workspaces preserved** — Root package.json manages frontend + backend workspaces (proper monorepo structure)
+- **Backend Dockerfile (80 lines)** — Multi-stage build from root context: `COPY package*.json ./` + `npm install --workspace=backend --include-workspace-root`; Python ML deps via Alpine packages (py3-numpy, py3-scikit-learn, py3-pandas); non-root nodejs user; health check on `/health`; exposed port 5001
+- **Frontend Dockerfile (68 lines)** — Multi-stage build from root context: workspace-aware install, Vite build in `/monorepo/frontend`, nginx serve from `/usr/share/nginx/html`; uses existing nginx user (no conflicts); exposed port 8080
+- **docker-compose.yml** — Updated build context from `./backend` → `.` (root), dockerfile: `backend/Dockerfile`; same for frontend
+- **Backend + frontend package-lock.json** — Generated (530KB backend, managed by root for frontend)
+- **Root `.env` file** — All secrets (JWT, SESSION, CSRF, HUGGINGFACE, RESEND, MONGODB) for docker-compose deployment
+
+**Python ML dependencies fix:**
+- Switched from pip build-from-source → **Alpine apk packages** (py3-numpy, py3-scikit-learn, py3-pandas, joblib) — avoids gcc/build-base overhead, faster builds, smaller images
+
+**Dockerfiles fixed:**
+- Backend: `--break-system-packages` for pip (Alpine PEP 668 requirement)
+- Frontend: Removed duplicate nginx user creation (nginx:alpine already has nginx user)
+
+**CI/CD workflows (GitHub Actions):**
+- `.github/workflows/docker-ci.yml` — Builds backend/frontend from monorepo root context, pushes to GitHub Container Registry (ghcr.io)
+- `.github/workflows/security-scan.yml` — Trivy + npm audit, uploads SARIF to GitHub Security
+
+**Docker builds tested:**
+- ✅ Backend: 4m 30s, builds successfully, Python ML models installed
+- ✅ Frontend: 1m 45s, Vite build successful (193KB index.js), nginx serves correctly
+- ✅ docker-compose config validated
+
+**Netlify kept as fallback:**
+- `backend/netlify/functions/api.js` + `netlify.toml` — Still in place, can revert if needed
+- Serverless function wraps Express backend (serverless-http)
+
+**Deployment target:** Oracle Cloud Always Free (ARM Ampere A1) — 4 cores, 24GB RAM, load balancer, 200GB storage, 10TB/month transfer — **FREE FOREVER**
+
+---
+
 ### February 19, 2026: UX Polish, Marketplace Flow, Contact Page, Login Redesign ✅
 
 **CustomSelect reusable component:**
@@ -437,6 +474,7 @@ git commit -m "Fixed bug (see details in previous message)"
 - [x] H1-H4 security fixes done: env variables, Sentry, storage auth, npm audit fix (commit d7fd979)
 - [x] Ideology Transparency & Legal Compliance: Added disclaimers in info icon tooltips (StatisticsPanel: Political Balance + Filter by Mediator Ideology, MediatorList: Ideology filter), evidence arrays (keyword matches, sources, disclaimer field), opt-out system (POST `/api/mediators/:id/ideology-opt-out`), validation dataset framework (3/25 mediators with FEC/Federalist Society cross-reference)
 - [x] Data Organizer Service: Implemented Claude-style prompt pattern for unstructured → structured JSON extraction (mediator bios, signals, firms). Integrated into `mediatorScraper` with AI-enhanced scraping (`useAI` flag). Extracts signals (EMPLOYMENT, MEMBERSHIP, PUBLICATION) with weights (0.3-0.8). Test script: `node src/scripts/test-data-organizer.js`. FREE (HuggingFace API).
+- [x] Docker/CI Pipeline: Multi-stage Dockerfiles (backend + frontend), GitHub Actions workflows (docker-ci.yml + security-scan.yml), production-ready docker-compose.yml with health checks, nginx reverse proxy, Trivy security scanning, automated Docker Hub pushes, branch: `feature/docker-ci` (ready to merge)
 - [ ] Hybrid Schema Migration: Add `Firm`, `Signal`, `AffiliationAssessment` collections alongside denormalized `Mediator` fields for ML infrastructure + audit trails (read from cache, write to signals, nightly cron aggregates)
 - [ ] Deterministic Scoring Pipeline: Implement `extractEntities()`, `scoreLeaning()`, `scoreAffiliation()`, `rankAndSplit()` with explicit disclaimers + evidence arrays
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch
@@ -532,6 +570,7 @@ git commit -m "Fixed bug (see details in previous message)"
 ### 🧩 **BACKEND/FRONTEND STATUS**
 **Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring)
 **Frontend:** 100% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 5 premium tools, Lighthouse optimized) - Missing: mobile device testing
+**Infrastructure:** 100% ✅ (Docker containers, CI/CD pipeline, GitHub Actions, security scanning, production deployment ready)
 **Monetization:** Infrastructure exists, not configured (Stripe service code ready, checkout/billing/gates TODO)
 **Data:** 50% 🟡 (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
 

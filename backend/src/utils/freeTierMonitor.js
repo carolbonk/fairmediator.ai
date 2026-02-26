@@ -27,7 +27,7 @@ const FREE_TIER_LIMITS = {
   },
   resend: {
     monthly: parseInt(process.env.RESEND_MONTHLY_LIMIT) || 3000,
-    daily: parseInt(process.env.RESEND_DAILY_LIMIT) || 90,
+    daily: parseInt(process.env.RESEND_DAILY_LIMIT) || 50,
     name: 'Resend Email'
   },
   scraping: {
