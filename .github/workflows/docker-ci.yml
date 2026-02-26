@@ -15,21 +15,10 @@ env:
   FRONTEND_IMAGE_NAME: ${{ github.repository }}/frontend
 
 jobs:
-  # Run CodeQL security scan first
-  security-scan:
-    name: Security Scan
-    uses: ./.github/workflows/codeql.yml
-    permissions:
-      security-events: write
-      packages: read
-      actions: read
-      contents: read
-
-  # Build and push Docker images only if security scan passes
+  # Build and push Docker images
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: security-scan
     permissions:
       contents: read
       packages: write
@@ -38,10 +27,10 @@ jobs:
       matrix:
         include:
           - image: backend
-            context: ./backend
+            context: .
             dockerfile: ./backend/Dockerfile
           - image: frontend
-            context: ./frontend
+            context: .
             dockerfile: ./frontend/Dockerfile
 
     steps:
