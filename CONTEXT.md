@@ -9,7 +9,7 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 26, 2026 (Monorepo Docker restructure complete, Oracle Cloud Always Free deployment ready)
+**Last Updated:** February 27, 2026 (N8N automation + Hybrid schema + Deterministic scoring pipeline complete)
 **Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 50%, No Users/Revenue)
 
 ---
@@ -280,6 +280,40 @@ git commit -m "Fixed bug (see details in previous message)"
 ---
 
 ## 🔄 Recent Major Changes
+
+### February 27, 2026: N8N Backend Automation + Hybrid Schema + Deterministic Scoring ✅
+
+**N8N automation backend endpoints implemented:**
+- **`routes/automation.js`** — POST `/api/automation/trigger` with 3 workflows: `scrape-and-blog` (FEC → analysis → blog outline), `quota-check-alert` (85%+ services), `weekly-report` (7-day stats + top findings); GET `/api/automation/workflows` (list available workflows)
+- **`routes/logs.js`** — GET `/api/logs/recent` (filter by level/hours/type, returns errors/warnings/scraping stats), GET `/api/logs/summary` (multi-day aggregation)
+- **`routes/scraping.js` extended** — GET `/api/scraping/trigger-batch` (quota-aware batch scraping with mock data), GET `/api/scraping/summary` (donations, affiliations, top donors/affiliations over N days)
+- **Registered in `server.js`** — `/api/automation`, `/api/logs` routes added, ready for N8N webhook integration
+- **Status:** All 4 backend endpoints complete (quota-status was already done in monitoring.js), N8N can now orchestrate workflows remotely
+
+**Hybrid schema models created for ML infrastructure:**
+- **`models/Firm.js`** — Law firms/organizations with normalizedName deduplication, political leaning (-10 to +10), donation tracking by party, notable clients, network stats (totalMediators, conflictRiskScore), data quality scoring, embedding vectors for semantic search; includes `findOrCreate()` and `calculateDataQuality()` methods
+- **`models/Signal.js`** — Individual bias/affiliation signals (13 types: EMPLOYMENT, MEMBERSHIP, DONATION, etc.), entity extraction with evidence (rawText, keywords, confidence, extractionMethod), leaning score + influence weight, conflict risk levels, validation status, supports audit trails; includes `calculateInfluenceWeight()` and `aggregateForMediator()` methods
+- **`models/AffiliationAssessment.js`** — ML-scored affiliations (mediator ↔ firm) with confidence score, influence score, conflict risk (0-100), supporting signals, model versioning, validation workflow, user reports, change history; includes `calculateConflictRisk()`, `addSource()`, `logChange()`, `findHighRisk()`, `aggregateForMediator()` methods
+- **Status:** 3 models created with full CRUD methods, indexes, and aggregation pipelines for ML training
+
+**Deterministic scoring pipeline implemented:**
+- **`services/scoring/deterministicScoring.js`** — 4 core functions:
+  - `extractEntities(text)` — Rule-based NER for organizations (LLC/LLP/Corp patterns, acronyms), people (titles), political keywords (Democrat/Republican/PAC); returns entities with type, confidence, method, disclaimer
+  - `scoreLeaning(mediatorId)` — Calculates ideology score -10 to +10 using weighted average of signals (employment 0.8, donation 0.7, membership 0.6), recency decay (50% after 5 years), validation boost (1.2x); returns score, confidence, label (VERY_LIBERAL to VERY_CONSERVATIVE), evidence array, disclaimer
+  - `scoreAffiliation(mediatorId, firmId)` — Assesses affiliation strength (confidence 0-1), influence score, conflict risk (0-100) based on signal count, validation, affiliation type (opposing_counsel 70, client 60, current_employer 40); returns risk label, evidence, disclaimer
+  - `rankAndSplit(mediatorIds, criteria)` — Ranks by ideology/conflictRisk/dataQuality, splits into high/medium/low/minimal categories using configurable thresholds; returns ranked list, split groups, counts, method, disclaimer
+- **`routes/scoring.js`** — 6 endpoints: POST `/api/scoring/extract-entities`, GET `/api/scoring/leaning/:mediatorId`, POST `/api/scoring/leaning/batch` (max 50), GET `/api/scoring/affiliation/:mediatorId/:firmId`, POST `/api/scoring/rank` (admin), GET `/api/scoring/methodology` (public docs)
+- **`scripts/test-scoring-pipeline.js`** — Test suite for entity extraction (4 sample texts), leaning score (creates 3 test signals), affiliation score (creates test firm + 2 signals), ranking (top 10 mediators)
+- **Registered in `server.js`** — `/api/scoring` route added
+- **Status:** Complete with evidence arrays, disclaimers, transparent methodology docs
+
+**Key features added:**
+- All scoring functions include explicit disclaimers about data limitations and professional judgment requirements
+- Evidence arrays show exactly what data contributed to each score (signal type, source, weight, validation status)
+- Methodology endpoint provides full transparency on formulas, weights, thresholds, ethical considerations
+- Audit trails in AffiliationAssessment track all changes with userId, timestamp, reason
+
+---
 
 ### February 26, 2026: Axiom Logging + N8N Automation Architecture ✅
 
@@ -601,11 +635,11 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 - [x] Data Organizer Service: Implemented Claude-style prompt pattern for unstructured → structured JSON extraction (mediator bios, signals, firms). Integrated into `mediatorScraper` with AI-enhanced scraping (`useAI` flag). Extracts signals (EMPLOYMENT, MEMBERSHIP, PUBLICATION) with weights (0.3-0.8). Test script: `node src/scripts/test-data-organizer.js`. FREE (HuggingFace API).
 - [x] Docker/CI Pipeline: Multi-stage Dockerfiles (backend + frontend), GitHub Actions workflows (docker-ci.yml + security-scan.yml), production-ready docker-compose.yml with health checks, nginx reverse proxy, Trivy security scanning, automated Docker Hub pushes, branch: `feature/docker-ci` (ready to merge)
 - [x] Axiom Logging Integration: Centralized cloud logging (166MB/month, warn/error/security only), added to freeTierMonitor.js with 5,666/day limit, updated quota-status endpoint, complete documentation (AXIOM_INTEGRATION_GUIDE.md, QUICK_START_AXIOM.md), N8N automation architecture designed (7 workflows, 5 endpoints), pre-flight-check skill created to prevent rule violations
-- [ ] N8N Automation Implementation: Set up N8N on Oracle Cloud, add GitHub secrets (N8N_WEBHOOK_URL), implement 4 remaining backend endpoints (trigger-batch, logs/recent, scraping/summary, automation/trigger), test end-to-end automation flow
-- [ ] Hybrid Schema Migration: Add `Firm`, `Signal`, `AffiliationAssessment` collections alongside denormalized `Mediator` fields for ML infrastructure + audit trails (read from cache, write to signals, nightly cron aggregates)
-- [ ] Deterministic Scoring Pipeline: Implement `extractEntities()`, `scoreLeaning()`, `scoreAffiliation()`, `rankAndSplit()` with explicit disclaimers + evidence arrays
+- [x] N8N Automation Implementation: Backend endpoints complete — `routes/automation.js` (3 workflows: scrape-and-blog, quota-check-alert, weekly-report), `routes/logs.js` (recent logs + summary), extended `routes/scraping.js` with trigger-batch + summary endpoints, registered in server.js, ready for N8N webhook integration
+- [x] Hybrid Schema Migration: Models created — `Firm.js` (law firms/orgs with political leaning, network stats), `Signal.js` (individual bias signals with evidence tracking, 13 types), `AffiliationAssessment.js` (ML-scored affiliations with confidence, conflict risk, audit trails), includes methods for scoring, aggregation, validation
+- [x] Deterministic Scoring Pipeline: `services/scoring/deterministicScoring.js` implemented — `extractEntities()` (rule-based NER), `scoreLeaning()` (weighted average -10 to +10), `scoreAffiliation()` (confidence + conflict risk), `rankAndSplit()` (ideology/risk/quality), all with evidence arrays + disclaimers, exposed via `routes/scoring.js` (6 endpoints + methodology doc), test script: `scripts/test-scoring-pipeline.js`
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch
-- [ ] SEO: OG image, Google Search Console, Lighthouse audit
+- [ ] SEO: OG image, Google Search Console (DNS verification in progress), Lighthouse audit
 
 **SHORT-TERM (Weeks 1-4):**
 - [ ] First 10 customers: Email 50 lawyers (5), Reddit launch (3), cold email 100 firms (2)

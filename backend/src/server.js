@@ -50,6 +50,9 @@ const dataPopulationRoutes = require('./routes/dataPopulation'); // Data populat
 const alertsRoutes = require('./routes/alerts'); // ConflictAlerts system
 const apiKeysRoutes = require('./routes/api_keys'); // B2B API key management
 const publicApiRoutes = require('./routes/public_api'); // B2B Public API v1
+const automationRoutes = require('./routes/automation'); // N8N automation workflows
+const logsRoutes = require('./routes/logs'); // Log aggregation and analysis
+const scoringRoutes = require('./routes/scoring'); // Deterministic scoring pipeline
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -263,6 +266,9 @@ app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement pre
 app.use('/api/data-population', dataPopulationRoutes); // Data population status and progress tracking
 app.use('/api/keys', apiKeysRoutes); // B2B API key management (create, list, revoke)
 app.use('/api/v1', publicApiRoutes); // B2B Public API v1 (API key auth, CSRF-exempt)
+app.use('/api/automation', automationRoutes); // N8N automation workflows (trigger workflows)
+app.use('/api/logs', logsRoutes); // Log aggregation and analysis
+app.use('/api/scoring', scoringRoutes); // Deterministic scoring pipeline (leaning, affiliation, ranking)
 
 // CSRF error handler
 app.use(csrfErrorHandler);
