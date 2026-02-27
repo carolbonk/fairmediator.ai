@@ -34,6 +34,11 @@ const FREE_TIER_LIMITS = {
     monthly: parseInt(process.env.SCRAPING_MONTHLY_LIMIT) || 15000,
     daily: parseInt(process.env.SCRAPING_DAILY_LIMIT) || 450,
     name: 'Web Scraping'
+  },
+  axiom: {
+    monthly: parseInt(process.env.AXIOM_MONTHLY_LIMIT) || 170000, // 166MB ≈ 170k logs at 1KB/log
+    daily: parseInt(process.env.AXIOM_DAILY_LIMIT) || 5666, // 170k/month ÷ 30 days
+    name: 'Axiom Logging'
   }
 };
 
@@ -317,9 +322,42 @@ class FreeTierMonitor {
     const usage = this.usage[service]?.[today];
     const limit = FREE_TIER_LIMITS[service]?.daily;
 
-    if (!usage || !limit) return null;
+    if (!usage || !limit) {
+      return { daily: limit || 0, monthly: FREE_TIER_LIMITS[service]?.monthly || 0 };
+    }
 
-    return Math.max(0, limit - usage.count);
+    return {
+      daily: Math.max(0, limit - usage.count),
+      monthly: FREE_TIER_LIMITS[service]?.monthly || 0
+    };
+  }
+
+  /**
+   * Get current usage for service
+   */
+  getUsage(service) {
+    const today = new Date().toISOString().split('T')[0];
+    const usage = this.usage[service]?.[today];
+
+    if (!usage) {
+      return { daily: 0, monthly: 0 };
+    }
+
+    return {
+      daily: usage.count || 0,
+      monthly: usage.count || 0 // Simplified: use daily as monthly estimate
+    };
+  }
+
+  /**
+   * Get next quota reset time (midnight UTC)
+   */
+  getNextReset(service) {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    tomorrow.setUTCHours(0, 0, 0, 0);
+    return tomorrow.toISOString();
   }
 }
 

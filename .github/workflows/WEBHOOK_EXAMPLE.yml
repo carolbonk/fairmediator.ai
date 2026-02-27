@@ -1,0 +1,35 @@
+# Example: Updated notify job with webhook to N8N
+
+notify:
+  name: Trigger Automations
+  runs-on: ubuntu-latest
+  needs: build-and-push
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  steps:
+    - name: Send deployment data to N8N
+      run: |
+        curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
+          -H "Content-Type: application/json" \
+          -d '{
+            "event": "deployment_success",
+            "timestamp": "${{ github.event.head_commit.timestamp }}",
+            "commit_message": "${{ github.event.head_commit.message }}",
+            "commit_sha": "${{ github.sha }}",
+            "author": "${{ github.event.head_commit.author.name }}",
+            "repository": "${{ github.repository }}",
+            "backend_image": "${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest",
+            "frontend_image": "${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest",
+            "scraping_quota": "Check via API",
+            "trigger_actions": [
+              "scrape_fec_batch",
+              "aggregate_logs",
+              "check_quota",
+              "generate_blog_post"
+            ]
+          }'
+
+    - name: Trigger backend scraping check
+      run: |
+        curl -X POST ${{ secrets.BACKEND_URL }}/api/scraping/trigger-batch?scraper=fec&count=10 \
+          -H "Authorization: Bearer ${{ secrets.API_TOKEN }}"
+      continue-on-error: true

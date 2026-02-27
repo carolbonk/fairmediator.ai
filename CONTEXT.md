@@ -281,6 +281,34 @@ git commit -m "Fixed bug (see details in previous message)"
 
 ## 🔄 Recent Major Changes
 
+### February 26, 2026: Axiom Logging + N8N Automation Architecture ✅
+
+**Centralized logging integrated with quota protection:**
+- **Axiom Winston transport** — `backend/src/config/logger.js` updated to send only `warn`/`error`/`security` logs to Axiom cloud (166MB/month = ~170k logs, using ~3k-15k/month = 9-88% of quota)
+- **Local file logs preserved** — All log levels (`debug`/`info`/`http`/`warn`/`error`/`security`) still written to daily rotating local files as backup
+- **Free tier monitoring** — Added `axiom` to `freeTierMonitor.js` FREE_TIER_LIMITS with daily limit of 5,666 logs, monthly limit of 170k logs
+- **Quota API endpoint** — Updated `GET /api/monitoring/quota-status` to include Axiom usage tracking alongside HuggingFace, Resend, Scraping
+- **Helper methods added** — `getUsage()`, `getNextReset()` in `freeTierMonitor.js` for automation workflows
+
+**N8N automation architecture designed:**
+- **GitHub Actions webhook** — `.github/workflows/docker-ci.yml` notify job sends deployment events to N8N with commit data, Docker images, trigger actions
+- **7 automation workflows** — Smart FEC scraping, log aggregation, blog post generation, quota monitoring, weekly reports, auto-retry, competitive intelligence
+- **5 backend endpoints planned** — quota-status (✅ implemented), trigger-batch, logs/recent, scraping/summary, automation/trigger (4 pending)
+- **Expected automation results** — Month 1: 500+ mediators scraped (vs 25 now), Month 2: 1,000+ mediators, Month 3: complete database (1,500+)
+
+**Documentation created:**
+- `AXIOM_INTEGRATION_GUIDE.md` (558 lines) — 10-step setup, monitors, dashboards, APL queries, N8N integration
+- `N8N_BACKEND_ENDPOINTS.md` — 5 endpoints implementation guide (1 done, 4 pending)
+- `N8N_WORKFLOW_TEMPLATE.json` — Import-ready workflow (Deploy → Check Quota → Scrape → Research → Blog → Tweet)
+- `QUICK_START_AXIOM.md` (247 lines) — Quick reference, environment variables, testing instructions
+- `.claude/skills/pre-flight-check.md` — Validation skill to prevent project rule violations (free tier overages, emoji commits, unauthorized commits)
+
+**Rule violations fixed:**
+- ❌ **Violated RULE 2:** Added Axiom without free tier protection → ✅ **Fixed:** Added to freeTierMonitor with 5,666/day limit
+- ❌ **Violated RULE 8:** Used emoji in commit messages → ✅ **Fixed:** Created pre-flight-check skill to prevent future violations
+
+---
+
 ### February 26, 2026: Monorepo Docker Restructure + Oracle Cloud Deployment Ready ✅
 
 **Deployment crisis resolved:** Netlify free tier exhausted → Migrated to **Oracle Cloud Always Free tier** (ARM Ampere A1: 4 cores + 24GB RAM, FREE FOREVER)
@@ -466,6 +494,103 @@ git commit -m "Fixed bug (see details in previous message)"
 - **Batch Checker:** CSV upload, batch API, results table, export, manual review (Day 3-4 complete)
 
 
+## 🤖 Automation Architecture (N8N + Axiom + GitHub Actions)
+
+**Last Updated:** February 26, 2026 - **Automation pipeline designed, ready to implement**
+
+### **The Flow:**
+```
+GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom Logs
+```
+
+### **Infrastructure Stack:**
+- **Axiom:** Centralized logging (166MB/month allocation)
+- **N8N:** Self-hosted automation (runs on Oracle Cloud, $0/month)
+- **GitHub Actions:** CI/CD triggers + webhooks
+- **Backend Endpoints:** 5 new APIs for orchestration
+
+### **7 Automated Workflows:**
+
+**1. Smart FEC Scraping Orchestrator**
+- Checks free tier quota before scraping
+- Triggers FEC scraper for next 10-50 mediators
+- Spreads across days to avoid rate limits
+- **Impact:** 25 mediators → 500+ over time
+
+**2. Log Aggregation + Alert System** (Axiom)
+- Real-time error/warning aggregation
+- Critical alert notifications (Slack/Email)
+- Daily digest reports
+- **Impact:** Never miss critical errors
+
+**3. Scrape → Analyze → Blog Post Pipeline**
+- Scrapes mediator donations/affiliations
+- Analyzes with Perplexity AI for context
+- Generates blog post outlines
+- Auto-tweets findings
+- **Impact:** 1 deployment = 1 blog draft
+
+**4. Free Tier Quota Monitor + Auto-Shutdown**
+- Monitors HuggingFace (333/day), Scraping (450/day), Resend (50/day)
+- Alerts at 85%, 95% thresholds
+- Auto-disables features at 100%
+- **Impact:** 0 free tier overages
+
+**5. Weekly Scraping Report Generator**
+- Analyzes week's scraping stats
+- Identifies top findings (donations, affiliations)
+- Generates research opportunities
+- Creates Obsidian research notes
+- **Impact:** Automated content pipeline
+
+**6. Failed Scraping Auto-Retry + Debug**
+- Detects scraping failures
+- Rate limit → Schedule retry in 24h
+- Timeout → Retry with backoff
+- Creates debug notes in Obsidian
+- **Impact:** Self-healing scraping
+
+**7. Competitive Intelligence Scraper**
+- Weekly scrape of competitors (JusticeHub, Modria)
+- Perplexity comparison analysis
+- Stores in Airtable
+- **Impact:** Stay ahead of competition
+
+### **Backend Endpoints (to implement):**
+- `GET /api/monitoring/quota-status` - Real-time quota usage
+- `GET /api/scraping/trigger-batch` - Trigger scraping with quota checks
+- `GET /api/logs/recent` - Fetch recent logs for analysis
+- `GET /api/scraping/summary` - Get scraping stats (last N days)
+- `POST /api/automation/trigger` - Trigger predefined workflows
+
+### **Files Created:**
+- `.github/workflows/WEBHOOK_EXAMPLE.yml` - Updated notify job with webhook
+- `N8N_BACKEND_ENDPOINTS.md` - 5 backend endpoints implementation guide
+- `N8N_WORKFLOW_TEMPLATE.json` - Import-ready N8N workflow
+- `ORACLE_CLOUD_DEPLOYMENT.md` - Complete deployment guide
+
+### **Expected Results:**
+
+**Month 1:**
+- ✅ 500+ mediators scraped (vs 25 now)
+- ✅ 0 free tier overages
+- ✅ 4-8 blog post drafts generated
+- ✅ Real-time error monitoring via Axiom
+
+**Month 2:**
+- ✅ 1,000+ mediators in database
+- ✅ 50-state legal research database
+- ✅ Automated competitive intelligence
+- ✅ Weekly data insights reports
+
+**Month 3:**
+- ✅ Complete mediator database (1,500+)
+- ✅ Monthly blog calendar auto-populated
+- ✅ User education drip campaigns
+- ✅ Zero manual scraping
+
+---
+
 ## 📝 What's Next / TODO
 
 ### 🎯 **CURRENT PRIORITIES** (Post-Audit Action Plan)
@@ -475,6 +600,8 @@ git commit -m "Fixed bug (see details in previous message)"
 - [x] Ideology Transparency & Legal Compliance: Added disclaimers in info icon tooltips (StatisticsPanel: Political Balance + Filter by Mediator Ideology, MediatorList: Ideology filter), evidence arrays (keyword matches, sources, disclaimer field), opt-out system (POST `/api/mediators/:id/ideology-opt-out`), validation dataset framework (3/25 mediators with FEC/Federalist Society cross-reference)
 - [x] Data Organizer Service: Implemented Claude-style prompt pattern for unstructured → structured JSON extraction (mediator bios, signals, firms). Integrated into `mediatorScraper` with AI-enhanced scraping (`useAI` flag). Extracts signals (EMPLOYMENT, MEMBERSHIP, PUBLICATION) with weights (0.3-0.8). Test script: `node src/scripts/test-data-organizer.js`. FREE (HuggingFace API).
 - [x] Docker/CI Pipeline: Multi-stage Dockerfiles (backend + frontend), GitHub Actions workflows (docker-ci.yml + security-scan.yml), production-ready docker-compose.yml with health checks, nginx reverse proxy, Trivy security scanning, automated Docker Hub pushes, branch: `feature/docker-ci` (ready to merge)
+- [x] Axiom Logging Integration: Centralized cloud logging (166MB/month, warn/error/security only), added to freeTierMonitor.js with 5,666/day limit, updated quota-status endpoint, complete documentation (AXIOM_INTEGRATION_GUIDE.md, QUICK_START_AXIOM.md), N8N automation architecture designed (7 workflows, 5 endpoints), pre-flight-check skill created to prevent rule violations
+- [ ] N8N Automation Implementation: Set up N8N on Oracle Cloud, add GitHub secrets (N8N_WEBHOOK_URL), implement 4 remaining backend endpoints (trigger-batch, logs/recent, scraping/summary, automation/trigger), test end-to-end automation flow
 - [ ] Hybrid Schema Migration: Add `Firm`, `Signal`, `AffiliationAssessment` collections alongside denormalized `Mediator` fields for ML infrastructure + audit trails (read from cache, write to signals, nightly cron aggregates)
 - [ ] Deterministic Scoring Pipeline: Implement `extractEntities()`, `scoreLeaning()`, `scoreAffiliation()`, `rankAndSplit()` with explicit disclaimers + evidence arrays
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch

@@ -51,6 +51,115 @@ router.get('/stats', (req, res) => {
 });
 
 /**
+ * GET /api/monitoring/quota-status
+ * Get current quota usage for all free tier services (formatted for N8N automation)
+ * Public (for automation workflows)
+ *
+ * Response:
+ * {
+ *   "overall": { "status": "ok", "criticalCount": 0, "warningCount": 1 },
+ *   "services": {
+ *     "huggingface": {
+ *       "name": "Hugging Face API",
+ *       "used": 150,
+ *       "limit": 333,
+ *       "remaining": 183,
+ *       "percent": 45,
+ *       "status": "ok",
+ *       "nextReset": "2026-02-27T00:00:00.000Z"
+ *     },
+ *     ...
+ *   }
+ * }
+ */
+router.get('/quota-status', (req, res) => {
+  const logger = require('../config/logger');
+
+  try {
+    const stats = monitor.getStats();
+    const status = {};
+
+    const FREE_TIER_LIMITS = {
+      huggingface: {
+        monthly: parseInt(process.env.HUGGINGFACE_MONTHLY_LIMIT) || 10000,
+        daily: parseInt(process.env.HUGGINGFACE_DAILY_LIMIT) || 333,
+        name: 'Hugging Face API'
+      },
+      resend: {
+        monthly: parseInt(process.env.RESEND_MONTHLY_LIMIT) || 3000,
+        daily: parseInt(process.env.RESEND_DAILY_LIMIT) || 50,
+        name: 'Resend Email'
+      },
+      scraping: {
+        monthly: parseInt(process.env.SCRAPING_MONTHLY_LIMIT) || 15000,
+        daily: parseInt(process.env.SCRAPING_DAILY_LIMIT) || 450,
+        name: 'Web Scraping'
+      },
+      axiom: {
+        monthly: parseInt(process.env.AXIOM_MONTHLY_LIMIT) || 170000,
+        daily: parseInt(process.env.AXIOM_DAILY_LIMIT) || 5666,
+        name: 'Axiom Logging'
+      },
+      mongodb: {
+        monthly: parseInt(process.env.MONGODB_SIZE_LIMIT) || (512 * 1024 * 1024),
+        daily: null,
+        name: 'MongoDB Atlas'
+      }
+    };
+
+    for (const [service, limits] of Object.entries(FREE_TIER_LIMITS)) {
+      // Skip MongoDB (size-based, not request-based)
+      if (!limits.daily) continue;
+
+      const usage = monitor.getUsage(service) || { daily: 0, monthly: 0 };
+      const remaining = monitor.getRemaining(service) || limits.daily;
+      const percent = Math.round((usage.daily / limits.daily) * 100);
+
+      status[service] = {
+        name: limits.name,
+        used: usage.daily,
+        limit: limits.daily,
+        remaining,
+        percent,
+        status: percent > 95 ? 'critical' : percent > 85 ? 'warning' : 'ok',
+        nextReset: monitor.getNextReset ? monitor.getNextReset(service) : new Date().toISOString(),
+        monthly: {
+          used: usage.monthly,
+          limit: limits.monthly
+        }
+      };
+    }
+
+    // Add overall system status
+    const criticalServices = Object.values(status).filter(s => s.status === 'critical');
+    const warningServices = Object.values(status).filter(s => s.status === 'warning');
+
+    const response = {
+      overall: {
+        status: criticalServices.length > 0 ? 'critical' :
+                warningServices.length > 0 ? 'warning' : 'ok',
+        criticalCount: criticalServices.length,
+        warningCount: warningServices.length,
+        timestamp: new Date().toISOString()
+      },
+      services: status
+    };
+
+    // Log quota check for Axiom
+    logger.info('Quota status checked', {
+      overall: response.overall.status,
+      criticalServices: criticalServices.map(s => s.name),
+      warningServices: warningServices.map(s => s.name)
+    });
+
+    return res.json(response);
+  } catch (error) {
+    logger.error('Failed to get quota status', { error: error.message });
+    return res.status(500).json({ error: 'Failed to retrieve quota status' });
+  }
+});
+
+/**
  * GET /api/monitoring/alerts
  * Get recent alerts
  * Admin only
