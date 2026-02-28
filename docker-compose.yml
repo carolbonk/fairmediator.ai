@@ -17,12 +17,12 @@ services:
       - mongodb_config:/data/configdb
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Never exceed 4 cores + 24GB total
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
     deploy:
       resources:
         limits:
-          cpus: '0.5'      # 0.5 cores max (12.5% of 4-core limit)
-          memory: 2G       # 2GB max (8.3% of 24GB limit)
+          cpus: '0.5'      # 0.5 cores max (16.7% of 3-core safety limit)
+          memory: 2G       # 2GB max (9.6% of 20.89GB safety limit)
         reservations:
           cpus: '0.25'     # Reserve 0.25 cores
           memory: 1G       # Reserve 1GB
@@ -74,15 +74,15 @@ services:
       - backend_node_modules:/app/node_modules
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Never exceed 4 cores + 24GB total
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
     deploy:
       resources:
         limits:
-          cpus: '2.5'      # 2.5 cores max (62.5% of 4-core limit)
-          memory: 16G      # 16GB max (66.7% of 24GB limit)
+          cpus: '2'        # 2 cores max (66.7% of 3-core safety limit)
+          memory: 14G      # 14GB max (67% of 20.89GB safety limit)
         reservations:
           cpus: '1'        # Reserve 1 core
-          memory: 8G       # Reserve 8GB
+          memory: 7G       # Reserve 7GB
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:5001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
@@ -105,14 +105,14 @@ services:
       - "3000:8080"
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Never exceed 4 cores + 24GB total
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
     deploy:
       resources:
         limits:
-          cpus: '1'        # 1 core max (25% of 4-core limit)
-          memory: 4G       # 4GB max (16.7% of 24GB limit)
+          cpus: '0.5'      # 0.5 cores max (16.7% of 3-core safety limit)
+          memory: 4G       # 4GB max (19.1% of 20.89GB safety limit)
         reservations:
-          cpus: '0.5'      # Reserve 0.5 cores
+          cpus: '0.25'     # Reserve 0.25 cores
           memory: 2G       # Reserve 2GB
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
