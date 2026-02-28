@@ -17,15 +17,15 @@ services:
       - mongodb_config:/data/configdb
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
         limits:
-          cpus: '0.5'      # 0.5 cores max (16.7% of 3-core safety limit)
-          memory: 2G       # 2GB max (9.6% of 20.89GB safety limit)
+          cpus: '0.25'     # 0.25 cores max (12.5% of 2-core safety limit)
+          memory: 1G       # 1GB max (8.3% of 12GB safety limit)
         reservations:
-          cpus: '0.25'     # Reserve 0.25 cores
-          memory: 1G       # Reserve 1GB
+          cpus: '0.125'    # Reserve 0.125 cores
+          memory: 512M     # Reserve 512MB
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/fairmediator --quiet
       interval: 10s
@@ -74,15 +74,15 @@ services:
       - backend_node_modules:/app/node_modules
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
         limits:
-          cpus: '2'        # 2 cores max (66.7% of 3-core safety limit)
-          memory: 14G      # 14GB max (67% of 20.89GB safety limit)
+          cpus: '1.5'      # 1.5 cores max (75% of 2-core safety limit)
+          memory: 9G       # 9GB max (75% of 12GB safety limit)
         reservations:
-          cpus: '1'        # Reserve 1 core
-          memory: 7G       # Reserve 7GB
+          cpus: '0.75'     # Reserve 0.75 cores
+          memory: 4G       # Reserve 4GB
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:5001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
@@ -105,15 +105,15 @@ services:
       - "3000:8080"
     networks:
       - fairmediator-network
-    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 85% for safety (3 cores, 20.89GB total)
+    # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
         limits:
-          cpus: '0.5'      # 0.5 cores max (16.7% of 3-core safety limit)
-          memory: 4G       # 4GB max (19.1% of 20.89GB safety limit)
+          cpus: '0.25'     # 0.25 cores max (12.5% of 2-core safety limit)
+          memory: 2G       # 2GB max (16.7% of 12GB safety limit)
         reservations:
-          cpus: '0.25'     # Reserve 0.25 cores
-          memory: 2G       # Reserve 2GB
+          cpus: '0.125'    # Reserve 0.125 cores
+          memory: 1G       # Reserve 1GB
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
       interval: 30s

@@ -13,25 +13,25 @@
 - **Bandwidth:** 10TB/month outbound
 - **Shape:** VM.Standard.A1.Flex
 
-### Our Safety Limits (85% of Maximum)
-**We set limits to 85% to provide a safety buffer and prevent accidental overages:**
+### Our Safety Limits (50% of Maximum)
+**We set limits to 50% to provide maximum safety buffer and prevent accidental overages:**
 
-- **CPU:** 3 cores (85% of 4 cores)
-- **RAM:** 20.89GB (85% of 24GB)
-- **Storage:** 174GB (85% of 200GB)
-- **Bandwidth:** 8.7TB/month (85% of 10TB)
-- **Daily Bandwidth:** 289GB/day (85% of 340GB)
+- **CPU:** 2 cores (50% of 4 cores)
+- **RAM:** 12GB (50% of 24GB)
+- **Storage:** 100GB (50% of 200GB)
+- **Bandwidth:** 5TB/month (50% of 10TB)
+- **Daily Bandwidth:** 170GB/day (50% of 340GB)
 
 **Our Allocation:**
-- 1 VM instance: 3 cores max, 20GB RAM max
+- 1 VM instance: 2 cores max, 12GB RAM max
 - Runs: Frontend (Nginx) + Backend (Node.js) + MongoDB (optional)
-- **Safety margin:** 15% headroom from true limits
+- **Safety margin:** 50% headroom from true limits
 
 ---
 
 ### Storage
 - **Actual Limit:** 200GB (VM disk)
-- **Our Safety Limit:** 174GB (85% of 200GB)
+- **Our Safety Limit:** 100GB (50% of 200GB)
 - **Object Storage:** 20GB (not currently used)
 
 **Our Usage:**
@@ -39,23 +39,23 @@
 - Application code: ~2GB
 - Logs: ~5GB
 - Docker images: ~3GB
-- **Total:** ~20GB (11.5% of safety limit)
-- **Available:** 154GB (within safety limit)
+- **Total:** ~20GB (20% of safety limit)
+- **Available:** 80GB (within safety limit)
 
 ---
 
 ### Networking
 - **Actual Limit:** 10TB/month outbound
-- **Our Safety Limit:** 8.7TB/month (85% of 10TB)
-- **Daily Safe Limit:** 289GB/day (85% of 340GB)
+- **Our Safety Limit:** 5TB/month (50% of 10TB)
+- **Daily Safe Limit:** 170GB/day (50% of 340GB)
 - **Load Balancer:** Included
 - **Public IPs:** Included
 
 **Typical Usage:**
 - API requests: ~50GB/month
 - Asset delivery: ~100GB/month
-- **Total:** ~150GB/month (1.7% of safety limit)
-- **Safe margin:** 8.55TB/month (within safety limit)
+- **Total:** ~150GB/month (3% of safety limit)
+- **Safe margin:** 4.85TB/month (within safety limit)
 
 ---
 
@@ -67,11 +67,11 @@
 
 ```javascript
 // backend/src/utils/freeTierMonitor.js
-// Set to 85% for safety margin (15% headroom)
-oracle_cpu: { limit: 3 cores }        // 85% of 4 cores
-oracle_ram: { limit: 20.89GB }        // 85% of 24GB
-oracle_storage: { limit: 174GB }      // 85% of 200GB
-oracle_bandwidth: { monthly: 8.7TB, daily: 289GB }  // 85% of 10TB/340GB
+// Set to 50% for maximum safety margin (50% headroom)
+oracle_cpu: { limit: 2 cores }        // 50% of 4 cores
+oracle_ram: { limit: 12GB }           // 50% of 24GB
+oracle_storage: { limit: 100GB }      // 50% of 200GB
+oracle_bandwidth: { monthly: 5TB, daily: 170GB }    // 50% of 10TB/340GB
 ```
 
 ### Alert Thresholds
@@ -198,22 +198,22 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'    # Max 0.5 cores (16.7% of 3-core safety limit)
-          memory: 2G     # Max 2GB (9.6% of 20.89GB safety limit)
+          cpus: '0.25'   # Max 0.25 cores (12.5% of 2-core safety limit)
+          memory: 1G     # Max 1GB (8.3% of 12GB safety limit)
 
   backend:
     deploy:
       resources:
         limits:
-          cpus: '2'      # Max 2 cores (66.7% of 3-core safety limit)
-          memory: 14G    # Max 14GB (67% of 20.89GB safety limit)
+          cpus: '1.5'    # Max 1.5 cores (75% of 2-core safety limit)
+          memory: 9G     # Max 9GB (75% of 12GB safety limit)
 
   frontend:
     deploy:
       resources:
         limits:
-          cpus: '0.5'    # Max 0.5 cores (16.7% of 3-core safety limit)
-          memory: 4G     # Max 4GB (19.1% of 20.89GB safety limit)
+          cpus: '0.25'   # Max 0.25 cores (12.5% of 2-core safety limit)
+          memory: 2G     # Max 2GB (16.7% of 12GB safety limit)
 ```
 
 ### 3. Bandwidth Monitoring (Optional)
@@ -260,10 +260,10 @@ FREE_TIER_CRITICAL_THRESHOLD=0.95
 
 Before deploying to Oracle Cloud:
 
-- [ ] Check CPU allocation: ≤ 3 cores total (85% safety limit)
-- [ ] Check RAM allocation: ≤ 20GB total (85% safety limit)
-- [ ] Check storage usage: < 150GB (85% of safety limit)
-- [ ] Check bandwidth: < 250GB/day (85% of safety limit)
+- [ ] Check CPU allocation: ≤ 2 cores total (50% safety limit)
+- [ ] Check RAM allocation: ≤ 12GB total (50% safety limit)
+- [ ] Check storage usage: < 80GB (80% of safety limit)
+- [ ] Check bandwidth: < 140GB/day (80% of safety limit)
 - [ ] Run `GET /api/monitoring/oracle-cloud/safe-to-deploy`
 - [ ] Review Docker resource limits in `docker-compose.yml`
 - [ ] Verify no auto-scaling enabled
@@ -278,16 +278,16 @@ Before deploying to Oracle Cloud:
 # SSH into Oracle Cloud instance
 ssh ubuntu@<your-ip>
 
-# Check allocated cores (should be ≤ 3)
+# Check allocated cores (should be ≤ 2)
 nproc
 
-# Check total RAM (should be ≤ 20.89GB)
+# Check total RAM (should be ≤ 12GB)
 free -h | grep Mem | awk '{print $2}'
 
-# Check disk usage (should be < 174GB)
+# Check disk usage (should be < 100GB)
 df -h /
 
-# Check bandwidth (if vnstat installed, should be < 289GB/day)
+# Check bandwidth (if vnstat installed, should be < 170GB/day)
 vnstat -d
 vnstat -m
 ```
@@ -331,38 +331,38 @@ rm -rf /backups/old/*
 
 ## 📈 Recommended Resource Allocation
 
-### Current Allocation (85% Safety Limit)
-- **MongoDB:** 0.5 cores, 2GB RAM
-- **Backend:** 2 cores, 14GB RAM
-- **Frontend:** 0.5 cores, 4GB RAM
-- **Total:** 3 cores, 20GB RAM
-- **Headroom from safety limit:** 0 cores, 0.89GB RAM
-- **Headroom from true limit:** 1 core, 4GB RAM (15% buffer)
+### Current Allocation (50% Safety Limit)
+- **MongoDB:** 0.25 cores, 1GB RAM
+- **Backend:** 1.5 cores, 9GB RAM
+- **Frontend:** 0.25 cores, 2GB RAM
+- **Total:** 2 cores, 12GB RAM
+- **Headroom from safety limit:** 0 cores, 0GB RAM
+- **Headroom from true limit:** 2 cores, 12GB RAM (50% buffer)
 
 ### Alternative (External MongoDB)
-- **Backend:** 2 cores, 16GB RAM
-- **Frontend:** 1 core, 4GB RAM
+- **Backend:** 1.5 cores, 10GB RAM
+- **Frontend:** 0.5 cores, 2GB RAM
 - **MongoDB:** External (Atlas M0 Free Tier)
-- **Total:** 3 cores, 20GB RAM
+- **Total:** 2 cores, 12GB RAM
 - **Headroom:** Better performance, same safety margin
 
-**Current setup provides 15% safety buffer from Oracle's true limits.**
+**Current setup provides 50% safety buffer from Oracle's true limits.**
 
 ---
 
 ## 🎯 Summary
 
-| Resource | True Limit | Safety Limit (85%) | Allocated | Headroom from True Limit |
+| Resource | True Limit | Safety Limit (50%) | Allocated | Headroom from True Limit |
 |----------|------------|-------------------|-----------|-------------------------|
-| **CPU** | 4 cores | 3 cores | 3 cores | 1 core (25%) |
-| **RAM** | 24GB | 20.89GB | 20GB | 4GB (16.7%) |
-| **Storage** | 200GB | 174GB | ~150GB | 50GB (25%) |
-| **Bandwidth** | 10TB/mo | 8.7TB/mo | ~150GB/mo | 9.85TB (98.5%) |
+| **CPU** | 4 cores | 2 cores | 2 cores | 2 cores (50%) |
+| **RAM** | 24GB | 12GB | 12GB | 12GB (50%) |
+| **Storage** | 200GB | 100GB | ~80GB | 120GB (60%) |
+| **Bandwidth** | 10TB/mo | 5TB/mo | ~150GB/mo | 9.85TB (98.5%) |
 
 **Key Takeaway:**
-- **Safety limits** set to 85% of true limits (15% buffer)
+- **Safety limits** set to 50% of true limits (50% buffer)
 - **Docker allocation** uses most of safety limit but stays within buffer
-- **Total protection:** 15% headroom prevents accidental overages
+- **Total protection:** 50% headroom prevents accidental overages
 - **Monitoring** alerts at 70%, 85%, 95% of safety limits
 
 **Monitoring URL:** `https://fairmediator.com/api/monitoring/oracle-cloud`
