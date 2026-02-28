@@ -9,7 +9,7 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** February 27, 2026 (N8N automation + Hybrid schema + Deterministic scoring pipeline complete)
+**Last Updated:** February 28, 2026 (Oracle Cloud Always Free protection + N8N automation + Scoring pipeline complete)
 **Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 50%, No Users/Revenue)
 
 ---
@@ -280,6 +280,31 @@ git commit -m "Fixed bug (see details in previous message)"
 ---
 
 ## 🔄 Recent Major Changes
+
+### February 28, 2026: Oracle Cloud Always Free Resource Protection ✅
+
+**Comprehensive monitoring to prevent free tier overages:**
+- **Resource limits enforced** — CPU: 4 ARM cores max, RAM: 24GB max, Storage: 200GB max, Bandwidth: 10TB/month (340GB/day)
+- **Real-time monitoring** — `oracleCloudMonitor.js` tracks CPU, RAM, storage, bandwidth with system-level checks
+- **Alert thresholds** — WARNING (70%), ALERT (85%), CRITICAL (95%), EXCEEDED (100% blocks deployment)
+- **Docker resource limits** — MongoDB (0.5 cores, 2GB), Backend (2.5 cores, 16GB), Frontend (1 core, 4GB) = 4 cores, 22GB total (92% utilization, 2GB headroom)
+
+**API endpoints for safety:**
+- `GET /api/monitoring/oracle-cloud` — Real-time resource dashboard (CPU, RAM, storage, bandwidth usage + status)
+- `GET /api/monitoring/oracle-cloud/safe-to-deploy` — Pre-deployment check (blocks if resources exceeded, returns 429)
+
+**Protection mechanisms:**
+- **freeTierMonitor.js** — Unified monitoring for HuggingFace, Resend, Scraping, Axiom, **+ Oracle Cloud**
+- **docker-compose.yml** — Hard resource limits prevent accidental over-allocation
+- **Environment variables** — ORACLE_CPU_LIMIT, ORACLE_RAM_LIMIT, ORACLE_STORAGE_LIMIT, ORACLE_BANDWIDTH_LIMIT
+
+**Documentation:**
+- `ORACLE_CLOUD_LIMITS.md` — Comprehensive guide: limits, monitoring, alerts, deployment checklist, bandwidth tracking (vnstat), safety mechanisms
+- GitHub Actions integration — Can call `/safe-to-deploy` endpoint to block deployments if limits exceeded
+
+**Status:** ✅ Protected from Oracle Cloud Always Free overages
+
+---
 
 ### February 27, 2026: N8N Backend Automation + Hybrid Schema + Deterministic Scoring ✅
 
