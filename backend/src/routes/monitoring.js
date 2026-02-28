@@ -337,4 +337,55 @@ router.get('/mongodb/collections', authenticate, requireRole(['admin']), async (
   }
 });
 
+/**
+ * GET /api/monitoring/oracle-cloud
+ * Get Oracle Cloud Always Free resource usage
+ * Admin only - Critical for preventing free tier overages
+ */
+router.get('/oracle-cloud', authenticate, requireRole(['admin']), async (req, res) => {
+  try {
+    const oracleMonitor = require('../services/monitoring/oracleCloudMonitor');
+    const dashboard = await oracleMonitor.getResourceDashboard();
+
+    sendSuccess(res, dashboard);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get Oracle Cloud metrics',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/monitoring/oracle-cloud/safe-to-deploy
+ * Check if safe to deploy without exceeding Oracle Cloud limits
+ * Public (for CI/CD pipelines)
+ */
+router.get('/oracle-cloud/safe-to-deploy', async (req, res) => {
+  try {
+    const oracleMonitor = require('../services/monitoring/oracleCloudMonitor');
+    const result = await oracleMonitor.isSafeToDeploy();
+
+    if (!result.safe) {
+      return res.status(429).json({
+        safe: false,
+        error: 'Deployment blocked - Oracle Cloud resources at capacity',
+        reason: result.reason,
+        alerts: result.alerts,
+        recommendation: 'Wait for resource usage to decrease or upgrade to paid tier'
+      });
+    }
+
+    return res.json(result);
+  } catch (error) {
+    logger.error('Failed to check deployment safety', { error: error.message });
+    return res.status(500).json({
+      safe: false,
+      error: 'Failed to check Oracle Cloud limits',
+      recommendation: 'Deploy with caution or check manually'
+    });
+  }
+});
+
 module.exports = router;

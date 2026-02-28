@@ -39,6 +39,34 @@ const FREE_TIER_LIMITS = {
     monthly: parseInt(process.env.AXIOM_MONTHLY_LIMIT) || 170000, // 166MB ≈ 170k logs at 1KB/log
     daily: parseInt(process.env.AXIOM_DAILY_LIMIT) || 5666, // 170k/month ÷ 30 days
     name: 'Axiom Logging'
+  },
+  // Oracle Cloud Always Free Limits (Infrastructure Monitoring)
+  oracle_cpu: {
+    monthly: null, // Not cumulative - tracks current usage
+    daily: null,
+    limit: parseInt(process.env.ORACLE_CPU_LIMIT) || 4, // 4 ARM cores max
+    name: 'Oracle Cloud CPU',
+    type: 'realtime' // Real-time monitoring, not cumulative
+  },
+  oracle_ram: {
+    monthly: null,
+    daily: null,
+    limit: parseInt(process.env.ORACLE_RAM_LIMIT) || (24 * 1024), // 24GB in MB
+    name: 'Oracle Cloud RAM',
+    type: 'realtime'
+  },
+  oracle_storage: {
+    monthly: null,
+    daily: null,
+    limit: parseInt(process.env.ORACLE_STORAGE_LIMIT) || (200 * 1024), // 200GB in MB
+    name: 'Oracle Cloud Block Storage',
+    type: 'size'
+  },
+  oracle_bandwidth: {
+    monthly: parseInt(process.env.ORACLE_BANDWIDTH_LIMIT) || (10 * 1024), // 10TB in GB
+    daily: parseInt(process.env.ORACLE_BANDWIDTH_DAILY_LIMIT) || 340, // 10TB ÷ 30 days ≈ 340GB/day
+    name: 'Oracle Cloud Bandwidth',
+    type: 'transfer'
   }
 };
 
