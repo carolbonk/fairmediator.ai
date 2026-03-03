@@ -36,7 +36,7 @@
     "mammoth": "^1.11.0",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.5",
-    "multer": "^2.0.2",
+    "multer": "^2.1.0",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "pdf-parse": "^2.4.5",
