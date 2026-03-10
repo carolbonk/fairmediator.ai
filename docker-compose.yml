@@ -1,22 +1,27 @@
 version: '3.8'
 
+# Explicit project naming for isolation
+# This ensures FairMediator containers/networks/volumes are separate from other projects
+name: fairmediator
+
 services:
   # MongoDB database
   mongodb:
     image: mongo:7
-    container_name: fairmediator-mongodb
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator}-mongodb
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-changeme}
       MONGO_INITDB_DATABASE: fairmediator
+    # Only expose to host if needed for external tools (comment out for full isolation)
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"  # Bind to localhost only for security
     volumes:
-      - mongodb_data:/data/db
-      - mongodb_config:/data/configdb
+      - fairmediator_mongodb_data:/data/db
+      - fairmediator_mongodb_config:/data/configdb
     networks:
-      - fairmediator-network
+      - db-network  # Isolated database network
     # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
@@ -31,13 +36,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    read_only: true  # Read-only root filesystem
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
 
   # Backend API
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: fairmediator-backend
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator}-backend
     restart: unless-stopped
     depends_on:
       mongodb:
@@ -66,14 +77,16 @@ services:
       ORACLE_STORAGE_LIMIT: ${ORACLE_STORAGE_LIMIT:-204800}
       ORACLE_BANDWIDTH_LIMIT: ${ORACLE_BANDWIDTH_LIMIT:-10240}
       ORACLE_BANDWIDTH_DAILY_LIMIT: ${ORACLE_BANDWIDTH_DAILY_LIMIT:-340}
+    # Only expose to localhost for security
     ports:
-      - "5001:5001"
+      - "127.0.0.1:5001:5001"
     volumes:
-      - ./backend/src:/app/src
-      - ./backend/logs:/app/logs
-      - backend_node_modules:/app/node_modules
+      - ./backend/src:/app/src:ro  # Read-only source code
+      - ./backend/logs:/app/logs  # Writable logs directory
+      - fairmediator_backend_node_modules:/app/node_modules
     networks:
-      - fairmediator-network
+      - backend-network  # Can communicate with both frontend and database
+      - db-network
     # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
@@ -89,22 +102,30 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE  # Only allow binding to ports
 
   # Frontend application
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    container_name: fairmediator-frontend
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator}-frontend
     restart: unless-stopped
     depends_on:
       - backend
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
+    # Expose to host or use reverse proxy
     ports:
-      - "3000:8080"
+      - "${FRONTEND_PORT:-3000}:8080"
     networks:
-      - fairmediator-network
+      - backend-network  # Can communicate with backend
     # ORACLE CLOUD ALWAYS FREE LIMITS: Set to 50% for safety (2 cores, 12GB total)
     deploy:
       resources:
@@ -120,15 +141,46 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true  # Nginx serves static files, no writes needed
+    tmpfs:
+      - /var/cache/nginx:noexec,nosuid,size=50m
+      - /var/run:noexec,nosuid,size=10m
+      - /tmp:noexec,nosuid,size=50m
 
 volumes:
-  mongodb_data:
+  # Project-scoped volumes with explicit naming for isolation
+  fairmediator_mongodb_data:
     driver: local
-  mongodb_config:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator}_mongodb_data
+  fairmediator_mongodb_config:
     driver: local
-  backend_node_modules:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator}_mongodb_config
+  fairmediator_backend_node_modules:
     driver: local
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator}_backend_node_modules
 
 networks:
-  fairmediator-network:
+  # Segmented networks for defense in depth
+  # Database network - only backend can access
+  db-network:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator}_db_network
     driver: bridge
+    internal: false  # Set to true if DB should never reach internet
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+  # Backend network - frontend and backend communicate here
+  backend-network:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator}_backend_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
