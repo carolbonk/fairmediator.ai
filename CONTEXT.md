@@ -712,10 +712,12 @@ See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-
   - ✅ Frontend: NotesSection component with create/update/delete logic
   - 🔄 **TODO(human):** Notes list UI display (dark neumorphic cards, edit mode, author/date)
   - Revenue Impact: Reduces churn 30% (sticky feature, switching cost)
-- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **After #17**
-  - Schema: Workspace model, shared lists (many-to-many)
-  - Backend: Permission inheritance, member management
-  - Frontend: Workspace switcher, invite flow
+- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **IN PROGRESS: 30% complete**
+  - ✅ Schema: Workspace model created (models/Workspace.js) - members, roles, permissions, billing
+  - ✅ Schema: SharedList model created (models/SharedList.js) - vetted/blacklist/favorites lists
+  - 🔄 **NEXT:** Backend API routes (routes/workspaces.js + routes/sharedLists.js)
+  - ⏸️ Stopped at: Models complete, routes NOT created yet
+  - TODO: Frontend workspace switcher, invite flow, list management UI
   - Revenue Impact: +40% ARPU via team plans ($199/mo base + $29/user)
 - [ ] #19 - White-Label Reports (Client-Facing Conflict Analysis) (2 days)
 - [ ] #18 - Custom Dashboards + Benchmark Analytics (4 days)
