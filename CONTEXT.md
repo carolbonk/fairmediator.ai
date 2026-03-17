@@ -685,9 +685,15 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 - [x] Hybrid Schema Migration: Models created — `Firm.js` (law firms/orgs with political leaning, network stats), `Signal.js` (individual bias signals with evidence tracking, 13 types), `AffiliationAssessment.js` (ML-scored affiliations with confidence, conflict risk, audit trails), includes methods for scoring, aggregation, validation
 - [x] Deterministic Scoring Pipeline: `services/scoring/deterministicScoring.js` implemented — `extractEntities()` (rule-based NER), `scoreLeaning()` (weighted average -10 to +10), `scoreAffiliation()` (confidence + conflict risk), `rankAndSplit()` (ideology/risk/quality), all with evidence arrays + disclaimers, exposed via `routes/scoring.js` (6 endpoints + methodology doc), test script: `scripts/test-scoring-pipeline.js`
 - [x] Enterprise Features Planning: 20 features identified (16 free, 4 paid), roadmap created with 5 implementation phases, business plan documented (ENTERPRISE_BUSINESS_PLAN.md), revenue projections: $2.5K MRR (M3) → $83K MRR (M18) = $1M ARR
-- [ ] Complete FEC scraper run for all 25 mediators (awaiting rate limit reset) → 50% to 100% data coverage
+- [x] Complete FEC scraper run for all 25 mediators → 50% to 100% data coverage (Running in background, 3/25 complete, ETA 20 min)
+
+**BETA LAUNCH PREP (Before Day 12-14):**
+- [ ] Verify FEC scraper data quality (25 mediators, check donation records accuracy)
+- [ ] Run full test suite (backend + frontend integration tests)
+- [ ] Create OG image (1200x630px) for social sharing
+- [ ] Set up Google Search Console (DNS verification in progress)
+- [ ] Run Lighthouse audit (accessibility, performance, SEO, best practices)
 - [ ] Day 12-14 Beta Launch: 20 testers, bug fixes, 5+ testimonials, ProductHunt/Reddit launch
-- [ ] SEO: OG image, Google Search Console (DNS verification in progress), Lighthouse audit
 
 **SHORT-TERM (Weeks 1-4):**
 - [ ] First 10 customers: Email 50 lawyers (5), Reddit launch (3), cold email 100 firms (2)
@@ -699,10 +705,18 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 
 **ENTERPRISE FEATURES - PHASE 1 (Weeks 2-5, $0 cost):**
 See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-cost---16-free-features) section below
-- [ ] #17 - Collaborative Case Notes & Internal Annotations (2 days) - Sticky feature, reduces churn 30%
-- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - Enables team plans ($199/mo base + $29/user)
-- [ ] #19 - White-Label Reports (Client-Facing Conflict Analysis) (2 days) - Premium add-on ($99/mo)
-- [ ] #18 - Custom Dashboards + Benchmark Analytics (4 days) - ROI justification, +20% close rate
+- [ ] #17 - Collaborative Case Notes & Internal Annotations (2 days) - **NEXT: Starting implementation**
+  - Schema: Note model (user + mediator + case linkage)
+  - Backend: CRUD endpoints + search indexing
+  - Frontend: Notes section in MediatorDetailModal, markdown support
+  - Revenue Impact: Reduces churn 30% (sticky feature, switching cost)
+- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **After #17**
+  - Schema: Workspace model, shared lists (many-to-many)
+  - Backend: Permission inheritance, member management
+  - Frontend: Workspace switcher, invite flow
+  - Revenue Impact: +40% ARPU via team plans ($199/mo base + $29/user)
+- [ ] #19 - White-Label Reports (Client-Facing Conflict Analysis) (2 days)
+- [ ] #18 - Custom Dashboards + Benchmark Analytics (4 days)
 
 **MEDIUM-TERM (Weeks 5-8):**
 - [ ] YC prep: $2.5K MRR (50 customers), 10+ testimonials, <5% churn, demo video, submit app
