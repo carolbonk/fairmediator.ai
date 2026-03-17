@@ -357,4 +357,35 @@ export const revokeApiKey = async (id) => {
   return response.data;
 };
 
+// Collaborative Notes API
+export const getNotes = async (params = {}) => {
+  const response = await api.get('/notes', { params });
+  return response.data;
+};
+
+export const createNote = async (noteData) => {
+  const response = await api.post('/notes', noteData);
+  return response.data;
+};
+
+export const updateNote = async (id, updates) => {
+  const response = await api.patch(`/notes/${id}`, updates);
+  return response.data;
+};
+
+export const deleteNote = async (id) => {
+  const response = await api.delete(`/notes/${id}`);
+  return response.data;
+};
+
+export const searchNotes = async (query) => {
+  const response = await api.get('/notes', { params: { q: query } });
+  return response.data;
+};
+
+export const getNoteStats = async () => {
+  const response = await api.get('/notes/stats');
+  return response.data;
+};
+
 export default api;

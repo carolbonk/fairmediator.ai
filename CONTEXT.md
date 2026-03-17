@@ -705,10 +705,12 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 
 **ENTERPRISE FEATURES - PHASE 1 (Weeks 2-5, $0 cost):**
 See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-cost---16-free-features) section below
-- [ ] #17 - Collaborative Case Notes & Internal Annotations (2 days) - **NEXT: Starting implementation**
-  - Schema: Note model (user + mediator + case linkage)
-  - Backend: CRUD endpoints + search indexing
-  - Frontend: Notes section in MediatorDetailModal, markdown support
+- [ ] #17 - Collaborative Case Notes & Internal Annotations (2 days) - **IN PROGRESS: 80% complete**
+  - ✅ Schema: Note model with full-text search, tags, team sharing (models/Note.js)
+  - ✅ Backend: 6 CRUD endpoints (GET/POST/PATCH/DELETE /api/notes, search, stats) - routes/notes.js
+  - ✅ Frontend: API service integration (6 methods in services/api.js)
+  - ✅ Frontend: NotesSection component with create/update/delete logic
+  - 🔄 **TODO(human):** Notes list UI display (dark neumorphic cards, edit mode, author/date)
   - Revenue Impact: Reduces churn 30% (sticky feature, switching cost)
 - [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **After #17**
   - Schema: Workspace model, shared lists (many-to-many)
