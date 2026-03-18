@@ -15,6 +15,11 @@ const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFo
 const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
 const { invalidateMediatorCache } = require('../config/cache');
 const logger = require('../config/logger');
+const {
+  linkUserToMediatorProfile,
+  createMediatorProfile,
+  getMediatorProfileByUserId
+} = require('../services/mediatorLinkingService');
 
 /**
  * GET /api/mediators
@@ -663,6 +668,108 @@ router.post('/:id/ideology-opt-out', authenticate, asyncHandler(async (req, res)
       ideologyOptOutDate: mediator.ideologyOptOutDate
     }
   });
+}));
+
+/**
+ * POST /api/mediators/link-profile
+ * Link current user to a mediator profile (by email match)
+ * Requires authentication and mediator account type
+ */
+router.post('/link-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can link to mediator profiles');
+  }
+
+  const result = await linkUserToMediatorProfile(req.user._id);
+
+  if (!result.success) {
+    return sendError(res, 400, result.message);
+  }
+
+  sendSuccess(res, {
+    message: result.message,
+    mediator: {
+      id: result.mediator._id,
+      name: result.mediator.name,
+      email: result.mediator.email,
+      specializations: result.mediator.specializations,
+      yearsExperience: result.mediator.yearsExperience,
+      rating: result.mediator.rating
+    }
+  });
+}));
+
+/**
+ * GET /api/mediators/my-profile
+ * Get the mediator profile for the current user
+ * Requires authentication and mediator account type
+ */
+router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can access mediator profiles');
+  }
+
+  const mediator = await getMediatorProfileByUserId(req.user._id);
+
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator profile');
+  }
+
+  sendSuccess(res, {
+    mediator: {
+      id: mediator._id,
+      name: mediator.name,
+      email: mediator.email,
+      bio: mediator.bio,
+      specializations: mediator.specializations,
+      yearsExperience: mediator.yearsExperience,
+      rating: mediator.rating,
+      totalMediations: mediator.totalMediations,
+      location: mediator.location,
+      dataQuality: mediator.dataQuality,
+      isVerified: mediator.isVerified
+    }
+  });
+}));
+
+/**
+ * POST /api/mediators/create-profile
+ * Create a new mediator profile for the current user
+ * Requires authentication and mediator account type
+ */
+router.post('/create-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can create mediator profiles');
+  }
+
+  const profileData = {
+    name: req.body.name,
+    bio: req.body.bio,
+    specializations: req.body.specializations,
+    yearsExperience: req.body.yearsExperience,
+    barAdmissions: req.body.barAdmissions,
+    location: req.body.location,
+    phone: req.body.phone,
+    website: req.body.website
+  };
+
+  const result = await createMediatorProfile(req.user._id, profileData);
+
+  if (!result.success) {
+    return sendError(res, 400, result.message);
+  }
+
+  sendSuccess(res, {
+    message: result.message,
+    mediator: {
+      id: result.mediator._id,
+      name: result.mediator.name,
+      email: result.mediator.email
+    }
+  }, 201);
 }));
 
 module.exports = router;
