@@ -71,3 +71,6 @@ temp/
 .ipynb_checkpoints/
 notebooks/*.ipynb
 **/.ipynb_checkpoints/
+
+# Local Netlify folder
+.netlify
