@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "message": "Data population complete! Loaded 4 with FEC data, 6 with lobbying data.",
+  "progress": {
+    "mediators": 25,
+    "total": 25
+  },
+  "stats": {
+    "fec": {
+      "found": 4,
+      "donations": 229
+    },
+    "lda": {
+      "found": 6,
+      "filings": 100
+    }
+  },
+  "lastUpdated": "2026-03-17T19:56:34.553Z"
+}
