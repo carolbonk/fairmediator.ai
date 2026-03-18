@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** March 17, 2026 (Enterprise roadmap + Oracle Cloud monitoring + N8N automation complete)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 50%, No Users/Revenue)
+**Last Updated:** March 18, 2026 (Account type system + role-based dashboards + security fixes complete)
+**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 60%, No Users/Revenue)
 
 ---
 
@@ -19,12 +19,12 @@
 **Current State:** Technically ready, commercially unproven | 0 users | $0 revenue | $0 cost (free tier)
 
 **Completion:**
-- ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation)
-- ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, Lighthouse fixes) - Missing: mobile device testing
+- ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation, account type system)
+- ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, role-based dashboards, Lighthouse fixes) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
-- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment)
-- 🟡 Data 50% (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
+- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities)
+- 🟡 Data 60% (45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, 0% FEC donations due to rate limit + persistence bug)
 - ❌ Monetization deferred (Stripe exists, not needed for MVP)
 - ❌ GTM 0% executed
 
@@ -280,6 +280,69 @@ git commit -m "Fixed bug (see details in previous message)"
 ---
 
 ## 🔄 Recent Major Changes
+
+### March 18, 2026 (Evening): Account Type System + Role-Based Dashboards + Security Fixes ✅
+
+**User account classification system implemented:**
+
+**1. Account Type Field (User Model) ✅**
+- Added `accountType` field to User model: `['mediator', 'attorney', 'party']` (required for new users)
+- Separate from `role` field (permissions: user/moderator/admin) - clean separation of concerns
+- Performance indexes: single `{ accountType: 1 }` + compound `{ accountType: 1, subscriptionTier: 1 }`
+- JWT tokens now include `accountType` for role-based authorization
+- Validation schemas updated in `validation.js` for registration + login
+
+**2. Three Role-Based Dashboards ✅**
+- **MediatorDashboard** (`/dashboard`) - Profile views, ratings, cases, success rate, profile completion alerts
+- **AttorneyDashboard** (`/dashboard`) - Search activity, saved mediators, recent searches, conflict checker tools
+- **PartyDashboard** (`/dashboard`) - Educational content, recommended mediators, mediation process guide
+- **DashboardPage** router - Automatically routes users to correct dashboard based on `user.accountType`
+
+**3. Mediator Profile Linking System ✅**
+- `userId` field added to Mediator model (references User, sparse index for backward compatibility)
+- `mediatorLinkingService.js` - Four methods: `linkUserToMediatorProfile()` (email matching), `createMediatorProfile()`, `getMediatorProfileByUserId()`, `unlinkMediatorProfile()`
+- Auto-linking on registration - When `accountType === 'mediator'`, system attempts email-based profile linking
+- API endpoints: `POST /api/mediators/link-profile`, `GET /api/mediators/my-profile`, `POST /api/mediators/create-profile`
+
+**4. Database Migration System ✅**
+- `migrate-add-accountType.js` script - Assigns `accountType` to existing users (mediators with linked profiles → 'mediator', others → 'party')
+- Supports `--dry-run` flag for safe preview before applying changes
+- Detailed logging and summary report (total users, mediators found, parties assigned, errors)
+- `MIGRATION_GUIDE.md` - Complete documentation: backup procedures, rollback plan, verification steps, troubleshooting
+
+**5. User Self-Selection Flow (Production Migration) ✅**
+- `AccountTypeSelector.jsx` modal - Beautiful selection UI with role descriptions, shows on first login for legacy users
+- `PUT /api/auth/select-account-type` endpoint - One-time account type assignment (cannot change after selection)
+- Integrated into `ProtectedRoute` - Automatically displays modal for users without `accountType`
+- Auto-links mediator profiles on selection
+
+**6. Frontend Updates ✅**
+- `LoginForm.jsx` + `RegisterForm.jsx` - Role selection UI added (Mediator/Attorney/Party pills)
+- `AuthContext.jsx` - Updated `login()` and `register()` to accept `accountType` parameter
+- Logo updates - Replaced shield icon with FairMediator logo in WelcomePopup and LoginForm
+
+**7. Security Vulnerability Fixes ✅**
+- Fixed 5 vulnerabilities (3 high, 2 moderate) by updating dependencies
+- **High:** multer (DoS), undici (WebSocket/HTTP smuggling), flatted (DoS recursion)
+- **Moderate:** dompurify (XSS), yauzl (off-by-one error)
+- Updated via `npm update multer dompurify flatted undici yauzl`
+- Verified: `npm audit` now shows 0 vulnerabilities
+- Committed: `package-lock.json` with 16 package updates
+
+**Documentation Created:**
+- `ACCOUNT_TYPE_IMPLEMENTATION.md` - Full technical documentation (architecture, API endpoints, security, performance, testing, rollback plan)
+- `backend/MIGRATION_GUIDE.md` - Step-by-step migration guide (options, procedures, verification, troubleshooting)
+
+**Files Modified/Created (7 commits):**
+- Backend: `User.js`, `Mediator.js`, `validation.js`, `auth.js`, `mediators.js`, `mediatorLinkingService.js`, `migrate-add-accountType.js`
+- Frontend: `AuthContext.jsx`, `LoginForm.jsx`, `RegisterForm.jsx`, `AccountTypeSelector.jsx`, `ProtectedRoute.jsx`, `DashboardPage.jsx`, `MediatorDashboard.jsx`, `AttorneyDashboard.jsx`, `PartyDashboard.jsx`, `WelcomePopup.jsx`
+- Root: `package-lock.json` (security fixes)
+
+**Performance:** Query complexity O(log n) with indexed `accountType` field, compound indexes for common patterns, sparse indexes save space on optional fields
+
+**Security:** Account type verification on login, JWT includes accountType, validation at API layer, one-time selection prevents unauthorized changes
+
+---
 
 ### March 18, 2026: Beta Launch Prep - 4 of 6 Tasks Complete ✅
 
@@ -1013,11 +1076,11 @@ See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-
 ---
 
 ### 🧩 **BACKEND/FRONTEND STATUS**
-**Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring)
-**Frontend:** 100% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 5 premium tools, Lighthouse optimized) - Missing: mobile device testing
-**Infrastructure:** 100% ✅ (Docker containers, CI/CD pipeline, GitHub Actions, security scanning, production deployment ready)
+**Backend:** 100% ✅ (Graph DB, 4 scrapers, ML predictor R²=0.98, 15+ endpoints, free tier monitoring, account type system, mediator profile linking, 0 security vulnerabilities)
+**Frontend:** 100% ✅ (All pages, modals, conflict UI, lobbying UI, batch checker, i18n, responsive popups, 5 premium tools, role-based dashboards, Lighthouse optimized) - Missing: mobile device testing
+**Infrastructure:** 100% ✅ (Docker containers, CI/CD pipeline, GitHub Actions, security scanning, production deployment ready, vulnerability-free dependencies)
 **Monetization:** Infrastructure exists, not configured (Stripe service code ready, checkout/billing/gates TODO)
-**Data:** 50% 🟡 (25 mediators, Senate LDA working, FEC rate-limited awaiting reset)
+**Data:** 60% 🟡 (45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, 0% FEC donations - rate limit + persistence bug)
 
 ---
 
