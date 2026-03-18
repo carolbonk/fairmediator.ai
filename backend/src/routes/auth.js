@@ -536,4 +536,74 @@ router.post('/resend-verification', emailVerificationLimiter, authenticate, asyn
   sendSuccess(res, null, 200, 'Verification email sent. Please check your inbox.');
 }));
 
+/**
+ * PUT /api/auth/select-account-type
+ * Allow users without accountType to select it
+ * Used for migrating legacy users
+ */
+router.put('/select-account-type', authenticate, asyncHandler(async (req, res) => {
+  const { accountType } = req.body;
+
+  // Validate account type
+  if (!accountType || !['mediator', 'attorney', 'party'].includes(accountType)) {
+    return sendValidationError(res, 'Account type must be mediator, attorney, or party');
+  }
+
+  // Only allow if user doesn't already have an accountType
+  if (req.user.accountType) {
+    return sendError(res, 400, 'Account type already set', {
+      message: 'You cannot change your account type. Please contact support if needed.'
+    });
+  }
+
+  // Update user account type
+  req.user.accountType = accountType;
+  await req.user.save();
+
+  // If mediator, try to auto-link profile
+  let mediatorProfile = null;
+  if (accountType === 'mediator') {
+    const linkResult = await linkUserToMediatorProfile(req.user._id);
+    if (linkResult.success) {
+      mediatorProfile = linkResult.mediator;
+      logger.info('Auto-linked mediator profile on account type selection', {
+        userId: req.user._id,
+        mediatorId: mediatorProfile._id
+      });
+    }
+  }
+
+  await UsageLog.create({
+    user: req.user._id,
+    eventType: 'account_type_selected',
+    metadata: {
+      accountType,
+      mediatorLinked: !!mediatorProfile
+    }
+  });
+
+  const responseData = {
+    user: {
+      id: req.user._id,
+      email: req.user.email,
+      name: req.user.name,
+      accountType: req.user.accountType,
+      subscriptionTier: req.user.subscriptionTier,
+      emailVerified: req.user.emailVerified,
+      role: req.user.role
+    },
+    message: 'Account type set successfully'
+  };
+
+  if (mediatorProfile) {
+    responseData.mediatorProfile = {
+      id: mediatorProfile._id,
+      name: mediatorProfile.name,
+      linked: true
+    };
+  }
+
+  sendSuccess(res, responseData, 200, 'Account type set successfully');
+}));
+
 module.exports = router;
