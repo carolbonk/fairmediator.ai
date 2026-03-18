@@ -1,6 +1,6 @@
 [build]
   publish = "frontend/dist"
-  command = "npm ci --include=dev && npm run build:frontend && cd netlify/functions && npm ci"
+  command = "cd frontend && npm ci && npm run build"
   functions = "netlify/functions"
 
 [functions]

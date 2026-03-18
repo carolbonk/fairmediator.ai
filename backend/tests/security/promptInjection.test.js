@@ -19,7 +19,7 @@ describe('Prompt Injection Defense System', () => {
 
       attacks.forEach(attack => {
         const result = promptDefense.sanitizeInput(attack);
-        expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+        expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
         expect(result.wasModified).toBe(true);
       });
     });
@@ -34,7 +34,7 @@ describe('Prompt Injection Defense System', () => {
 
       attacks.forEach(attack => {
         const result = promptDefense.sanitizeInput(attack);
-        expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+        expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
       });
     });
 
@@ -48,7 +48,7 @@ describe('Prompt Injection Defense System', () => {
 
       attacks.forEach(attack => {
         const result = promptDefense.sanitizeInput(attack);
-        expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+        expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
       });
     });
 
@@ -62,7 +62,7 @@ describe('Prompt Injection Defense System', () => {
 
       attacks.forEach(attack => {
         const result = promptDefense.sanitizeInput(attack);
-        expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+        expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
       });
     });
 
@@ -86,7 +86,7 @@ More normal text`;
 
       attacks.forEach(attack => {
         const result = promptDefense.sanitizeInput(attack);
-        expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+        expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
       });
     });
   });
@@ -270,7 +270,7 @@ He specializes in business disputes.`;
 
       const result = promptDefense.sanitizeInput(userMessage);
 
-      expect(result.threats).toContain(expect.stringMatching(/attack_pattern/));
+      expect(result.threats).toContainEqual(expect.stringMatching(/attack_pattern/));
       expect(result.wasModified).toBe(true);
     });
 
