@@ -81,6 +81,13 @@ const schemas = {
         'string.min': 'Name must be at least 2 characters long',
         'string.max': 'Name must not exceed 100 characters',
         'string.pattern.base': 'Name can only contain letters, spaces, hyphens, and apostrophes'
+      }),
+    accountType: Joi.string()
+      .valid('mediator', 'attorney', 'party')
+      .required()
+      .messages({
+        'any.only': 'Account type must be mediator, attorney, or party',
+        'any.required': 'Please select an account type'
       })
   }),
 
@@ -89,7 +96,13 @@ const schemas = {
     email: emailSchema,
     password: Joi.string().required().messages({
       'any.required': 'Password is required'
-    })
+    }),
+    accountType: Joi.string()
+      .valid('mediator', 'attorney', 'party')
+      .optional()
+      .messages({
+        'any.only': 'Account type must be mediator, attorney, or party'
+      })
   }),
 
   // Password Reset Request
