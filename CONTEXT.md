@@ -812,7 +812,11 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
   - [ ] Update A record in IONOS DNS to point to Netlify IP: 75.2.60.5 (currently 74.208.236.108)
   - [ ] Verify in Google Search Console using TXT method OR HTML tag method (https://search.google.com/search-console)
   - [ ] **After verification succeeds:** Activate IONOS Domain Guard for security (protects against unauthorized transfers, DNS changes, domain hijacking)
-- [ ] Run Lighthouse audit (accessibility, performance, SEO, best practices)
+- [x] Run Lighthouse audit (accessibility, performance, SEO, best practices) - **COMPLETED March 18 Evening**: Dev scores (55/80/96/100) → Production scores (77/86/100/100). Fixed 2 missing aria-labels, improved color contrast (text-white/40 → text-white/60), added mobile touch target rules (min 48x48px). LCP improved from 36.7s (dev) → 5.7s (prod), FCP 14.7s → 2.1s.
+- [ ] Priority 2 Performance Optimizations (deferred to post-launch):
+  - [ ] Tree-shake react-icons: Import specific icons instead of full library (saves 1.3MB)
+  - [ ] Conditional Sentry loading: Only load in production (saves 895KB)
+  - [ ] Enable compression on Netlify: Add gzip/brotli headers in netlify.toml (saves 4.5MB transfer)
 - [ ] Start Beta Launch planning: Draft email list for 20 beta testers, create testimonial collection form
 
 **TOMORROW (March 19):**
