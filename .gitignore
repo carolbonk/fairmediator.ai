@@ -1,4 +1,12 @@
-# Dependencies
+# ==============================================================================
+# FairMediator .gitignore
+# ==============================================================================
+# Organized by category for easy navigation and maintenance
+# ==============================================================================
+
+# ==============================================================================
+# DEPENDENCIES
+# ==============================================================================
 node_modules/
 */node_modules/
 
@@ -12,7 +20,10 @@ venv/
 env/
 automation/venv/
 
-# Environment variables - NEVER commit these
+# ==============================================================================
+# ENVIRONMENT VARIABLES - NEVER COMMIT
+# ==============================================================================
+# Contains secrets, API keys, database credentials
 .env
 .env.local
 .env.*.local
@@ -23,23 +34,33 @@ automation/venv/
 **/.env
 automation/.env
 
-# Build outputs
+# ==============================================================================
+# BUILD ARTIFACTS
+# ==============================================================================
 frontend/dist/
 frontend/build/
 backend/dist/
+lighthouse-report*.html
+lighthouse-report*.json
 
-# IDE
+# ==============================================================================
+# IDE AND EDITOR
+# ==============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
+# ==============================================================================
+# OPERATING SYSTEM
+# ==============================================================================
 .DS_Store
 Thumbs.db
 
-# Logs
+# ==============================================================================
+# LOGS
+# ==============================================================================
 *.log
 logs/
 backend/logs/
@@ -47,30 +68,46 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Database
+# ==============================================================================
+# DATABASE FILES
+# ==============================================================================
 *.sqlite
 *.db
 
-# Scraped data (sensitive)
+# ==============================================================================
+# SENSITIVE DATA
+# ==============================================================================
+# Scraped mediator data (may contain PII)
 automation/scrapers/data/
 scraped_data/
 
-# Testing
-coverage/
-.nyc_output/
-
-# Temporary files
-tmp/
-temp/
-
-# Deployment (we don't use Vercel)
-.vercel/
-
-# Jupyter Notebooks (may contain sensitive data/API keys)
+# Jupyter notebooks (may contain API keys in cells)
 *.ipynb
 .ipynb_checkpoints/
 notebooks/*.ipynb
 **/.ipynb_checkpoints/
 
-# Local Netlify folder
-.netlify
+# ==============================================================================
+# TESTING
+# ==============================================================================
+coverage/
+.nyc_output/
+
+# ==============================================================================
+# TEMPORARY FILES
+# ==============================================================================
+tmp/
+temp/
+
+# ==============================================================================
+# DEPLOYMENT AND INFRASTRUCTURE
+# ==============================================================================
+# Docker backups (contain sensitive database dumps)
+backups/
+
+# Traefik TLS certificates (environment-specific)
+config/traefik/acme.json
+
+# Deployment platforms (not using these)
+.vercel/
+.netlify/

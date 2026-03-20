@@ -1,5 +1,7 @@
 # Docker Isolation & Security Strategy
 
+> **Documentation:** [README_DOCKER.md](./README_DOCKER.md) - Docker documentation index
+
 This document explains how FairMediator uses Docker's isolation features to run securely alongside other Docker projects on the same machine.
 
 ## Overview

@@ -1,5 +1,7 @@
 # Docker Quick Start Guide
 
+> **Documentation:** [README_DOCKER.md](./README_DOCKER.md) - Docker documentation index
+
 Quick reference for running FairMediator with proper isolation.
 
 ## Starting the Project
