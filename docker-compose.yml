@@ -53,7 +53,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-changeme}
       MONGO_INITDB_DATABASE: fairmediator
     ports:
-      - "127.0.0.1:27017:27017"
+      - "127.0.0.1:4030:27017"  # MongoDB (FairMediator port range: 4000-4099)
     volumes:
       - fairmediator_mongodb_data:/data/db
       - fairmediator_mongodb_config:/data/configdb
@@ -133,7 +133,7 @@ services:
       ORACLE_BANDWIDTH_LIMIT: ${ORACLE_BANDWIDTH_LIMIT:-10240}
       ORACLE_BANDWIDTH_DAILY_LIMIT: ${ORACLE_BANDWIDTH_DAILY_LIMIT:-340}
     ports:
-      - "127.0.0.1:5001:5001"
+      - "127.0.0.1:4001:5001"  # Backend API (FairMediator port range: 4000-4099)
     volumes:
       - ./backend/src:/app/src:ro  # Read-only source code
       - ./backend/logs:/app/logs  # Writable logs directory
@@ -194,7 +194,7 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
     ports:
-      - "${FRONTEND_PORT:-3000}:8080"
+      - "127.0.0.1:${FRONTEND_PORT:-4000}:8080"  # Frontend (FairMediator port range: 4000-4099)
     networks:
       - backend-network  # Can communicate with backend
     labels:

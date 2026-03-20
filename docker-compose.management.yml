@@ -26,7 +26,7 @@ services:
     ports:
       - "80:80"      # HTTP
       - "443:443"    # HTTPS
-      - "127.0.0.1:8080:8080"  # Dashboard (localhost only)
+      - "127.0.0.1:4020:8080"  # Traefik Dashboard (FairMediator port range: 4000-4099)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config/traefik:/etc/traefik
@@ -86,7 +86,7 @@ services:
     container_name: fairmediator-prometheus
     restart: unless-stopped
     ports:
-      - "127.0.0.1:9090:9090"  # Prometheus UI (localhost only)
+      - "127.0.0.1:4021:9090"  # Prometheus (FairMediator port range: 4000-4099)
     volumes:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -123,7 +123,7 @@ services:
     container_name: fairmediator-grafana
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3001:3000"  # Grafana UI (localhost only)
+      - "127.0.0.1:4022:3000"  # Grafana (FairMediator port range: 4000-4099)
     volumes:
       - grafana_data:/var/lib/grafana
       - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -170,7 +170,7 @@ services:
     container_name: fairmediator-cadvisor
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8082:8080"  # cAdvisor UI (localhost only)
+      - "127.0.0.1:4023:8080"  # cAdvisor (FairMediator port range: 4000-4099)
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -206,7 +206,7 @@ services:
     container_name: fairmediator-node-exporter
     restart: unless-stopped
     ports:
-      - "127.0.0.1:9100:9100"  # Metrics endpoint (localhost only)
+      - "127.0.0.1:4024:9100"  # Node Exporter (FairMediator port range: 4000-4099)
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro

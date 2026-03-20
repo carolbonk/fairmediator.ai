@@ -19,7 +19,11 @@ When this skill is invoked, perform the following steps:
 
 **Read quota status endpoint:**
 ```bash
-curl http://localhost:5001/api/monitoring/quota-status
+# Development (port 4011)
+curl http://localhost:4011/api/monitoring/quota-status
+
+# Production (port 4001)
+# curl http://localhost:4001/api/monitoring/quota-status
 ```
 
 Parse the response and extract:
@@ -33,7 +37,11 @@ Parse the response and extract:
 
 **Read Oracle Cloud monitoring endpoint:**
 ```bash
-curl http://localhost:5001/api/monitoring/oracle-cloud
+# Development (port 4011)
+curl http://localhost:4011/api/monitoring/oracle-cloud
+
+# Production (port 4001)
+# curl http://localhost:4001/api/monitoring/oracle-cloud
 ```
 
 Parse the response and extract:
@@ -185,8 +193,8 @@ See full report: logs/quota-reports/quota-report-[timestamp].md
 ## Error Handling
 
 If backend is not running:
-1. Print: "❌ Backend not running at http://localhost:5001"
-2. Provide instructions: "Start backend: cd backend && npm start"
+1. Print: "❌ Backend not running at http://localhost:4011 (dev) or http://localhost:4001 (prod)"
+2. Provide instructions: "Start backend: docker-compose -f docker-compose.dev.yml up -d backend"
 3. Exit gracefully
 
 If endpoints return errors:
@@ -258,7 +266,7 @@ claude-code skill quota-monitor
 - **Run frequency:** Every 12 hours recommended (6 AM, 6 PM)
 - **Retention:** Keep last 30 days of reports (auto-cleanup old reports)
 - **Alerts:** Only print to console if WARNING or CRITICAL
-- **Backend requirement:** Backend must be running on http://localhost:5001
+- **Backend requirement:** Backend must be running on http://localhost:4011 (dev) or http://localhost:4001 (prod). See PORT_ALLOCATION.md for complete port mapping.
 
 ---
 

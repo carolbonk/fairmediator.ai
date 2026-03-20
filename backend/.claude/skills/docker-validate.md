@@ -81,10 +81,16 @@ Ensure Docker configuration is valid and builds succeed before committing. Preve
 
 5. **Check Port Availability**
    ```bash
-   # Check if ports 5001, 3000, 27017 are available
-   lsof -i :5001 || echo "Port 5001 available"
-   lsof -i :3000 || echo "Port 3000 available"
-   lsof -i :27017 || echo "Port 27017 available"
+   # Check if FairMediator ports (4000-4099 range) are available
+   # Production: 4000 (frontend), 4001 (backend), 4030 (MongoDB)
+   # Development: 4010 (frontend), 4011 (backend), 4030 (MongoDB)
+   lsof -i :4000 || echo "Port 4000 (frontend prod) available"
+   lsof -i :4001 || echo "Port 4001 (backend prod) available"
+   lsof -i :4010 || echo "Port 4010 (frontend dev) available"
+   lsof -i :4011 || echo "Port 4011 (backend dev) available"
+   lsof -i :4030 || echo "Port 4030 (MongoDB) available"
+   # Check entire range for conflicts
+   lsof -i :4000-4099 | grep LISTEN || echo "No FairMediator ports in use"
    ```
 
 ## Example Output
@@ -97,18 +103,23 @@ Ensure Docker configuration is valid and builds succeed before committing. Preve
 ✅ Build contexts exist:
    - ./backend → backend/Dockerfile
    - ./frontend → frontend/Dockerfile
-⚠️  Port 27017 already in use (MongoDB running locally)
+✅ All FairMediator ports (4000-4099) available:
+   - 4000: Frontend (production)
+   - 4001: Backend API (production)
+   - 4010: Frontend (development)
+   - 4011: Backend API (development)
+   - 4030: MongoDB
 ✅ Volume mounts valid:
    - ./backend/src → /app/src
    - ./backend/logs → /app/logs
 ✅ Network configuration valid
 ✅ Health checks configured for all services
 
-WARNINGS:
-- Consider stopping local MongoDB to avoid port conflict
-  OR change docker-compose.yml to use port 27018
+PORT ALLOCATION:
+- Using standardized 4000-4099 range (see PORT_ALLOCATION.md)
+- No conflicts with common dev tools (3000, 5000, 8080)
 
-RECOMMENDATION: Safe to commit, but be aware of port 27017 conflict.
+RECOMMENDATION: Safe to commit. All validations passed.
 ```
 
 ## Exit Codes

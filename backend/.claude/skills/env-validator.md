@@ -124,8 +124,9 @@ REQUIRED VARIABLES:
 
 FORMAT VALIDATION:
 ✅ MongoDB URI format valid
-✅ PORT is numeric (5001)
-⚠️  CORS_ORIGIN=http://localhost:3000 (consider HTTPS in prod)
+✅ PORT is numeric (5001) - internal container port, exposed as 4001 (prod) or 4011 (dev)
+✅ CORS_ORIGIN=http://localhost:4010,http://localhost:4000 (dev + prod ports)
+ℹ️  Note: FairMediator uses 4000-4099 port range (see PORT_ALLOCATION.md)
 
 RECOMMENDATION:
 1. Remove real secret from .env.example

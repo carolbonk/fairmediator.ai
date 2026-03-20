@@ -24,7 +24,7 @@ Prevent commits and deployments when free tier quotas are at critical levels. Pr
 
 1. **Check Quota Status**
    - Start backend server if not running
-   - Call `GET http://localhost:5001/api/monitoring/quota-status`
+   - Call `GET http://localhost:4011/api/monitoring/quota-status` (dev) or `http://localhost:4001/api/monitoring/quota-status` (prod)
    - Parse response JSON
 
 2. **Analyze Results**

@@ -129,11 +129,15 @@ cd ../frontend && npm audit --audit-level=high
 
 # 5. Check quota status
 echo "Checking quota status..."
-curl -s http://localhost:5001/api/monitoring/quota-status | jq '.overall'
+# Development: curl -s http://localhost:4011/api/monitoring/quota-status | jq '.overall'
+# Production:
+curl -s http://localhost:4001/api/monitoring/quota-status | jq '.overall'
 
 # 6. Test Axiom logging
 echo "Testing Axiom logging..."
-curl -X POST http://localhost:5001/api/test/log -d '{"level":"info","message":"Deployment test"}'
+# Development: curl -X POST http://localhost:4011/api/test/log -d '{"level":"info","message":"Deployment test"}'
+# Production:
+curl -X POST http://localhost:4001/api/test/log -d '{"level":"info","message":"Deployment test"}'
 
 # 7. Verify environment
 echo "Checking environment variables..."
