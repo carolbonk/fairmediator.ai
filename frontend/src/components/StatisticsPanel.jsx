@@ -120,6 +120,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
                 ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu'
                 : 'bg-neu-200 shadow-neu-inset'
             }`}
+            aria-label={aiMediatorsEnabled ? 'Disable AI-scored mediators' : 'Enable AI-scored mediators'}
           >
             <div
               className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-300 ${

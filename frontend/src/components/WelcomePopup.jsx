@@ -86,7 +86,7 @@ const WelcomePopup = ({ onClose }) => {
             </button>
 
             {/* Footer note */}
-            <p className="text-center text-xs text-white/40 mt-3">
+            <p className="text-center text-xs text-white/60 mt-3">
               By continuing, you agree to our{' '}
               <a href="/terms" className="text-blue-400 hover:underline">
                 Terms

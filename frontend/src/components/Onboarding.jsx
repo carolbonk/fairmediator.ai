@@ -100,7 +100,7 @@ const Onboarding = ({ shouldStart, onComplete }) => {
 
           {/* Footer */}
           <div className="flex items-center justify-between px-5 sm:px-6 py-4">
-            <span className="text-xs text-white/40">
+            <span className="text-xs text-white/60">
               {currentStep + 1} / {steps.length}
             </span>
             <div className="flex items-center gap-3">
@@ -115,7 +115,7 @@ const Onboarding = ({ shouldStart, onComplete }) => {
               {currentStepData.showSkip && (
                 <button
                   onClick={handleSkip}
-                  className="px-4 py-2 text-sm text-white/40 hover:text-white/60 font-medium transition-colors"
+                  className="px-4 py-2 text-sm text-white/60 hover:text-white/80 font-medium transition-colors"
                 >
                   {t('onboarding.skip')}
                 </button>
