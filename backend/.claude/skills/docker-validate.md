@@ -29,7 +29,10 @@ Ensure Docker configuration is valid and builds succeed before committing. Preve
 - Ensure COPY/ADD source paths exist
 - Validate multi-stage build references
 
-### 4. Port Conflict Check
+### 4. Port Range Validation (RULE 9)
+- **CRITICAL**: ALL ports MUST be in 4000-4499 range
+- Extract all port numbers from docker-compose files
+- Validate each port is within allowed range
 - Check if ports are already in use
 - Verify no port conflicts between services
 - Ensure exposed ports match application configuration
@@ -79,18 +82,60 @@ Ensure Docker configuration is valid and builds succeed before committing. Preve
    docker compose build --dry-run 2>&1
    ```
 
-5. **Check Port Availability**
+5. **Validate Port Range (RULE 9)**
    ```bash
-   # Check if FairMediator ports (4000-4099 range) are available
-   # Production: 4000 (frontend), 4001 (backend), 4030 (MongoDB)
-   # Development: 4010 (frontend), 4011 (backend), 4030 (MongoDB)
+   # CRITICAL: Validate ALL ports are in 4000-4499 range
+   # Exception: Ports 80/443 allowed ONLY in docker-compose.management.yml for Traefik
+   echo "Validating RULE 9: Port Range 4000-4499..."
+
+   for file in docker-compose.yml docker-compose.dev.yml docker-compose.management.yml; do
+     if [ -f "$file" ]; then
+       echo "Checking $file..."
+       # Extract host ports (left side of port mapping)
+       grep -hE "^\s+- ['\"]?([0-9.]+:)?[0-9]+:" "$file" | \
+         grep -oE '([0-9.]+:)?([0-9]+):' | \
+         grep -oE '^[0-9]+:' | \
+         grep -oE '[0-9]+' | \
+         while read port; do
+           # Exception: Allow 80/443 in management.yml for Traefik
+           if [ "$file" = "docker-compose.management.yml" ] && ([ "$port" -eq 80 ] || [ "$port" -eq 443 ]); then
+             echo "  ℹ️  Port $port (Traefik HTTP/HTTPS - allowed exception)"
+             continue
+           fi
+
+           if [ $port -lt 4000 ] || [ $port -gt 4499 ]; then
+             echo "❌ RULE 9 VIOLATION: Port $port outside 4000-4499 range in $file"
+             exit 2
+           else
+             echo "  ✅ Port $port within range"
+           fi
+         done
+     fi
+   done
+
+   # Check .env files for PORT variables
+   echo "Checking .env PORT variables..."
+   grep -hE '^[A-Z_]*PORT\s*=\s*[0-9]+' .env backend/.env 2>/dev/null | \
+     grep -oE '[0-9]+' | \
+     sort -u | \
+     while read port; do
+       if [ $port -lt 4000 ] || [ $port -gt 4499 ]; then
+         echo "❌ RULE 9 VIOLATION: PORT=$port outside 4000-4499 range in .env"
+         exit 2
+       else
+         echo "  ✅ PORT=$port within range"
+       fi
+     done
+
+   echo "✅ All ports within 4000-4499 range (RULE 9 compliant)"
+
+   # Check port availability
+   echo "Checking port availability..."
    lsof -i :4000 || echo "Port 4000 (frontend prod) available"
-   lsof -i :4001 || echo "Port 4001 (backend prod) available"
+   lsof -i :4001 || echo "Port 4001 (backend prod/internal) available"
    lsof -i :4010 || echo "Port 4010 (frontend dev) available"
    lsof -i :4011 || echo "Port 4011 (backend dev) available"
    lsof -i :4030 || echo "Port 4030 (MongoDB) available"
-   # Check entire range for conflicts
-   lsof -i :4000-4099 | grep LISTEN || echo "No FairMediator ports in use"
    ```
 
 ## Example Output
@@ -103,21 +148,24 @@ Ensure Docker configuration is valid and builds succeed before committing. Preve
 ✅ Build contexts exist:
    - ./backend → backend/Dockerfile
    - ./frontend → frontend/Dockerfile
-✅ All FairMediator ports (4000-4099) available:
+✅ RULE 9: All ports within 4000-4499 range
+✅ Port allocation compliant:
    - 4000: Frontend (production)
-   - 4001: Backend API (production)
+   - 4001: Backend API (production & internal)
    - 4010: Frontend (development)
    - 4011: Backend API (development)
    - 4030: MongoDB
+✅ All ports available (no conflicts)
 ✅ Volume mounts valid:
    - ./backend/src → /app/src
    - ./backend/logs → /app/logs
 ✅ Network configuration valid
 ✅ Health checks configured for all services
 
-PORT ALLOCATION:
-- Using standardized 4000-4099 range (see PORT_ALLOCATION.md)
+PORT ALLOCATION (RULE 9):
+- Using standardized 4000-4499 range (see PORT_ALLOCATION.md)
 - No conflicts with common dev tools (3000, 5000, 8080)
+- All ports validated as RULE 9 compliant
 
 RECOMMENDATION: Safe to commit. All validations passed.
 ```

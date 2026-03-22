@@ -286,6 +286,11 @@ git commit -m "Fixed bug (see details in previous message)"
 - ✅ Pre-flight checks MUST validate port range compliance
 - ❌ NEVER use ports outside this range (including container-internal ports)
 
+**Exceptions:**
+- ✅ Ports 80 and 443 ONLY for Traefik reverse proxy (optional management stack)
+- These are industry-standard HTTP/HTTPS ports required for public web access
+- Only used in docker-compose.management.yml (not core application)
+
 **Current Assignments:**
 - 4000: Frontend (production)
 - 4001: Backend API (production & container-internal)
