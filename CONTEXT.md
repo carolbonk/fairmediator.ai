@@ -9,8 +9,8 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** March 20, 2026 (Port allocation strategy + FEC persistence bug fix complete)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Data 60% → 65% after FEC fix, No Users/Revenue)
+**Last Updated:** March 22, 2026 (Security scanning + credential leak prevention + git history cleaning guide)
+**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Security 100%, Data 65%, No Users/Revenue)
 
 ---
 
@@ -23,7 +23,7 @@
 - ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, role-based dashboards, Lighthouse fixes) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
-- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, standardized port allocation 4000-4099)
+- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, standardized port allocation 4000-4099, credential leak prevention)
 - 🟡 Data 65% (45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, FEC persistence bug FIXED → ready for full scraper run to achieve 50%+ donation coverage)
 - ❌ Monetization deferred (Stripe exists, not needed for MVP)
 - ❌ GTM 0% executed
@@ -435,6 +435,164 @@ git commit -m "Fixed bug (see details in previous message)"
 - 4031: Mongo Express
 
 **Documentation:** See [PORT_ALLOCATION.md](./PORT_ALLOCATION.md) for complete reference
+
+---
+
+### 🔴 RULE 10: Credential Scanning & Git Security
+
+**NEVER commit API keys, secrets, credentials, or private keys to git history:**
+
+**Why This Rule Exists:**
+- Exposed credentials can be scraped by bots within minutes
+- Rotating compromised keys is expensive and disruptive
+- Security breaches damage reputation and customer trust
+- Once in git history, credentials persist even after deletion
+- Prevention is 100x easier than cleaning git history
+
+**Mandatory Pre-Commit Workflow:**
+```bash
+# ALWAYS run before committing
+/pre-flight
+
+# This automatically invokes:
+# 1. security-scanner skill (credential detection)
+# 2. docker-validate skill (if Docker files modified)
+# 3. commit-validator skill (RULE 8 compliance)
+```
+
+**Blocked File Patterns (NEVER commit):**
+- ❌ `.env` (any variant except `.env.example`)
+- ❌ `credentials.json`, `secrets.yaml`, `secrets.yml`
+- ❌ Private keys: `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa`
+- ❌ JWT tokens, session cookies, bearer tokens
+- ❌ Database dumps containing PII
+- ❌ `*.ipynb` files with API keys in code cells
+
+**High-Risk Credential Patterns (Auto-Blocked):**
+```regex
+# API Keys
+sk-[a-zA-Z0-9]{48}                    # OpenAI
+sk-ant-[a-zA-Z0-9\-]{95,}             # Anthropic
+AKIA[0-9A-Z]{16}                      # AWS Access Key
+sk_live_[a-zA-Z0-9]{24,}              # Stripe Secret Key
+
+# Database Credentials
+mongodb(\+srv)?://[^:]+:[^@]+@       # MongoDB with credentials
+postgres(ql)?://[^:]+:[^@]+@         # PostgreSQL
+mysql://[^:]+:[^@]+@                 # MySQL
+
+# Tokens
+ghp_[a-zA-Z0-9]{36}                  # GitHub Personal Access Token
+gho_[a-zA-Z0-9]{36}                  # GitHub OAuth Token
+eyJ[a-zA-Z0-9-_=]+\.eyJ...           # JWT Token
+
+# Private Keys
+-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----
+```
+
+**Security Scan Response:**
+
+**✅ Clean Scan (Allow Commit):**
+```
+🔒 SECURITY SCAN COMPLETE
+✅ No credentials detected
+✅ No blocked file patterns
+✅ All staged files safe to commit
+→ Proceed with commit
+```
+
+**❌ Blocked Commit (Credentials Detected):**
+```
+🚨 SECURITY SCAN FAILED
+❌ MongoDB credentials in docker-compose.yml:78
+❌ OpenAI API key in backend/src/config/ai.js:45
+
+ACTION REQUIRED:
+1. Remove credentials from these files
+2. Move to .env (already gitignored)
+3. Rotate exposed credentials immediately
+4. Re-stage and run /pre-flight again
+
+COMMIT BLOCKED - Do not force push!
+```
+
+**If Credentials Are Exposed in Git History:**
+
+1. **STOP** - Do not make additional commits
+2. **Rotate** all exposed credentials immediately:
+   - OpenAI: platform.openai.com/api-keys
+   - Anthropic: console.anthropic.com
+   - MongoDB: Rotate password in Atlas
+   - GitHub: github.com/settings/tokens
+   - AWS: IAM console
+   - Stripe: dashboard.stripe.com
+3. **Clean** git history using `git-filter-repo`:
+   - See [GIT_HISTORY_CLEANING.md](./GIT_HISTORY_CLEANING.md) for complete guide
+   - Backup repository first (critical!)
+   - Coordinate with team before force-pushing
+4. **Audit** access logs for potential misuse:
+   - MongoDB Atlas: Database Access logs
+   - OpenAI: Usage page
+   - GitHub: Security log
+   - AWS: CloudTrail
+5. **Verify** .gitignore is working:
+   ```bash
+   touch .env
+   git status  # Should show "nothing to commit"
+   ```
+
+**Proper Secret Management:**
+
+✅ **DO THIS:**
+```javascript
+// .env file (gitignored)
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/db
+OPENAI_API_KEY=sk-...
+STRIPE_SECRET_KEY=sk_live_...
+
+// Code file
+const mongoUri = process.env.MONGODB_URI;
+const openaiKey = process.env.OPENAI_API_KEY;
+```
+
+❌ **NEVER THIS:**
+```javascript
+// Hardcoded credentials (NEVER!)
+const mongoUri = "mongodb+srv://admin:password123@cluster.mongodb.net/db";
+const openaiKey = "sk-proj-abc123...";
+```
+
+**Integration with Claude Code Skills:**
+
+The `/pre-flight` command orchestrates three security skills:
+
+1. **security-scanner** (.claude/skills/security-scanner.md)
+   - Scans staged files for credential patterns
+   - Blocks commits if high-risk patterns detected
+   - Warns for medium-risk patterns
+
+2. **docker-validate** (.claude/skills/docker-validate.md)
+   - Validates RULE 9 port range compliance
+   - Checks for hardcoded secrets in Docker files
+   - Verifies environment variables exist
+
+3. **commit-validator** (.claude/skills/commit-validator.md)
+   - Ensures RULE 8 compliance (human-like commits)
+   - Max 3 sentences, imperative mood, no emojis
+
+**Enforcement:**
+- ✅ Run `/pre-flight` before EVERY commit
+- ✅ Security scanner auto-blocks credential leaks
+- ✅ Team members trained on credential management
+- ✅ .gitignore patterns validated and tested
+- ❌ NEVER override security scanner blocks
+- ❌ NEVER commit with --no-verify flag
+- ❌ NEVER force push without team coordination
+
+**Resources:**
+- [GIT_HISTORY_CLEANING.md](./GIT_HISTORY_CLEANING.md) - Complete history cleaning guide
+- [.claude/skills/security-scanner.md](./.claude/skills/security-scanner.md) - Credential detection patterns
+- [.claude/commands/pre-flight.md](./.claude/commands/pre-flight.md) - Pre-commit workflow
 
 ---
 
