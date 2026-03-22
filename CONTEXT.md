@@ -1,48 +1,58 @@
 # FairMediator Project Context
 
-> **⚠️ CRITICAL: Use the NAVIGATION MENU below - DON'T read everything!**
->
-> **Order of Operations:**
-> 1. Use [Quick Navigation](#-quick-navigation) menu - Jump to what you need
-> 2. Check [Recent Major Changes](#-recent-major-changes) - See latest work completed
-> 3. Check [What's Next / TODO](#-whats-next--todo) - See current project state
-> 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
-> 5. Begin work following established patterns
-
-**Last Updated:** March 22, 2026 (Port range expansion 4000-4499 + port 3000→4010 migration)
-**Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Security 100%, Data 65%, No Users/Revenue)
+> **📊 File Metadata**
+> - **Size:** ~700 lines (restructured from 1599 lines)
+> - **Last Updated:** March 22, 2026
+> - **Changelog:** See [CHANGELOG.md](./CHANGELOG.md) for historical changes
+> - **Purpose:** Current project state, rules, roadmap
 
 ---
 
-## 🎯 YC APPLICATION STATUS (HONEST ASSESSMENT)
+## 📊 STATUS DASHBOARD
 
-**Current State:** Technically ready, commercially unproven | 0 users | $0 revenue | $0 cost (free tier)
+**Current Branch:** `feature/docker-ci`
+**Project Phase:** 🚧 Pre-Launch - Feature Complete, Beta Testing Ready
 
-**Completion:**
-- ✅ Backend 100% (APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation, account type system)
-- ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, role-based dashboards, Lighthouse fixes) - Missing: mobile device testing
-- ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
-- ✅ Batch Checker 100% (CSV upload, results, export, manual review)
-- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, standardized port allocation 4000-4499, credential leak prevention)
-- 🟡 Data 65% (45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, FEC persistence bug FIXED → ready for full scraper run to achieve 50%+ donation coverage)
-- ❌ Monetization deferred (Stripe exists, not needed for MVP)
-- ❌ GTM 0% executed
+### Completion Status
+| Component | Status | Notes |
+|-----------|--------|-------|
+| **Backend** | ✅ 100% | APIs, ML R²=0.98, graph DB, 4 scrapers, SRE automation, account type system |
+| **Frontend** | ✅ 100% | All pages/features/modals, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, role-based dashboards, Lighthouse fixes |
+| **Lobbying UI** | ✅ 100% | Badges, charts, history modal, pie chart |
+| **Batch Checker** | ✅ 100% | CSV upload, results, export, manual review |
+| **Infrastructure** | ✅ 100% | Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, port allocation 4000-4499 |
+| **Data** | 🟡 65% | 45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, FEC persistence bug FIXED → ready for full scraper run |
+| **Monetization** | ❌ Deferred | Stripe exists, not needed for MVP |
+| **GTM** | ❌ 0% | Beta testing next |
 
-**Next:** Beta testing (1 week) → First customer (3-4 weeks)
-**Details:** [YC_STATUS.md](./YC_STATUS.md) | [AI_FEATURES.md](./AI_FEATURES.md)
+### Key Metrics
+- **Operating Cost:** $0/month (100% free tier)
+- **Profit Margin:** 99% at all scales
+- **Security Vulnerabilities:** 0
+- **Test Pass Rate:** 78% (116/148 tests passing)
+- **Lighthouse Score:** 77/86/100/100 (Performance/Accessibility/SEO/Best Practices)
+
+### Next Milestones
+- **Week 1:** Beta testing (20 testers)
+- **Week 4:** First customer acquisition (target: 10 customers)
+- **Month 3:** $2.5K MRR (50 customers)
+- **Month 6:** $10K MRR
+- **Month 18:** $83K MRR = **$1M ARR**
+
+**Detailed Status:** [YC_STATUS.md](./YC_STATUS.md) | [AI_FEATURES.md](./AI_FEATURES.md)
 
 ---
 
 ## 📑 Quick Navigation
 
-- [YC Application Status](#-yc-application-status-honest-assessment) ⭐ **START HERE**
+- [STATUS DASHBOARD](#-status-dashboard) ⭐ **START HERE**
 - [Tech Stack](#-tech-stack) ⭐ **SEE THIS SECOND**
 - [Project Rules](#-project-rules) ⭐ **READ THIS THIRD**
+- [What's Next / TODO](#-whats-next--todo) 📋 **CURRENT PRIORITIES**
 - [Monetization Strategy](#-monetization-strategy-path-c-hybrid-model) 💰 **REVENUE PLAN**
 - [14-Day MVP to Launch](#-14-day-mvp-to-launch-ship-or-die) 🚀 **EXECUTION PLAN**
+- [Enterprise Features Roadmap](#-enterprise-features-roadmap-0-cost---16-free-features) 🏢 **GROWTH PLAN**
 - [Key Decisions & Why](#-key-decisions--why) 🚫 **READ BEFORE IMPLEMENTING**
-- [What's Next / TODO](#-whats-next--todo) - Full roadmap
-- [Recent Major Changes](#-recent-major-changes) - What was actually built
 
 ---
 
@@ -596,6 +606,99 @@ The `/pre-flight` command orchestrates three security skills:
 
 ---
 
+### 🔴 RULE 11: Free Tier Only
+
+**ALL new features and implementations MUST use 100% free tier services:**
+
+**Why This Rule Exists:**
+- Validates product-market fit before spending money
+- Protects 99% profit margins during growth
+- Enables capital-efficient scaling to $10K+ MRR
+- Forces creative problem-solving and technical excellence
+- Paid services only justified after revenue proves demand
+
+**Free Tier Services (Use These):**
+- ✅ MongoDB Atlas M0 (512MB, includes Vector Search)
+- ✅ Hugging Face API (10K requests/month)
+- ✅ Netlify (100GB bandwidth, edge functions)
+- ✅ Oracle Cloud Free Tier (VM, storage, bandwidth)
+- ✅ GitHub Actions (2,000 minutes/month)
+- ✅ Resend Email (3,000 emails/month)
+- ✅ Axiom Logging (166MB/month)
+
+**Paid Services (Deferred Until $10K+ MRR):**
+- ❌ Vanta/Drata ($500/mo for SOC 2 compliance)
+- ❌ MongoDB M10+ ($57/mo for encryption at rest)
+- ❌ OpenAI API (use Hugging Face instead)
+- ❌ Pinecone (use MongoDB Vector Search instead)
+- ❌ Vercel Pro ($20/mo, use Netlify free tier)
+- ❌ Sentry ($26/mo, deferred until post-launch)
+
+**Implementation Guidelines:**
+
+**✅ DO THIS:**
+```javascript
+// Use MongoDB Atlas Vector Search (free)
+const results = await Mediator.aggregate([
+  {
+    $vectorSearch: {
+      index: "vector_index",
+      path: "embedding",
+      queryVector: embedding,
+      numCandidates: 100,
+      limit: 10
+    }
+  }
+]);
+```
+
+**❌ NEVER THIS:**
+```javascript
+// Pinecone requires paid tier ($70/mo)
+const pinecone = new Pinecone({ apiKey: process.env.PINECONE_KEY });
+const results = await pinecone.query({ vector: embedding });
+```
+
+**When to Adopt Paid Services:**
+
+Only adopt paid infrastructure after meeting **ALL** criteria:
+1. ✅ Revenue exceeds 10x the service cost (e.g., $5K MRR for $500/mo service)
+2. ✅ Free tier limits proven insufficient (>90% quota usage for 3+ months)
+3. ✅ Customer demand explicitly requires the feature (3+ enterprise prospects)
+4. ✅ No free alternative exists (exhaustively researched)
+5. ✅ ROI calculable and documented (reduced churn, increased close rate, etc.)
+
+**Current Status:**
+- **16 enterprise features** planned at $0 cost (using free tiers)
+- **4 paid features** deferred until $10K+ MRR ($560-1,065/mo total)
+- **Target:** $2.5K MRR (M3) → $10K MRR (M6) → Enable paid tier
+- **Documentation:** See [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-cost---16-free-features)
+
+**Enforcement:**
+- ✅ Feature proposals MUST identify free tier service or explain paid necessity
+- ✅ Code reviews MUST flag paid API usage without justification
+- ✅ Architecture decisions default to free tier solutions
+- ❌ NEVER introduce paid dependencies without explicit approval
+- ❌ NEVER assume "we'll make money later" as justification
+
+**Example Violations:**
+```
+❌ "Let's use OpenAI GPT-4 for better results"
+   → Use Hugging Face (free) until revenue justifies OpenAI
+
+❌ "Pinecone is easier than MongoDB Vector Search"
+   → Free tier > convenience until $10K MRR
+
+❌ "Sentry will help us find bugs faster"
+   → Use Winston + Axiom (free) until post-launch
+```
+
+**Resources:**
+- [CONTEXT.md - Free Tier Services](#-tech-stack) - Complete list of $0 infrastructure
+- [ENTERPRISE_BUSINESS_PLAN.md](./ENTERPRISE_BUSINESS_PLAN.md) - Revenue-first approach
+
+---
+
 ## 🏗️ System Architecture
 
 ### Database: MongoDB Atlas Only
@@ -646,13 +749,23 @@ The `/pre-flight` command orchestrates three security skills:
 
 ---
 
-## 🔄 Recent Major Changes
+## ✅ Recently Completed
 
-### March 22, 2026: Port Range Expansion + Port 3000 Migration ✅
+All recent work documented in [CHANGELOG.md](./CHANGELOG.md)
 
-**Expanded port allocation range and eliminated legacy port 3000 references:**
+**Latest Highlights:**
+- March 22: Port range expansion (4000-4499) + port 3000 migration
+- March 20: Port allocation strategy + FEC persistence bug fix
+- March 18: Account type system + role-based dashboards + security fixes
+- March 17: Enterprise feature roadmap + business plan
 
-**1. Port Range Expansion (4000-4099 → 4000-4499) ✅**
+---
+
+## 📝 What's Next / TODO
+
+### 🎯 **CURRENT PRIORITIES** (Post-Audit Action Plan)
+
+**IMMEDIATE (This Week):**
 - **Expanded allocation range** from 100 ports (4000-4099) to 500 ports (4000-4499) for future scalability
 - **Updated RULE 9** in CONTEXT.md to reflect new 4000-4499 range
 - **400+ ports now available** for microservices, ML/AI services, and future expansion
