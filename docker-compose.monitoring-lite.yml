@@ -16,7 +16,7 @@ services:
     container_name: fairmediator-cadvisor
     restart: unless-stopped
     ports:
-      - "127.0.0.1:4023:8080"  # cAdvisor (FairMediator port range: 4000-4099)
+      - "127.0.0.1:4023:8080"  # cAdvisor (FairMediator port range: 4000-4499)
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro

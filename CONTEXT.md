@@ -260,6 +260,46 @@ git commit -m "This commit adds a new feature that allows users to..."
 git commit -m "Fixed bug (see details in previous message)"
 ```
 
+### 🔴 RULE 9: Port Allocation Range (4000-4499)
+
+**ALL ports used by FairMediator MUST be in the 4000-4499 range:**
+
+**Why This Rule Exists:**
+- Prevents port conflicts with other projects and system services
+- Simplifies firewall configuration (single port range)
+- Makes troubleshooting easier (port number indicates service type)
+- Allows room for 500 microservices as the project scales
+
+**Port Range Allocation:**
+- 4000-4009: Core application (frontend, backend, API)
+- 4010-4019: Development tools (Vite, nodemon, debugger, Mailhog)
+- 4020-4029: Monitoring (Traefik, Prometheus, Grafana, cAdvisor)
+- 4030-4039: Databases (MongoDB, Mongo Express)
+- 4040-4099: ML/AI services
+- 4100-4199: Microservices
+- 4200-4499: Future expansion
+
+**Enforcement:**
+- ✅ ALL Docker port mappings must use 4000-4499
+- ✅ ALL environment variables (PORT, BACKEND_PORT, etc.) must use 4000-4499
+- ✅ ALL hardcoded ports in code must use 4000-4499
+- ✅ Pre-flight checks MUST validate port range compliance
+- ❌ NEVER use ports outside this range (including container-internal ports)
+
+**Current Assignments:**
+- 4000: Frontend (production)
+- 4001: Backend API (production & container-internal)
+- 4010: Frontend Dev
+- 4011: Backend API Dev
+- 4012: Node.js Debugger
+- 4013: Mailhog UI
+- 4014: Mailhog SMTP
+- 4020-4024: Monitoring stack
+- 4030: MongoDB
+- 4031: Mongo Express
+
+**Documentation:** See [PORT_ALLOCATION.md](./PORT_ALLOCATION.md) for complete reference
+
 ---
 
 ## 🏗️ System Architecture
@@ -761,7 +801,7 @@ git commit -m "Fixed bug (see details in previous message)"
 - **Batch Checker:** CSV upload, batch API, results table, export, manual review (Day 3-4 complete)
 
 
-## 🤖 Automation Architecture (N8N + Axiom + GitHub Actions)
+## Automation Architecture (N8N + Axiom + GitHub Actions)
 
 **Last Updated:** February 26, 2026 - **Automation pipeline designed, ready to implement**
 
