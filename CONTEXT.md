@@ -184,14 +184,145 @@
 
 ### 🔴 RULE 6: Security
 
-**Always sanitize user input, validate requests:**
+**Always sanitize user input, validate requests, and follow security best practices:**
 
+#### 6.1 Input Validation & Sanitization
 - ✅ Helmet security headers
 - ✅ CSRF protection on state-changing ops
 - ✅ MongoDB injection protection
 - ✅ XSS sanitization (sanitize-html, DOMPurify)
 - ✅ Rate limiting (global + per-route)
 - ❌ NEVER trust user input
+
+#### 6.2 Credential Scanning (Pre-Flight Checks)
+**NEVER commit API keys, secrets, or credentials:**
+- ✅ Run security-scan skill before every commit
+- ✅ Check for API keys, tokens, passwords in staged files
+- ✅ Verify .env files are gitignored
+- ✅ Scan for hardcoded secrets (regex: `api[_-]?key|secret|password|token`)
+- ❌ NEVER commit .env, .env.local, or credential files
+- ❌ NEVER hardcode secrets in source code
+
+**If secrets leaked:**
+1. Rotate compromised keys immediately
+2. Revoke old credentials
+3. Clean git history (see GIT_HISTORY_CLEANING.md)
+4. Update all affected services
+
+#### 6.3 Error Message Security
+**NEVER expose internal errors to users:**
+
+**Bad (Exposes Stack Traces):**
+```javascript
+catch (error) {
+  res.status(500).json({ error: error.message, stack: error.stack });
+}
+```
+
+**Good (Generic Error):**
+```javascript
+catch (error) {
+  logger.error('Database query failed', { error: error.message, stack: error.stack });
+  res.status(500).json({ error: 'Internal server error' });
+}
+```
+
+**Rules:**
+- ✅ Log detailed errors server-side (Winston, Axiom)
+- ✅ Return generic messages to client ("Internal server error", "Invalid request")
+- ❌ NEVER send error.message, error.stack to client
+- ❌ NEVER expose database errors, file paths, or internal logic
+
+#### 6.4 Hashing Algorithms
+**Use modern, secure hashing algorithms:**
+
+- ✅ **SHA-256 minimum** for hashing (Node.js crypto.createHash('sha256'))
+- ✅ **bcrypt** (cost factor 10+) for password hashing
+- ✅ **Argon2** for new password systems
+- ❌ NEVER use MD5 (broken since 2004)
+- ❌ NEVER use SHA-1 (deprecated since 2017)
+- ❌ NEVER use plain SHA-256 for passwords (use bcrypt/Argon2)
+
+**Example (Secure Password Hashing):**
+```javascript
+const bcrypt = require('bcryptjs');
+const salt = await bcrypt.genSalt(10);
+const hashedPassword = await bcrypt.hash(password, salt);
+```
+
+#### 6.5 XSS Prevention (Frontend)
+**NEVER use dangerouslySetInnerHTML without sanitization:**
+
+**Bad (Vulnerable to XSS):**
+```jsx
+<div dangerouslySetInnerHTML={{ __html: userContent }} />
+```
+
+**Good (Sanitized):**
+```jsx
+import DOMPurify from 'dompurify';
+const sanitized = DOMPurify.sanitize(userContent);
+<div dangerouslySetInnerHTML={{ __html: sanitized }} />
+```
+
+**Rules:**
+- ✅ Sanitize ALL user-generated HTML with DOMPurify
+- ✅ Use textContent instead of innerHTML when possible
+- ✅ Escape user input in templates
+- ❌ NEVER use dangerouslySetInnerHTML with raw user input
+- ❌ NEVER use eval(), new Function(), or setTimeout(string)
+
+#### 6.6 Frontend Security Checklist
+**Additional frontend security measures:**
+
+- ✅ **JSON.parse with try-catch** - Never trust localStorage/sessionStorage data
+  ```javascript
+  try {
+    const data = JSON.parse(localStorage.getItem('user'));
+  } catch (e) {
+    logger.error('Invalid JSON in localStorage');
+    localStorage.removeItem('user');
+  }
+  ```
+- ✅ **CSP Headers** - Set Content-Security-Policy in Helmet config
+- ✅ **Subresource Integrity (SRI)** - Use integrity hashes for CDN scripts
+- ❌ NEVER use eval() or Function() constructor
+- ❌ NEVER trust URL parameters without validation
+- ❌ NEVER store sensitive data in localStorage (use httpOnly cookies)
+
+#### 6.7 API Endpoint Hardening
+**Validate and limit all inputs:**
+
+- ✅ **Regex validation** - Validate format before processing
+  ```javascript
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email' });
+  ```
+- ✅ **Max limits** - Cap array sizes, string lengths, file uploads
+  ```javascript
+  if (mediators.length > 100) return res.status(400).json({ error: 'Max 100 mediators' });
+  ```
+- ✅ **Rate limiting** - Use express-rate-limit per-route
+- ✅ **Type validation** - Check typeof, Array.isArray() before processing
+- ❌ NEVER process unbounded arrays (DoS risk)
+- ❌ NEVER trust Content-Type header (validate actual content)
+
+#### 6.8 Git History Security
+**Prevent secrets from entering git history:**
+
+- ✅ Run pre-flight checks BEFORE every commit
+- ✅ Scan git history for secrets if unsure (use truffleHog, git-secrets)
+- ✅ Rotate keys immediately if exposed in git history
+- ✅ Clean history with git filter-repo (NEVER use filter-branch)
+- ❌ NEVER commit and then remove secrets (they stay in history)
+- ❌ NEVER share repos with exposed secrets (even if cleaned)
+
+**If you discover committed secrets:**
+1. Rotate ALL exposed credentials immediately
+2. Document in GIT_HISTORY_CLEANING.md
+3. Run: `git filter-repo --path .env --invert-paths`
+4. Force push with extreme caution
+5. Notify team of key rotation
 
 ### 🔴 RULE 7: Accessibility & Inclusive Design
 
