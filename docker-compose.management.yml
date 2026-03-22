@@ -123,7 +123,7 @@ services:
     container_name: fairmediator-grafana
     restart: unless-stopped
     ports:
-      - "127.0.0.1:4022:3000"  # Grafana (FairMediator port range: 4000-4499)
+      - "127.0.0.1:4022:4022"  # Grafana (FairMediator port range: 4000-4499)
     volumes:
       - grafana_data:/var/lib/grafana
       - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -136,6 +136,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
       - GF_SECURITY_SECRET_KEY=${GRAFANA_SECRET_KEY:-change_me_in_production}
       # Server settings
+      - GF_SERVER_HTTP_PORT=4022
       - GF_SERVER_ROOT_URL=http://grafana.localhost
       - GF_SERVER_DOMAIN=grafana.localhost
       # Prometheus datasource

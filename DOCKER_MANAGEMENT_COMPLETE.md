@@ -38,7 +38,7 @@ Once started, access these URLs in your browser:
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| **FairMediator** | http://localhost:3000 | Your application |
+| **FairMediator** | http://localhost:4010 | Your application |
 | **Portainer** | https://localhost:9443 | Container management UI |
 | **Grafana** | http://localhost:3001 | Beautiful monitoring dashboards |
 | **Traefik** | http://localhost:8080 | Reverse proxy dashboard |

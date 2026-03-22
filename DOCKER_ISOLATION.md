@@ -225,7 +225,7 @@ ports:
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 # Output:
-# fairmediator-frontend    Up  0.0.0.0:3000->8080/tcp
+# fairmediator-frontend    Up  0.0.0.0:4010->8080/tcp
 # fairmediator-backend     Up  127.0.0.1:5001->5001/tcp
 # fairmediator-mongodb     Up  127.0.0.1:27017->27017/tcp
 # myotherapp-frontend      Up  0.0.0.0:3001->8080/tcp
@@ -336,10 +336,10 @@ docker-compose -f docker-compose.dev.yml up -d
 
 ```bash
 # Find what's using the port
-lsof -i :3000
+lsof -i :4010
 
 # Change port in .env.docker
-FRONTEND_PORT=3001
+FRONTEND_PORT=4011
 ```
 
 ### Network Subnet Conflict

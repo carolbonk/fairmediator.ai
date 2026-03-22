@@ -170,7 +170,7 @@ RESEND_API_KEY=<YOUR_KEY>
 
 # Production settings
 NODE_ENV=production
-CORS_ORIGIN=http://<YOUR_PUBLIC_IP>:3000
+CORS_ORIGIN=http://<YOUR_PUBLIC_IP>:4010
 VITE_API_URL=http://<YOUR_PUBLIC_IP>:5001
 ```
 
@@ -192,14 +192,14 @@ docker compose logs -f mongodb
 
 # Check health
 curl http://localhost:5001/health
-curl http://localhost:3000
+curl http://localhost:4010
 ```
 
 **Expected output:**
 ```
 NAME                    STATUS   PORTS
 fairmediator-backend    Up       0.0.0.0:5001->5001/tcp
-fairmediator-frontend   Up       0.0.0.0:3000->8080/tcp
+fairmediator-frontend   Up       0.0.0.0:4010->8080/tcp
 fairmediator-mongodb    Up       27017/tcp
 ```
 
@@ -229,7 +229,7 @@ server {
 
     # Frontend
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://localhost:4010;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';

@@ -108,7 +108,7 @@ services:
       # Application
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 4001
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4010}
       # Database
       MONGODB_URI: mongodb://${MONGODB_USER:-admin}:${MONGODB_PASSWORD:-changeme}@mongodb:27017/fairmediator?authSource=admin
       # Security secrets

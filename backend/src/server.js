@@ -128,9 +128,9 @@ app.use(helmet({
 // CORS Configuration
 // Reject wildcard origin when credentials: true is set (would be rejected by browsers anyway,
 // but we prevent the misconfiguration at the server level for defense-in-depth).
-const rawCorsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const rawCorsOrigin = process.env.CORS_ORIGIN || 'http://localhost:4010';
 const corsOrigin = rawCorsOrigin === '*'
-  ? (() => { logger.warn('[Security] CORS_ORIGIN=* is unsafe with credentials; falling back to localhost'); return 'http://localhost:3000'; })()
+  ? (() => { logger.warn('[Security] CORS_ORIGIN=* is unsafe with credentials; falling back to localhost'); return 'http://localhost:4010'; })()
   : rawCorsOrigin;
 
 app.use(cors({

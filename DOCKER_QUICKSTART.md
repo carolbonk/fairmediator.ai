@@ -117,10 +117,10 @@ docker volume prune
 ### Port Already in Use
 ```bash
 # Find what's using the port
-lsof -i :3000
+lsof -i :4010
 
 # Change port in docker-compose.yml or use:
-FRONTEND_PORT=3001 docker-compose up -d
+FRONTEND_PORT=4011 docker-compose up -d
 ```
 
 ### Container Won't Start

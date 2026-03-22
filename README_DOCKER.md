@@ -71,7 +71,7 @@ docker-compose down
 ### Service URLs
 | Service | URL | Documentation |
 |---------|-----|---------------|
-| Frontend | http://localhost:3000 | DOCKER_QUICKSTART.md |
+| Frontend | http://localhost:4010 | DOCKER_QUICKSTART.md |
 | Backend API | http://localhost:5001 | DOCKER_QUICKSTART.md |
 | Portainer | http://localhost:9000 | DOCKER_MANAGEMENT_COMPLETE.md |
 | Grafana | http://localhost:3001 | DOCKER_MONITORING_SETUP.md |

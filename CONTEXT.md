@@ -9,7 +9,7 @@
 > 4. Read [Project Rules](#-project-rules) section - If you need rule clarification
 > 5. Begin work following established patterns
 
-**Last Updated:** March 22, 2026 (Security scanning + credential leak prevention + git history cleaning guide)
+**Last Updated:** March 22, 2026 (Port range expansion 4000-4499 + port 3000→4010 migration)
 **Project Status:** 🚧 Pre-Launch - Feature Complete (Backend 100%, Frontend 100%, Infrastructure 100%, Security 100%, Data 65%, No Users/Revenue)
 
 ---
@@ -23,7 +23,7 @@
 - ✅ Frontend 100% (All pages/features/modals/API integrations, i18n EN+ES, Sentry, neumorphic UX, 5 premium tools, role-based dashboards, Lighthouse fixes) - Missing: mobile device testing
 - ✅ Lobbying UI 100% (badges, charts, history modal, pie chart)
 - ✅ Batch Checker 100% (CSV upload, results, export, manual review)
-- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, standardized port allocation 4000-4099, credential leak prevention)
+- ✅ Infrastructure 100% (Docker containers, CI/CD pipeline, security scanning, production deployment, 0 vulnerabilities, standardized port allocation 4000-4499, credential leak prevention)
 - 🟡 Data 65% (45 mediators, 100% ideology scores, 44% affiliations via Senate LDA, FEC persistence bug FIXED → ready for full scraper run to achieve 50%+ donation coverage)
 - ❌ Monetization deferred (Stripe exists, not needed for MVP)
 - ❌ GTM 0% executed
@@ -605,8 +605,8 @@ The `/pre-flight` command orchestrates three security skills:
 ### API Structure
 11 endpoints: /auth, /mediators, /chat, /matching, /subscription, /dashboard, /scraping, /analysis, /feedback, /monitoring, /affiliations
 
-### Port Allocation Strategy (4000-4099)
-**Last Updated:** March 20, 2026 - **All services now use standardized 4000-4099 port range**
+### Port Allocation Strategy (4000-4499)
+**Last Updated:** March 22, 2026 - **All services now use standardized 4000-4499 port range**
 
 **Core Application (4000-4009):**
 - 4000: Frontend (Production) - React/Nginx
@@ -631,10 +631,10 @@ The `/pre-flight` command orchestrates three security skills:
 - 4030: MongoDB
 - 4031: Mongo Express (dev only)
 
-**Reserved (4040-4099):**
+**Reserved (4040-4499):**
 - 4040-4049: ML/AI services
 - 4050-4059: Microservices
-- 4060-4099: Future expansion
+- 4060-4499: Future expansion (400+ ports available for scaling)
 
 **Documentation:** See [PORT_ALLOCATION.md](./PORT_ALLOCATION.md) for complete reference
 
@@ -648,23 +648,51 @@ The `/pre-flight` command orchestrates three security skills:
 
 ## 🔄 Recent Major Changes
 
+### March 22, 2026: Port Range Expansion + Port 3000 Migration ✅
+
+**Expanded port allocation range and eliminated legacy port 3000 references:**
+
+**1. Port Range Expansion (4000-4099 → 4000-4499) ✅**
+- **Expanded allocation range** from 100 ports (4000-4099) to 500 ports (4000-4499) for future scalability
+- **Updated RULE 9** in CONTEXT.md to reflect new 4000-4499 range
+- **400+ ports now available** for microservices, ML/AI services, and future expansion
+- **Benefits:** Room for 50+ microservices, better namespace organization, long-term growth capacity
+
+**2. Port 3000 → 4010 Migration ✅**
+- **Eliminated all port 3000 references** throughout codebase and documentation
+- **Updated CORS_ORIGIN defaults** in `backend/src/server.js` from `http://localhost:3000` to `http://localhost:4010`
+- **Updated test files** (`subscription.test.js`) to use 4010 for Stripe redirect URLs
+- **Updated 6 documentation files:** ORACLE_CLOUD_DEPLOYMENT.md, DOCKER_MANAGEMENT_COMPLETE.md, README_DOCKER.md, DOCKER_ISOLATION.md, DOCKER_QUICKSTART.md, tools/quick-start.sh
+- **Rationale:** Port 3000 was never exposed on host (only used internally), but references in code/docs were confusing and violated RULE 9
+
+**Files Modified:**
+- `CONTEXT.md` - Port range updates, Recent Major Changes entry
+- `backend/src/server.js` - CORS_ORIGIN defaults
+- `backend/tests/.skipped/subscription.test.js` - Test URLs
+- `ORACLE_CLOUD_DEPLOYMENT.md`, `DOCKER_MANAGEMENT_COMPLETE.md`, `README_DOCKER.md`, `DOCKER_ISOLATION.md`, `DOCKER_QUICKSTART.md` - Port references
+- `tools/quick-start.sh` - Browser URL prompt
+
+**Impact:** Zero breaking changes (internal container ports unchanged), improved consistency with port allocation standards
+
+---
+
 ### March 20, 2026: Port Allocation Strategy + FEC Persistence Bug Fix ✅
 
 **Comprehensive port standardization and critical data pipeline repair:**
 
-**1. Port Allocation Strategy (4000-4099 Range) ✅**
-- **Standardized all Docker services** to use dedicated 4000-4099 port range for conflict prevention
+**1. Port Allocation Strategy (4000-4499 Range) ✅**
+- **Standardized all Docker services** to use dedicated 4000-4499 port range for conflict prevention
 - **PORT_ALLOCATION.md created** - 500+ line reference guide with quick reference table, security best practices, migration guide
 - **Port segmentation strategy:**
   - 4000-4009: Core application (frontend 4000/4010, backend 4001/4011)
   - 4010-4019: Development tools (Vite, nodemon, debugger 4012, Mailhog 4013/4014)
   - 4020-4029: Monitoring (Traefik 4020, Prometheus 4021, Grafana 4022, cAdvisor 4023, Node Exporter 4024)
   - 4030-4039: Databases (MongoDB 4030, Mongo Express 4031)
-  - 4040-4099: Reserved for ML/AI services, microservices, scaling
+  - 4040-4499: Reserved for ML/AI services, microservices, scaling
 - **Updated 4 docker-compose files:** `docker-compose.yml`, `docker-compose.dev.yml`, `docker-compose.management.yml`, `docker-compose.monitoring-lite.yml`
 - **.env.example created** - Complete environment template with all port variables, API keys, security secrets
 - **.env.docker updated** - Comprehensive port documentation with service descriptions
-- **Benefits:** Mental model for troubleshooting (port number = service type), firewall simplicity (block entire range), room for 50+ microservices
+- **Benefits:** Mental model for troubleshooting (port number = service type), firewall simplicity (block entire range), room for 400+ services (later expanded to 4000-4499)
 
 **2. FEC Persistence Bug Fix ✅**
 - **Root cause identified:** Double-fetch anti-pattern in `populateMediatorData.js` where donations array was incorrectly passed as options parameter
