@@ -2,12 +2,19 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
+const ACCOUNT_TYPES = [
+  { value: 'mediator', label: 'Mediator' },
+  { value: 'attorney', label: 'Attorney' },
+  { value: 'party', label: 'Party' },
+];
+
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    accountType: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -72,7 +79,7 @@ const RegisterForm = () => {
   };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.accountType) {
       setErrorMessage('Please fill in all fields');
       return false;
     }
@@ -117,7 +124,7 @@ const RegisterForm = () => {
     setIsLoading(true);
 
     try {
-      const result = await register(formData.email, formData.password, formData.name);
+      const result = await register(formData.email, formData.password, formData.name, formData.accountType);
 
       if (result.success) {
         navigate('/dashboard');
@@ -192,6 +199,39 @@ const RegisterForm = () => {
                 autoComplete="name"
               />
             </div>
+
+            {/* Account Type Selection */}
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-700 mb-3">
+                I am a
+              </legend>
+              <div className="flex gap-3">
+                {ACCOUNT_TYPES.map(({ value, label }) => {
+                  const checked = formData.accountType === value;
+                  return (
+                    <label
+                      key={value}
+                      className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium cursor-pointer transition-all duration-150 select-none ${
+                        checked
+                          ? 'bg-gradient-to-br from-slate-100 to-slate-200 border-slate-400 text-slate-800 shadow-neumorphic-inset'
+                          : 'bg-gray-50 border-gray-200 text-gray-600 shadow-neumorphic hover:border-slate-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="accountType"
+                        value={value}
+                        checked={checked}
+                        onChange={handleChange}
+                        className="sr-only"
+                        disabled={isLoading}
+                      />
+                      {label}
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
 
             {/* Email Field */}
             <div>

@@ -5,6 +5,7 @@
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
+const { WinstonTransport: AxiomTransport } = require('@axiomhq/winston');
 const path = require('path');
 
 // Define log levels
@@ -110,6 +111,39 @@ if (!isServerless) {
       zippedArchive: true
     })
   );
+}
+
+// Add Axiom transport if enabled (centralized cloud logging)
+if (process.env.AXIOM_ENABLED === 'true' && process.env.AXIOM_TOKEN && process.env.AXIOM_DATASET) {
+  // Create filtered Axiom transport that only sends error/warn/security logs
+  // This keeps us within 166MB/month (5,666 logs/day) quota
+  const axiomTransport = new AxiomTransport({
+    dataset: process.env.AXIOM_DATASET,
+    token: process.env.AXIOM_TOKEN,
+    orgId: process.env.AXIOM_ORG_ID,
+    level: 'warn', // Only send warn, error, security (not info, http, debug)
+
+    // Add metadata to all logs
+    metadata: {
+      service: 'fairmediator-backend',
+      environment: process.env.NODE_ENV || 'development',
+      version: process.env.npm_package_version || '1.0.0',
+      host: process.env.HOSTNAME || 'unknown'
+    },
+
+    // Batch logs for efficiency (sends every 1 second or 1000 logs)
+    batching: {
+      interval: 1000,
+      maxItems: 1000
+    }
+  });
+
+  transports.push(axiomTransport);
+
+  console.log('✅ Axiom logging enabled (warn/error/security only) - Dataset:', process.env.AXIOM_DATASET);
+  console.log('   Quota: 166MB/month (~5,666 logs/day) - Local files log everything');
+} else {
+  console.log('⚠️  Axiom logging disabled - Logs will only be stored locally');
 }
 
 // Create the logger

@@ -140,14 +140,23 @@ class FECScraper extends BaseScraper {
    * @returns {Object} Summary of stored relationships
    */
   async storeMediatorDonationData(mediatorId, mediatorName, options = {}) {
+    const startTime = Date.now();
+    let fetchedDonations = 0;
+    let storedEntities = 0;
+    let storedRelationships = [];
+
     try {
       // Fetch donations
+      logger.info(`[FEC] Fetching donations for ${mediatorName} with options:`, options);
       const donations = await this.searchIndividualDonations(mediatorName, options);
+      fetchedDonations = donations.length;
 
       if (donations.length === 0) {
         logger.info(`[FEC] No donations found for ${mediatorName}`);
-        return { stored: 0, donations: [] };
+        return { stored: 0, donations: [], totalAmount: 0 };
       }
+
+      logger.info(`[FEC] Fetched ${donations.length} donations for ${mediatorName}, starting persistence...`);
 
       // Create entity for mediator if doesn't exist
       await Entity.findOneAndUpdate(
@@ -161,75 +170,92 @@ class FECScraper extends BaseScraper {
         },
         { upsert: true, new: true }
       );
-
-      const storedRelationships = [];
+      storedEntities++;
 
       // Store each donation as a relationship
-      for (const donation of donations) {
+      for (let i = 0; i < donations.length; i++) {
+        const donation = donations[i];
         const committeeId = `fec_committee_${donation.committee_id}`;
 
-        // Classify by industry
-        const industryClassification = classifyFECContribution(donation);
+        try {
+          // Classify by industry
+          const industryClassification = classifyFECContribution(donation);
 
-        // Create entity for committee/candidate
-        await Entity.findOneAndUpdate(
-          { entityId: committeeId },
-          {
-            entityType: 'Candidate',
-            entityId: committeeId,
-            name: donation.committee_name,
-            metadata: {
-              fecId: donation.committee_id,
-              candidateName: donation.candidate_name,
-              candidateId: donation.candidate_id,
-              candidateOffice: donation.candidate_office,
-              candidateParty: donation.candidate_party
+          // Create entity for committee/candidate
+          await Entity.findOneAndUpdate(
+            { entityId: committeeId },
+            {
+              entityType: 'Candidate',
+              entityId: committeeId,
+              name: donation.committee_name,
+              metadata: {
+                fecId: donation.committee_id,
+                candidateName: donation.candidate_name,
+                candidateId: donation.candidate_id,
+                candidateOffice: donation.candidate_office,
+                candidateParty: donation.candidate_party
+              },
+              dataSource: 'FEC',
+              lastUpdated: new Date()
             },
-            dataSource: 'FEC',
-            lastUpdated: new Date()
-          },
-          { upsert: true, new: true }
-        );
+            { upsert: true, new: true }
+          );
+          storedEntities++;
 
-        // Create DONATED_TO relationship
-        const relationship = await Relationship.findOneAndUpdate(
-          {
-            sourceId: mediatorId,
-            targetId: committeeId,
-            relationshipType: 'DONATED_TO'
-          },
-          {
-            sourceType: 'Mediator',
-            sourceId: mediatorId,
-            targetType: 'Candidate',
-            targetId: committeeId,
-            relationshipType: 'DONATED_TO',
-            weight: 6, // Donation weight
-            metadata: {
-              amount: donation.contribution_receipt_amount,
-              date: donation.contribution_receipt_date,
-              candidateName: donation.candidate_name,
-              candidateParty: donation.candidate_party,
-              fecId: donation.committee_id,
-              // Industry classification
-              industry: industryClassification.industry,
-              industryCategory: industryClassification.category,
-              industryConfidence: industryClassification.confidence,
-              employer: donation.contributor_employer,
-              occupation: donation.contributor_occupation
+          // Create DONATED_TO relationship
+          const relationship = await Relationship.findOneAndUpdate(
+            {
+              sourceId: mediatorId,
+              targetId: committeeId,
+              relationshipType: 'DONATED_TO'
             },
-            confidence: 1.0, // FEC data is verified
-            dataSource: 'FEC',
-            lastVerified: new Date(),
-            isActive: true
-          },
-          { upsert: true, new: true }
-        );
+            {
+              sourceType: 'Mediator',
+              sourceId: mediatorId,
+              targetType: 'Candidate',
+              targetId: committeeId,
+              relationshipType: 'DONATED_TO',
+              weight: 6, // Donation weight
+              metadata: {
+                amount: donation.contribution_receipt_amount,
+                date: donation.contribution_receipt_date,
+                candidateName: donation.candidate_name,
+                candidateParty: donation.candidate_party,
+                fecId: donation.committee_id,
+                // Industry classification
+                industry: industryClassification.industry,
+                industryCategory: industryClassification.category,
+                industryConfidence: industryClassification.confidence,
+                employer: donation.contributor_employer,
+                occupation: donation.contributor_occupation
+              },
+              confidence: 1.0, // FEC data is verified
+              dataSource: 'FEC',
+              lastVerified: new Date(),
+              isActive: true
+            },
+            { upsert: true, new: true }
+          );
 
-        storedRelationships.push(relationship);
+          storedRelationships.push(relationship);
+
+          // Log progress every 10 donations
+          if ((i + 1) % 10 === 0) {
+            logger.debug(`[FEC] Stored ${i + 1}/${donations.length} donations for ${mediatorName}`);
+          }
+        } catch (donationError) {
+          // Log individual donation errors but continue processing
+          logger.error(`[FEC] Error storing donation ${i + 1}/${donations.length} for ${mediatorName}:`, {
+            error: donationError.message,
+            committeeId,
+            committeeName: donation.committee_name,
+            amount: donation.contribution_receipt_amount
+          });
+        }
       }
 
-      logger.info(`[FEC] Stored ${storedRelationships.length} donation relationships for ${mediatorName}`);
+      const duration = Date.now() - startTime;
+      logger.info(`[FEC] Successfully stored ${storedRelationships.length}/${fetchedDonations} donation relationships for ${mediatorName} in ${duration}ms`);
 
       // Get industry distribution
       const industryStats = getIndustryDistribution(donations);
@@ -243,7 +269,16 @@ class FECScraper extends BaseScraper {
       };
 
     } catch (error) {
-      logger.error(`[FEC] Error storing donation data for ${mediatorName}:`, error);
+      const duration = Date.now() - startTime;
+      logger.error(`[FEC] Error storing donation data for ${mediatorName} after ${duration}ms:`, {
+        error: error.message,
+        stack: error.stack,
+        fetchedDonations,
+        storedEntities,
+        storedRelationships: storedRelationships.length,
+        httpStatus: error.response?.status,
+        httpStatusText: error.response?.statusText
+      });
       throw error;
     }
   }

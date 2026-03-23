@@ -50,13 +50,17 @@ const dataPopulationRoutes = require('./routes/dataPopulation'); // Data populat
 const alertsRoutes = require('./routes/alerts'); // ConflictAlerts system
 const apiKeysRoutes = require('./routes/api_keys'); // B2B API key management
 const publicApiRoutes = require('./routes/public_api'); // B2B Public API v1
+const automationRoutes = require('./routes/automation'); // N8N automation workflows
+const logsRoutes = require('./routes/logs'); // Log aggregation and analysis
+const scoringRoutes = require('./routes/scoring'); // Deterministic scoring pipeline
+const notesRoutes = require('./routes/notes'); // Collaborative case notes
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
 const { monitor } = require('./utils/freeTierMonitor');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 4001;
 
 // HTTPS Enforcement (production only)
 if (process.env.NODE_ENV === 'production') {
@@ -124,9 +128,9 @@ app.use(helmet({
 // CORS Configuration
 // Reject wildcard origin when credentials: true is set (would be rejected by browsers anyway,
 // but we prevent the misconfiguration at the server level for defense-in-depth).
-const rawCorsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const rawCorsOrigin = process.env.CORS_ORIGIN || 'http://localhost:4010';
 const corsOrigin = rawCorsOrigin === '*'
-  ? (() => { logger.warn('[Security] CORS_ORIGIN=* is unsafe with credentials; falling back to localhost'); return 'http://localhost:3000'; })()
+  ? (() => { logger.warn('[Security] CORS_ORIGIN=* is unsafe with credentials; falling back to localhost'); return 'http://localhost:4010'; })()
   : rawCorsOrigin;
 
 app.use(cors({
@@ -263,6 +267,10 @@ app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement pre
 app.use('/api/data-population', dataPopulationRoutes); // Data population status and progress tracking
 app.use('/api/keys', apiKeysRoutes); // B2B API key management (create, list, revoke)
 app.use('/api/v1', publicApiRoutes); // B2B Public API v1 (API key auth, CSRF-exempt)
+app.use('/api/automation', automationRoutes); // N8N automation workflows (trigger workflows)
+app.use('/api/logs', logsRoutes); // Log aggregation and analysis
+app.use('/api/scoring', scoringRoutes); // Deterministic scoring pipeline (leaning, affiliation, ranking)
+app.use('/api/notes', notesRoutes); // Collaborative case notes (team knowledge sharing)
 
 // CSRF error handler
 app.use(csrfErrorHandler);

@@ -10,7 +10,7 @@ import { FaFileUpload, FaSpinner, FaCheckCircle, FaTimes } from 'react-icons/fa'
 import Tooltip from './Tooltip';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4011';
 
 const FileUpload = ({ onAnalysisComplete }) => {
   const [uploading, setUploading] = useState(false);

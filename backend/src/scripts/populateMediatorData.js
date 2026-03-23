@@ -167,19 +167,21 @@ async function scrapeFECData(mediator) {
       return;
     }
 
-    // Search for donations
-    const donations = await fecScraper.searchIndividualDonations(mediator.name, {
-      state: mediator.location?.state,
-      minDate: '2010-01-01' // Last 15+ years
-    });
+    // Store donation data (method will fetch and persist)
+    // Pass options object, not donations array
+    const result = await fecScraper.storeMediatorDonationData(
+      mediator._id,
+      mediator.name,
+      {
+        state: mediator.location?.state,
+        minDate: '2010-01-01' // Last 15+ years
+      }
+    );
 
-    if (donations && donations.length > 0) {
-      console.log(`    ✅ Found ${donations.length} FEC donations`);
+    if (result.stored > 0) {
+      console.log(`    ✅ Found and stored ${result.stored} FEC donations`);
       stats.fec.found++;
-      stats.fec.donations += donations.length;
-
-      // Store in graph database
-      await fecScraper.storeMediatorDonationData(mediator._id, mediator.name, donations);
+      stats.fec.donations += result.stored;
     } else {
       console.log(`    ℹ️  No FEC donations found`);
     }

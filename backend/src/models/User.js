@@ -49,7 +49,13 @@ const userSchema = new mongoose.Schema({
   },
   lastFailedLoginAt: Date,
   lastSuccessfulLoginAt: Date,
-  // Role-Based Access Control
+  // Account Type Classification (mediator, attorney, or party)
+  accountType: {
+    type: String,
+    enum: ['mediator', 'attorney', 'party'],
+    required: true
+  },
+  // Role-Based Access Control (permissions)
   role: {
     type: String,
     enum: ['user', 'moderator', 'admin'],
@@ -109,6 +115,8 @@ userSchema.index({ emailVerificationToken: 1 }, { sparse: true }); // Sparse ind
 userSchema.index({ passwordResetToken: 1 }, { sparse: true }); // Sparse index for password reset lookups
 userSchema.index({ subscriptionTier: 1 }); // For free tier filtering
 userSchema.index({ accountLockedUntil: 1 }, { sparse: true }); // For checking locked accounts
+userSchema.index({ accountType: 1 }); // For filtering by user type (mediator/attorney/party)
+userSchema.index({ accountType: 1, subscriptionTier: 1 }); // Compound index for common queries
 
 // Hash password before saving
 userSchema.pre('save', async function() {
@@ -129,7 +137,8 @@ userSchema.methods.generateAccessToken = function() {
     {
       userId: this._id,
       email: this.email,
-      subscriptionTier: this.subscriptionTier
+      subscriptionTier: this.subscriptionTier,
+      accountType: this.accountType
     },
     process.env.JWT_SECRET,
     { expiresIn: '15m' }
