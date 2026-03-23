@@ -1,0 +1,55 @@
+# ==============================================================================
+# Docker Compose Production Override for Oracle Cloud
+# ==============================================================================
+#
+# USAGE:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# PURPOSE:
+#   - Use pre-built images from GitHub Container Registry (GHCR)
+#   - Expose ports publicly (not localhost-only)
+#   - Production-optimized settings
+#
+# This file OVERRIDES settings from docker-compose.yml for production deployment.
+# ==============================================================================
+
+services:
+  # Backend: Use pre-built image from GHCR
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY:-carolbonk/fairmediator}/backend:${IMAGE_TAG:-latest}
+    build: null  # Disable build - use pre-built image only
+    volumes:
+      # Remove dev volume mounts in production
+      - ./backend/logs:/app/logs  # Keep logs only
+      - fairmediator_backend_node_modules:/app/node_modules
+    ports:
+      - "0.0.0.0:4001:4001"  # Public access on port 4001 (maps to container port 4001)
+    environment:
+      NODE_ENV: production
+
+  # Frontend: Use pre-built image from GHCR
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY:-carolbonk/fairmediator}/frontend:${IMAGE_TAG:-latest}
+    build: null  # Disable build - use pre-built image only
+    ports:
+      - "0.0.0.0:4010:8080"  # Public access on port 4010 (maps to container Nginx port 8080)
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:4001}
+
+  # MongoDB: Keep same config but expose publicly for remote access (optional)
+  mongodb:
+    ports:
+      - "127.0.0.1:4030:27017"  # Keep MongoDB localhost-only for security
+      # If you need remote MongoDB access, uncomment:
+      # - "0.0.0.0:4030:27017"
+
+# Volumes remain the same
+volumes:
+  fairmediator_mongodb_data:
+  fairmediator_mongodb_config:
+  fairmediator_backend_node_modules:
+
+# Networks remain the same
+networks:
+  backend-network:
+  db-network:

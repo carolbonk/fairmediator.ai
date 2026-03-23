@@ -101,15 +101,54 @@ jobs:
           sarif_file: 'trivy-results.sarif'
         if: github.event_name != 'pull_request'
 
-  # Deploy notification (optional - can be extended)
+  # Automation trigger - sends deployment event to N8N for orchestration
   notify:
-    name: Deployment Notification
+    name: Trigger Automation Workflows
     runs-on: ubuntu-latest
     needs: build-and-push
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Deployment successful
+      - name: Log deployment success
         run: |
           echo "✅ Docker images built and pushed successfully"
           echo "Backend: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest"
           echo "Frontend: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest"
+
+      - name: Send webhook to N8N (automation orchestration)
+        if: secrets.N8N_WEBHOOK_URL != ''
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event": "deployment_success",
+              "timestamp": "${{ github.event.head_commit.timestamp }}",
+              "commit_message": "${{ github.event.head_commit.message }}",
+              "commit_sha": "${{ github.sha }}",
+              "author": "${{ github.event.head_commit.author.name }}",
+              "repository": "${{ github.repository }}",
+              "backend_image": "${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest",
+              "frontend_image": "${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest",
+              "branch": "${{ github.ref_name }}",
+              "trigger_actions": [
+                "check_quota",
+                "scrape_fec_batch",
+                "aggregate_logs",
+                "generate_blog_post"
+              ]
+            }'
+        continue-on-error: true
+
+      - name: Trigger backend automation endpoint (optional)
+        if: secrets.BACKEND_URL != ''
+        run: |
+          curl -X POST "${{ secrets.BACKEND_URL }}/api/automation/trigger" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
+            -d '{
+              "workflow": "quota-check-alert",
+              "data": {
+                "source": "github_actions",
+                "commit": "${{ github.sha }}"
+              }
+            }'
+        continue-on-error: true

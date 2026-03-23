@@ -55,13 +55,14 @@ export const AuthProvider = ({ children }) => {
     setUser(userResponse.data.data.user);
   };
 
-  const register = async (email, password, name) => {
+  const register = async (email, password, name, accountType) => {
     try {
       setError(null);
       const response = await axios.post(`${API_URL}/auth/register`, {
         email,
         password,
-        name
+        name,
+        accountType
       });
 
       const { user, accessToken, refreshToken } = response.data.data;
@@ -76,12 +77,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, accountType) => {
     try {
       setError(null);
       const response = await axios.post(`${API_URL}/auth/login`, {
         email,
-        password
+        password,
+        accountType
       });
 
       const { user, accessToken, refreshToken } = response.data.data;

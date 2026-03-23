@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // In production (Netlify), use /api which redirects to /.netlify/functions/api
-// In development, use VITE_API_URL (localhost:5001/api)
+// In development, use VITE_API_URL (localhost:4011/api)
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
@@ -354,6 +354,37 @@ export const listApiKeys = async () => {
 
 export const revokeApiKey = async (id) => {
   const response = await api.delete(`/keys/${id}`);
+  return response.data;
+};
+
+// Collaborative Notes API
+export const getNotes = async (params = {}) => {
+  const response = await api.get('/notes', { params });
+  return response.data;
+};
+
+export const createNote = async (noteData) => {
+  const response = await api.post('/notes', noteData);
+  return response.data;
+};
+
+export const updateNote = async (id, updates) => {
+  const response = await api.patch(`/notes/${id}`, updates);
+  return response.data;
+};
+
+export const deleteNote = async (id) => {
+  const response = await api.delete(`/notes/${id}`);
+  return response.data;
+};
+
+export const searchNotes = async (query) => {
+  const response = await api.get('/notes', { params: { q: query } });
+  return response.data;
+};
+
+export const getNoteStats = async () => {
+  const response = await api.get('/notes/stats');
   return response.data;
 };
 

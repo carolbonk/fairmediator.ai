@@ -15,7 +15,7 @@ import React, { useState, useEffect } from 'react';
 import { FaDatabase, FaTimes, FaCheckCircle, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4011';
 
 const DataLoadingPopup = ({
   apiBaseUrl = `${API_BASE_URL}/api`,

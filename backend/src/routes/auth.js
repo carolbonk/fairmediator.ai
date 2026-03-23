@@ -15,13 +15,14 @@ const { setAuthCookies, clearAuthCookies, getRefreshToken } = require('../config
 const logger = require('../config/logger');
 const UsageLog = require('../models/UsageLog');
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
+const { linkUserToMediatorProfile } = require('../services/mediatorLinkingService');
 
 /**
  * POST /api/auth/register
  * Register a new user
  */
 router.post('/register', authLimiter, validate(schemas.register), asyncHandler(async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, accountType } = req.body;
 
   // Check if user exists
   const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -41,6 +42,7 @@ router.post('/register', authLimiter, validate(schemas.register), asyncHandler(a
     email: email.toLowerCase(),
     password, // Will be hashed by User model pre-save hook
     name,
+    accountType, // mediator, attorney, or party
     subscriptionTier: 'free',
     emailVerified: false,
     emailVerificationToken: verificationHash,
@@ -79,15 +81,30 @@ router.post('/register', authLimiter, validate(schemas.register), asyncHandler(a
     eventType: 'user_registered',
     metadata: {
       subscriptionTier: 'free',
-      emailVerified: false
+      emailVerified: false,
+      accountType: user.accountType
     }
   });
 
-  sendSuccess(res, {
+  // Auto-link mediator profile if account type is mediator
+  let mediatorProfile = null;
+  if (accountType === 'mediator') {
+    const linkResult = await linkUserToMediatorProfile(user._id);
+    if (linkResult.success) {
+      mediatorProfile = linkResult.mediator;
+      logger.info('Auto-linked mediator profile on registration', {
+        userId: user._id,
+        mediatorId: mediatorProfile._id
+      });
+    }
+  }
+
+  const responseData = {
     user: {
       id: user._id,
       email: user.email,
       name: user.name,
+      accountType: user.accountType,
       subscriptionTier: user.subscriptionTier,
       emailVerified: user.emailVerified,
       role: user.role
@@ -95,7 +112,18 @@ router.post('/register', authLimiter, validate(schemas.register), asyncHandler(a
     emailVerificationSent: true,
     // Note: Tokens now in httpOnly cookies for security
     authMethod: 'cookie'
-  }, 201, 'Registration successful. Please check your email to verify your account.');
+  };
+
+  // Include mediator profile if linked
+  if (mediatorProfile) {
+    responseData.mediatorProfile = {
+      id: mediatorProfile._id,
+      name: mediatorProfile.name,
+      linked: true
+    };
+  }
+
+  sendSuccess(res, responseData, 201, 'Registration successful. Please check your email to verify your account.');
 }));
 
 /**
@@ -103,7 +131,7 @@ router.post('/register', authLimiter, validate(schemas.register), asyncHandler(a
  * Login existing user
  */
 router.post('/login', authLimiter, validate(schemas.login), asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, accountType } = req.body;
 
   // Find user
   const user = await User.findOne({ email: email.toLowerCase() });
@@ -113,6 +141,18 @@ router.post('/login', authLimiter, validate(schemas.login), asyncHandler(async (
       userAgent: req.get('user-agent')
     });
     return sendUnauthorized(res, 'Invalid email or password');
+  }
+
+  // Verify accountType if provided (optional security check)
+  if (accountType && user.accountType !== accountType) {
+    logger.security.failedLogin(email.toLowerCase(), req.ip, {
+      userId: user._id,
+      reason: 'account_type_mismatch',
+      expected: user.accountType,
+      provided: accountType,
+      userAgent: req.get('user-agent')
+    });
+    return sendUnauthorized(res, 'Invalid account credentials');
   }
 
   // Check if account is locked
@@ -184,6 +224,7 @@ router.post('/login', authLimiter, validate(schemas.login), asyncHandler(async (
       id: user._id,
       email: user.email,
       name: user.name,
+      accountType: user.accountType,
       subscriptionTier: user.subscriptionTier,
       emailVerified: user.emailVerified,
       role: user.role,
@@ -307,6 +348,7 @@ router.get('/me', authenticate, asyncHandler(async (req, res) => {
       id: req.user._id,
       email: req.user.email,
       name: req.user.name,
+      accountType: req.user.accountType,
       subscriptionTier: req.user.subscriptionTier,
       emailVerified: req.user.emailVerified,
       usageStats: req.user.usageStats,
@@ -492,6 +534,76 @@ router.post('/resend-verification', emailVerificationLimiter, authenticate, asyn
   });
 
   sendSuccess(res, null, 200, 'Verification email sent. Please check your inbox.');
+}));
+
+/**
+ * PUT /api/auth/select-account-type
+ * Allow users without accountType to select it
+ * Used for migrating legacy users
+ */
+router.put('/select-account-type', authenticate, asyncHandler(async (req, res) => {
+  const { accountType } = req.body;
+
+  // Validate account type
+  if (!accountType || !['mediator', 'attorney', 'party'].includes(accountType)) {
+    return sendValidationError(res, 'Account type must be mediator, attorney, or party');
+  }
+
+  // Only allow if user doesn't already have an accountType
+  if (req.user.accountType) {
+    return sendError(res, 400, 'Account type already set', {
+      message: 'You cannot change your account type. Please contact support if needed.'
+    });
+  }
+
+  // Update user account type
+  req.user.accountType = accountType;
+  await req.user.save();
+
+  // If mediator, try to auto-link profile
+  let mediatorProfile = null;
+  if (accountType === 'mediator') {
+    const linkResult = await linkUserToMediatorProfile(req.user._id);
+    if (linkResult.success) {
+      mediatorProfile = linkResult.mediator;
+      logger.info('Auto-linked mediator profile on account type selection', {
+        userId: req.user._id,
+        mediatorId: mediatorProfile._id
+      });
+    }
+  }
+
+  await UsageLog.create({
+    user: req.user._id,
+    eventType: 'account_type_selected',
+    metadata: {
+      accountType,
+      mediatorLinked: !!mediatorProfile
+    }
+  });
+
+  const responseData = {
+    user: {
+      id: req.user._id,
+      email: req.user.email,
+      name: req.user.name,
+      accountType: req.user.accountType,
+      subscriptionTier: req.user.subscriptionTier,
+      emailVerified: req.user.emailVerified,
+      role: req.user.role
+    },
+    message: 'Account type set successfully'
+  };
+
+  if (mediatorProfile) {
+    responseData.mediatorProfile = {
+      id: mediatorProfile._id,
+      name: mediatorProfile.name,
+      linked: true
+    };
+  }
+
+  sendSuccess(res, responseData, 200, 'Account type set successfully');
 }));
 
 module.exports = router;

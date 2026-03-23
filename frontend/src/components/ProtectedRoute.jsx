@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import AccountTypeSelector from './auth/AccountTypeSelector';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -22,7 +23,15 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  // Show account type selector for users without accountType (legacy migration)
+  const showAccountTypeSelector = user && !user.accountType;
+
+  return (
+    <>
+      {showAccountTypeSelector && <AccountTypeSelector />}
+      {children}
+    </>
+  );
 };
 
 export default ProtectedRoute;

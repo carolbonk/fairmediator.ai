@@ -1,38 +1,43 @@
 # Docker Compose for Development Environment
 # Includes MongoDB, Redis, and all services for local testing
 
-version: '3.8'
+# Explicit project naming for isolation
+# Use "fairmediator-dev" to keep dev environment separate from production
+name: fairmediator-dev
 
 services:
   # ==================== MongoDB ====================
   mongodb:
     image: mongo:7
-    container_name: fairmediator-mongo-dev
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}-mongodb
     restart: unless-stopped
     ports:
-      - '27017:27017'
+      - '127.0.0.1:4030:27017'  # MongoDB (FairMediator port range: 4000-4499)
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: dev_password_change_in_production
       MONGO_INITDB_DATABASE: fairmediator
     volumes:
-      - mongodb_data:/data/db
+      - fairmediator_dev_mongodb_data:/data/db
       - ./backend/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
-      - fairmediator-network
+      - db-network
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/fairmediator --quiet
       interval: 10s
       timeout: 5s
       retries: 5
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
 
   # ==================== MongoDB Express (Web UI) ====================
   mongo-express:
     image: mongo-express:latest
-    container_name: fairmediator-mongo-express-dev
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}-mongo-express
     restart: unless-stopped
     ports:
-      - '8081:8081'
+      - '127.0.0.1:4031:8081'  # Mongo Express (FairMediator port range: 4000-4499)
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: dev_password_change_in_production
@@ -42,71 +47,121 @@ services:
     depends_on:
       - mongodb
     networks:
-      - fairmediator-network
+      - db-network  # Only needs access to database
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
   # ==================== Backend API ====================
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    container_name: fairmediator-backend-dev
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}-backend
     restart: unless-stopped
     ports:
-      - '5001:5001'
-      - '9229:9229' # Debug port
+      - '127.0.0.1:4011:4001'  # Backend API Dev (FairMediator port range: 4000-4499)
+      - '127.0.0.1:4012:9229'  # Debug port (FairMediator port range: 4000-4499)
     environment:
       - NODE_ENV=development
-      - PORT=5001
+      - PORT=4001
       - MONGODB_URI=mongodb://admin:dev_password_change_in_production@mongodb:27017/fairmediator?authSource=admin
       - JWT_SECRET=dev_jwt_secret_change_in_production
       - SESSION_SECRET=dev_session_secret_change_in_production
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend:/app  # Dev mode needs write access for hot reload
+      - fairmediator_dev_backend_node_modules:/app/node_modules
       - ./backend/logs:/app/logs
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
-      - fairmediator-network
+      - backend-network
+      - db-network
     command: npm run dev
+    # Security hardening (relaxed for dev)
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
   # ==================== Frontend ====================
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: fairmediator-frontend-dev
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}-frontend
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '4010:4010'  # Frontend Dev (FairMediator port range: 4000-4499)
     environment:
-      - VITE_API_URL=http://localhost:5001/api
-      - VITE_WS_URL=ws://localhost:5001
+      - VITE_PORT=4010
+      - VITE_API_URL=http://localhost:4011/api
+      - VITE_WS_URL=ws://localhost:4011
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/app  # Dev mode needs write access for hot reload
+      - fairmediator_dev_frontend_node_modules:/app/node_modules
     depends_on:
       - backend
     networks:
-      - fairmediator-network
+      - backend-network
     command: npm run dev
+    # Security hardening (relaxed for dev)
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
   # ==================== Mailhog (Email Testing) ====================
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: fairmediator-mailhog-dev
+    container_name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}-mailhog
     restart: unless-stopped
     ports:
-      - '1025:1025' # SMTP server
-      - '8025:8025' # Web UI
+      - '127.0.0.1:4014:1025'  # Mailhog SMTP (FairMediator port range: 4000-4499)
+      - '127.0.0.1:4013:8025'  # Mailhog UI (FairMediator port range: 4000-4499)
     networks:
-      - fairmediator-network
+      - backend-network  # Backend can send emails to it
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
 
 networks:
-  fairmediator-network:
+  # Segmented networks for defense in depth
+  db-network:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}_db_network
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+
+  backend-network:
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}_backend_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
 
 volumes:
-  mongodb_data:
+  # Project-scoped volumes with explicit naming for isolation
+  fairmediator_dev_mongodb_data:
     driver: local
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}_mongodb_data
+  fairmediator_dev_backend_node_modules:
+    driver: local
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}_backend_node_modules
+  fairmediator_dev_frontend_node_modules:
+    driver: local
+    name: ${COMPOSE_PROJECT_NAME:-fairmediator-dev}_frontend_node_modules
