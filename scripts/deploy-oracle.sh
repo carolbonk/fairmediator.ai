@@ -128,7 +128,7 @@ deploy_status() {
   log_info "Health Checks:"
 
   # Check backend
-  BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5001/health || echo "000")
+  BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4001/health || echo "000")
   if [ "$BACKEND_STATUS" = "200" ]; then
     log_success "Backend: Healthy (HTTP $BACKEND_STATUS)"
   else

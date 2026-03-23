@@ -193,7 +193,7 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:4001}
     ports:
-      - "127.0.0.1:${FRONTEND_PORT:-4000}:8080"  # Frontend (FairMediator port range: 4000-4499)
+      - "127.0.0.1:4010:8080"  # Frontend (FairMediator port range: 4000-4499)
     networks:
       - backend-network  # Can communicate with backend
     labels:

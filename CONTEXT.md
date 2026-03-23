@@ -773,7 +773,7 @@ All recent work documented in [CHANGELOG.md](./CHANGELOG.md)
 
 **2. Port 3000 → 4010 Migration ✅**
 - **Eliminated all port 3000 references** throughout codebase and documentation
-- **Updated CORS_ORIGIN defaults** in `backend/src/server.js` from `http://localhost:3000` to `http://localhost:4010`
+- **Updated CORS_ORIGIN defaults** in `backend/src/server.js` from `http://localhost:4010` to `http://localhost:4010`
 - **Updated test files** (`subscription.test.js`) to use 4010 for Stripe redirect URLs
 - **Updated 6 documentation files:** ORACLE_CLOUD_DEPLOYMENT.md, DOCKER_MANAGEMENT_COMPLETE.md, README_DOCKER.md, DOCKER_ISOLATION.md, DOCKER_QUICKSTART.md, tools/quick-start.sh
 - **Rationale:** Port 3000 was never exposed on host (only used internally), but references in code/docs were confusing and violated RULE 9

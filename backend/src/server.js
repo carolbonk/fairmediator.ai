@@ -60,7 +60,7 @@ const cronScheduler = require('./services/scraping/cronScheduler');
 const { monitor } = require('./utils/freeTierMonitor');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 4001;
 
 // HTTPS Enforcement (production only)
 if (process.env.NODE_ENV === 'production') {

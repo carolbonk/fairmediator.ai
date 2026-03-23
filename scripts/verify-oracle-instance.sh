@@ -169,7 +169,7 @@ if echo "$UFW_STATUS" | grep -q "Status: active"; then
   echo -e "${GREEN}✓${NC} UFW firewall is active"
 
   # Check required ports
-  REQUIRED_PORTS=("22" "80" "443" "4010" "5001")
+  REQUIRED_PORTS=("22" "80" "443" "4010" "4001" "4030")
   for PORT in "${REQUIRED_PORTS[@]}"; do
     if echo "$UFW_STATUS" | grep -q "^$PORT/"; then
       echo -e "${GREEN}  ✓${NC} Port $PORT is open"

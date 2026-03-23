@@ -235,22 +235,6 @@ Machine learning classification based on:
 
 Contributions welcome! Please read CONTRIBUTING.md first.
 
-## 🛣️ Roadmap
-
-- [x] Phase 1: MVP (Chat + basic mediator list) ✅
-- [x] Phase 2: Affiliation detection engine ✅
-- [x] Phase 3: Ideological classification ✅
-- [x] Phase 4: HuggingFace Spaces demo ✅
-- [x] Phase 5: Netlify deployment with serverless functions ✅
-- [x] Phase 6: Production deployment (Render + Netlify) ✅
-- [x] Phase 7: Free tier monitoring system ✅
-- [x] Phase 8: Advanced AI systems (agents, chains, perspectives, IDP, QA) ✅
-- [x] Phase 9: Automated 50-state scraping pipeline ✅
-- [x] Phase 10: Mediator Marketplace application flow (apply, review, FM- reference IDs) ✅
-- [x] Phase 11: B2B Public API (`/api/v1/mediators`, `/api/v1/conflict-check`, API key management) ✅
-- [ ] Phase 12: Fine-tuned models for legal domain
-- [ ] Phase 13: Mobile app (React Native)
-
 ### Installation
 
 1. **Clone repository**:
@@ -321,29 +305,6 @@ SESSION_SECRET=your_session_secret
 # Optional: Stripe (only for paid subscriptions)
 # STRIPE_SECRET_KEY=your_stripe_key
 ```
-
-## 🚀 Deploy to Production (FREE)
-
-FairMediator can be deployed to **Netlify for FREE** with serverless functions:
-
-```bash
-# Quick deploy (3 minutes)
-make netlify-deploy
-
-# Or follow the detailed guide
-See: QUICK_START_NETLIFY.md
-```
-
-**What you get for FREE:**
-- ✅ Netlify Functions (125k requests/month)
-- ✅ Netlify Forms (100 submissions/month)
-- ✅ SSL Certificate (automatic)
-- ✅ Global CDN
-- ✅ Auto-deploy from Git
-
-**Deployment Options:**
-- **Serverless (Netlify Functions)**: [NETLIFY.md](./NETLIFY.md)
-- **Traditional (Dedicated Backend)**: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 📚 Learn More
 

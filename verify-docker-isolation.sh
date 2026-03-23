@@ -106,11 +106,11 @@ if [ "$CONTAINERS" -gt 0 ]; then
     fi
 
     # Check if Backend is bound to localhost only
-    BACKEND_PORT=$(docker ps --filter "name=fairmediator-backend" --format "{{.Ports}}" | grep -o "127.0.0.1:5001" || true)
+    BACKEND_PORT=$(docker ps --filter "name=fairmediator-backend" --format "{{.Ports}}" | grep -o "127.0.0.1:4001" || true)
     if [ -n "$BACKEND_PORT" ]; then
-        pass "Backend API bound to localhost only (127.0.0.1:5001)"
+        pass "Backend API bound to localhost only (127.0.0.1:4001)"
     else
-        BACKEND_PORT_ANY=$(docker ps --filter "name=fairmediator-backend" --format "{{.Ports}}" | grep "5001" || true)
+        BACKEND_PORT_ANY=$(docker ps --filter "name=fairmediator-backend" --format "{{.Ports}}" | grep "4001" || true)
         if [ -n "$BACKEND_PORT_ANY" ]; then
             warn "Backend port exposed - consider binding to 127.0.0.1 only"
             echo "   Current: $BACKEND_PORT_ANY"

@@ -48,7 +48,7 @@ scrape_configs:
   # Uncomment when you add a /metrics endpoint to your backend
   # - job_name: 'fairmediator-backend'
   #   static_configs:
-  #     - targets: ['fairmediator-backend:5001']
+  #     - targets: ['fairmediator-backend:4001']
   #       labels:
   #         service: 'backend'
   #         stack: 'application'
