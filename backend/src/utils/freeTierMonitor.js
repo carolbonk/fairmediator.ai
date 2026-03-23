@@ -34,6 +34,39 @@ const FREE_TIER_LIMITS = {
     monthly: parseInt(process.env.SCRAPING_MONTHLY_LIMIT) || 15000,
     daily: parseInt(process.env.SCRAPING_DAILY_LIMIT) || 450,
     name: 'Web Scraping'
+  },
+  axiom: {
+    monthly: parseInt(process.env.AXIOM_MONTHLY_LIMIT) || 170000, // 166MB ≈ 170k logs at 1KB/log
+    daily: parseInt(process.env.AXIOM_DAILY_LIMIT) || 5666, // 170k/month ÷ 30 days
+    name: 'Axiom Logging'
+  },
+  // Oracle Cloud Always Free Limits (Infrastructure Monitoring)
+  oracle_cpu: {
+    monthly: null, // Not cumulative - tracks current usage
+    daily: null,
+    limit: parseInt(process.env.ORACLE_CPU_LIMIT) || 4, // 4 ARM cores max
+    name: 'Oracle Cloud CPU',
+    type: 'realtime' // Real-time monitoring, not cumulative
+  },
+  oracle_ram: {
+    monthly: null,
+    daily: null,
+    limit: parseInt(process.env.ORACLE_RAM_LIMIT) || (24 * 1024), // 24GB in MB
+    name: 'Oracle Cloud RAM',
+    type: 'realtime'
+  },
+  oracle_storage: {
+    monthly: null,
+    daily: null,
+    limit: parseInt(process.env.ORACLE_STORAGE_LIMIT) || (200 * 1024), // 200GB in MB
+    name: 'Oracle Cloud Block Storage',
+    type: 'size'
+  },
+  oracle_bandwidth: {
+    monthly: parseInt(process.env.ORACLE_BANDWIDTH_LIMIT) || (10 * 1024), // 10TB in GB
+    daily: parseInt(process.env.ORACLE_BANDWIDTH_DAILY_LIMIT) || 340, // 10TB ÷ 30 days ≈ 340GB/day
+    name: 'Oracle Cloud Bandwidth',
+    type: 'transfer'
   }
 };
 
@@ -317,9 +350,42 @@ class FreeTierMonitor {
     const usage = this.usage[service]?.[today];
     const limit = FREE_TIER_LIMITS[service]?.daily;
 
-    if (!usage || !limit) return null;
+    if (!usage || !limit) {
+      return { daily: limit || 0, monthly: FREE_TIER_LIMITS[service]?.monthly || 0 };
+    }
 
-    return Math.max(0, limit - usage.count);
+    return {
+      daily: Math.max(0, limit - usage.count),
+      monthly: FREE_TIER_LIMITS[service]?.monthly || 0
+    };
+  }
+
+  /**
+   * Get current usage for service
+   */
+  getUsage(service) {
+    const today = new Date().toISOString().split('T')[0];
+    const usage = this.usage[service]?.[today];
+
+    if (!usage) {
+      return { daily: 0, monthly: 0 };
+    }
+
+    return {
+      daily: usage.count || 0,
+      monthly: usage.count || 0 // Simplified: use daily as monthly estimate
+    };
+  }
+
+  /**
+   * Get next quota reset time (midnight UTC)
+   */
+  getNextReset(service) {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    tomorrow.setUTCHours(0, 0, 0, 0);
+    return tomorrow.toISOString();
   }
 }
 

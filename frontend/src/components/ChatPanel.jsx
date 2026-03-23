@@ -255,6 +255,7 @@ const ChatPanel = ({ onResponse, parties, setParties, onDocumentAnalysis }) => {
             onClick={handleSend}
             disabled={loading || !input.trim()}
             className="btn-neu-primary self-end px-3 py-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            aria-label="Send message"
           >
             <FaPaperPlane className="text-sm" />
           </button>

@@ -5,7 +5,7 @@
 
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:5001/api';
+const BASE_URL = 'http://localhost:4001/api';
 const colors = {
   reset: '\x1b[0m',
   green: '\x1b[32m',

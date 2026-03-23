@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../Footer';
+import logo from '../../images/Fair_Mediator_logoBlue.svg';
 
 const ROLES = [
   { value: 'mediator',  label: 'Mediator' },
@@ -37,7 +38,7 @@ const LoginForm = () => {
       return;
     }
 
-    const result = await login(formData.email, formData.password);
+    const result = await login(formData.email, formData.password, formData.role);
 
     if (result.success) {
       navigate('/dashboard');
@@ -67,6 +68,11 @@ const LoginForm = () => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8 sm:p-10">
+
+            {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <img src={logo} alt="FairMediator Logo" className="h-12 w-auto" />
+            </div>
 
             {/* Heading */}
             <div className="mb-8">

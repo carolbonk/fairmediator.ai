@@ -185,6 +185,22 @@
     outline: none;
   }
 
+  /* Mobile touch target accessibility - minimum 48x48px tap targets */
+  @media (max-width: 768px) {
+    .btn-neu,
+    .btn-neu-primary,
+    button:not([class*="text-"]):not([class*="p-0"]):not([class*="p-1"]) {
+      min-width: 48px;
+      min-height: 48px;
+    }
+
+    /* Ensure interactive elements have spacing on mobile */
+    button + button,
+    a + a {
+      margin-left: 0.5rem;
+    }
+  }
+
   .card-neu {
     background-color: #F3F4F6; /* bg-neu-100 */
     border-radius: 1rem; /* rounded-neu-lg, adjust as needed */

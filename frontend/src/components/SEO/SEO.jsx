@@ -19,7 +19,7 @@ const SEO = ({
   title,
   description,
   canonical,
-  image = '/og-image.png?v=2',
+  image = '/og-image.png?v=3',
   type = 'website',
   jsonLd,
   keywords = [],

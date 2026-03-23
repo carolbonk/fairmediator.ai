@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 
 const mediatorSchema = new mongoose.Schema({
+  // User Account Link
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true, // Not all mediators have user accounts (legacy data)
+    index: true
+  },
   // Basic Info
   name: {
     type: String,

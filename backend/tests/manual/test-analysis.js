@@ -8,7 +8,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'http://localhost:5001/api/analysis';
+const BASE_URL = 'http://localhost:4001/api/analysis';
 
 // Test 1: Text Analysis
 async function testTextAnalysis() {

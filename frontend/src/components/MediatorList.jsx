@@ -570,19 +570,19 @@ const MediatorList = ({ parties }) => {
                     <div className="space-y-2">
                       {selectedMediator.location && (
                         <div className="flex items-center gap-3">
-                          <FaMapMarkerAlt className="text-white/40 text-base flex-shrink-0" />
+                          <FaMapMarkerAlt className="text-white/60 text-base flex-shrink-0" />
                           <span className="text-white/80 text-sm">{selectedMediator.location.city}, {selectedMediator.location.state}</span>
                         </div>
                       )}
                       {selectedMediator.yearsExperience && (
                         <div className="flex items-center gap-3">
-                          <FaBriefcase className="text-white/40 text-base flex-shrink-0" />
+                          <FaBriefcase className="text-white/60 text-base flex-shrink-0" />
                           <span className="text-white/80 text-sm">{selectedMediator.yearsExperience} years of experience</span>
                         </div>
                       )}
                       {selectedMediator.hourlyRate && (
                         <div className="flex items-center gap-3">
-                          <FaDollarSign className="text-white/40 text-base flex-shrink-0" />
+                          <FaDollarSign className="text-white/60 text-base flex-shrink-0" />
                           <span className="text-white font-semibold text-sm">${selectedMediator.hourlyRate}/hour</span>
                         </div>
                       )}
@@ -691,13 +691,13 @@ const MediatorList = ({ parties }) => {
                     <h3 className="text-sm font-semibold text-white mb-3">Contact Information</h3>
                     <div className="space-y-2">
                       <div className="flex items-center gap-3 text-white/70">
-                        <svg className="w-4 h-4 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                         <span className="text-xs">{selectedMediator.name.toLowerCase().replace(' ', '.')}@fairmediator.com</span>
                       </div>
                       <div className="flex items-center gap-3 text-white/70">
-                        <svg className="w-4 h-4 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
                         <span className="text-xs">(555) {Math.floor(Math.random() * 900 + 100)}-{Math.floor(Math.random() * 9000 + 1000)}</span>
@@ -774,7 +774,7 @@ const MediatorList = ({ parties }) => {
                 {/* Day labels */}
                 <div className="grid grid-cols-7 mb-2">
                   {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
-                    <div key={d} className="text-center text-white/40 text-xs font-medium py-1">{d}</div>
+                    <div key={d} className="text-center text-white/60 text-xs font-medium py-1">{d}</div>
                   ))}
                 </div>
 

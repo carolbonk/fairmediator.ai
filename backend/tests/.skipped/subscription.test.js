@@ -58,8 +58,8 @@ describe('Subscription API', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           priceId: 'price_test_premium',
-          successUrl: 'http://localhost:3000/success',
-          cancelUrl: 'http://localhost:3000/cancel'
+          successUrl: 'http://localhost:4010/success',
+          cancelUrl: 'http://localhost:4010/cancel'
         });
 
       expect(res.status).toBe(200);
@@ -73,7 +73,7 @@ describe('Subscription API', () => {
         .post('/api/subscription/checkout')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          successUrl: 'http://localhost:3000/success'
+          successUrl: 'http://localhost:4010/success'
         });
 
       expect(res.status).toBe(400);
@@ -94,7 +94,7 @@ describe('Subscription API', () => {
         .post('/api/subscription/portal')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          returnUrl: 'http://localhost:3000/dashboard'
+          returnUrl: 'http://localhost:4010/dashboard'
         });
 
       expect(res.status).toBe(200);

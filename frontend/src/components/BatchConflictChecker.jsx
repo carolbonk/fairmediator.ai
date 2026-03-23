@@ -23,7 +23,7 @@ import { FaUpload, FaDownload, FaSpinner, FaCheckCircle, FaTimesCircle, FaFileAl
 import ConflictBadge from './ConflictBadge';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4011';
 
 const BatchConflictChecker = ({ apiBaseUrl = `${API_BASE_URL}/api` }) => {
   const [file, setFile] = useState(null);
