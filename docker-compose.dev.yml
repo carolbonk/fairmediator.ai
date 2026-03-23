@@ -1,8 +1,6 @@
 # Docker Compose for Development Environment
 # Includes MongoDB, Redis, and all services for local testing
 
-version: '3.8'
-
 # Explicit project naming for isolation
 # Use "fairmediator-dev" to keep dev environment separate from production
 name: fairmediator-dev

@@ -13,8 +13,6 @@
 # This file OVERRIDES settings from docker-compose.yml for production deployment.
 # ==============================================================================
 
-version: '3.8'
-
 services:
   # Backend: Use pre-built image from GHCR
   backend:

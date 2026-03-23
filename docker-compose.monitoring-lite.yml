@@ -3,8 +3,6 @@
 # Already have: Portainer + Watchtower (no duplicates!)
 # This adds: Just metrics collection for Portainer to display
 
-version: '3.8'
-
 name: fairmediator-monitoring-lite
 
 services:
