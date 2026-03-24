@@ -2,7 +2,7 @@
 
 > **📊 File Metadata**
 > - **Size:** ~700 lines (restructured from 1599 lines)
-> - **Last Updated:** March 22, 2026
+> - **Last Updated:** March 23, 2026
 > - **Changelog:** See [CHANGELOG.md](./CHANGELOG.md) for historical changes
 > - **Purpose:** Current project state, rules, roadmap
 
@@ -1436,7 +1436,7 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 **SHORT-TERM (Weeks 1-4):**
 - [ ] First 10 customers: Email 50 lawyers (5), Reddit launch (3), cold email 100 firms (2)
 - [ ] Metrics dashboard: Conflict rate 40%, time <3min, conversion 10-20%, NPS 50+
-- [ ] **Complete Team Workspaces backend routes** - Create `routes/workspaces.js` + `routes/sharedLists.js` to enable revenue feature (team plans $199/mo + $29/user). Models already exist (Workspace.js, SharedList.js), need CRUD API endpoints.
+- [x] **Complete Team Workspaces backend routes** - Created `routes/workspaces.js` (9 endpoints) + `routes/sharedLists.js` (10 endpoints) to enable revenue feature (team plans $199/mo + $29/user). Backend 100% complete, frontend pending.
 - [ ] **Database health audit** - Identify missing compound indexes, orphaned documents, verify foreign key relationships, check for duplicate data. Priorities: (1) Add `{ accountType: 1, subscriptionTier: 1, _id: 1 }` covering index for dashboard queries, (2) Audit Entity/Relationship collections for FEC data integrity, (3) Check for mediators without userId links.
 - [x] Week 1 fixes: Remove console.logs, scraper 501 endpoints → 404, password reset emails (`auth.js:343`), PDF/DOCX parsing (`pdf-parse` + `mammoth`)
 - [x] M6: Create `POST /api/mediators/apply` endpoint + MongoDB MediatorApplication collection + confirmation email
@@ -1445,19 +1445,20 @@ GitHub Deploy Success → Webhook → N8N → Orchestrate 7 Workflows → Axiom 
 
 **ENTERPRISE FEATURES - PHASE 1 (Weeks 2-5, $0 cost):**
 See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-cost---16-free-features) section below
-- [ ] #17 - Collaborative Case Notes & Internal Annotations (2 days) - **IN PROGRESS: 80% complete**
+- [x] #17 - Collaborative Case Notes & Internal Annotations (2 days) - **COMPLETE: 100%** ✅
   - ✅ Schema: Note model with full-text search, tags, team sharing (models/Note.js)
   - ✅ Backend: 6 CRUD endpoints (GET/POST/PATCH/DELETE /api/notes, search, stats) - routes/notes.js
   - ✅ Frontend: API service integration (6 methods in services/api.js)
   - ✅ Frontend: NotesSection component with create/update/delete logic
-  - 🔄 **TODO(human):** Notes list UI display (dark neumorphic cards, edit mode, author/date)
+  - ✅ Frontend: Notes list UI display with dark neumorphic cards, edit mode, author/date metadata
   - Revenue Impact: Reduces churn 30% (sticky feature, switching cost)
-- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **IN PROGRESS: 30% complete**
+- [ ] #15 - Team Workspaces + Shared Mediator Lists (3 days) - **IN PROGRESS: 70% complete**
   - ✅ Schema: Workspace model created (models/Workspace.js) - members, roles, permissions, billing
   - ✅ Schema: SharedList model created (models/SharedList.js) - vetted/blacklist/favorites lists
-  - 🔄 **NEXT:** Backend API routes (routes/workspaces.js + routes/sharedLists.js)
-  - ⏸️ Stopped at: Models complete, routes NOT created yet
-  - TODO: Frontend workspace switcher, invite flow, list management UI
+  - ✅ Backend: Workspace API routes (routes/workspaces.js) - 9 endpoints (CRUD, members, stats)
+  - ✅ Backend: SharedList API routes (routes/sharedLists.js) - 10 endpoints (CRUD, mediator management)
+  - ✅ Backend: Routes registered in server.js (/api/workspaces, /api/shared-lists)
+  - 🔄 **NEXT:** Frontend workspace switcher, invite flow, list management UI
   - Revenue Impact: +40% ARPU via team plans ($199/mo base + $29/user)
 - [ ] #19 - White-Label Reports (Client-Facing Conflict Analysis) (2 days)
 - [ ] #18 - Custom Dashboards + Benchmark Analytics (4 days)
@@ -1542,7 +1543,7 @@ See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-
 
 ### 🏢 **ENTERPRISE FEATURES ROADMAP** ($0 Cost - 16 Free Features)
 
-**Last Updated:** March 17, 2026 - **Enterprise-grade features planned, 100% free to implement**
+**Last Updated:** March 23, 2026 - **Enterprise-grade features planned, 100% free to implement**
 
 **Why These Features:** Law firms require (1) Security/compliance, (2) Workflow integration, (3) Team collaboration, (4) ROI justification. These 16 features address all 4 requirements without paid services, using existing free tier infrastructure (MongoDB M0, Hugging Face, Oracle Cloud).
 
@@ -1556,17 +1557,19 @@ See full roadmap: [ENTERPRISE FEATURES ROADMAP](#-enterprise-features-roadmap-0-
 
 **Target:** Increase stickiness, enable team plans, justify premium pricing
 
-- [ ] **#17 - Collaborative Case Notes & Internal Annotations** (2 days)
+- [x] **#17 - Collaborative Case Notes & Internal Annotations** (2 days) - **COMPLETE** ✅
   - **What:** Team members add private notes to mediator profiles: "worked with on Smith case," "great for patent disputes"
   - **Implementation:** Note model (user + mediator + case linkage), markdown support, search indexing
   - **Revenue Impact:** Reduces churn 30% (switching cost), sticky feature
   - **Cost:** $0 (MongoDB only)
+  - **Status:** Full-stack complete - backend routes, frontend NotesSection component with dark neumorphic UI
 
-- [ ] **#15 - Team Workspaces + Shared Mediator Lists** (3 days)
+- [ ] **#15 - Team Workspaces + Shared Mediator Lists** (3 days) - **70% COMPLETE** 🔄
   - **What:** Departments create shared "vetted mediator" lists, "blacklists", custom tags
   - **Implementation:** Workspace model, shared lists (many-to-many), permission inheritance
   - **Revenue Impact:** +40% ARPU via team plans ($49/user → $199/team + $29/user)
   - **Cost:** $0 (MongoDB only)
+  - **Status:** Backend 100% complete (19 endpoints), frontend pending (workspace switcher, invite flow, list UI)
 
 - [ ] **#19 - White-Label Reports (Client-Facing Conflict Analysis)** (2 days)
   - **What:** Generate white-labeled PDFs to share with clients: "we screened 50 mediators, here's why we chose X"
