@@ -126,3 +126,14 @@ config/traefik/acme.json
 !SECURITY.md
 !CODE_OF_CONDUCT.md
 !.github/pull_request_template.md
+
+# ==============================================================================
+# INTERNAL DEVELOPMENT WORKFLOWS
+# ==============================================================================
+# Claude Code configuration (skills, commands, internal context)
+.claude/
+**/.claude/
+
+# Internal documentation directory (operational details, infrastructure specs)
+docs/
+**/docs/
