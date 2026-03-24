@@ -54,6 +54,8 @@ const automationRoutes = require('./routes/automation'); // N8N automation workf
 const logsRoutes = require('./routes/logs'); // Log aggregation and analysis
 const scoringRoutes = require('./routes/scoring'); // Deterministic scoring pipeline
 const notesRoutes = require('./routes/notes'); // Collaborative case notes
+const workspacesRoutes = require('./routes/workspaces'); // Team workspaces (enterprise collaboration)
+const sharedListsRoutes = require('./routes/sharedLists'); // Shared mediator lists (team curation)
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -271,6 +273,8 @@ app.use('/api/automation', automationRoutes); // N8N automation workflows (trigg
 app.use('/api/logs', logsRoutes); // Log aggregation and analysis
 app.use('/api/scoring', scoringRoutes); // Deterministic scoring pipeline (leaning, affiliation, ranking)
 app.use('/api/notes', notesRoutes); // Collaborative case notes (team knowledge sharing)
+app.use('/api/workspaces', workspacesRoutes); // Team workspaces (enterprise collaboration)
+app.use('/api/shared-lists', sharedListsRoutes); // Shared mediator lists (team curation)
 
 // CSRF error handler
 app.use(csrfErrorHandler);
