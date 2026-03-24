@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 async function checkData() {
   try {
-    const uri = process.env.MONGODB_URI || 'mongodb+srv://carolbonk_db_user:E8vSDCXWLTdaCwtW@fairmediator.bby4jil.mongodb.net/fairmediator';
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      throw new Error('MONGODB_URI environment variable is required. Please set it in your .env file.');
+    }
     await mongoose.connect(uri);
 
     const Mediator = mongoose.model('Mediator', new mongoose.Schema({}, { strict: false }));
