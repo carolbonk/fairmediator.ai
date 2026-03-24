@@ -22,7 +22,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 **DO NOT** create public issues for security vulnerabilities.
 
-Please report security issues to: security@fairmediator.com
+Please report security issues to: security@fairmediator.ai
 
 See [SECURITY.md](SECURITY.md) for details.
 

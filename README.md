@@ -223,7 +223,7 @@ Machine learning classification based on:
 **DO NOT** create public GitHub issues for security vulnerabilities.
 
 **Report via:**
-- Email: security@fairmediator.com
+- Email: security@fairmediator.ai
 - GitHub Security Advisories (preferred)
 
 **Response Timeline:**
