@@ -115,16 +115,16 @@ services:
       SESSION_SECRET: ${SESSION_SECRET}
       CSRF_SECRET: ${CSRF_SECRET}
       # External API keys and rate limits
-      AI_API_KEY: ${AI_API_KEY}
-      AI_DAILY_LIMIT: ${AI_DAILY_LIMIT:-333}
-      EMAIL_API_KEY: ${EMAIL_API_KEY}
-      EMAIL_DAILY_LIMIT: ${EMAIL_DAILY_LIMIT:-50}
+      AI_API_KEY: ${HUGGINGFACE_API_KEY}
+      AI_DAILY_LIMIT: ${HUGGINGFACE_DAILY_LIMIT:-333}
+      EMAIL_API_KEY: ${RESEND_API_KEY}
+      EMAIL_DAILY_LIMIT: ${RESEND_DAILY_LIMIT:-50}
       SCRAPING_DAILY_LIMIT: ${SCRAPING_DAILY_LIMIT:-450}
       # Monitoring and logging
-      LOGGING_DATASET: ${LOGGING_DATASET}
-      LOGGING_TOKEN: ${LOGGING_TOKEN}
-      LOGGING_ORG_ID: ${LOGGING_ORG_ID}
-      LOGGING_ENABLED: ${LOGGING_ENABLED:-true}
+      LOGGING_DATASET: ${AXIOM_DATASET}
+      LOGGING_TOKEN: ${AXIOM_TOKEN}
+      LOGGING_ORG_ID: ${AXIOM_ORG_ID}
+      LOGGING_ENABLED: ${AXIOM_ENABLED:-true}
       # Infrastructure limits (for runtime monitoring)
       CLOUD_CPU_LIMIT: ${CLOUD_CPU_LIMIT:-4}
       CLOUD_RAM_LIMIT: ${CLOUD_RAM_LIMIT:-24576}
@@ -266,13 +266,7 @@ networks:
     name: ${COMPOSE_PROJECT_NAME:-fairmediator}_db_network
     driver: bridge
     internal: false
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
 
   backend-network:
     name: ${COMPOSE_PROJECT_NAME:-fairmediator}_backend_network
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.21.0.0/24
