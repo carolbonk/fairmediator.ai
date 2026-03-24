@@ -388,4 +388,105 @@ export const getNoteStats = async () => {
   return response.data;
 };
 
+// Workspaces API
+export const getWorkspaces = async () => {
+  const response = await api.get('/workspaces');
+  return response.data;
+};
+
+export const getWorkspaceById = async (id) => {
+  const response = await api.get(`/workspaces/${id}`);
+  return response.data;
+};
+
+export const createWorkspace = async (workspaceData) => {
+  const response = await api.post('/workspaces', workspaceData);
+  return response.data;
+};
+
+export const updateWorkspace = async (id, updates) => {
+  const response = await api.patch(`/workspaces/${id}`, updates);
+  return response.data;
+};
+
+export const deleteWorkspace = async (id) => {
+  const response = await api.delete(`/workspaces/${id}`);
+  return response.data;
+};
+
+export const addWorkspaceMember = async (workspaceId, memberData) => {
+  const response = await api.post(`/workspaces/${workspaceId}/members`, memberData);
+  return response.data;
+};
+
+export const removeWorkspaceMember = async (workspaceId, userId) => {
+  const response = await api.delete(`/workspaces/${workspaceId}/members/${userId}`);
+  return response.data;
+};
+
+export const updateMemberRole = async (workspaceId, userId, role) => {
+  const response = await api.patch(`/workspaces/${workspaceId}/members/${userId}`, { role });
+  return response.data;
+};
+
+export const getWorkspaceStats = async (workspaceId) => {
+  const response = await api.get(`/workspaces/${workspaceId}/stats`);
+  return response.data;
+};
+
+// Shared Lists API
+export const getSharedLists = async (workspaceId, type = null) => {
+  const params = { workspaceId };
+  if (type) params.type = type;
+  const response = await api.get('/shared-lists', { params });
+  return response.data;
+};
+
+export const getSharedListById = async (id) => {
+  const response = await api.get(`/shared-lists/${id}`);
+  return response.data;
+};
+
+export const createSharedList = async (listData) => {
+  const response = await api.post('/shared-lists', listData);
+  return response.data;
+};
+
+export const updateSharedList = async (id, updates) => {
+  const response = await api.patch(`/shared-lists/${id}`, updates);
+  return response.data;
+};
+
+export const deleteSharedList = async (id) => {
+  const response = await api.delete(`/shared-lists/${id}`);
+  return response.data;
+};
+
+export const addMediatorToList = async (listId, mediatorData) => {
+  const response = await api.post(`/shared-lists/${listId}/mediators`, mediatorData);
+  return response.data;
+};
+
+export const updateMediatorInList = async (listId, mediatorId, updates) => {
+  const response = await api.patch(`/shared-lists/${listId}/mediators/${mediatorId}`, updates);
+  return response.data;
+};
+
+export const removeMediatorFromList = async (listId, mediatorId) => {
+  const response = await api.delete(`/shared-lists/${listId}/mediators/${mediatorId}`);
+  return response.data;
+};
+
+export const getSharedListStats = async (listId) => {
+  const response = await api.get(`/shared-lists/${listId}/stats`);
+  return response.data;
+};
+
+export const getListsByMediator = async (mediatorId, workspaceId) => {
+  const response = await api.get(`/shared-lists/mediator/${mediatorId}`, {
+    params: { workspaceId }
+  });
+  return response.data;
+};
+
 export default api;
