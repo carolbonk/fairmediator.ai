@@ -251,21 +251,21 @@ FairMediator/
 └── README.md
 ```
 
-## AI Integration (HuggingFace)
+## AI/ML Integration
 
-When working with HuggingFace models:
+When working with AI/ML services:
 
 1. **Use environment variables:**
    ```javascript
-   const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
+   const AI_API_KEY = process.env.AI_SERVICE_API_KEY;
    ```
 
 2. **Handle errors gracefully:**
    ```javascript
    try {
-     const response = await hfClient.query(prompt);
+     const response = await aiClient.query(prompt);
    } catch (error) {
-     logger.error('HF API error:', error);
+     logger.error('AI API error:', error);
      // Fallback logic
    }
    ```
@@ -316,7 +316,6 @@ Before submitting your PR, verify:
 - **Security:** [SECURITY.md](SECURITY.md)
 - **Deployment:** [DEPLOYMENT.md](DEPLOYMENT.md)
 - **WAF Setup:** [WAF_INTEGRATION_GUIDE.md](WAF_INTEGRATION_GUIDE.md)
-- **HuggingFace Docs:** https://huggingface.co/docs
 
 ## License
 

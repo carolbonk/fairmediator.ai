@@ -1,8 +1,6 @@
 # FairMediator Changelog
 
 > **Historical record of all major changes, features, and improvements**
->
-> **Current Status:** See [STATUS DASHBOARD](./context.md#-status-dashboard) in context.md for real-time project state
 
 ---
 
@@ -22,14 +20,14 @@
 - **Eliminated all port 3000 references** throughout codebase and documentation
 - **Updated CORS_ORIGIN defaults** in `backend/src/server.js` from `http://localhost:4010` to `http://localhost:4010`
 - **Updated test files** (`subscription.test.js`) to use 4010 for Stripe redirect URLs
-- **Updated 6 documentation files:** ORACLE_CLOUD_DEPLOYMENT.md, DOCKER_MANAGEMENT_COMPLETE.md, README_DOCKER.md, DOCKER_ISOLATION.md, DOCKER_QUICKSTART.md, tools/quick-start.sh
+- **Updated 6 documentation files:** CLOUD_DEPLOYMENT.md, DOCKER_MANAGEMENT_COMPLETE.md, README_DOCKER.md, DOCKER_ISOLATION.md, DOCKER_QUICKSTART.md, tools/quick-start.sh
 - **Rationale:** Port 3000 was never exposed on host (only used internally), but references in code/docs were confusing and violated RULE 9
 
 **Files Modified:**
 - `CONTEXT.md` - Port range updates, Recent Major Changes entry
 - `backend/src/server.js` - CORS_ORIGIN defaults
 - `backend/tests/.skipped/subscription.test.js` - Test URLs
-- `ORACLE_CLOUD_DEPLOYMENT.md`, `DOCKER_MANAGEMENT_COMPLETE.md`, `README_DOCKER.md`, `DOCKER_ISOLATION.md`, `DOCKER_QUICKSTART.md` - Port references
+- `CLOUD_DEPLOYMENT.md`, `DOCKER_MANAGEMENT_COMPLETE.md`, `README_DOCKER.md`, `DOCKER_ISOLATION.md`, `DOCKER_QUICKSTART.md` - Port references
 - `tools/quick-start.sh` - Browser URL prompt
 
 **Impact:** Zero breaking changes (internal container ports unchanged), improved consistency with port allocation standards
@@ -213,21 +211,21 @@
 
 **Comprehensive monitoring to prevent resource overages:**
 - **Resource limits enforced** — CPU: 4 ARM cores max, RAM: 24GB max, Storage: 200GB max, Bandwidth: 10TB/month (340GB/day)
-- **Real-time monitoring** — `oracleCloudMonitor.js` tracks CPU, RAM, storage, bandwidth with system-level checks
+- **Real-time monitoring** — `cloudMonitor.js` tracks CPU, RAM, storage, bandwidth with system-level checks
 - **Alert thresholds** — WARNING (70%), ALERT (85%), CRITICAL (95%), EXCEEDED (100% blocks deployment)
 - **Docker resource limits** — MongoDB (0.5 cores, 2GB), Backend (2.5 cores, 16GB), Frontend (1 core, 4GB) = 4 cores, 22GB total (92% utilization, 2GB headroom)
 
 **API endpoints for safety:**
-- `GET /api/monitoring/oracle-cloud` — Real-time resource dashboard (CPU, RAM, storage, bandwidth usage + status)
-- `GET /api/monitoring/oracle-cloud/safe-to-deploy` — Pre-deployment check (blocks if resources exceeded, returns 429)
+- `GET /api/monitoring/cloud` — Real-time resource dashboard (CPU, RAM, storage, bandwidth usage + status)
+- `GET /api/monitoring/cloud/safe-to-deploy` — Pre-deployment check (blocks if resources exceeded, returns 429)
 
 **Protection mechanisms:**
 - **freeTierMonitor.js** — Unified monitoring for AI APIs, Email Service, Scraping, Logging, **+ Cloud Infrastructure**
 - **docker-compose.yml** — Hard resource limits prevent accidental over-allocation
-- **Environment variables** — ORACLE_CPU_LIMIT, ORACLE_RAM_LIMIT, ORACLE_STORAGE_LIMIT, ORACLE_BANDWIDTH_LIMIT
+- **Environment variables** — CLOUD_CPU_LIMIT, CLOUD_RAM_LIMIT, CLOUD_STORAGE_LIMIT, CLOUD_BANDWIDTH_LIMIT
 
 **Documentation:**
-- `ORACLE_CLOUD_LIMITS.md` — Comprehensive guide: limits, monitoring, alerts, deployment checklist, bandwidth tracking (vnstat), safety mechanisms
+- `CLOUD_LIMITS.md` — Comprehensive guide: limits, monitoring, alerts, deployment checklist, bandwidth tracking (vnstat), safety mechanisms
 - GitHub Actions integration — Can call `/safe-to-deploy` endpoint to block deployments if limits exceeded
 
 ---
@@ -287,7 +285,7 @@
 
 ---
 
-### February 26, 2026: Monorepo Docker Restructure + Oracle Cloud Deployment Ready
+### February 26, 2026: Monorepo Docker Restructure + Cloud Deployment Ready
 
 **Deployment crisis resolved:** Initial hosting tier exhausted → Migrated to **cloud infrastructure with free tier** (ARM-based compute: 4 cores + 24GB RAM)
 
