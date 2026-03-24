@@ -111,3 +111,15 @@ config/traefik/acme.json
 # Deployment platforms (not using these)
 .vercel/
 .netlify/
+
+# ==============================================================================
+# DOCUMENTATION - INTERNAL ONLY
+# ==============================================================================
+# Exclude all markdown files (contains internal strategy, business plans, deployment guides)
+*.md
+**/*.md
+
+# Allow essential public documentation only
+!README.md
+!CONTRIBUTING.md
+!CHANGELOG.md
