@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { lazy, Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
+import { WorkspaceProvider } from './contexts/WorkspaceContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -33,7 +34,8 @@ function App() {
       <HelmetProvider>
         <Router>
           <AuthProvider>
-            <Suspense fallback={<LoadingSpinner />}>
+            <WorkspaceProvider>
+              <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
@@ -94,6 +96,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
             </Suspense>
+            </WorkspaceProvider>
           </AuthProvider>
         </Router>
       </HelmetProvider>
