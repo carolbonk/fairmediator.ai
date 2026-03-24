@@ -45,10 +45,10 @@ All secrets should be stored in `.env` files (excluded from git):
 
 ```bash
 # ❌ WRONG - Never do this
-const apiKey = "hf_abc123def456"
+const apiKey = "sk_live_abc123def456"
 
 # ✅ CORRECT - Always use environment variables
-const apiKey = process.env.HUGGINGFACE_API_KEY
+const apiKey = process.env.API_KEY
 ```
 
 #### Pre-commit Hooks
@@ -81,27 +81,23 @@ If an API key is accidentally exposed:
 4. **Verify** the old key no longer works
 5. **Document** the incident for audit trail
 
-#### Supported Services
+#### Third-Party Services
 
-Secrets used by FairMediator:
+FairMediator integrates with various third-party services for database, AI, email, and data access. All API keys and credentials should be:
 
-| Service | Purpose | Free Tier | Rotation Guide |
-|---------|---------|-----------|----------------|
-| MongoDB Atlas | Database | 512MB | [Link](https://www.mongodb.com/docs/atlas/security/) |
-| Hugging Face | AI Models | Yes | [Link](https://huggingface.co/settings/tokens) |
-| Resend | Email | 100/day | [Link](https://resend.com/docs/api-reference/api-keys) |
-| Axiom | Logging | 166MB/mo | [Link](https://axiom.co/docs/reference/tokens) |
-| Netlify | Blob Storage | 100GB | [Link](https://docs.netlify.com/accounts-and-billing/team-management/manage-api-access/) |
-| OpenRouter | AI Router | Varies | [Link](https://openrouter.ai/keys) |
-| FEC API | Political Data | Unlimited | [Link](https://api.open.fec.gov/developers/) |
-| RECAP API | Court Data | 5K/day | [Link](https://www.courtlistener.com/help/api/) |
+- Stored in environment variables (never hardcoded)
+- Rotated regularly (minimum every 90 days)
+- Different between development and production
+- Immediately revoked if exposed
+
+Consult each service provider's documentation for specific rotation procedures.
 
 ## Supported Versions
 
 | Version | Supported | Notes |
 |---------|-----------|-------|
 | main branch | ✅ | Current development |
-| Production | ✅ | Deployed to Oracle Cloud |
+| Production | ✅ | Live deployment |
 | Other branches | ⚠️ | Not guaranteed |
 
 ## Security Features
@@ -119,22 +115,22 @@ Secrets used by FairMediator:
 
 ### Infrastructure Security
 
-**Docker:**
+**Containerization:**
 - Non-root users in containers
 - Read-only filesystems where possible
-- `no-new-privileges` security option
-- Minimal base images (Alpine Linux)
-- Network segmentation (db-network, backend-network)
+- Security options enabled
+- Minimal base images
+- Network segmentation
 
 **Database:**
-- MongoDB Atlas with TLS/SSL
+- TLS/SSL encrypted connections
 - Authenticated connections only
-- IP allowlist (production)
-- Encrypted at rest
+- IP allowlisting in production
+- Encryption at rest
 
 **Monitoring:**
-- Axiom logging (warn/error/security events)
-- Free tier quota monitoring
+- Centralized logging for security events
+- Quota monitoring and alerting
 - Rate limit tracking
 - Failed login attempt logging
 

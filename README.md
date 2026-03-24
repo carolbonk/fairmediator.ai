@@ -29,45 +29,38 @@ FairMediator helps law firms, corporations, and individuals select mediators by:
 ### Backend
 - **API**: Node.js + Express
 - **Database**: MongoDB
-- **AI Engine**: Meta Llama 3.3/4 for:
+- **AI Engine**: Open-source LLMs for:
   - Natural language query processing
   - Affiliation detection via NLP
   - Ideological classification
 
 ### Data Pipeline
-- **Scraping**: Puppeteer/Cheerio for legal directories
+- **Scraping**: Automated collection from public legal databases
 - **Automation**: Python scripts for scheduled updates
-- **Sources**: RECAP, Toolkit.law, LinkedIn, bar associations
+- **Sources**: Public legal directories and professional databases
 
-### Deployment (100% Netlify)
-- **Frontend**: Netlify (static site with CDN)
-- **Backend**: Netlify Functions (serverless)
-- **Database**: MongoDB Atlas (M0 FREE tier - 512MB with Vector Search)
-- **Storage**: Netlify Blobs (file uploads/downloads)
-- **Email**: Resend (100 emails/day FREE)
-- **AI/ML**: HuggingFace API (FREE inference)
-- **Cost**: $0/month (100% FREE)
+### Deployment
+- **Frontend**: Cloud-hosted static site with CDN
+- **Backend**: Serverless API architecture
+- **Database**: Cloud-hosted MongoDB with vector search
+- **Storage**: Cloud object storage
+- **Email**: Transactional email service
+- **AI/ML**: Open-source transformer models
 
-## AI Integration (100% FREE)
+## AI Integration
 
-## Live Demo
+### AI Capabilities
+- **Chat**: Large language models for natural conversation
+- **NER**: Named entity recognition for extracting organizations and people
+- **Zero-Shot Classification**: Affiliation and conflict detection
+- **Political Analysis**: Ideological leaning classification
+- **Sentiment Analysis**: Review and opinion analysis
+- **Embeddings**: Semantic search and similarity matching
 
-   [![FairMediator AI Demo](https://img.shields.io/badge/🤗%20Live%20Demo-FairMediator-blue?style=for-the-badge)](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
-
-This project uses **HuggingFace Transformers** - completely FREE!
-
-### AI Models (All Free)
-- **Chat**: Llama 3.2 (1B/3B), Mistral Mixtral-8x7B, Google Gemma 2
-- **NER**: BERT-large for entity extraction
-- **Zero-Shot**: DeBERTa-v3 for affiliation detection
-- **Political Analysis**: Specialized political leaning classifier
-- **Sentiment**: RoBERTa for review analysis
-- **Embeddings**: sentence-transformers/all-MiniLM-L6-v2 for semantic search ✨ NEW
-
-### Advanced Features ✨ NEW
+### Advanced Features
 - **RAG (Retrieval-Augmented Generation)**
   - Semantic search using vector embeddings
-  - ChromaDB for similarity matching
+  - Vector database for similarity matching
   - Grounded AI responses with citations and match scores
   - Hybrid search combining vector + keyword matching
 
@@ -83,61 +76,37 @@ This project uses **HuggingFace Transformers** - completely FREE!
 - Ideological leaning classification
 - Entity extraction (organizations, people)
 - Automated profile enrichment
-- Similarity-based mediator recommendations ✨ NEW
-
-
-### Resources
-- [HuggingFace Documentation](https://huggingface.co/docs)
-- [Transformers Library](https://huggingface.co/docs/transformers)
-- [Free Inference API](https://huggingface.co/inference-api)
-- [Model Hub](https://huggingface.co/models)
+- Similarity-based mediator recommendations
 
 ## 📁 Project Structure
 
 ```
 FairMediator/
-├── frontend/                      # React + Tailwind frontend
+├── frontend/          # React + Tailwind frontend
 │   ├── src/
-│   │   ├── components/           # UI components
-│   │   ├── services/             # API client
-│   │   └── App.jsx               # Main app
-│   └── package.json
-├── backend/                       # Node.js + Express API
-│   ├── src/
-│   │   ├── routes/               # API endpoints
-│   │   ├── models/               # MongoDB schemas
+│   │   ├── components/
 │   │   ├── services/
-│   │   │   ├── huggingface/      # 🤗 HF integration
-│   │   │   │   ├── chatService.js
-│   │   │   │   ├── affiliationDetector.js
-│   │   │   │   ├── ideologyClassifier.js
-│   │   │   │   └── hfClient.js
-│   │   │   ├── scraping/         # Web scraping
-│   │   │   └── matching/         # Mediator matching
+│   │   └── App.jsx
+│   └── package.json
+├── backend/           # Node.js + Express API
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── models/
+│   │   ├── services/
 │   │   └── server.js
 │   └── package.json
-├── automation/                    # Python automation
-│   ├── huggingface/              # 🤗 HF Python scripts
-│   │   ├── affiliation_detector.py
-│   │   ├── ideology_classifier.py
-│   │   └── batch_analyze.py
-│   ├── gradio_app.py             # HF Spaces demo
+├── automation/        # Python automation
 │   └── requirements.txt
-├── notebooks/                     # Jupyter prototyping
-│   ├── FairMediator_AI_Pipeline_Consolidated.ipynb
-│   ├── README.md
-│   └── requirements.txt
-├── huggingface-space/            # HF Spaces deployment
-└── .env.example                  # Environment variables
+└── .env.example      # Environment variables
 ```
 
 ## 🚀 Getting Started
 
-### Prerequisites (All FREE!)
+### Prerequisites
 - Node.js 18+
 - Python 3.10+
-- MongoDB (free tier: [MongoDB Atlas](https://mongodb.com/cloud/atlas))
-- HuggingFace account (free: [huggingface.co](https://huggingface.co))
+- MongoDB (local or cloud-hosted)
+- AI/ML API access (various free options available)
 
 
 ## 🧠 AI Features
@@ -149,7 +118,7 @@ Users describe their mediation needs in natural language:
 neutral on corporate matters, no BigLaw affiliations"
 ```
 
-Our AI (powered by HuggingFace models) processes this and returns ranked mediators.
+Our AI engine processes this and returns ranked mediators.
 
 ### 2. Affiliation Detection
 Automated NLP analysis flags potential conflicts:
@@ -166,11 +135,7 @@ Machine learning classification based on:
 
 ## 📊 Data Sources
 
-- **RECAP**: Federal court data
-- **Toolkit.law**: Legal research platform
-- **LinkedIn**: Professional connections
-- **State Bar Associations**: Public directories
-- **Mediator Organizations**: Professional listings
+Data is aggregated from publicly available legal databases, professional directories, and court records to ensure comprehensive mediator profiles.
 
 ## 🔒 Security & Compliance
 
@@ -255,9 +220,10 @@ npm run dev
 cd backend
 npm install
 cp .env.example .env
-# Edit .env and add:
-#   - MongoDB URI (free Atlas or local)
-#   - HuggingFace API key (free at huggingface.co/settings/tokens)
+# Edit .env with your configuration:
+#   - MongoDB connection string
+#   - AI/ML API credentials
+#   - Authentication secrets
 npm run dev
 ```
 
@@ -278,52 +244,21 @@ jupyter notebook
 
 ## 🔑 Environment Variables
 
-```env
-# Backend (.env) - See backend/.env.example for full details
+See `backend/.env.example` for a complete list of required environment variables:
 
-# Server
-PORT=5000
-NODE_ENV=development
-
-# MongoDB (FREE tier available)
-MONGODB_URI=mongodb://localhost:27017/fairmediator
-# Or MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/fairmediator
-
-# HuggingFace API (100% FREE - Get at: https://huggingface.co/settings/tokens)
-HUGGINGFACE_API_KEY=your_free_huggingface_api_key
-
-# Optional: Choose which free model to use
-HF_MODEL_CHAT=meta-llama/Meta-Llama-3-8B-Instruct
-
-# Authentication
-JWT_SECRET=your_jwt_secret
-SESSION_SECRET=your_session_secret
-
-# Optional: Email service (Resend - FREE 3000/month)
-# RESEND_API_KEY=your_resend_api_key
-
-# Optional: Stripe (only for paid subscriptions)
-# STRIPE_SECRET_KEY=your_stripe_key
-```
+- **Server Configuration**: Port, environment mode
+- **Database**: MongoDB connection string
+- **AI/ML**: API credentials for LLM inference
+- **Authentication**: JWT and session secrets
+- **Email**: Transactional email service credentials (optional)
+- **Payments**: Payment provider keys (optional)
 
 ## 📚 Learn More
 
-### AI & Machine Learning
-- [HuggingFace Documentation](https://huggingface.co/docs) - Transformers, datasets, inference
-- [Free Inference API](https://huggingface.co/docs/api-inference) - No credit card required
-- [Transformers Course](https://huggingface.co/learn/nlp-course) - Free NLP course
-- [Model Hub](https://huggingface.co/models) - 500k+ open-source models
-- [Our HuggingFace Demo](https://huggingface.co/spaces/CarolBonk/FairMediator_AI_Demo)
-
-### Legal Tech Resources
-- [RECAP Project](https://free.law/recap/) - Free law project
-- [Court Listener](https://www.courtlistener.com/) - Legal search engine
-- [Legal Information Institute](https://www.law.cornell.edu/) - Free legal reference
-
-### Open Source Tools
-- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - Web scraping
-- [Gradio](https://gradio.app/) - ML web interfaces
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Free database hosting
+### Documentation
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## 📄 License
 
