@@ -168,19 +168,19 @@
 - Location: `frontend/public/og-image.png`
 
 **4. DNS Infrastructure Simplification**
-- **Migration:** NS1 nameservers → IONOS nameservers (free forever vs 1-month trial)
+- **Migration:** DNS provider migration to permanent free tier
 - **Reset completed:** March 18 at 2:28 PM EDT (fairmediator.ai successfully reset)
-- **Build fix:** Updated `netlify.toml` - changed `npm run build:frontend` → `npm run build` (matches package.json)
-- **Cost savings:** $0/month vs potential NS1 charges after trial expires
+- **Build fix:** Updated build configuration - fixed npm script references
+- **Cost savings:** $0/month infrastructure costs
 
 **In Progress (Waiting on DNS Propagation):**
 - Google Search Console TXT verification (5-60 min DNS propagation)
-- Update IONOS A record to Netlify IP (75.2.60.5)
-- Complete GSC verification at https://search.google.com/search-console
+- Update DNS A records to hosting provider IP
+- Complete GSC verification
 
 **Key Learnings:**
 - HTML meta tag verification simpler than DNS TXT for quick setup, but DNS TXT is permanent
-- IONOS provides DNS management UI even for external nameservers (NS1), simplifying workflow
+- DNS management UI simplifies workflow
 - FEC API aggressive rate limiting requires batching/delays strategy for production scraping
 - Test assertion bugs (toContain vs toContainEqual) can mask working security features
 
@@ -209,9 +209,9 @@
 
 ## February 2026
 
-### February 28, 2026: Oracle Cloud Always Free Resource Protection
+### February 28, 2026: Cloud Infrastructure Resource Protection
 
-**Comprehensive monitoring to prevent free tier overages:**
+**Comprehensive monitoring to prevent resource overages:**
 - **Resource limits enforced** — CPU: 4 ARM cores max, RAM: 24GB max, Storage: 200GB max, Bandwidth: 10TB/month (340GB/day)
 - **Real-time monitoring** — `oracleCloudMonitor.js` tracks CPU, RAM, storage, bandwidth with system-level checks
 - **Alert thresholds** — WARNING (70%), ALERT (85%), CRITICAL (95%), EXCEEDED (100% blocks deployment)
@@ -222,7 +222,7 @@
 - `GET /api/monitoring/oracle-cloud/safe-to-deploy` — Pre-deployment check (blocks if resources exceeded, returns 429)
 
 **Protection mechanisms:**
-- **freeTierMonitor.js** — Unified monitoring for HuggingFace, Resend, Scraping, Axiom, **+ Oracle Cloud**
+- **freeTierMonitor.js** — Unified monitoring for AI APIs, Email Service, Scraping, Logging, **+ Cloud Infrastructure**
 - **docker-compose.yml** — Hard resource limits prevent accidental over-allocation
 - **Environment variables** — ORACLE_CPU_LIMIT, ORACLE_RAM_LIMIT, ORACLE_STORAGE_LIMIT, ORACLE_BANDWIDTH_LIMIT
 
@@ -259,13 +259,13 @@
 
 ---
 
-### February 26, 2026: Axiom Logging + N8N Automation Architecture
+### February 26, 2026: Cloud Logging + N8N Automation Architecture
 
 **Centralized logging integrated with quota protection:**
-- **Axiom Winston transport** — `backend/src/config/logger.js` updated to send only `warn`/`error`/`security` logs to Axiom cloud (166MB/month = ~170k logs)
+- **Cloud logging transport** — `backend/src/config/logger.js` updated to send only `warn`/`error`/`security` logs to cloud logging service
 - **Local file logs preserved** — All log levels (`debug`/`info`/`http`/`warn`/`error`/`security`) still written to daily rotating local files as backup
-- **Free tier monitoring** — Added `axiom` to `freeTierMonitor.js` FREE_TIER_LIMITS with daily limit of 5,666 logs, monthly limit of 170k logs
-- **Quota API endpoint** — Updated `GET /api/monitoring/quota-status` to include Axiom usage tracking alongside HuggingFace, Resend, Scraping
+- **Free tier monitoring** — Added cloud logging to `freeTierMonitor.js` FREE_TIER_LIMITS with daily limits
+- **Quota API endpoint** — Updated `GET /api/monitoring/quota-status` to include cloud logging usage tracking alongside AI APIs, Email Service, Scraping
 - **Helper methods added** — `getUsage()`, `getNextReset()` in `freeTierMonitor.js` for automation workflows
 
 **N8N automation architecture designed:**
@@ -275,28 +275,28 @@
 - **Expected automation results** — Month 1: 500+ mediators scraped (vs 25 now), Month 2: 1,000+ mediators, Month 3: complete database (1,500+)
 
 **Documentation created:**
-- `AXIOM_INTEGRATION_GUIDE.md` (558 lines) — 10-step setup, monitors, dashboards, APL queries, N8N integration
+- Internal logging integration guide — Setup, monitors, dashboards, N8N integration
 - `N8N_BACKEND_ENDPOINTS.md` — 5 endpoints implementation guide (1 done, 4 pending)
 - `N8N_WORKFLOW_TEMPLATE.json` — Import-ready workflow (Deploy → Check Quota → Scrape → Research → Blog → Tweet)
-- `QUICK_START_AXIOM.md` (247 lines) — Quick reference, environment variables, testing instructions
+- Logging quick start guide — Environment variables, testing instructions
 - `.claude/skills/pre-flight-check.md` — Validation skill to prevent project rule violations
 
 **Rule violations fixed:**
-- ❌ **Violated RULE 2:** Added Axiom without free tier protection → ✅ **Fixed:** Added to freeTierMonitor with 5,666/day limit
+- ❌ **Violated RULE 2:** Added cloud logging without free tier protection → ✅ **Fixed:** Added to freeTierMonitor with daily limits
 - ❌ **Violated RULE 8:** Used emoji in commit messages → ✅ **Fixed:** Created pre-flight-check skill to prevent future violations
 
 ---
 
 ### February 26, 2026: Monorepo Docker Restructure + Oracle Cloud Deployment Ready
 
-**Deployment crisis resolved:** Netlify free tier exhausted → Migrated to **Oracle Cloud Always Free tier** (ARM Ampere A1: 4 cores + 24GB RAM, FREE FOREVER)
+**Deployment crisis resolved:** Initial hosting tier exhausted → Migrated to **cloud infrastructure with free tier** (ARM-based compute: 4 cores + 24GB RAM)
 
 **Monorepo Docker restructure (TESTED & WORKING):**
 - **npm workspaces preserved** — Root package.json manages frontend + backend workspaces (proper monorepo structure)
 - **Backend Dockerfile (80 lines)** — Multi-stage build from root context: `COPY package*.json ./` + `npm install --workspace=backend --include-workspace-root`
 - **Frontend Dockerfile (68 lines)** — Multi-stage build from root context: workspace-aware install, Vite build, nginx serve
 - **docker-compose.yml** — Updated build context from `./backend` → `.` (root), dockerfile: `backend/Dockerfile`
-- **Root `.env` file** — All secrets (JWT, SESSION, CSRF, HUGGINGFACE, RESEND, MONGODB) for docker-compose deployment
+- **Root `.env` file** — All secrets (JWT, SESSION, CSRF, AI_API, EMAIL_API, DATABASE) for docker-compose deployment
 
 **Python ML dependencies fix:**
 - Switched from pip build-from-source → **Alpine apk packages** (py3-numpy, py3-scikit-learn, py3-pandas, joblib) — avoids gcc/build-base overhead, faster builds, smaller images
@@ -310,7 +310,7 @@
 - ✅ Frontend: 1m 45s, Vite build successful (193KB index.js), nginx serves correctly
 - ✅ docker-compose config validated
 
-**Deployment target:** Oracle Cloud Always Free (ARM Ampere A1) — 4 cores, 24GB RAM, load balancer, 200GB storage, 10TB/month transfer — **FREE FOREVER**
+**Deployment target:** Cloud infrastructure free tier — 4 cores, 24GB RAM, load balancer, 200GB storage, bandwidth allocation
 
 ---
 
@@ -333,7 +333,7 @@
 - 3 trust signals: AI conflict screening · Manual review · Reply within 2 weeks
 
 **Contact page (`/contact`):**
-- Dark slate hero, 4-topic selector (pill buttons), Netlify form (name, email, message), inline success state
+- Dark slate hero, 4-topic selector (pill buttons), contact form (name, email, message), inline success state
 - Reply time: 1–5 business days
 - "Contact" link added to About dropdown in Header
 

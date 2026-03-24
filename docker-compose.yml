@@ -11,12 +11,12 @@
 # - Read-only filesystems where possible (MongoDB, Frontend) for security hardening
 # - Minimal capabilities: drop ALL, add only NET_BIND_SERVICE
 #
-# ORACLE CLOUD ALWAYS FREE TIER CONSTRAINTS
+# CLOUD INFRASTRUCTURE RESOURCE CONSTRAINTS
 # -----------------------------------------
 # Total Available Resources:
-#   - CPU: 4 cores (OCPU - 2.0 GHz AMD EPYC 7551)
+#   - CPU: 4 cores
 #   - RAM: 24 GB
-#   - Storage: 200 GB block volume
+#   - Storage: 200 GB
 #   - Bandwidth: 10 TB/month
 #
 # Safety Strategy: Use 50% of resources (2 cores, 12GB RAM) to prevent throttling
@@ -115,22 +115,22 @@ services:
       SESSION_SECRET: ${SESSION_SECRET}
       CSRF_SECRET: ${CSRF_SECRET}
       # External API keys and rate limits
-      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY}
-      HUGGINGFACE_DAILY_LIMIT: ${HUGGINGFACE_DAILY_LIMIT:-333}
-      RESEND_API_KEY: ${RESEND_API_KEY}
-      RESEND_DAILY_LIMIT: ${RESEND_DAILY_LIMIT:-50}
+      AI_API_KEY: ${AI_API_KEY}
+      AI_DAILY_LIMIT: ${AI_DAILY_LIMIT:-333}
+      EMAIL_API_KEY: ${EMAIL_API_KEY}
+      EMAIL_DAILY_LIMIT: ${EMAIL_DAILY_LIMIT:-50}
       SCRAPING_DAILY_LIMIT: ${SCRAPING_DAILY_LIMIT:-450}
       # Monitoring and logging
-      AXIOM_DATASET: ${AXIOM_DATASET}
-      AXIOM_TOKEN: ${AXIOM_TOKEN}
-      AXIOM_ORG_ID: ${AXIOM_ORG_ID}
-      AXIOM_ENABLED: ${AXIOM_ENABLED:-true}
+      LOGGING_DATASET: ${LOGGING_DATASET}
+      LOGGING_TOKEN: ${LOGGING_TOKEN}
+      LOGGING_ORG_ID: ${LOGGING_ORG_ID}
+      LOGGING_ENABLED: ${LOGGING_ENABLED:-true}
       # Infrastructure limits (for runtime monitoring)
-      ORACLE_CPU_LIMIT: ${ORACLE_CPU_LIMIT:-4}
-      ORACLE_RAM_LIMIT: ${ORACLE_RAM_LIMIT:-24576}
-      ORACLE_STORAGE_LIMIT: ${ORACLE_STORAGE_LIMIT:-204800}
-      ORACLE_BANDWIDTH_LIMIT: ${ORACLE_BANDWIDTH_LIMIT:-10240}
-      ORACLE_BANDWIDTH_DAILY_LIMIT: ${ORACLE_BANDWIDTH_DAILY_LIMIT:-340}
+      CLOUD_CPU_LIMIT: ${CLOUD_CPU_LIMIT:-4}
+      CLOUD_RAM_LIMIT: ${CLOUD_RAM_LIMIT:-24576}
+      CLOUD_STORAGE_LIMIT: ${CLOUD_STORAGE_LIMIT:-204800}
+      CLOUD_BANDWIDTH_LIMIT: ${CLOUD_BANDWIDTH_LIMIT:-10240}
+      CLOUD_BANDWIDTH_DAILY_LIMIT: ${CLOUD_BANDWIDTH_DAILY_LIMIT:-340}
     ports:
       - "127.0.0.1:4001:4001"  # Backend API (FairMediator port range: 4000-4499)
     volumes:

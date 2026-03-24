@@ -71,11 +71,11 @@
     },
     {
       "parameters": {
-        "url": "https://api.perplexity.ai/chat/completions",
+        "url": "={{ $env.RESEARCH_API_URL }}",
         "method": "POST",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
-        "bodyParametersJson": "={{ JSON.stringify({\n  model: 'llama-3.1-sonar-small-128k-online',\n  messages: [{\n    role: 'user',\n    content: `Research the legal and ethical implications of ${$json.topDonors[0].name} donations to mediators. Focus on potential bias in ${$json.topDonors[0].industry} disputes. Provide citations.`\n  }]\n}) }}"
+        "bodyParametersJson": "={{ JSON.stringify({\n  model: $env.RESEARCH_MODEL,\n  messages: [{\n    role: 'user',\n    content: `Research the legal and ethical implications of ${$json.topDonors[0].name} donations to mediators. Focus on potential bias in ${$json.topDonors[0].industry} disputes. Provide citations.`\n  }]\n}) }}"
       },
       "id": "research-perplexity",
       "name": "Research with Perplexity",
@@ -93,7 +93,7 @@
     },
     {
       "parameters": {
-        "path": "=/Users/your-username/Obsidian/FairMediator/Blog Drafts",
+        "path": "={{ $env.BLOG_DRAFTS_PATH }}",
         "fileName": "={{ $json.date.split('T')[0] }} - {{ $json.title }}.md",
         "data": "=# {{ $json.title }}\n\n**Date:** {{ $json.date }}\n\n## Key Findings\n\n{{ $json.findings.map(f => `- ${f}`).join('\\n') }}\n\n## Research Context\n\n{{ $json.researchContext }}\n\n## Next Steps\n\n{{ $json.nextSteps.map(s => `- [ ] ${s}`).join('\\n') }}\n\n## Citations\n\n{{ $json.citations.map(c => `- ${c}`).join('\\n') }}"
       },
@@ -104,7 +104,7 @@
     },
     {
       "parameters": {
-        "url": "https://api.twitter.com/2/tweets",
+        "url": "={{ $env.SOCIAL_API_URL }}",
         "method": "POST",
         "authentication": "oAuth2Api",
         "bodyParametersJson": "={{ JSON.stringify({\n  text: `🚀 New research: We analyzed ${$json.findings[0]} mediator donations. Top finding: ${$json.findings[2]}\\n\\nFull analysis coming soon on the FairMediator blog.`\n}) }}"
@@ -116,8 +116,8 @@
     },
     {
       "parameters": {
-        "fromEmail": "alerts@fairmediator.com",
-        "toEmail": "you@email.com",
+        "fromEmail": "={{ $env.ALERT_FROM_EMAIL }}",
+        "toEmail": "={{ $env.ALERT_TO_EMAIL }}",
         "subject": "Scraping quota exhausted - resuming tomorrow",
         "emailType": "text",
         "message": "=Scraping quota: {{ $json.scraping.used }}/{{ $json.scraping.limit }}\\n\\nNext reset: {{ $json.scraping.nextReset }}"
@@ -129,7 +129,7 @@
     },
     {
       "parameters": {
-        "path": "/Users/your-username/Obsidian/FairMediator/Automation Logs",
+        "path": "={{ $env.AUTOMATION_LOGS_PATH }}",
         "fileName": "={{ $now.format('yyyy-MM-dd') }} - Quota Alert.md",
         "data": "=# Quota Alert - {{ $now.format('yyyy-MM-dd HH:mm') }}\n\n**Status:** {{ $json.scraping.status }}\n**Used:** {{ $json.scraping.used }}/{{ $json.scraping.limit }}\n**Next Reset:** {{ $json.scraping.nextReset }}\n\n## Action Taken\n- Scraping paused\n- Alert sent\n- Will resume after quota reset"
       },
