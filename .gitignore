@@ -123,3 +123,4 @@ config/traefik/acme.json
 !README.md
 !CONTRIBUTING.md
 !CHANGELOG.md
+!SECURITY.md
