@@ -100,17 +100,30 @@ tmp/
 temp/
 
 # ==============================================================================
-# DEPLOYMENT AND INFRASTRUCTURE
+# DEPLOYMENT AND INFRASTRUCTURE - HIDE ALL
 # ==============================================================================
 # Docker backups (contain sensitive database dumps)
 backups/
 
-# Traefik TLS certificates (environment-specific)
-config/traefik/acme.json
+# Infrastructure Configuration (Traefik, Prometheus, Grafana)
+config/
+**/config/traefik/
+**/config/prometheus/
+**/config/grafana/
 
-# Deployment platforms (not using these)
+# CI/CD Workflows (reveals deployment strategy)
+.github/workflows/*.yml
+!.github/workflows/security-scan.yml
+
+# Deployment platform configs
 .vercel/
 .netlify/
+netlify.toml
+**/netlify.toml
+
+# Secret scanning baseline (reveals what we're hiding)
+.secrets.baseline
+**/.secrets.baseline
 
 # ==============================================================================
 # DOCUMENTATION - INTERNAL ONLY
@@ -144,6 +157,12 @@ docker-compose.*.yml
 # Claude Code configuration (skills, commands, internal context)
 .claude/
 **/.claude/
+
+# Internal automation (SRE agents, N8N workflows)
+backend/.ai/
+**/.ai/
+N8N_WORKFLOW_TEMPLATE.json
+**/N8N_*.json
 
 # Internal documentation directory (operational details, infrastructure specs)
 docs/
