@@ -2,10 +2,6 @@
   base = "frontend"
   publish = "dist"
   command = "npm install && npm run build"
-  functions = "../netlify/functions"
-
-[functions]
-  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/api/*"
