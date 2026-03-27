@@ -24,6 +24,8 @@ const { errorMonitoringMiddleware, notFoundHandler } = require('./middleware/err
 // Import routes
 const authRoutes = require('./routes/auth');
 const mediatorRoutes = require('./routes/mediators');
+const partiesRoutes = require('./routes/parties');
+const attorneysRoutes = require('./routes/attorneys');
 const chatRoutes = require('./routes/chat');
 const affiliationRoutes = require('./routes/affiliations');
 const subscriptionRoutes = require('./routes/subscription');
@@ -243,6 +245,8 @@ app.get('/health', (_req, res) => {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/mediators', mediatorRoutes);
+app.use('/api/parties', partiesRoutes);
+app.use('/api/attorneys', attorneysRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/affiliations', affiliationRoutes);
 app.use('/api/subscription', subscriptionRoutes);

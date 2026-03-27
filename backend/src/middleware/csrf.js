@@ -38,10 +38,10 @@ const {
 /**
  * CSRF protection middleware
  * Apply to routes that need CSRF protection (POST, PUT, DELETE, PATCH)
- * Disabled in test mode for easier testing
+ * Disabled in test and development modes for easier testing
  */
-const csrfProtection = process.env.NODE_ENV === 'test'
-  ? (req, res, next) => next() // Skip CSRF in test mode
+const csrfProtection = (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development')
+  ? (req, res, next) => next() // Skip CSRF in test/development mode
   : doubleCsrfProtection;
 
 /**
@@ -80,9 +80,24 @@ const csrfErrorHandler = (err, req, res, next) => {
  * GET /api/csrf-token
  *
  * Generates and returns a CSRF token for the client
+ * In development/test mode, returns a dummy token since CSRF is disabled
  */
 const getCsrfToken = (req, res) => {
   try {
+    // In development/test mode, CSRF is disabled, so return a dummy token
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+      return res.json({
+        success: true,
+        csrfToken: 'dev-dummy-token',
+        _meta: {
+          cookieName: 'x-csrf-token',
+          headerName: 'x-csrf-token',
+          note: 'CSRF protection is disabled in development mode'
+        }
+      });
+    }
+
+    // Production mode: generate real token
     const token = generateToken(req, res);
 
     res.json({

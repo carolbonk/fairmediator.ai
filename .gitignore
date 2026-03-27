@@ -137,3 +137,4 @@ config/traefik/acme.json
 # Internal documentation directory (operational details, infrastructure specs)
 docs/
 **/docs/
+.env.production.template

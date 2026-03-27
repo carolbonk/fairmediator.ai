@@ -5,6 +5,26 @@ const AuthContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
+// Configure axios to include credentials (cookies) with every request
+axios.defaults.withCredentials = true;
+
+// Helper function to get CSRF token
+// Skip in development mode since CSRF protection is disabled
+const getCsrfToken = async () => {
+  // Skip CSRF token fetch in development mode
+  if (import.meta.env.VITE_ENV === 'development' || import.meta.env.MODE === 'development') {
+    return null;
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}/csrf-token`);
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Failed to fetch CSRF token:', error);
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,8 +62,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const refreshAccessToken = async (refreshToken) => {
+    // Get CSRF token for refresh
+    const csrfToken = await getCsrfToken();
+
     const response = await axios.post(`${API_URL}/auth/refresh`, {
       refreshToken
+    }, {
+      headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
     });
     const { accessToken } = response.data.data;
     localStorage.setItem('accessToken', accessToken);
@@ -58,11 +83,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, name, accountType) => {
     try {
       setError(null);
+
+      // Get CSRF token before making the request
+      const csrfToken = await getCsrfToken();
+
       const response = await axios.post(`${API_URL}/auth/register`, {
         email,
         password,
         name,
         accountType
+      }, {
+        headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
       });
 
       const { user, accessToken, refreshToken } = response.data.data;
@@ -80,10 +111,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, accountType) => {
     try {
       setError(null);
+
+      // Get CSRF token before making the request
+      const csrfToken = await getCsrfToken();
+
       const response = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
         accountType
+      }, {
+        headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
       });
 
       const { user, accessToken, refreshToken } = response.data.data;
@@ -104,10 +141,18 @@ export const AuthProvider = ({ children }) => {
       const refreshToken = localStorage.getItem('refreshToken');
 
       if (accessToken) {
+        // Get CSRF token for logout
+        const csrfToken = await getCsrfToken();
+
         await axios.post(
           `${API_URL}/auth/logout`,
           { refreshToken },
-          { headers: { Authorization: `Bearer ${accessToken}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              ...(csrfToken && { 'x-csrf-token': csrfToken })
+            }
+          }
         );
       }
     } catch (err) {
@@ -122,7 +167,13 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email) => {
     try {
       setError(null);
-      await axios.post(`${API_URL}/auth/forgot-password`, { email });
+
+      // Get CSRF token for password reset
+      const csrfToken = await getCsrfToken();
+
+      await axios.post(`${API_URL}/auth/forgot-password`, { email }, {
+        headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
+      });
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.error || 'Password reset request failed';
@@ -134,9 +185,15 @@ export const AuthProvider = ({ children }) => {
   const confirmResetPassword = async (token, newPassword) => {
     try {
       setError(null);
+
+      // Get CSRF token for password reset confirmation
+      const csrfToken = await getCsrfToken();
+
       await axios.post(`${API_URL}/auth/reset-password`, {
         token,
         newPassword
+      }, {
+        headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
       });
       return { success: true };
     } catch (err) {

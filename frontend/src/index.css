@@ -290,4 +290,14 @@
     /* Equivalent to shadow-neu-lg */
     box-shadow: 4px 4px 16px 0 rgba(163, 177, 198, 0.20), -4px -4px 16px 0 rgba(255,255,255,0.8);
   }
+
+  /* Hide scrollbar utility class */
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }

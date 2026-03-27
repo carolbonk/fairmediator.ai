@@ -75,7 +75,7 @@ const LoginForm = () => {
             </div>
 
             {/* Heading */}
-            <div className="mb-8">
+            <div className="mb-8 text-center">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">
                 Sign in to FairMediator
               </h1>

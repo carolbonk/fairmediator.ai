@@ -80,6 +80,225 @@ router.get('/', cacheMediatorList, validate(schemas.mediatorSearch, 'query'), as
 }));
 
 /**
+ * GET /api/mediators/my-profile
+ * Get the mediator profile for the current user
+ * Requires authentication and mediator account type
+ * NOTE: Must be BEFORE /:id route to avoid matching "my-profile" as an ID
+ */
+router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can access mediator profiles');
+  }
+
+  const mediator = await getMediatorProfileByUserId(req.user._id);
+
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator profile');
+  }
+
+  sendSuccess(res, {
+    mediator: {
+      id: mediator._id,
+      name: mediator.name,
+      email: mediator.email,
+      bio: mediator.bio,
+      specializations: mediator.specializations,
+      yearsExperience: mediator.yearsExperience,
+      rating: mediator.rating,
+      totalMediations: mediator.totalMediations,
+      location: mediator.location,
+      dataQuality: mediator.dataQuality,
+      isVerified: mediator.isVerified
+    }
+  });
+}));
+
+/**
+ * GET /api/mediators/my-stats
+ * Get statistics for the current mediator (cases, ratings, etc.)
+ * Requires authentication and mediator account type
+ * NOTE: Must be BEFORE /:id route to avoid matching "my-stats" as an ID
+ */
+router.get('/my-stats', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can access mediator statistics');
+  }
+
+  const days = parseInt(req.query.days) || 30;
+  const mediator = await getMediatorProfileByUserId(req.user._id);
+
+  if (!mediator) {
+    return sendNotFound(res, 'Mediator profile');
+  }
+
+  // TODO: Calculate real statistics from Case model when it's created
+  // For now, return placeholder data based on mediator profile
+  const stats = {
+    overview: {
+      totalCases: mediator.totalCases || 0,
+      activeCases: 0, // TODO: Count from Case model
+      completedCases: mediator.totalCases || 0,
+      successRate: mediator.successRate || 0
+    },
+    performance: {
+      averageRating: mediator.rating || 0,
+      reviewCount: mediator.reviewCount || 0,
+      responseTime: '24 hours', // TODO: Calculate from Case model
+      resolutionTime: '30 days' // TODO: Calculate from Case model
+    },
+    recent: {
+      newCases: 0, // TODO: Count cases created in last ${days} days
+      completedCases: 0, // TODO: Count cases completed in last ${days} days
+      newReviews: 0 // TODO: Count reviews in last ${days} days
+    },
+    _note: 'Placeholder statistics - Case management feature coming soon'
+  };
+
+  sendSuccess(res, stats);
+}));
+
+/**
+ * POST /api/mediators/apply
+ * Submit a mediator application
+ * NOTE: Must be BEFORE /:id route to avoid matching "apply" as an ID
+ */
+router.post('/apply', asyncHandler(async (req, res) => {
+  const MediatorApplication = require('../models/MediatorApplication');
+  const { sendApplicationReceivedEmail } = require('../services/email/emailService');
+  const crypto = require('crypto');
+
+  const {
+    firstName, lastName, email,
+    applyingAs, location,
+    authorized, preferredState, preferredStateReason,
+    practiceAreas, experience, disputeTypes, certifications, languages, comments,
+    // legacy optional fields
+    phone, barNumber, linkedinUrl
+  } = req.body;
+
+  if (!firstName || !lastName || !email) {
+    return sendValidationError(res, 'firstName, lastName, and email are required');
+  }
+
+  const existing = await MediatorApplication.findOne({ email });
+  if (existing) {
+    return sendError(res, 'An application with this email already exists', 409);
+  }
+
+  // Generate human-readable reference ID: FM-XXXXXXXX (8 uppercase alphanumeric chars)
+  const generateAppId = () =>
+    'FM-' + crypto.randomBytes(5).toString('hex').toUpperCase().slice(0, 8);
+
+  // Retry once on the rare chance of a collision
+  let applicationId = generateAppId();
+  if (await MediatorApplication.exists({ applicationId })) {
+    applicationId = generateAppId();
+  }
+
+  const application = await MediatorApplication.create({
+    applicationId,
+    firstName, lastName, email,
+    applyingAs: applyingAs || 'individual',
+    location,
+    authorized,
+    preferredState,
+    preferredStateReason,
+    practiceAreas:  Array.isArray(practiceAreas)  ? practiceAreas  : [],
+    experience:     experience != null ? Number(experience) : undefined,
+    disputeTypes,
+    certifications,
+    languages:      Array.isArray(languages) ? languages : [],
+    comments,
+    // legacy
+    phone, barNumber, linkedinUrl,
+    status: 'pending',
+    submittedAt: new Date()
+  });
+
+  // Send confirmation email (non-blocking)
+  if (typeof sendApplicationReceivedEmail === 'function') {
+    sendApplicationReceivedEmail(email, `${firstName} ${lastName}`).catch(() => {});
+  }
+
+  sendSuccess(res, {
+    message: 'Application submitted successfully',
+    applicationId: application.applicationId
+  }, 201);
+}));
+
+/**
+ * POST /api/mediators/link-profile
+ * Link current user to a mediator profile (by email match)
+ * Requires authentication and mediator account type
+ * NOTE: Must be BEFORE /:id route to avoid matching "link-profile" as an ID
+ */
+router.post('/link-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can link to mediator profiles');
+  }
+
+  const result = await linkUserToMediatorProfile(req.user._id);
+
+  if (!result.success) {
+    return sendError(res, 400, result.message);
+  }
+
+  sendSuccess(res, {
+    message: result.message,
+    mediator: {
+      id: result.mediator._id,
+      name: result.mediator.name,
+      email: result.mediator.email,
+      specializations: result.mediator.specializations,
+      yearsExperience: result.mediator.yearsExperience,
+      rating: result.mediator.rating
+    }
+  });
+}));
+
+/**
+ * POST /api/mediators/create-profile
+ * Create a new mediator profile for the current user
+ * Requires authentication and mediator account type
+ * NOTE: Must be BEFORE /:id route to avoid matching "create-profile" as an ID
+ */
+router.post('/create-profile', authenticate, asyncHandler(async (req, res) => {
+  // Verify user is a mediator
+  if (req.user.accountType !== 'mediator') {
+    return sendError(res, 403, 'Only mediator accounts can create mediator profiles');
+  }
+
+  const profileData = {
+    name: req.body.name,
+    bio: req.body.bio,
+    specializations: req.body.specializations,
+    yearsExperience: req.body.yearsExperience,
+    barAdmissions: req.body.barAdmissions,
+    location: req.body.location,
+    phone: req.body.phone,
+    website: req.body.website
+  };
+
+  const result = await createMediatorProfile(req.user._id, profileData);
+
+  if (!result.success) {
+    return sendError(res, 400, result.message);
+  }
+
+  sendSuccess(res, {
+    message: result.message,
+    mediator: {
+      id: result.mediator._id,
+      name: result.mediator.name,
+      email: result.mediator.email
+    }
+  }, 201);
+}));
+
+/**
  * GET /api/mediators/:id
  * Get a single mediator by ID
  * Cached for 10 minutes
@@ -567,74 +786,6 @@ router.post('/:id/track-selection', validate(schemas.objectId, 'params'), asyncH
 }));
 
 /**
- * POST /api/mediators/apply
- * Submit a mediator application
- */
-router.post('/apply', asyncHandler(async (req, res) => {
-  const MediatorApplication = require('../models/MediatorApplication');
-  const { sendApplicationReceivedEmail } = require('../services/email/emailService');
-  const crypto = require('crypto');
-
-  const {
-    firstName, lastName, email,
-    applyingAs, location,
-    authorized, preferredState, preferredStateReason,
-    practiceAreas, experience, disputeTypes, certifications, languages, comments,
-    // legacy optional fields
-    phone, barNumber, linkedinUrl
-  } = req.body;
-
-  if (!firstName || !lastName || !email) {
-    return sendValidationError(res, 'firstName, lastName, and email are required');
-  }
-
-  const existing = await MediatorApplication.findOne({ email });
-  if (existing) {
-    return sendError(res, 'An application with this email already exists', 409);
-  }
-
-  // Generate human-readable reference ID: FM-XXXXXXXX (8 uppercase alphanumeric chars)
-  const generateAppId = () =>
-    'FM-' + crypto.randomBytes(5).toString('hex').toUpperCase().slice(0, 8);
-
-  // Retry once on the rare chance of a collision
-  let applicationId = generateAppId();
-  if (await MediatorApplication.exists({ applicationId })) {
-    applicationId = generateAppId();
-  }
-
-  const application = await MediatorApplication.create({
-    applicationId,
-    firstName, lastName, email,
-    applyingAs: applyingAs || 'individual',
-    location,
-    authorized,
-    preferredState,
-    preferredStateReason,
-    practiceAreas:  Array.isArray(practiceAreas)  ? practiceAreas  : [],
-    experience:     experience != null ? Number(experience) : undefined,
-    disputeTypes,
-    certifications,
-    languages:      Array.isArray(languages) ? languages : [],
-    comments,
-    // legacy
-    phone, barNumber, linkedinUrl,
-    status: 'pending',
-    submittedAt: new Date()
-  });
-
-  // Send confirmation email (non-blocking)
-  if (typeof sendApplicationReceivedEmail === 'function') {
-    sendApplicationReceivedEmail(email, `${firstName} ${lastName}`).catch(() => {});
-  }
-
-  sendSuccess(res, {
-    message: 'Application submitted successfully.',
-    applicationId: application.applicationId
-  }, 201);
-}));
-
-/**
  * POST /api/mediators/:id/ideology-opt-out
  * Request removal of ideology classification
  * Requires authentication (mediator must own the profile)
@@ -668,108 +819,6 @@ router.post('/:id/ideology-opt-out', authenticate, asyncHandler(async (req, res)
       ideologyOptOutDate: mediator.ideologyOptOutDate
     }
   });
-}));
-
-/**
- * POST /api/mediators/link-profile
- * Link current user to a mediator profile (by email match)
- * Requires authentication and mediator account type
- */
-router.post('/link-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can link to mediator profiles');
-  }
-
-  const result = await linkUserToMediatorProfile(req.user._id);
-
-  if (!result.success) {
-    return sendError(res, 400, result.message);
-  }
-
-  sendSuccess(res, {
-    message: result.message,
-    mediator: {
-      id: result.mediator._id,
-      name: result.mediator.name,
-      email: result.mediator.email,
-      specializations: result.mediator.specializations,
-      yearsExperience: result.mediator.yearsExperience,
-      rating: result.mediator.rating
-    }
-  });
-}));
-
-/**
- * GET /api/mediators/my-profile
- * Get the mediator profile for the current user
- * Requires authentication and mediator account type
- */
-router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can access mediator profiles');
-  }
-
-  const mediator = await getMediatorProfileByUserId(req.user._id);
-
-  if (!mediator) {
-    return sendNotFound(res, 'Mediator profile');
-  }
-
-  sendSuccess(res, {
-    mediator: {
-      id: mediator._id,
-      name: mediator.name,
-      email: mediator.email,
-      bio: mediator.bio,
-      specializations: mediator.specializations,
-      yearsExperience: mediator.yearsExperience,
-      rating: mediator.rating,
-      totalMediations: mediator.totalMediations,
-      location: mediator.location,
-      dataQuality: mediator.dataQuality,
-      isVerified: mediator.isVerified
-    }
-  });
-}));
-
-/**
- * POST /api/mediators/create-profile
- * Create a new mediator profile for the current user
- * Requires authentication and mediator account type
- */
-router.post('/create-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can create mediator profiles');
-  }
-
-  const profileData = {
-    name: req.body.name,
-    bio: req.body.bio,
-    specializations: req.body.specializations,
-    yearsExperience: req.body.yearsExperience,
-    barAdmissions: req.body.barAdmissions,
-    location: req.body.location,
-    phone: req.body.phone,
-    website: req.body.website
-  };
-
-  const result = await createMediatorProfile(req.user._id, profileData);
-
-  if (!result.success) {
-    return sendError(res, 400, result.message);
-  }
-
-  sendSuccess(res, {
-    message: result.message,
-    mediator: {
-      id: result.mediator._id,
-      name: result.mediator.name,
-      email: result.mediator.email
-    }
-  }, 201);
 }));
 
 module.exports = router;

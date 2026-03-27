@@ -79,8 +79,9 @@ services:
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/fairmediator --quiet
       interval: 10s
-      timeout: 5s
+      timeout: 15s
       retries: 5
+      start_period: 30s
     security_opt:
       - no-new-privileges:true
     read_only: true

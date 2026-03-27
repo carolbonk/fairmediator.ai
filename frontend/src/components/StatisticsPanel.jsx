@@ -104,7 +104,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 lg:gap-6 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:pr-2">
+    <div className="flex flex-col gap-4 lg:gap-6 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:pr-2 hide-scrollbar">
       {/* AI/Human Toggle - Neomorphism Style */}
       <div className="px-5 py-3 bg-neu-100 rounded-neu shadow-neu-inset flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1E3A8A] mb-3">Select your preference</h3>
