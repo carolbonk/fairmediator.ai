@@ -119,13 +119,24 @@ config/traefik/acme.json
 *.md
 **/*.md
 
-# Allow essential public documentation only
+# Allow essential public documentation only (ONLY 3 DOCS)
 !README.md
 !CONTRIBUTING.md
-!CHANGELOG.md
 !SECURITY.md
-!CODE_OF_CONDUCT.md
-!.github/pull_request_template.md
+
+# ==============================================================================
+# DEPLOYMENT SCRIPTS - INTERNAL ONLY
+# ==============================================================================
+# Hide all shell scripts (deployment, backup, verification scripts)
+*.sh
+**/*.sh
+
+# Hide all Docker Compose files except base docker-compose.yml
+docker-compose.*.yml
+!docker-compose.yml
+
+# Hide environment-specific Docker files
+.env.docker
 
 # ==============================================================================
 # INTERNAL DEVELOPMENT WORKFLOWS
