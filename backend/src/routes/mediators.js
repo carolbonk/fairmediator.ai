@@ -98,19 +98,20 @@ router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
   }
 
   sendSuccess(res, {
-    mediator: {
-      id: mediator._id,
-      name: mediator.name,
-      email: mediator.email,
-      bio: mediator.bio,
-      specializations: mediator.specializations,
-      yearsExperience: mediator.yearsExperience,
-      rating: mediator.rating,
-      totalMediations: mediator.totalMediations,
-      location: mediator.location,
-      dataQuality: mediator.dataQuality,
-      isVerified: mediator.isVerified
-    }
+    id: mediator._id,
+    name: mediator.name,
+    email: mediator.email,
+    bio: mediator.bio,
+    specializations: mediator.specializations,
+    practiceAreas: mediator.practiceAreas,
+    yearsExperience: mediator.yearsExperience,
+    rating: mediator.rating,
+    totalMediations: mediator.totalMediations,
+    totalCases: mediator.totalCases,
+    successRate: mediator.successRate,
+    location: mediator.location,
+    dataQuality: mediator.dataQuality,
+    isVerified: mediator.isVerified
   });
 }));
 
@@ -133,14 +134,43 @@ router.get('/my-stats', authenticate, asyncHandler(async (req, res) => {
     return sendNotFound(res, 'Mediator profile');
   }
 
-  // TODO: Calculate real statistics from Case model when it's created
-  // For now, return placeholder data based on mediator profile
+  // TODO: Calculate real statistics from Case model and ProfileView tracking
+  // For now, return placeholder data that matches the frontend structure
+
+  // Generate daily views data for the chart
+  const dailyViews = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    dailyViews.push({
+      date: date.toISOString(),
+      count: Math.floor(Math.random() * 15) + 5 // 5-20 views per day
+    });
+  }
+
+  // Generate cases by practice area data
+  const casesByArea = (mediator.specializations || mediator.practiceAreas || [])
+    .slice(0, 5)
+    .map(area => ({
+      _id: area,
+      count: Math.floor(Math.random() * 10) + 1 // 1-10 cases per area
+    }));
+
   const stats = {
+    // Key metrics
+    totalViews: dailyViews.reduce((sum, day) => sum + day.count, 0),
+    activeCases: Math.floor(Math.random() * 5) + 1, // TODO: Count from Case model
+    successRate: mediator.successRate || 85,
+
+    // Chart data
+    dailyViews,
+    casesByArea,
+
+    // Additional metrics (for future use)
     overview: {
-      totalCases: mediator.totalCases || 0,
-      activeCases: 0, // TODO: Count from Case model
-      completedCases: mediator.totalCases || 0,
-      successRate: mediator.successRate || 0
+      totalCases: mediator.totalMediations || mediator.totalCases || 0,
+      completedCases: mediator.totalMediations || mediator.totalCases || 0,
+      successRate: mediator.successRate || 85
     },
     performance: {
       averageRating: mediator.rating || 0,
@@ -148,12 +178,7 @@ router.get('/my-stats', authenticate, asyncHandler(async (req, res) => {
       responseTime: '24 hours', // TODO: Calculate from Case model
       resolutionTime: '30 days' // TODO: Calculate from Case model
     },
-    recent: {
-      newCases: 0, // TODO: Count cases created in last ${days} days
-      completedCases: 0, // TODO: Count cases completed in last ${days} days
-      newReviews: 0 // TODO: Count reviews in last ${days} days
-    },
-    _note: 'Placeholder statistics - Case management feature coming soon'
+    _note: 'Placeholder statistics - View tracking and Case management features coming soon'
   };
 
   sendSuccess(res, stats);
