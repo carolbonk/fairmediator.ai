@@ -4,7 +4,7 @@ const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
 const UsageLog = require('../../models/UsageLog');
 const ConflictAlert = require('../../models/ConflictAlert');
-const SREAgent = require('../../../.ai/sre/agent');
+// const SREAgent = require('../../../.ai/sre/agent'); // TODO: Implement SRE Agent
 const { monitor } = require('../../utils/freeTierMonitor');
 const logger = require('../../config/logger');
 
@@ -224,7 +224,7 @@ class CronScheduler {
    */
   startAll() {
     this.scheduleDailyRefresh();
-    this.scheduleWeeklySREAgent();
+    // this.scheduleWeeklySREAgent(); // TODO: Implement SRE Agent
     this.scheduleWeeklyAffiliationAnalysis();
     this.scheduleFreeTierReset();
     this.scheduleDailyConflictAlerts();
