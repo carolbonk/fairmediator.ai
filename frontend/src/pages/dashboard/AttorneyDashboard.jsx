@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { FaSearch, FaEye, FaBookmark, FaUsers, FaFileAlt, FaBalanceScale } from 'react-icons/fa';
+import { FaSearch, FaEye, FaBookmark, FaUsers, FaFileAlt, FaBalanceScale, FaStar } from 'react-icons/fa';
 import StatCard from '../../components/dashboard/StatCard';
 import SimpleLineChart from '../../components/dashboard/SimpleLineChart';
 import SimpleBarChart from '../../components/dashboard/SimpleBarChart';
@@ -41,7 +41,9 @@ export default function AttorneyDashboard() {
       const savedRes = await fetch('/api/attorneys/saved-mediators', { headers });
       if (savedRes.ok) {
         const data = await savedRes.json();
-        setSavedMediators(data.data || []);
+        // Extract mediator objects from the saved mediators wrapper
+        const mediators = (data.data || []).map(saved => saved.mediator).filter(Boolean);
+        setSavedMediators(mediators);
       }
 
       // Fetch recent searches
@@ -175,11 +177,11 @@ export default function AttorneyDashboard() {
             <div className="bg-neu-200 rounded-2xl p-6 shadow-neu space-y-3">
               {recentSearches.length > 0 ? (
                 recentSearches.map((search, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
+                  <div key={search.id || idx} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
                     <div>
                       <p className="font-semibold text-gray-900">{search.query || 'General search'}</p>
                       <p className="text-sm text-gray-600">
-                        {new Date(search.createdAt).toLocaleDateString()}
+                        {new Date(search.timestamp).toLocaleDateString()}
                       </p>
                     </div>
                     <a
