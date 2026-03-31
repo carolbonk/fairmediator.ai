@@ -42,7 +42,8 @@ const sendPasswordResetEmail = async (to, resetUrl, userName) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'FairMediator <noreply@fairmediator.com>',
+      from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+      replyTo: process.env.EMAIL_REPLY_TO || 'contact@fairmediator.ai',
       to: [to],
       subject: 'Reset Your FairMediator Password',
       html: `
@@ -78,6 +79,8 @@ const sendPasswordResetEmail = async (to, resetUrl, userName) => {
               </div>
               <div class="footer">
                 <p>© ${new Date().getFullYear()} FairMediator. All rights reserved.</p>
+                <p>Need help? Contact us at <a href="mailto:${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}">${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}</a></p>
+                <p>Partnerships: <a href="mailto:${process.env.EMAIL_PARTNERSHIPS || 'partnerships@fairmediator.ai'}">${process.env.EMAIL_PARTNERSHIPS || 'partnerships@fairmediator.ai'}</a></p>
               </div>
             </div>
           </body>
@@ -116,7 +119,8 @@ const sendWelcomeEmail = async (to, userName) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'FairMediator <noreply@fairmediator.com>',
+      from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+      replyTo: process.env.EMAIL_REPLY_TO || 'contact@fairmediator.ai',
       to: [to],
       subject: 'Welcome to FairMediator!',
       html: `
@@ -160,6 +164,8 @@ const sendWelcomeEmail = async (to, userName) => {
               </div>
               <div class="footer">
                 <p>© ${new Date().getFullYear()} FairMediator. All rights reserved.</p>
+                <p>Need help? Contact us at <a href="mailto:${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}">${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}</a></p>
+                <p>Partnerships: <a href="mailto:${process.env.EMAIL_PARTNERSHIPS || 'partnerships@fairmediator.ai'}">${process.env.EMAIL_PARTNERSHIPS || 'partnerships@fairmediator.ai'}</a></p>
               </div>
             </div>
           </body>
@@ -196,7 +202,8 @@ const sendApplicationReceivedEmail = async (to, applicantName) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'FairMediator <noreply@fairmediator.com>',
+      from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+      replyTo: process.env.EMAIL_SUPPORT || 'support@fairmediator.ai',
       to: [to],
       subject: 'Your FairMediator application was received',
       html: `

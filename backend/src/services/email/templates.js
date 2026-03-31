@@ -80,7 +80,7 @@ const verificationEmail = (userName, verificationUrl) => {
             © ${new Date().getFullYear()} FairMediator. All rights reserved.
           </p>
           <p style="color: #9CA3AF; font-size: 12px; margin: 8px 0;">
-            Questions? Contact us at support@fairmediator.com
+            Questions? Contact us at ${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}
           </p>
         </div>
       </div>
@@ -147,7 +147,7 @@ const welcomeEmail = (userName, dashboardUrl) => {
           Our support team is here to assist you:
         </p>
         <ul style="color: #374151; line-height: 1.6; padding-left: 20px; margin: 8px 0;">
-          <li>📧 Email: <a href="mailto:support@fairmediator.com" style="color: #4F46E5;">support@fairmediator.com</a></li>
+          <li>📧 Email: <a href="mailto:${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}" style="color: #4F46E5;">${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}</a></li>
           <li>📚 Documentation: <a href="${process.env.FRONTEND_URL}/docs" style="color: #4F46E5;">User Guide</a></li>
           <li>💬 Chat: Live chat available in your dashboard</li>
         </ul>
@@ -276,7 +276,7 @@ const accountLockedEmail = (userName, lockDuration) => {
 
         <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
           <p style="color: #9CA3AF; font-size: 12px; margin: 8px 0;">
-            Need help? Contact <a href="mailto:security@fairmediator.com" style="color: #4F46E5;">security@fairmediator.com</a>
+            Need help? Contact <a href="mailto:${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}" style="color: #4F46E5;">${process.env.EMAIL_SUPPORT || 'support@fairmediator.ai'}</a>
           </p>
         </div>
       </div>

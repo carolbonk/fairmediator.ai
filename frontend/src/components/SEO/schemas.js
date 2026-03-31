@@ -20,7 +20,7 @@ export const getOrganizationSchema = () => ({
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',
-    email: 'support@fairmediator.com',
+    email: 'support@fairmediator.ai',
   },
   sameAs: [
     // Add your social media profiles here

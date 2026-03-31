@@ -35,7 +35,8 @@ const sendVerificationEmail = async (email, token, userName) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'FairMediator <noreply@fairmediator.com>',
+        from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+        replyTo: process.env.EMAIL_REPLY_TO || 'contact@fairmediator.ai',
         to: email,
         subject: 'Verify your email address - FairMediator',
         html: verificationEmail(userName, verificationUrl)
@@ -69,7 +70,8 @@ const sendWelcomeEmail = async (email, userName) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'FairMediator <noreply@fairmediator.com>',
+        from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+        replyTo: process.env.EMAIL_REPLY_TO || 'contact@fairmediator.ai',
         to: email,
         subject: 'Welcome to FairMediator! 🎉',
         html: welcomeEmail(userName, `${process.env.FRONTEND_URL}/dashboard`)
@@ -106,7 +108,8 @@ const sendPasswordResetEmail = async (email, token, userName) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'FairMediator Security <security@fairmediator.com>',
+        from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+        replyTo: process.env.EMAIL_SUPPORT || 'support@fairmediator.ai',
         to: email,
         subject: 'Password Reset Request - FairMediator',
         html: passwordResetEmail(userName, resetUrl)
@@ -140,7 +143,8 @@ const sendAccountLockedEmail = async (email, userName, lockDuration) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'FairMediator Security <security@fairmediator.com>',
+        from: `FairMediator <${process.env.RESEND_FROM_EMAIL || 'noreply@fairmediator.ai'}>`,
+        replyTo: process.env.EMAIL_SUPPORT || 'support@fairmediator.ai',
         to: email,
         subject: '🔒 Account Temporarily Locked - FairMediator',
         html: accountLockedEmail(userName, lockDuration)
