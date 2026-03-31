@@ -35,6 +35,17 @@ automation/venv/
 automation/.env
 
 # ==============================================================================
+# PERSONAL DEVELOPER CONFIGURATIONS - NEVER COMMIT
+# ==============================================================================
+# Personal shortcuts, aliases, and local settings (inspired by bonks pattern)
+.local-aliases
+.local-config
+.personal/
+**/.local-*
+.dev-shortcuts
+local.config.json
+
+# ==============================================================================
 # BUILD ARTIFACTS
 # ==============================================================================
 frontend/dist/
