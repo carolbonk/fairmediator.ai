@@ -65,7 +65,7 @@ export const getLocalBusinessSchema = () => ({
   name: 'FairMediator',
   description: 'Professional mediator selection platform using AI to match parties with qualified mediators',
   url: siteUrl,
-  email: 'support@fairmediator.com',
+  email: 'support@fairmediator.ai',
   address: {
     '@type': 'PostalAddress',
     addressCountry: 'US',

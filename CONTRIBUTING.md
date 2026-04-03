@@ -307,7 +307,7 @@ Before submitting your PR, verify:
 ## Getting Help
 
 - **Questions?** Open an issue with `question` label
-- **Security concerns?** Email security@fairmediator.com
+- **Security concerns?** Email security@fairmediator.ai
 - **Feature discussions?** Start a GitHub Discussion
 - **Bug reports?** Create an issue with detailed reproduction steps
 
