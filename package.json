@@ -8,6 +8,7 @@
     "backend"
   ],
   "scripts": {
+    "preinstall": "node scripts/check-axios-version.js",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd frontend && npm run dev",

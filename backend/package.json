@@ -4,6 +4,7 @@
   "description": "Backend API for FairMediator platform",
   "main": "src/server.js",
   "scripts": {
+    "preinstall": "node ../scripts/check-axios-version.js",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "jest",
@@ -19,7 +20,7 @@
     "@axiomhq/winston": "^1.4.0",
     "@huggingface/inference": "^4.13.9",
     "@netlify/blobs": "^10.5.0",
-    "axios": "^1.13.5",
+    "axios": "1.13.5",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.2.0",
     "compression": "^1.8.1",
