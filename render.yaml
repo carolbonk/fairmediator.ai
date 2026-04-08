@@ -76,7 +76,7 @@ services:
 
       # ===== CORS Configuration =====
       - key: CORS_ORIGIN
-        value: https://fairmediator.ai  # Update after Render URL is assigned
+        value: https://fairmediator.ai,https://fairmediator-api.onrender.com
       - key: FRONTEND_URL
         value: https://fairmediator.ai
 
