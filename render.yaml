@@ -32,7 +32,7 @@ services:
 
     # Docker configuration
     dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerContext: ./  # Monorepo root context (Dockerfile needs access to backend/ subdirectory)
 
     # Health check
     healthCheckPath: /health
