@@ -215,8 +215,10 @@ const SettingsPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-neu-100 to-neu-200">
       <SEO
-        title="Settings - Fair Mediator"
-        description="Manage your account settings and preferences"
+        title="Settings - Account Settings | FairMediator"
+        description="Manage your account settings, preferences, and API keys"
+        noindex={true}
+        nofollow={true}
       />
 
       <Header />

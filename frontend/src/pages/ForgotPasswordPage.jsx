@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import SEO from '../components/SEO/SEO';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -37,6 +38,12 @@ const ForgotPasswordPage = () => {
   if (success) {
     return (
       <div className="min-h-screen flex flex-col relative">
+        <SEO
+          title="Check Your Email - Password Reset | FairMediator"
+          description="Password reset instructions sent"
+          noindex={true}
+          nofollow={true}
+        />
         <div
           className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40"
           onClick={handleBackdropClick}
@@ -80,6 +87,12 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <SEO
+        title="Forgot Password - Reset Your Password | FairMediator"
+        description="Reset your FairMediator password"
+        noindex={true}
+        nofollow={true}
+      />
       <div
         className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={handleBackdropClick}

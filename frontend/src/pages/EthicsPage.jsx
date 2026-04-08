@@ -1,5 +1,6 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO/SEO';
 
 const EthicsPage = () => {
   const standards = [
@@ -67,6 +68,12 @@ const EthicsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+      <SEO
+        title="Ethics & Standards - Our Commitment to Fairness | FairMediator"
+        description="Learn about FairMediator's ethical framework for mediator selection. Our bias detection methodology, conflict screening process, and transparency standards based on ICODR 2022 standards."
+        keywords="mediator ethics, conflict screening, bias detection, mediator standards, ODR standards, ethical mediation"
+        ogType="article"
+      />
       <Header />
 
       {/* Hero Section */}

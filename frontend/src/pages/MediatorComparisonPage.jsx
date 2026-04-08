@@ -27,6 +27,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SimpleRadarChart from '../components/dashboard/SimpleRadarChart';
 import { getMediatorById, getMediators } from '../services/api';
+import SEO from '../components/SEO/SEO';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -169,6 +170,14 @@ export default function MediatorComparisonPage() {
 
   return (
     <div className="min-h-screen bg-neu-100 flex flex-col">
+      <SEO
+        title="Mediator Comparison Tool | FairMediator"
+        description="Compare mediators side by side. Analyze experience, specializations, neutrality, and conflict indicators across multiple mediators."
+        keywords="compare mediators, mediator comparison, side by side mediator analysis"
+        ogType="website"
+        noindex={true}
+        nofollow={true}
+      />
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-8 py-10 print:py-2">

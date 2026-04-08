@@ -1,10 +1,18 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FeedbackForm from '../components/FeedbackForm';
+import SEO from '../components/SEO/SEO';
 
 const FeedbackPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neu-50 to-neu-100 flex flex-col">
+      <SEO
+        title="Feedback - Help Us Improve | FairMediator"
+        description="Share your experience finding a mediator and help us improve FairMediator. Report data issues, request features, or provide feedback on our platform."
+        keywords="mediator feedback, suggest features, report issues"
+        ogType="website"
+        nofollow={true}
+      />
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">

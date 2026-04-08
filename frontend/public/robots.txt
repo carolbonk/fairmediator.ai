@@ -1,11 +1,31 @@
 User-agent: *
 Allow: /
+
+# Protected pages (authentication required)
 Disallow: /dashboard
+Disallow: /settings
 Disallow: /upgrade
-Disallow: /api/
+
+# Premium features (require subscription)
+Disallow: /settlement-calculator
+Disallow: /compare
+
+# Authentication flows
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
 Disallow: /reset-password
+
+# API endpoints
+Disallow: /api/
+
+# Public pages allowed
+Allow: /
+Allow: /mediators
+Allow: /mediators/apply
+Allow: /ethics
+Allow: /safeguards
+Allow: /contact
+Allow: /feedback
 
 Sitemap: https://fairmediator.ai/sitemap.xml

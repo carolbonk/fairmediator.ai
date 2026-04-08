@@ -4,6 +4,7 @@ import { FaCheckCircle, FaCopy, FaCheck } from 'react-icons/fa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CustomSelect from '../components/common/CustomSelect';
+import SEO from '../components/SEO/SEO';
 
 const MediatorApplicationPage = () => {
   const navigate = useNavigate();
@@ -187,6 +188,12 @@ const MediatorApplicationPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+      <SEO
+        title="Join FairMediator - Mediator Application | FairMediator"
+        description="Join our vetted network of mediators. Apply to be listed in our directory and connect with parties seeking qualified, unbiased mediators. AI conflict-of-interest screening included."
+        keywords="mediator signup, join mediator network, mediator application, list your mediation practice"
+        ogType="website"
+      />
 
       {/* ── Success Popup ─────────────────────────────────────────────────── */}
       {submittedAppId && (

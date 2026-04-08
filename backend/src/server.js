@@ -42,6 +42,7 @@ const perspectiveRoutes = require('./routes/perspectives');
 const idpRoutes = require('./routes/idp');
 const qaRoutes = require('./routes/qa');
 const monitoringRoutes = require('./routes/monitoring');
+const sitemapRoutes = require('./routes/sitemap');
 const storageRoutes = require('./routes/storage');
 const modelsRoutes = require('./routes/models');
 const conflictRoutes = require('./graph_analyzer/api/conflict_routes');
@@ -241,6 +242,9 @@ app.get('/health', (_req, res) => {
     ai: process.env.HUGGINGFACE_API_KEY ? 'configured' : 'not configured'
   });
 });
+
+// SEO routes (root level, no /api prefix)
+app.use('/', sitemapRoutes); // Serves /sitemap.xml
 
 // API routes
 app.use('/api/auth', authRoutes);

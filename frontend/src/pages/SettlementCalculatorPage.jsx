@@ -26,6 +26,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SettlementPredictor from '../components/SettlementPredictor';
 import CustomSelect from '../components/common/CustomSelect';
+import SEO from '../components/SEO/SEO';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -139,6 +140,14 @@ const SettlementCalculatorPage = () => {
 
   return (
     <div className="min-h-screen bg-neu-100 flex flex-col">
+      <SEO
+        title="Settlement Calculator - ML Prediction Tool | FairMediator"
+        description="Calculate estimated settlement amounts using our ML prediction model with 98% accuracy. Analyze case value by type, jurisdiction, and number of parties."
+        keywords="settlement calculator, mediation settlement prediction, case value calculator"
+        ogType="website"
+        noindex={true}
+        nofollow={true}
+      />
       <Header />
 
       {/* Print-only title */}

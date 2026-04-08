@@ -1,0 +1,150 @@
+# ==============================================================================
+# Render Blueprint - FairMediator Infrastructure
+# ==============================================================================
+# Deploys FairMediator backend API with full Express server, cron jobs, and
+# Docker ML model support.
+#
+# This blueprint creates:
+# 1. Web Service: Full Express backend (replaces Netlify Functions)
+# 2. Worker Service (optional): ML model processing
+#
+# Deployment:
+#   1. Push this file to GitHub repo root
+#   2. Connect repo to Render: https://dashboard.render.com/blueprints
+#   3. Configure environment variables in Render dashboard
+#   4. Deploy!
+#
+# Cost: $0/month (750 free hours = 24/7 uptime for 1 service)
+# ==============================================================================
+
+services:
+  # ===========================================================================
+  # Backend API - Full Express Server
+  # ===========================================================================
+  # Replaces Netlify Functions with always-on Express server
+  # Enables: Cron jobs, long-running AI requests, WebSockets
+  # ===========================================================================
+  - type: web
+    name: fairmediator-api
+    env: docker
+    region: oregon
+    plan: free  # 750 hours/month free
+
+    # Docker configuration
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+
+    # Health check
+    healthCheckPath: /health
+
+    # Auto-deploy on push to main
+    branch: main
+
+    # Environment variables (set in Render dashboard)
+    envVars:
+      # ===== REQUIRED: Database =====
+      - key: MONGODB_URI
+        sync: false  # Set manually in dashboard
+
+      # ===== REQUIRED: Security Secrets =====
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CSRF_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+
+      # ===== REQUIRED: AI Provider =====
+      - key: HUGGINGFACE_API_KEY
+        sync: false  # Set manually
+
+      # ===== Email Service (Optional) =====
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: noreply@fairmediator.ai
+
+      # ===== Application Config =====
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4001  # Internal port (Render auto-assigns external)
+
+      # ===== CORS Configuration =====
+      - key: CORS_ORIGIN
+        value: https://fairmediator.ai  # Update after Render URL is assigned
+      - key: FRONTEND_URL
+        value: https://fairmediator.ai
+
+      # ===== Netlify Blobs (File Storage) =====
+      - key: NETLIFY_BLOBS_ENABLED
+        value: true
+      - key: NETLIFY_SITE_ID
+        sync: false
+      - key: NETLIFY_TOKEN
+        sync: false
+
+      # ===== Stripe (Optional - for payments) =====
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+      # ===== Free Tier Limits =====
+      - key: AI_DAILY_LIMIT
+        value: 333
+      - key: EMAIL_DAILY_LIMIT
+        value: 50
+      - key: SCRAPING_DAILY_LIMIT
+        value: 450
+
+  # ===========================================================================
+  # ML Worker Service (Optional - Deploy Later)
+  # ===========================================================================
+  # Handles computationally expensive ML tasks
+  # Deploy this only if you need dedicated ML processing
+  # ===========================================================================
+  # - type: worker
+  #   name: fairmediator-ml
+  #   env: docker
+  #   region: oregon
+  #   plan: free
+  #
+  #   dockerfilePath: ./backend/src/ml_models/settlement_predictor/Dockerfile
+  #   dockerContext: ./backend/src/ml_models/settlement_predictor
+  #
+  #   branch: main
+  #
+  #   envVars:
+  #     - key: MONGODB_URI
+  #       sync: false
+  #     - key: HUGGINGFACE_API_KEY
+  #       sync: false
+
+# ==============================================================================
+# Post-Deployment Steps
+# ==============================================================================
+# After first deployment:
+#
+# 1. Get your Render URL (e.g., https://fairmediator-api.onrender.com)
+#
+# 2. Update CORS_ORIGIN in Render dashboard:
+#    CORS_ORIGIN=https://fairmediator.ai,https://fairmediator-api.onrender.com
+#
+# 3. Update frontend .env.production:
+#    VITE_API_URL=https://fairmediator-api.onrender.com/api
+#
+# 4. Redeploy Netlify frontend with new API URL
+#
+# 5. Test critical features:
+#    - User login/registration
+#    - Mediator search
+#    - AI chat functionality
+#    - File uploads
+#
+# 6. Verify cron jobs are running:
+#    Check Render logs for "Daily scraping started" messages
+#
+# ==============================================================================

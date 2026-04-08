@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
+import SEO from '../components/SEO/SEO';
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
@@ -63,6 +64,12 @@ const ResetPasswordPage = () => {
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+        <SEO
+          title="Invalid Reset Link | FairMediator"
+          description="Password reset link invalid or expired"
+          noindex={true}
+          nofollow={true}
+        />
         <div className="w-full max-w-md">
           <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
             <div className="text-center mb-6">
@@ -92,6 +99,12 @@ const ResetPasswordPage = () => {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+        <SEO
+          title="Password Reset Successful | FairMediator"
+          description="Your password has been successfully reset"
+          noindex={true}
+          nofollow={true}
+        />
         <div className="w-full max-w-md">
           <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
             <div className="text-center mb-6">
@@ -120,6 +133,12 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+      <SEO
+        title="Reset Password | FairMediator"
+        description="Create a new password for your FairMediator account"
+        noindex={true}
+        nofollow={true}
+      />
       <div className="w-full max-w-md">
         <div className="bg-gray-50 rounded-3xl shadow-neumorphic p-8">
           <div className="text-center mb-8">

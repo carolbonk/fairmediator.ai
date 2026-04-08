@@ -17,7 +17,7 @@ async function testEmail() {
   console.log('');
 
   // Test email recipient
-  const testRecipient = 'carolbonk@gmail.com';
+  const testRecipient = 'carolainebonk@gmail.com';
 
   try {
     console.log(`📧 Sending test email to: ${testRecipient}...`);
