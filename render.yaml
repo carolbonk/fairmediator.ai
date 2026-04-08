@@ -49,6 +49,8 @@ services:
       # ===== REQUIRED: Security Secrets =====
       - key: JWT_SECRET
         generateValue: true  # Render auto-generates
+      - key: JWT_REFRESH_SECRET
+        generateValue: true  # Render auto-generates
       - key: SESSION_SECRET
         generateValue: true
       - key: CSRF_SECRET
