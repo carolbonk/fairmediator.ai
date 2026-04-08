@@ -12,6 +12,9 @@ COPY package*.json ./
 # Copy backend workspace
 COPY backend/package*.json ./backend/
 
+# Copy preinstall scripts before npm install
+COPY backend/scripts/ ./backend/scripts/
+
 # Install all dependencies (root + backend workspace)
 RUN npm install --workspace=backend --include-workspace-root
 
@@ -49,6 +52,9 @@ COPY package*.json ./
 
 # Copy backend workspace package files
 COPY backend/package*.json ./backend/
+
+# Copy preinstall scripts before npm install
+COPY backend/scripts/ ./backend/scripts/
 
 # Install production dependencies only
 RUN npm install --workspace=backend --include-workspace-root --omit=dev && npm cache clean --force
