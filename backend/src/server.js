@@ -67,6 +67,12 @@ const { monitor } = require('./utils/freeTierMonitor');
 const app = express();
 const PORT = process.env.PORT || 4001;
 
+// Trust proxy - required when behind Render's reverse proxy
+// This enables req.ip, req.protocol, and other proxy-related features to work correctly
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // Trust first proxy (Render's load balancer)
+}
+
 // HTTPS Enforcement (production only)
 if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
@@ -173,8 +179,8 @@ app.use(mongoSanitizeMiddleware);
 app.use('/api/', globalLimiter);
 
 // CSRF protection (applies to state-changing operations)
-// Note: CSRF token endpoint must be accessible without CSRF check
-app.get('/api/csrf-token', csrfProtection, getCsrfToken);
+// Note: CSRF token endpoint must be accessible WITHOUT CSRF check (it generates the token!)
+app.get('/api/csrf-token', getCsrfToken);
 
 // Apply CSRF protection to all POST, PUT, DELETE, PATCH requests
 app.use((req, res, next) => {
