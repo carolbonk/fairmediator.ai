@@ -115,7 +115,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
 
           <button
             onClick={handleAiToggle}
-            className={`relative w-14 h-8 rounded-full transition-all duration-300 ${
+            className={`relative w-9 sm:w-14 h-5 sm:h-8 rounded-full transition-all duration-300 ${
               aiMediatorsEnabled
                 ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu'
                 : 'bg-neu-200 shadow-neu-inset'
@@ -123,14 +123,14 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             aria-label={aiMediatorsEnabled ? 'Disable AI-scored mediators' : 'Enable AI-scored mediators'}
           >
             <div
-              className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-300 ${
+              className={`absolute top-0.5 sm:top-1 left-0.5 sm:left-1 w-4 sm:w-6 h-4 sm:h-6 rounded-full transition-all duration-300 ${
                 aiMediatorsEnabled
-                  ? 'translate-x-6 bg-white shadow-neu-lg'
+                  ? 'translate-x-4 sm:translate-x-6 bg-white shadow-neu-lg'
                   : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
               }`}
             >
               <div className="w-full h-full flex items-center justify-center">
-                <div className={`w-2.5 h-2.5 rounded-full ${
+                <div className={`w-1.5 sm:w-2.5 h-1.5 sm:h-2.5 rounded-full ${
                   aiMediatorsEnabled ? 'bg-blue-500' : 'bg-red-500'
                 }`}></div>
               </div>

@@ -42,7 +42,7 @@ const MobileMenu = () => {
 
       {/* Drawer - Slides in from right - RULE 5 Compliant - Neomorphism Theme */}
       <div
-        className={`fixed top-0 right-0 h-full w-[280px] bg-gradient-to-b from-neu-200 to-neu-300 shadow-neu-lg z-[70] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col max-h-screen border-l-2 border-neu-400 ${
+        className={`fixed top-0 right-0 h-full w-full bg-gradient-to-b from-neu-200 to-neu-300 shadow-neu-lg z-[70] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col max-h-screen ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -195,9 +195,32 @@ const MobileMenu = () => {
 
         {/* Footer - Fixed - Neomorphism */}
         <div className="flex-shrink-0 p-4 bg-neu-200 shadow-neu-inset">
-          <p className="text-xs text-neu-600 text-center font-medium">
-            Fair Mediator v1.0
-          </p>
+          <div className="text-center space-y-2">
+            <p className="text-xs text-neu-700 font-semibold leading-relaxed">
+              Intelligent Mediator Matching & Screening Platform
+            </p>
+            <p className="text-sm text-neu-800 font-bold">
+              FairMediator.AI
+            </p>
+            <p className="text-xs text-neu-600">
+              © 2025 - 2026
+            </p>
+            <p className="text-xs text-neu-600">
+              All rights reserved.
+            </p>
+            <div className="pt-2 space-y-1">
+              <Link
+                to="/mediator-signup"
+                onClick={handleLinkClick}
+                className="block text-xs text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+              >
+                Are you a Mediator? Join us!
+              </Link>
+              <p className="text-xs text-neu-700 font-medium">
+                Mediators Across America
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>

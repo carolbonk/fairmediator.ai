@@ -228,9 +228,9 @@ const MediatorList = ({ parties }) => {
   const totalCount = filteredLiberalCount + filteredModeratedCount + filteredConservativeCount;
 
   return (
-    <div className="flex flex-col overflow-x-hidden w-full">
+    <div className="flex flex-col">
       {/* Header with Filters - Ultra Compact */}
-      <div className="border-b border-neu-200 px-4 py-2 bg-neu-100 overflow-x-hidden">
+      <div className="border-b border-neu-200 px-4 py-2 bg-neu-100">
         <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">Review & Select your Mediator</h3>
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-semibold text-neu-800">
@@ -242,138 +242,134 @@ const MediatorList = ({ parties }) => {
           <Tooltip text="AI-powered suggestions" />
         </div>
 
-        {/* Filters - Mobile First Design */}
-        <div className="space-y-2">
-          {/* Row 1: State and Budget */}
-          <div className="flex items-center gap-2 w-full">
-            {/* State Selector */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-1 min-w-0">
-              <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
-                State
-                <Tooltip text="Filter by state" position="top" />
-              </label>
-              <div className="relative flex-1 min-w-0">
-                <button
-                  type="button"
-                  onClick={() => setShowStateDropdown(!showStateDropdown)}
-                  className="flex items-center gap-1 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 w-full justify-between min-h-[20px]"
-                >
-                  <span className="truncate">{selectedState === 'all' ? 'All' : selectedState}</span>
-                  <svg className={`w-3 h-3 text-neu-600 transition-transform flex-shrink-0 ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+        {/* Filters Row - Compact */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* State Selector - Compact */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
+              State
+              <Tooltip text="Filter by state" position="top" />
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowStateDropdown(!showStateDropdown)}
+                className="flex items-center gap-2 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 pr-1 pl-1"
+              >
+                <span>{selectedState === 'all' ? 'All' : selectedState}</span>
+                <svg className={`w-3 h-3 text-neu-600 transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
 
-                {/* Dropdown Menu */}
-                {showStateDropdown && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setShowStateDropdown(false)} />
-                    <div className="absolute top-full mt-2 left-0 w-48 max-h-64 overflow-y-auto bg-neu-100 rounded-xl shadow-neu-lg border border-neu-200 z-20 animate-fade-in">
+              {/* Custom Dropdown Menu */}
+              {showStateDropdown && (
+                <>
+                  {/* Backdrop to close dropdown */}
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowStateDropdown(false)}
+                  />
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute top-full mt-2 left-0 w-48 max-h-64 overflow-y-auto bg-neu-100 rounded-xl shadow-neu-lg border border-neu-200 z-20 animate-fade-in">
+                    <button
+                      onClick={() => {
+                        setSelectedState('all');
+                        setShowStateDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
+                        selectedState === 'all'
+                          ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
+                          : 'text-neu-700 hover:bg-neu-200'
+                      }`}
+                    >
+                      All States
+                    </button>
+                    {US_STATES.map(state => (
                       <button
+                        key={state}
                         onClick={() => {
-                          setSelectedState('all');
+                          setSelectedState(state);
                           setShowStateDropdown(false);
                         }}
                         className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
-                          selectedState === 'all'
+                          selectedState === state
                             ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
                             : 'text-neu-700 hover:bg-neu-200'
                         }`}
                       >
-                        All States
+                        {state}
                       </button>
-                      {US_STATES.map(state => (
-                        <button
-                          key={state}
-                          onClick={() => {
-                            setSelectedState(state);
-                            setShowStateDropdown(false);
-                          }}
-                          className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
-                            selectedState === state
-                              ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
-                              : 'text-neu-700 hover:bg-neu-200'
-                          }`}
-                        >
-                          {state}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
+          </div>
 
-            {/* Budget Toggle - Same size as Human/AI toggle */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-shrink-0">
+          {/* Low Budget Toggle - Ultra Compact */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            <label className="flex items-center gap-1.5 cursor-pointer">
               <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
               <button
                 type="button"
                 onClick={() => setLowBudget(!lowBudget)}
-                className={`relative w-14 h-8 rounded-full transition-all duration-300 flex-shrink-0 ${
+                className={`relative w-8 h-4 rounded-full transition-all duration-300 ${
                   lowBudget
                     ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
                     : 'bg-neu-200 shadow-neu-inset'
                 }`}
               >
                 <div
-                  className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-300 ${
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
                     lowBudget
-                      ? 'translate-x-6 bg-white shadow-neu-lg'
+                      ? 'translate-x-4 bg-white shadow-neu-lg'
                       : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
                   }`}
                 />
               </button>
-            </div>
+            </label>
           </div>
 
-          {/* Row 2: Ideology Filter */}
-          <div className="flex items-center gap-1 px-2 py-1 rounded-lg shadow-neu bg-neu-100 w-full">
-            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-0.5 flex-shrink-0">
-              <span className="hidden xs:inline">Ideology</span>
-              <span className="xs:hidden text-[10px]">Ideol.</span>
-              <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
-            </label>
-            <div className="flex items-center gap-0.5 flex-1 justify-end overflow-x-hidden">
-              <button
-                onClick={() => setActiveTab('liberal')}
-                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === 'liberal'
-                    ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
-                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
-                }`}
-              >
-                <span className="hidden xs:inline">Liberal</span>
-                <span className="xs:hidden">L</span>
-                <span className="opacity-75 ml-0.5">({filteredLiberalCount})</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('moderated')}
-                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === 'moderated'
-                    ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
-                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
-                }`}
-              >
-                <span className="hidden xs:inline">Moderate</span>
-                <span className="xs:hidden">M</span>
-                <span className="opacity-75 ml-0.5">({filteredModeratedCount})</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('conservative')}
-                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
-                  activeTab === 'conservative'
-                    ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
-                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
-                }`}
-              >
-                <span className="hidden xs:inline">Conservative</span>
-                <span className="xs:hidden">C</span>
-                <span className="opacity-75 ml-0.5">({filteredConservativeCount})</span>
-              </button>
-            </div>
+          {/* Ideology Filter Label */}
+          <div className="flex items-center gap-1 text-xs font-semibold text-neu-700">
+            <span>Ideology:</span>
+            <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
           </div>
+
+          {/* Ideology Tabs */}
+          <button
+            onClick={() => setActiveTab('liberal')}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[36px] ${
+              activeTab === 'liberal'
+                ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
+                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+            }`}
+          >
+            Liberal <span className="opacity-75">({filteredLiberalCount})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('moderated')}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[36px] ${
+              activeTab === 'moderated'
+                ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
+                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+            }`}
+          >
+            Moderate <span className="opacity-75">({filteredModeratedCount})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('conservative')}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[36px] ${
+              activeTab === 'conservative'
+                ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
+                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
+            }`}
+          >
+            Conservative <span className="opacity-75">({filteredConservativeCount})</span>
+          </button>
         </div>
       </div>
 
@@ -652,7 +648,7 @@ const MediatorList = ({ parties }) => {
                     <p className="mb-4 text-gray-300 text-sm">Schedule a complimentary video call to discuss your case before committing to paid services.</p>
                     <button
                       onClick={() => setShowCalendar(true)}
-                      className="w-full bg-white text-slate-700 font-bold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm"
+                      className="w-full bg-white text-slate-700 font-bold py-2 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm"
                     >
                       Schedule Free Consultation
                     </button>
@@ -671,7 +667,7 @@ const MediatorList = ({ parties }) => {
                         <button
                           key={i}
                           onClick={() => setSelectedSlot(selectedSlot === i ? null : i)}
-                          className={`w-full text-left px-3 py-2.5 rounded-lg transition-all text-xs font-medium border ${
+                          className={`w-full text-left px-3 py-2 rounded-lg transition-all text-xs font-medium border ${
                             selectedSlot === i
                               ? 'bg-white/20 border-white/40 text-white shadow-inner'
                               : 'bg-dark-neu-500 border-dark-neu-400 text-white/80 hover:bg-dark-neu-400'
@@ -728,13 +724,13 @@ const MediatorList = ({ parties }) => {
                   setSelectedMediator(null);
                   setSelectedSlot(null);
                 }}
-                className="px-5 py-2.5 rounded-xl text-sm font-medium bg-dark-neu-400 text-white hover:bg-dark-neu-500 border border-dark-neu-500 transition-all"
+                className="px-5 py-2 rounded-xl text-sm font-medium bg-dark-neu-400 text-white hover:bg-dark-neu-500 border border-dark-neu-500 transition-all"
               >
                 Close
               </button>
               <button
                 onClick={() => trackSelection(selectedMediator, 'hired')}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-slate-600 to-slate-700 text-white hover:from-slate-700 hover:to-slate-800 transition-all shadow-lg"
+                className="px-6 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-slate-600 to-slate-700 text-white hover:from-slate-700 hover:to-slate-800 transition-all shadow-lg"
               >
                 Book Paid Session
               </button>
@@ -828,7 +824,7 @@ const MediatorList = ({ parties }) => {
               <div className="px-6 pb-6 flex gap-3">
                 <button
                   onClick={() => { setShowCalendar(false); setCalendarSelectedDate(null); }}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all"
+                  className="flex-1 py-2 rounded-xl text-sm font-medium bg-dark-neu-400 text-white border border-dark-neu-500 hover:bg-dark-neu-500 transition-all"
                 >
                   Cancel
                 </button>
@@ -843,7 +839,7 @@ const MediatorList = ({ parties }) => {
                       setCalendarSelectedDate(null);
                     }
                   }}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 py-2 rounded-xl text-sm font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Confirm Booking
                 </button>

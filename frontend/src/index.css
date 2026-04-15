@@ -208,8 +208,7 @@
   /* Mobile touch target accessibility - minimum 48x48px tap targets */
   @media (max-width: 768px) {
     .btn-neu,
-    .btn-neu-primary,
-    button:not([class*="text-"]):not([class*="p-0"]):not([class*="p-1"]) {
+    .btn-neu-primary {
       min-width: 48px;
       min-height: 48px;
     }
