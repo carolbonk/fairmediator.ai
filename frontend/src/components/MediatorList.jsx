@@ -308,68 +308,72 @@ const MediatorList = ({ parties }) => {
             </div>
           </div>
 
-          {/* Low Budget Toggle - Ultra Compact */}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+          {/* Low Budget Toggle - Mobile Optimized */}
+          <div className="flex items-center px-2 py-1 rounded-lg shadow-neu bg-neu-100 min-w-fit">
             <label className="flex items-center gap-1.5 cursor-pointer">
               <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
-              <button
-                type="button"
-                onClick={() => setLowBudget(!lowBudget)}
-                className={`relative w-8 h-4 rounded-full transition-all duration-300 ${
+            </label>
+            <button
+              type="button"
+              onClick={() => setLowBudget(!lowBudget)}
+              className={`relative w-8 h-4 rounded-full transition-all duration-300 ml-2 flex-shrink-0 ${
+                lowBudget
+                  ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
+                  : 'bg-neu-200 shadow-neu-inset'
+              }`}
+            >
+              <div
+                className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
                   lowBudget
-                    ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
-                    : 'bg-neu-200 shadow-neu-inset'
+                    ? 'translate-x-4 bg-white shadow-neu-lg'
+                    : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Ideology Filter - Compact like State selector */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
+              Ideology
+              <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
+            </label>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setActiveTab('liberal')}
+                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                  activeTab === 'liberal'
+                    ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
+                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
                 }`}
               >
-                <div
-                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
-                    lowBudget
-                      ? 'translate-x-4 bg-white shadow-neu-lg'
-                      : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
-                  }`}
-                />
+                Liberal <span className="opacity-75">({filteredLiberalCount})</span>
               </button>
-            </label>
+              <span className="text-neu-400">|</span>
+              <button
+                onClick={() => setActiveTab('moderated')}
+                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                  activeTab === 'moderated'
+                    ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
+                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
+                }`}
+              >
+                Moderate <span className="opacity-75">({filteredModeratedCount})</span>
+              </button>
+              <span className="text-neu-400">|</span>
+              <button
+                onClick={() => setActiveTab('conservative')}
+                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                  activeTab === 'conservative'
+                    ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
+                    : 'bg-transparent text-neu-700 hover:bg-neu-200'
+                }`}
+              >
+                Conservative <span className="opacity-75">({filteredConservativeCount})</span>
+              </button>
+            </div>
           </div>
-
-          {/* Ideology Filter Label */}
-          <div className="flex items-center gap-1 text-xs font-semibold text-neu-700">
-            <span>Ideology:</span>
-            <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
-          </div>
-
-          {/* Ideology Tabs */}
-          <button
-            onClick={() => setActiveTab('liberal')}
-            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
-              activeTab === 'liberal'
-                ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            Liberal <span className="opacity-75">({filteredLiberalCount})</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('moderated')}
-            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
-              activeTab === 'moderated'
-                ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            Moderate <span className="opacity-75">({filteredModeratedCount})</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('conservative')}
-            className={`px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap min-h-[44px] ${
-              activeTab === 'conservative'
-                ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
-                : 'shadow-neu bg-neu-100 text-neu-600 hover:shadow-neu-lg'
-            }`}
-          >
-            Conservative <span className="opacity-75">({filteredConservativeCount})</span>
-          </button>
         </div>
       </div>
 
