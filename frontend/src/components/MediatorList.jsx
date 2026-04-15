@@ -228,9 +228,9 @@ const MediatorList = ({ parties }) => {
   const totalCount = filteredLiberalCount + filteredModeratedCount + filteredConservativeCount;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-x-hidden w-full">
       {/* Header with Filters - Ultra Compact */}
-      <div className="border-b border-neu-200 px-4 py-2 bg-neu-100">
+      <div className="border-b border-neu-200 px-4 py-2 bg-neu-100 overflow-x-hidden">
         <h3 className="text-sm font-bold text-[#1E3A8A] mb-2">Review & Select your Mediator</h3>
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-semibold text-neu-800">
@@ -242,135 +242,134 @@ const MediatorList = ({ parties }) => {
           <Tooltip text="AI-powered suggestions" />
         </div>
 
-        {/* Filters Row - Compact */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* State Selector - Compact */}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
-            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
-              State
-              <Tooltip text="Filter by state" position="top" />
-            </label>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowStateDropdown(!showStateDropdown)}
-                className="flex items-center gap-2 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 pr-1 pl-1"
-              >
-                <span>{selectedState === 'all' ? 'All' : selectedState}</span>
-                <svg className={`w-3 h-3 text-neu-600 transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+        {/* Filters - Mobile First Design */}
+        <div className="space-y-2">
+          {/* Row 1: State and Budget */}
+          <div className="flex items-center gap-2 w-full">
+            {/* State Selector */}
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-1 min-w-0">
+              <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
+                State
+                <Tooltip text="Filter by state" position="top" />
+              </label>
+              <div className="relative flex-1 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setShowStateDropdown(!showStateDropdown)}
+                  className="flex items-center gap-1 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 w-full justify-between"
+                >
+                  <span className="truncate">{selectedState === 'all' ? 'All' : selectedState}</span>
+                  <svg className={`w-3 h-3 text-neu-600 transition-transform flex-shrink-0 ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
 
-              {/* Custom Dropdown Menu */}
-              {showStateDropdown && (
-                <>
-                  {/* Backdrop to close dropdown */}
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowStateDropdown(false)}
-                  />
-
-                  {/* Dropdown Menu */}
-                  <div className="absolute top-full mt-2 left-0 w-48 max-h-64 overflow-y-auto bg-neu-100 rounded-xl shadow-neu-lg border border-neu-200 z-20 animate-fade-in">
-                    <button
-                      onClick={() => {
-                        setSelectedState('all');
-                        setShowStateDropdown(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
-                        selectedState === 'all'
-                          ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
-                          : 'text-neu-700 hover:bg-neu-200'
-                      }`}
-                    >
-                      All States
-                    </button>
-                    {US_STATES.map(state => (
+                {/* Dropdown Menu */}
+                {showStateDropdown && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setShowStateDropdown(false)} />
+                    <div className="absolute top-full mt-2 left-0 w-48 max-h-64 overflow-y-auto bg-neu-100 rounded-xl shadow-neu-lg border border-neu-200 z-20 animate-fade-in">
                       <button
-                        key={state}
                         onClick={() => {
-                          setSelectedState(state);
+                          setSelectedState('all');
                           setShowStateDropdown(false);
                         }}
                         className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
-                          selectedState === state
+                          selectedState === 'all'
                             ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
                             : 'text-neu-700 hover:bg-neu-200'
                         }`}
                       >
-                        {state}
+                        All States
                       </button>
-                    ))}
-                  </div>
-                </>
-              )}
+                      {US_STATES.map(state => (
+                        <button
+                          key={state}
+                          onClick={() => {
+                            setSelectedState(state);
+                            setShowStateDropdown(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 text-xs font-medium transition-all ${
+                            selectedState === state
+                              ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800 shadow-neu-inset'
+                              : 'text-neu-700 hover:bg-neu-200'
+                          }`}
+                        >
+                          {state}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Budget Toggle - Compact */}
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+              <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
+              <Tooltip text="Under $300/hr" position="top" />
+              <button
+                type="button"
+                onClick={() => setLowBudget(!lowBudget)}
+                className={`relative w-8 h-4 rounded-full transition-all duration-300 flex-shrink-0 ${
+                  lowBudget
+                    ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
+                    : 'bg-neu-200 shadow-neu-inset'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
+                    lowBudget
+                      ? 'translate-x-4 bg-white shadow-neu-lg'
+                      : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
+                  }`}
+                />
+              </button>
             </div>
           </div>
 
-          {/* Low Budget Toggle - Mobile Optimized */}
-          <div className="flex items-center px-2 py-1 rounded-lg shadow-neu bg-neu-100 min-w-fit">
-            <label className="flex items-center gap-1.5 cursor-pointer">
-              <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
-              <Tooltip text="Under $300/hr" position="top" />
-            </label>
-            <button
-              type="button"
-              onClick={() => setLowBudget(!lowBudget)}
-              className={`relative w-8 h-4 rounded-full transition-all duration-300 ml-2 flex-shrink-0 ${
-                lowBudget
-                  ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
-                  : 'bg-neu-200 shadow-neu-inset'
-              }`}
-            >
-              <div
-                className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
-                  lowBudget
-                    ? 'translate-x-4 bg-white shadow-neu-lg'
-                    : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
-                }`}
-              />
-            </button>
-          </div>
-
-          {/* Ideology Filter - Compact like State selector */}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+          {/* Row 2: Ideology Filter */}
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 w-full">
             <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
               Ideology
               <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
             </label>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-1 justify-end">
               <button
                 onClick={() => setActiveTab('liberal')}
-                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
                   activeTab === 'liberal'
                     ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
                 }`}
               >
-                Liberal <span className="opacity-75">({filteredLiberalCount})</span>
+                <span className="hidden xs:inline">Liberal</span>
+                <span className="xs:hidden">L</span>
+                <span className="opacity-75 ml-0.5">({filteredLiberalCount})</span>
               </button>
-              <span className="text-neu-400">|</span>
               <button
                 onClick={() => setActiveTab('moderated')}
-                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
                   activeTab === 'moderated'
                     ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
                 }`}
               >
-                Moderate <span className="opacity-75">({filteredModeratedCount})</span>
+                <span className="hidden xs:inline">Moderate</span>
+                <span className="xs:hidden">M</span>
+                <span className="opacity-75 ml-0.5">({filteredModeratedCount})</span>
               </button>
-              <span className="text-neu-400">|</span>
               <button
                 onClick={() => setActiveTab('conservative')}
-                className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
                   activeTab === 'conservative'
                     ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
                 }`}
               >
-                Conservative <span className="opacity-75">({filteredConservativeCount})</span>
+                <span className="hidden xs:inline">Conservative</span>
+                <span className="xs:hidden">C</span>
+                <span className="opacity-75 ml-0.5">({filteredConservativeCount})</span>
               </button>
             </div>
           </div>
