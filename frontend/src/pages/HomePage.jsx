@@ -96,7 +96,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex flex-col overflow-x-hidden w-full">
       <SEO
         title="Home"
         description="Find qualified, unbiased mediators using AI-powered conflict analysis. Transparent matching for family, business, and civil disputes with real-time conflict detection."
@@ -108,8 +108,8 @@ const HomePage = () => {
       <Header />
 
       {/* Responsive layout - content flows naturally with page scroll */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex-grow">
-        <div className="flex flex-col lg:grid lg:grid-cols-[3fr_2fr] gap-4 sm:gap-6">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex-grow overflow-x-hidden w-full">
+        <div className="flex flex-col lg:grid lg:grid-cols-[3fr_2fr] gap-4 sm:gap-6 w-full overflow-x-hidden">
           {/* Left Column - Chat and Mediators stack */}
           <div className="flex flex-col gap-4 sm:gap-6">
             {/* State Mediation Info Chip - At Top (Hidden on Mobile) */}

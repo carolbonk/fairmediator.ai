@@ -1,0 +1,85 @@
+{
+  "test_date": "2026-04-14T13:14:49.232548",
+  "model_metadata": {
+    "r2_score": 0.9837559783333717,
+    "rmse": 0.23677516968431714,
+    "mae": 0.20318032755830018,
+    "mape": 22.731013705259354,
+    "n_estimators": 100,
+    "max_depth": 20
+  },
+  "test_results": [
+    {
+      "test_case": "Large Pharmaceutical Healthcare Fraud",
+      "input": {
+        "fraud_type": "healthcare",
+        "damages_claimed": 50000000,
+        "industry": "pharmaceutical",
+        "jurisdiction": "Southern District of New York",
+        "whistleblower_present": true,
+        "settlement_year": 2024
+      },
+      "prediction": {
+        "predicted_low": 1195780042.7843418,
+        "predicted_mid": 1259342191.365268,
+        "predicted_high": 1319569145.11523,
+        "confidence": 0.5,
+        "input_damages": 50000000.0
+      }
+    },
+    {
+      "test_case": "Defense Contractor Procurement Fraud",
+      "input": {
+        "fraud_type": "defense",
+        "damages_claimed": 25000000,
+        "industry": "defense_contractor",
+        "jurisdiction": "Eastern District of Virginia",
+        "whistleblower_present": false,
+        "settlement_year": 2024
+      },
+      "prediction": {
+        "predicted_low": 1195780042.7843418,
+        "predicted_mid": 1259342191.365268,
+        "predicted_high": 1319569145.11523,
+        "confidence": 0.5,
+        "input_damages": 25000000.0
+      }
+    },
+    {
+      "test_case": "COVID-19 PPP Loan Fraud (Small Case)",
+      "input": {
+        "fraud_type": "covid",
+        "damages_claimed": 5000000,
+        "industry": "financial",
+        "jurisdiction": "Central District of California",
+        "whistleblower_present": false,
+        "settlement_year": 2024
+      },
+      "prediction": {
+        "predicted_low": 533893823.82362807,
+        "predicted_mid": 606808978.1766772,
+        "predicted_high": 666285996.3056929,
+        "confidence": 0.5,
+        "input_damages": 5000000.0
+      }
+    },
+    {
+      "test_case": "Education Grant Fraud",
+      "input": {
+        "fraud_type": "grant",
+        "damages_claimed": 10000000,
+        "industry": "education",
+        "jurisdiction": "District of Massachusetts",
+        "whistleblower_present": true,
+        "settlement_year": 2024
+      },
+      "prediction": {
+        "predicted_low": 2663087.884817983,
+        "predicted_mid": 4460340.58786505,
+        "predicted_high": 9190008.114848165,
+        "confidence": 0.5,
+        "input_damages": 10000000.0
+      }
+    }
+  ]
+}

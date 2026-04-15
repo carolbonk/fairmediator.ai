@@ -247,7 +247,7 @@ const MediatorList = ({ parties }) => {
           {/* Row 1: State and Budget */}
           <div className="flex items-center gap-2 w-full">
             {/* State Selector */}
-            <div className="flex items-center gap-1 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-1 min-w-0">
               <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
                 State
                 <Tooltip text="Filter by state" position="top" />
@@ -256,7 +256,7 @@ const MediatorList = ({ parties }) => {
                 <button
                   type="button"
                   onClick={() => setShowStateDropdown(!showStateDropdown)}
-                  className="flex items-center gap-1 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 w-full justify-between"
+                  className="flex items-center gap-1 bg-transparent text-xs font-medium text-neu-800 cursor-pointer focus:outline-none border-0 w-full justify-between min-h-[20px]"
                 >
                   <span className="truncate">{selectedState === 'all' ? 'All' : selectedState}</span>
                   <svg className={`w-3 h-3 text-neu-600 transition-transform flex-shrink-0 ${showStateDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,8 +304,8 @@ const MediatorList = ({ parties }) => {
               </div>
             </div>
 
-            {/* Budget Toggle - Compact */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100">
+            {/* Budget Toggle - Consistent with State */}
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-shrink-0">
               <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
               <button
@@ -329,15 +329,16 @@ const MediatorList = ({ parties }) => {
           </div>
 
           {/* Row 2: Ideology Filter */}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 w-full">
-            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-1">
-              Ideology
+          <div className="flex items-center gap-1 px-2 py-1 rounded-lg shadow-neu bg-neu-100 w-full">
+            <label className="text-xs font-semibold text-neu-700 whitespace-nowrap flex items-center gap-0.5 flex-shrink-0">
+              <span className="hidden xs:inline">Ideology</span>
+              <span className="xs:hidden text-[10px]">Ideol.</span>
               <Tooltip text="Categories are algorithmic estimates based on keyword analysis, not verified political affiliations. Some mediators may request opt-out." position="top" />
             </label>
-            <div className="flex items-center gap-1 flex-1 justify-end">
+            <div className="flex items-center gap-0.5 flex-1 justify-end overflow-x-hidden">
               <button
                 onClick={() => setActiveTab('liberal')}
-                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
+                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
                   activeTab === 'liberal'
                     ? 'shadow-neu-inset bg-gradient-to-br from-slate-100 to-slate-200 text-slate-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
@@ -349,7 +350,7 @@ const MediatorList = ({ parties }) => {
               </button>
               <button
                 onClick={() => setActiveTab('moderated')}
-                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
+                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
                   activeTab === 'moderated'
                     ? 'shadow-neu-inset bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
@@ -361,7 +362,7 @@ const MediatorList = ({ parties }) => {
               </button>
               <button
                 onClick={() => setActiveTab('conservative')}
-                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
+                className={`px-1 xs:px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] xs:text-xs font-medium transition-all whitespace-nowrap ${
                   activeTab === 'conservative'
                     ? 'shadow-neu-inset bg-gradient-to-br from-red-100 to-red-200 text-red-800'
                     : 'bg-transparent text-neu-700 hover:bg-neu-200'
