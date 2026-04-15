@@ -304,23 +304,23 @@ const MediatorList = ({ parties }) => {
               </div>
             </div>
 
-            {/* Budget Toggle - Consistent with State */}
+            {/* Budget Toggle - Same size as Human/AI toggle */}
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shadow-neu bg-neu-100 flex-shrink-0">
               <span className="text-xs font-semibold text-neu-700 whitespace-nowrap">Budget</span>
               <Tooltip text="Under $300/hr" position="top" />
               <button
                 type="button"
                 onClick={() => setLowBudget(!lowBudget)}
-                className={`relative w-8 h-4 rounded-full transition-all duration-300 flex-shrink-0 ${
+                className={`relative w-14 h-8 rounded-full transition-all duration-300 flex-shrink-0 ${
                   lowBudget
                     ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-neu'
                     : 'bg-neu-200 shadow-neu-inset'
                 }`}
               >
                 <div
-                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-300 ${
                     lowBudget
-                      ? 'translate-x-4 bg-white shadow-neu-lg'
+                      ? 'translate-x-6 bg-white shadow-neu-lg'
                       : 'translate-x-0 bg-gradient-to-br from-neu-100 to-neu-50 shadow-neu'
                   }`}
                 />
