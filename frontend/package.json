@@ -29,7 +29,6 @@
     "vitest": "^4.0.16"
   },
   "scripts": {
-    "preinstall": "node ../scripts/check-axios-version.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
