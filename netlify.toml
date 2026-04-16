@@ -1,0 +1,23 @@
+[build]
+  # Build from repository root to access workspace configuration
+  base = "."
+  # Use workspace command to build frontend
+  command = "npm install && npm run build:frontend"
+  # Publish the frontend dist directory
+  publish = "frontend/dist"
+
+[build.environment]
+  # Use Node 18+ for npm workspaces support
+  NODE_VERSION = "20"
+
+# Production context (main branch)
+[context.production]
+  command = "npm install && npm run build:frontend"
+
+# Deploy previews from pull requests
+[context.deploy-preview]
+  command = "npm install && npm run build:frontend"
+
+# Branch deploys
+[context.branch-deploy]
+  command = "npm install && npm run build:frontend"
