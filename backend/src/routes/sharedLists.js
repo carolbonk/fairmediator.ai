@@ -3,6 +3,7 @@
  *
  * Collaborative mediator lists within team workspaces.
  * Teams can create vetted lists, blacklists, favorites, and custom lists.
+ * Shared lists are attorney-specific features for team collaboration.
  *
  * @module routes/sharedLists
  */
@@ -11,12 +12,12 @@ const express = require('express');
 const router = express.Router();
 const SharedList = require('../models/SharedList');
 const Workspace = require('../models/Workspace');
-const { authenticate } = require('../middleware/auth');
+const { authenticateWithRole } = require('../middleware/roleAuth');
 const { sanitizeInput } = require('../utils/sanitization');
 const logger = require('../config/logger');
 
-// All routes require authentication
-router.use(authenticate);
+// Shared lists are attorney-only features
+router.use(authenticateWithRole(['attorney', 'admin']));
 
 /**
  * GET /api/shared-lists

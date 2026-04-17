@@ -2,6 +2,7 @@
  * Notes API Routes
  *
  * CRUD operations for collaborative case notes on mediators.
+ * Notes are primarily used by attorneys to track mediator evaluations and case details.
  *
  * @module routes/notes
  */
@@ -9,12 +10,12 @@
 const express = require('express');
 const router = express.Router();
 const Note = require('../models/Note');
-const { authenticate } = require('../middleware/auth');
+const { authenticateWithRole } = require('../middleware/roleAuth');
 const { sanitizeInput } = require('../utils/sanitization');
 const logger = require('../config/logger');
 
-// All routes require authentication
-router.use(authenticate);
+// Notes are available to attorneys and admins
+router.use(authenticateWithRole(['attorney', 'admin']));
 
 /**
  * GET /api/notes

@@ -6,10 +6,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 // Validate required JWT secrets are set
-if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
-  throw new Error('JWT_SECRET and JWT_REFRESH_SECRET environment variables are required');
+if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET || !process.env.JWT_ROLE_SECRET) {
+  throw new Error('JWT_SECRET, JWT_REFRESH_SECRET, and JWT_ROLE_SECRET environment variables are required');
 }
 
 const userSchema = new mongoose.Schema({
@@ -131,18 +132,68 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Generate access token (15 minutes)
+// Role permissions mapping
+const ROLE_PERMISSIONS = {
+  mediator: [
+    'mediator.profile.read',
+    'mediator.profile.write',
+    'mediator.earnings.read',
+    'mediator.analytics.read',
+    'mediator.services.write',
+    'mediator.cases.read',
+    'common.messaging'
+  ],
+  attorney: [
+    'attorney.cases.write',
+    'attorney.mediators.search',
+    'attorney.mediators.bookmark',
+    'attorney.reports.generate',
+    'attorney.analytics.read',
+    'attorney.firm.read',
+    'common.messaging'
+  ],
+  party: [
+    'party.case.read',
+    'party.documents.write',
+    'party.odr.join',
+    'party.mediator.view'
+  ],
+  admin: ['*'] // All permissions
+};
+
+// Generate session fingerprint for token binding
+const generateSessionFingerprint = (userId, role) => {
+  const timestamp = Date.now();
+  const data = `${userId}:${role}:${timestamp}:${process.env.JWT_ROLE_SECRET}`;
+  return crypto.createHash('sha256').update(data).digest('hex').substring(0, 16);
+};
+
+// Generate role-specific access token (2 hours)
 userSchema.methods.generateAccessToken = function() {
-  return jwt.sign(
-    {
-      userId: this._id,
-      email: this.email,
-      subscriptionTier: this.subscriptionTier,
-      accountType: this.accountType
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: '15m' }
-  );
+  const role = this.accountType || this.role || 'guest';
+
+  // Create role-specific claims
+  const claims = {
+    userId: this._id,
+    email: this.email,
+    role,
+    permissions: ROLE_PERMISSIONS[role] || [],
+    tier: this.subscriptionTier || 'free',
+    // Add role-specific namespace to prevent cross-role token usage
+    namespace: `fairmediator:${role}`,
+    // Add session fingerprint for additional security
+    fingerprint: generateSessionFingerprint(this._id, role)
+  };
+
+  // Sign with combined secret for role isolation
+  const roleSecret = `${process.env.JWT_SECRET}:${process.env.JWT_ROLE_SECRET}:${role}`;
+
+  return jwt.sign(claims, roleSecret, {
+    expiresIn: '2h', // Longer than original 15m for better UX
+    issuer: 'fairmediator',
+    audience: `fairmediator-${role}`,
+    subject: this._id.toString()
+  });
 };
 
 // Generate refresh token (30 days)

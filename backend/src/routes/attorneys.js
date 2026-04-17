@@ -1,22 +1,27 @@
 /**
  * Attorney Routes
  * API endpoints for attorney users
+ *
+ * All routes in this file are attorney-specific and require attorney accountType
  */
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { authenticateWithRole, requirePermission } = require('../middleware/roleAuth');
 const { asyncErrorHandler } = require('../middleware/errorMonitoring');
 const Mediator = require('../models/Mediator');
 const SavedMediator = require('../models/SavedMediator');
 const SearchHistory = require('../models/SearchHistory');
 const Case = require('../models/Case');
 
+// All routes require attorney or admin role
+router.use(authenticateWithRole(['attorney', 'admin']));
+
 /**
  * GET /api/attorneys/saved-mediators
  * Get attorney's saved/bookmarked mediators
  */
-router.get('/saved-mediators', authenticate, asyncErrorHandler(async (req, res) => {
+router.get('/saved-mediators', requirePermission('attorney.mediators.bookmark'), asyncErrorHandler(async (req, res) => {
   const savedMediators = await SavedMediator.find({ userId: req.user._id })
     .populate({
       path: 'mediatorId',
@@ -43,7 +48,7 @@ router.get('/saved-mediators', authenticate, asyncErrorHandler(async (req, res) 
  * GET /api/attorneys/recent-searches
  * Get attorney's recent mediator searches
  */
-router.get('/recent-searches', authenticate, asyncErrorHandler(async (req, res) => {
+router.get('/recent-searches', requirePermission('attorney.mediators.search'), asyncErrorHandler(async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
   const recentSearches = await SearchHistory.find({ userId: req.user._id })
@@ -69,7 +74,7 @@ router.get('/recent-searches', authenticate, asyncErrorHandler(async (req, res) 
  * GET /api/attorneys/my-cases
  * Get attorney's active cases
  */
-router.get('/my-cases', authenticate, asyncErrorHandler(async (req, res) => {
+router.get('/my-cases', requirePermission('attorney.cases.write'), asyncErrorHandler(async (req, res) => {
   const { status, disputeType } = req.query;
 
   // Build query for cases where user is an attorney

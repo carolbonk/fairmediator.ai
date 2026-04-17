@@ -2,6 +2,11 @@
  * Mediator Routes
  * CRUD operations for mediator profiles
  * Now using FREE Hugging Face models!
+ *
+ * Route Access Matrix:
+ * - Public routes: Search, view profiles, ideology analysis (no auth)
+ * - Mediator routes: My profile, stats, profile management (mediator or admin)
+ * - Admin routes: Create/update any mediator (admin only)
  */
 
 const express = require('express');
@@ -10,7 +15,8 @@ const Mediator = require('../models/Mediator');
 const ideologyClassifier = require('../services/huggingface/ideologyClassifier');
 const hybridSearchService = require('../services/ai/hybridSearchService');
 const { validate, schemas } = require('../middleware/validation');
-const { authenticate, requireRole } = require('../middleware/auth');
+const { authenticateWithRole, requirePermission } = require('../middleware/roleAuth');
+const { authenticate, requireRole } = require('../middleware/auth'); // Keep for gradual migration
 const { sendSuccess, sendError, sendValidationError, sendUnauthorized, sendNotFound, asyncHandler } = require('../utils/responseHandlers');
 const { cacheMediatorList, cacheMediatorProfile } = require('../middleware/caching');
 const { invalidateMediatorCache } = require('../config/cache');
@@ -85,13 +91,11 @@ router.get('/', cacheMediatorList, validate(schemas.mediatorSearch, 'query'), as
  * Requires authentication and mediator account type
  * NOTE: Must be BEFORE /:id route to avoid matching "my-profile" as an ID
  */
-router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can access mediator profiles');
-  }
-
-  const mediator = await getMediatorProfileByUserId(req.user._id);
+router.get('/my-profile',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.profile.read'),
+  asyncHandler(async (req, res) => {
+    const mediator = await getMediatorProfileByUserId(req.user._id);
 
   if (!mediator) {
     return sendNotFound(res, 'Mediator profile');
@@ -121,14 +125,12 @@ router.get('/my-profile', authenticate, asyncHandler(async (req, res) => {
  * Requires authentication and mediator account type
  * NOTE: Must be BEFORE /:id route to avoid matching "my-stats" as an ID
  */
-router.get('/my-stats', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can access mediator statistics');
-  }
-
-  const days = parseInt(req.query.days) || 30;
-  const mediator = await getMediatorProfileByUserId(req.user._id);
+router.get('/my-stats',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.analytics.read'),
+  asyncHandler(async (req, res) => {
+    const days = parseInt(req.query.days) || 30;
+    const mediator = await getMediatorProfileByUserId(req.user._id);
 
   if (!mediator) {
     return sendNotFound(res, 'Mediator profile');
@@ -259,13 +261,11 @@ router.post('/apply', asyncHandler(async (req, res) => {
  * Requires authentication and mediator account type
  * NOTE: Must be BEFORE /:id route to avoid matching "link-profile" as an ID
  */
-router.post('/link-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can link to mediator profiles');
-  }
-
-  const result = await linkUserToMediatorProfile(req.user._id);
+router.post('/link-profile',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.profile.write'),
+  asyncHandler(async (req, res) => {
+    const result = await linkUserToMediatorProfile(req.user._id);
 
   if (!result.success) {
     return sendError(res, 400, result.message);
@@ -290,13 +290,11 @@ router.post('/link-profile', authenticate, asyncHandler(async (req, res) => {
  * Requires authentication and mediator account type
  * NOTE: Must be BEFORE /:id route to avoid matching "create-profile" as an ID
  */
-router.post('/create-profile', authenticate, asyncHandler(async (req, res) => {
-  // Verify user is a mediator
-  if (req.user.accountType !== 'mediator') {
-    return sendError(res, 403, 'Only mediator accounts can create mediator profiles');
-  }
-
-  const profileData = {
+router.post('/create-profile',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.profile.write'),
+  asyncHandler(async (req, res) => {
+    const profileData = {
     name: req.body.name,
     bio: req.body.bio,
     specializations: req.body.specializations,
@@ -391,9 +389,12 @@ router.get('/search/config', asyncHandler(async (req, res) => {
 
 /**
  * POST /api/mediators
- * Create a new mediator profile
+ * Create a new mediator profile (admin only)
  */
-router.post('/', authenticate, requireRole(['admin']), validate(schemas.mediatorCreate, 'body'), asyncHandler(async (req, res) => {
+router.post('/',
+  authenticateWithRole(['admin']),
+  validate(schemas.mediatorCreate, 'body'),
+  asyncHandler(async (req, res) => {
   const mediator = new Mediator(req.body);
   mediator.calculateDataQuality();
 
@@ -407,9 +408,11 @@ router.post('/', authenticate, requireRole(['admin']), validate(schemas.mediator
 
 /**
  * PUT /api/mediators/:id
- * Update a mediator profile
+ * Update a mediator profile (admin only)
  */
-router.put('/:id', authenticate, requireRole(['admin']), asyncHandler(async (req, res) => {
+router.put('/:id',
+  authenticateWithRole(['admin']),
+  asyncHandler(async (req, res) => {
   const mediator = await Mediator.findByIdAndUpdate(
     req.params.id,
     { ...req.body, lastUpdated: Date.now() },
@@ -815,18 +818,21 @@ router.post('/:id/track-selection', validate(schemas.objectId, 'params'), asyncH
  * Request removal of ideology classification
  * Requires authentication (mediator must own the profile)
  */
-router.post('/:id/ideology-opt-out', authenticate, asyncHandler(async (req, res) => {
-  const { id } = req.params;
+router.post('/:id/ideology-opt-out',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.profile.write'),
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
-  const mediator = await Mediator.findById(id);
-  if (!mediator) {
-    return sendNotFound(res, 'Mediator not found');
-  }
+    const mediator = await Mediator.findById(id);
+    if (!mediator) {
+      return sendNotFound(res, 'Mediator not found');
+    }
 
-  // Only the mediator themselves or an admin can opt out
-  if (req.user.role !== 'admin' && req.user.id !== mediator._id.toString()) {
-    return sendUnauthorized(res, 'You can only opt out your own profile');
-  }
+    // Only the mediator themselves or an admin can opt out
+    if (req.auth.role !== 'admin' && req.user.id !== mediator._id.toString()) {
+      return sendUnauthorized(res, 'You can only opt out your own profile');
+    }
 
   // Set opt-out flag
   mediator.ideologyOptOut = true;
