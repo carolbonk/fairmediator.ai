@@ -64,7 +64,9 @@ router.get('/mediators', asyncHandler(async (req, res) => {
   }
 
   if (state) filter['location.state'] = state.toUpperCase().slice(0, 2);
-  if (city) filter['location.city'] = new RegExp(escapeRegex(city.slice(0, 50)), 'i');
+  if (typeof city === 'string' && city) {
+    filter['location.city'] = new RegExp(escapeRegex(city.slice(0, 50)), 'i');
+  }
   if (verified === 'true') filter.isVerified = true;
   if (minScore !== undefined) filter.ideologyScore = { ...filter.ideologyScore, $gte: parseFloat(minScore) };
   if (maxScore !== undefined) filter.ideologyScore = { ...filter.ideologyScore, $lte: parseFloat(maxScore) };
