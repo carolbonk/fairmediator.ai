@@ -145,6 +145,10 @@ class FECScraper extends BaseScraper {
     let storedEntities = 0;
     let storedRelationships = [];
 
+    if (typeof mediatorId !== 'string' || !mediatorId.trim()) {
+      throw new Error('Invalid mediatorId: expected non-empty string');
+    }
+
     try {
       // Fetch donations
       logger.info(`[FEC] Fetching donations for ${mediatorName} with options:`, options);
@@ -205,7 +209,7 @@ class FECScraper extends BaseScraper {
           // Create DONATED_TO relationship
           const relationship = await Relationship.findOneAndUpdate(
             {
-              sourceId: mediatorId,
+              sourceId: { $eq: mediatorId },
               targetId: committeeId,
               relationshipType: 'DONATED_TO'
             },
