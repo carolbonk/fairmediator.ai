@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const MediatorEarnings = require('../models/MediatorEarnings');
 const Mediator = require('../models/Mediator');
@@ -11,6 +12,13 @@ const Case = require('../models/Case');
 const { authenticateWithRole, requirePermission, auditDataAccess } = require('../middleware/roleAuth');
 const { asyncHandler } = require('../utils/responseHandlers');
 const logger = require('../config/logger');
+
+const earningsProgressRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 /**
  * GET /api/mediators/:mediatorId/earnings
@@ -389,6 +397,7 @@ router.post('/:mediatorId/earnings/goals',
  * Access: Mediator (own data) or Admin
  */
 router.get('/:mediatorId/earnings/progress',
+  earningsProgressRateLimiter,
   authenticateWithRole(['mediator', 'admin']),
   requirePermission('mediator.analytics.read'),
   asyncHandler(async (req, res) => {
