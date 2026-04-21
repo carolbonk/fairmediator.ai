@@ -165,17 +165,18 @@ router.post('/process-and-save', upload.single('file'), asyncHandler(async (req,
  */
 router.post('/batch-process', upload.array('files', 10), async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
+    const files = Array.isArray(req.files) ? req.files : [];
+    if (files.length === 0) {
       return res.status(400).json({
         success: false,
         error: 'No files uploaded'
       });
     }
 
-    logger.info(`Batch processing ${req.files.length} files`);
+    logger.info(`Batch processing ${files.length} files`);
 
     const results = await Promise.all(
-      req.files.map(async (file) => {
+      files.map(async (file) => {
         try {
           const result = await idpService.processPDF(file.buffer);
           return {
@@ -197,7 +198,7 @@ router.post('/batch-process', upload.array('files', 10), async (req, res) => {
 
     return res.json({
       success: true,
-      processed: req.files.length,
+      processed: files.length,
       successful,
       failed,
       results
