@@ -163,7 +163,7 @@ const DataLoadingPopup = ({
 
   return (
     <div
-      className={`fixed bottom-4 right-4 max-w-md rounded-lg shadow-lg border-2 p-4 z-50 ${colorClasses[config.color]}`}
+      className={`fixed bottom-4 right-4 max-w-md rounded-lg shadow-lg border-2 p-4 z-[9000] ${colorClasses[config.color]}`}
       role="alert"
       aria-live="polite"
     >

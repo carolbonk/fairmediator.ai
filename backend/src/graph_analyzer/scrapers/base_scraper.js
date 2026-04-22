@@ -107,11 +107,17 @@ class BaseScraper {
   normalizeEntityName(name) {
     if (!name) return '';
 
+    // Limit input length to prevent performance issues
+    if (name.length > 500) {
+      name = name.substring(0, 500);
+    }
+
     return name
       .toLowerCase()
       .trim()
       .replace(/\s+/g, ' ')
-      .replace(/,?\s*(llc|inc|corp|ltd|p\.?c\.?|l\.?l\.?p\.?)$/i, '')
+      // Optimized regex: More specific patterns to reduce backtracking
+      .replace(/,?\s*(llc|inc|corp|ltd|pc|llp)\.?$/i, '')
       .replace(/[^\w\s]/g, '');
   }
 

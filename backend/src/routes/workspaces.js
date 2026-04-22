@@ -9,12 +9,14 @@
 const express = require('express');
 const router = express.Router();
 const Workspace = require('../models/Workspace');
-const { authenticate } = require('../middleware/auth');
+const { authenticateWithRole, requirePermission } = require('../middleware/roleAuth');
 const { sanitizeInput } = require('../utils/sanitization');
 const logger = require('../config/logger');
 
 // All routes require authentication
-router.use(authenticate);
+// Workspaces are primarily for attorneys to collaborate on case selection
+// Admins also have access for support purposes
+router.use(authenticateWithRole(['attorney', 'admin']));
 
 /**
  * GET /api/workspaces

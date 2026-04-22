@@ -1,21 +1,27 @@
 /**
  * Party Routes
  * API endpoints for party users (people in disputes)
+ *
+ * Parties are litigants/disputants with constrained portal access.
+ * They can view their case, upload documents, and participate in ODR sessions.
  */
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { authenticateWithRole, requirePermission } = require('../middleware/roleAuth');
 const { asyncErrorHandler } = require('../middleware/errorMonitoring');
 const Mediator = require('../models/Mediator');
 const Case = require('../models/Case');
+
+// All routes require party or admin role
+router.use(authenticateWithRole(['party', 'admin']));
 
 /**
  * GET /api/parties/my-case
  * Get current user's case information
  * Parties typically have one active case at a time
  */
-router.get('/my-case', authenticate, asyncErrorHandler(async (req, res) => {
+router.get('/my-case', requirePermission('party.case.read'), asyncErrorHandler(async (req, res) => {
   // Find the most recent case where user is a party
   const userCase = await Case.findOne({
     'parties.userId': req.user._id,
@@ -43,7 +49,7 @@ router.get('/my-case', authenticate, asyncErrorHandler(async (req, res) => {
  * GET /api/parties/recommended-mediators
  * Get recommended mediators for the party
  */
-router.get('/recommended-mediators', authenticate, asyncErrorHandler(async (req, res) => {
+router.get('/recommended-mediators', requirePermission('party.mediator.view'), asyncErrorHandler(async (req, res) => {
   // Return top-rated mediators as recommendations
   const mediators = await Mediator.find({
     isActive: true
