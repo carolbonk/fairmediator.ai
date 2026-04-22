@@ -25,12 +25,12 @@ const WelcomePopup = ({ onClose }) => {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[8999]"
         onClick={handleClose}
       />
 
       {/* Welcome Card - Modern & Mobile-Optimized */}
-      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-[9000] p-0 sm:p-4">
         <div
           className="bg-dark-neu-300 rounded-t-2xl sm:rounded-2xl shadow-dark-neu-lg w-full sm:max-w-md mx-auto flex flex-col overflow-hidden animate-slide-up"
           onClick={(e) => e.stopPropagation()}

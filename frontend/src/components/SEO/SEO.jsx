@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
  * @param {string} [props.image] - Open Graph image URL
  * @param {string} [props.type='website'] - Open Graph type
  * @param {Object} [props.jsonLd] - Schema.org JSON-LD structured data
- * @param {string[]} [props.keywords] - SEO keywords
+ * @param {string|string[]} [props.keywords] - SEO keywords (comma-separated string or array)
  * @param {string} [props.author] - Page author
  * @param {boolean} [props.noindex=false] - Prevent search engine indexing
  */
@@ -32,13 +32,18 @@ const SEO = ({
   const canonicalUrl = canonical || `${siteUrl}${window.location.pathname}`;
   const imageUrl = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
+  // Handle both string and array formats for keywords
+  const keywordsArray = typeof keywords === 'string'
+    ? keywords.split(',').map(k => k.trim()).filter(Boolean)
+    : Array.isArray(keywords) ? keywords : [];
+
   return (
     <Helmet>
       {/* Primary Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="title" content={fullTitle} />
       <meta name="description" content={description} />
-      {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+      {keywordsArray.length > 0 && <meta name="keywords" content={keywordsArray.join(', ')} />}
       {author && <meta name="author" content={author} />}
       <link rel="canonical" href={canonicalUrl} />
 
@@ -78,7 +83,10 @@ SEO.propTypes = {
   image: PropTypes.string,
   type: PropTypes.string,
   jsonLd: PropTypes.object,
-  keywords: PropTypes.arrayOf(PropTypes.string),
+  keywords: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string)
+  ]),
   author: PropTypes.string,
   noindex: PropTypes.bool,
 };
