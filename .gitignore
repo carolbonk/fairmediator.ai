@@ -30,9 +30,16 @@ automation/venv/
 .env.test
 .env.production
 .env.development
+.env.backup
+.env.*backup*
+*.env.backup
 */.env
 **/.env
 automation/.env
+
+# Backup files (may contain secrets)
+*.backup
+**/*.backup
 
 # ==============================================================================
 # PERSONAL DEVELOPER CONFIGURATIONS - NEVER COMMIT
