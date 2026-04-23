@@ -52,7 +52,7 @@ router.get('/mediators', asyncHandler(async (req, res) => {
   const filter = { isActive: true };
 
   // Keyword search
-  if (q) {
+  if (typeof q === 'string' && q) {
     const safe = escapeRegex(q.slice(0, 100));
     const re = new RegExp(safe, 'i');
     filter.$or = [
