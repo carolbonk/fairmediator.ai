@@ -35,5 +35,8 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.11"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "^0.8.13"
   }
 }

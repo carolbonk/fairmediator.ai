@@ -240,6 +240,10 @@ class DocumentParser {
    * - For PDF: Add 'pdf-parse' NPM package
    * - For DOCX: Add 'mammoth' NPM package
    *
+   * SECURITY:
+   * - Uses @xmldom/xmldom >= 0.8.13 to prevent XML injection (CVE-2024-XXXXX)
+   * - mammoth internally handles XML parsing with appropriate safeguards
+   *
    * @param {Buffer} buffer - File buffer
    * @param {string} mimetype - File MIME type
    * @param {string} filename - Original filename
