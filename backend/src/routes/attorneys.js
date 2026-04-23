@@ -75,15 +75,28 @@ router.get('/recent-searches', requirePermission('attorney.mediators.search'), a
  * Get attorney's active cases
  */
 router.get('/my-cases', requirePermission('attorney.cases.write'), asyncErrorHandler(async (req, res) => {
-  const { status, disputeType } = req.query;
+  const { status: rawStatus, disputeType: rawDisputeType } = req.query;
+  const allowedStatuses = new Set(['draft', 'pending', 'active', 'in_progress', 'resolved', 'closed', 'cancelled']);
+  const allowedDisputeTypes = new Set(['commercial', 'employment', 'family', 'property', 'contract', 'other']);
 
   // Build query for cases where user is an attorney
   const query = {
     'attorneys.userId': req.user._id
   };
 
-  if (status) query.status = status;
-  if (disputeType) query.disputeType = disputeType;
+  if (rawStatus !== undefined) {
+    if (typeof rawStatus !== 'string' || !allowedStatuses.has(rawStatus)) {
+      return res.status(400).json({ success: false, message: 'Invalid status filter' });
+    }
+    query.status = rawStatus;
+  }
+
+  if (rawDisputeType !== undefined) {
+    if (typeof rawDisputeType !== 'string' || !allowedDisputeTypes.has(rawDisputeType)) {
+      return res.status(400).json({ success: false, message: 'Invalid disputeType filter' });
+    }
+    query.disputeType = rawDisputeType;
+  }
 
   const cases = await Case.find(query)
     .populate('mediator.mediatorId', 'name rating specializations')
