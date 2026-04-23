@@ -205,7 +205,13 @@ class StripeService {
    */
   async handleSubscriptionUpdate(subscription) {
     const customerId = subscription.customer;
-    const user = await User.findOne({ stripeCustomerId: customerId });
+
+    if (typeof customerId !== 'string' || customerId.trim().length === 0) {
+      logger.error('Invalid customer ID in subscription update webhook', { customerId });
+      return;
+    }
+
+    const user = await User.findOne({ stripeCustomerId: { $eq: customerId } });
 
     if (!user) {
       logger.error('User not found for subscription update', { customerId });
@@ -235,7 +241,13 @@ class StripeService {
    */
   async handleSubscriptionCancelled(subscription) {
     const customerId = subscription.customer;
-    const user = await User.findOne({ stripeCustomerId: customerId });
+
+    if (typeof customerId !== 'string' || customerId.trim().length === 0) {
+      logger.error('Invalid customer ID in subscription cancellation webhook', { customerId });
+      return;
+    }
+
+    const user = await User.findOne({ stripeCustomerId: { $eq: customerId } });
 
     if (!user) {
       logger.error('User not found for subscription cancellation', { customerId });
