@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { FaEye, FaStar, FaGavel, FaChartLine, FaUser, FaCheckCircle, FaPlus, FaMapMarkerAlt, FaBriefcase, FaInfoCircle, FaRobot, FaStore } from 'react-icons/fa';
 import StatCard from '../../components/dashboard/StatCard';
@@ -63,6 +63,11 @@ export default function MediatorDashboard() {
   const [addError, setAddError] = useState('');
   const [adding, setAdding] = useState(false);
 
+  // Persistence wiring — `hydrated` gates the debounced save so the initial
+  // useEffect that copies profile -> selectedAreas doesn't fire a PUT.
+  const hydrated = useRef(false);
+  const saveTimer = useRef(null);
+
   useEffect(() => {
     fetchMediatorData();
   }, [timeRange]);
@@ -71,7 +76,34 @@ export default function MediatorDashboard() {
   useEffect(() => {
     if (profile?.practiceAreas) setSelectedAreas(profile.practiceAreas);
     if (profile?.customPracticeAreas) setCustomAreas(profile.customPracticeAreas);
+    if (profile) hydrated.current = true;
   }, [profile]);
+
+  const saveProfile = async (patch) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      await fetch('/api/mediators/my-profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(patch)
+      });
+    } catch (error) {
+      console.error('Practice-area persistence failed:', error);
+    }
+  };
+
+  // Debounced PUT when selectedAreas changes (skips initial hydration)
+  useEffect(() => {
+    if (!hydrated.current) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveProfile({ practiceAreas: selectedAreas });
+    }, 500);
+    return () => saveTimer.current && clearTimeout(saveTimer.current);
+  }, [selectedAreas]);
 
   const toggleArea = (area) => {
     setSelectedAreas(prev =>
@@ -79,7 +111,7 @@ export default function MediatorDashboard() {
     );
   };
 
-  const handleAddPracticeArea = () => {
+  const handleAddPracticeArea = async () => {
     setAddError('');
     const name = newAreaName.trim();
 
@@ -102,9 +134,13 @@ export default function MediatorDashboard() {
       return;
     }
 
-    setCustomAreas((prev) => [...prev, { state: newAreaState, name }]);
+    setAdding(true);
+    const next = [...customAreas, { state: newAreaState, name }];
+    setCustomAreas(next);
     setNewAreaName('');
     setNewAreaState('');
+    await saveProfile({ customPracticeAreas: next });
+    setAdding(false);
   };
 
   const fetchMediatorData = async () => {
