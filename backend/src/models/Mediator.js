@@ -40,8 +40,8 @@ const mediatorSchema = new mongoose.Schema({
   previousEmployers: [String],
   specializations: [String],
   customPracticeAreas: [{
-    state: { type: String, trim: true, uppercase: true },
-    name: { type: String, trim: true },
+    state: { type: String, required: true, trim: true },
+    name:  { type: String, required: true, trim: true },
     _id: false
   }],
   yearsExperience: Number,
@@ -328,7 +328,11 @@ mediatorSchema.methods.detectConflicts = async function(parties) {
   return conflicts;
 };
 
-// Virtual field for backward compatibility (frontend uses "practiceAreas", backend uses "specializations")
+// DEPRECATED ALIAS — `specializations` is canonical. The `practiceAreas` virtual is read-only
+// and exists only so older frontend code that reads `profile.practiceAreas` keeps working.
+// Write paths must use `specializations` (or send the deprecated `practiceAreas` body key,
+// which the PUT /my-profile handler translates). Remove this virtual once all read consumers
+// are migrated to `specializations`.
 mediatorSchema.virtual('practiceAreas').get(function() {
   return this.specializations;
 });

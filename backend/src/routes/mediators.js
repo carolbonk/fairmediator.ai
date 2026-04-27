@@ -120,10 +120,24 @@ router.get('/my-profile',
   });
 }));
 
+// 50 US states — full names, matching frontend `US_STATES` in mockMediators.js.
+// Mirror change in both places if the list ever needs to drift (e.g. add territories).
+const US_STATES = new Set([
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+  'Wisconsin', 'Wyoming'
+]);
+
 /**
  * PUT /api/mediators/my-profile
  * Updates the current mediator's editable profile fields. Currently:
- *   - practiceAreas: string[]   (writes to `specializations` — the canonical store)
+ *   - specializations: string[]   (canonical)
+ *   - practiceAreas: string[]     (DEPRECATED alias — translates to specializations)
  *   - customPracticeAreas: { state, name }[]
  * Other fields are intentionally not editable here (admin-only via PUT /:id).
  */
@@ -134,13 +148,18 @@ router.put('/my-profile',
     const mediator = await getMediatorProfileByUserId(req.user._id);
     if (!mediator) return sendNotFound(res, 'Mediator profile');
 
-    const { practiceAreas, customPracticeAreas } = req.body;
+    const incomingSpecs = Array.isArray(req.body.specializations)
+      ? req.body.specializations
+      : Array.isArray(req.body.practiceAreas)  // DEPRECATED — remove after all callers migrate
+        ? req.body.practiceAreas
+        : undefined;
+    const { customPracticeAreas } = req.body;
 
-    if (practiceAreas !== undefined) {
-      if (!Array.isArray(practiceAreas) || practiceAreas.some(a => typeof a !== 'string')) {
-        return sendValidationError(res, 'practiceAreas must be an array of strings');
+    if (incomingSpecs !== undefined) {
+      if (incomingSpecs.some(a => typeof a !== 'string')) {
+        return sendValidationError(res, 'specializations must be an array of strings');
       }
-      mediator.specializations = practiceAreas.map(a => a.trim()).filter(Boolean);
+      mediator.specializations = incomingSpecs.map(a => a.trim()).filter(Boolean);
     }
 
     if (customPracticeAreas !== undefined) {
@@ -148,18 +167,23 @@ router.put('/my-profile',
         return sendValidationError(res, 'customPracticeAreas must be an array');
       }
       const cleaned = [];
+      const seen = new Set();
       for (const entry of customPracticeAreas) {
         if (!entry || typeof entry !== 'object') {
           return sendValidationError(res, 'customPracticeAreas entries must be objects with {state, name}');
         }
-        const state = String(entry.state || '').trim().toUpperCase();
+        const stateRaw = String(entry.state || '').trim();
+        const state = [...US_STATES].find(s => s.toLowerCase() === stateRaw.toLowerCase());
         const name = String(entry.name || '').trim();
-        if (!state || state.length !== 2) {
-          return sendValidationError(res, `customPracticeAreas: invalid state "${entry.state}" (expected 2-letter code)`);
+        if (!state) {
+          return sendValidationError(res, `customPracticeAreas: invalid state "${entry.state}" (expected full US state name, e.g. "Texas")`);
         }
         if (!name) {
           return sendValidationError(res, 'customPracticeAreas: name is required');
         }
+        const dedupKey = `${state.toLowerCase()}|${name.toLowerCase()}`;
+        if (seen.has(dedupKey)) continue;
+        seen.add(dedupKey);
         cleaned.push({ state, name });
       }
       mediator.customPracticeAreas = cleaned;
@@ -169,7 +193,8 @@ router.put('/my-profile',
     invalidateMediatorCache(mediator._id);
 
     sendSuccess(res, {
-      practiceAreas: mediator.specializations,
+      specializations: mediator.specializations,
+      practiceAreas:   mediator.specializations,  // DEPRECATED alias for older readers
       customPracticeAreas: mediator.customPracticeAreas || []
     });
   })
