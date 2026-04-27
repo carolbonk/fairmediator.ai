@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { FaSearch, FaUsers, FaBalanceScale, FaStar, FaInfoCircle, FaMapMarkerAlt } from 'react-icons/fa';
 import SimpleLineChart from '../../components/dashboard/SimpleLineChart';
@@ -16,6 +17,7 @@ const BRAND = {
 
 export default function AttorneyDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [savedMediators, setSavedMediators] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
@@ -39,12 +41,11 @@ export default function AttorneyDashboard() {
   }, [practiceFilter]);
 
   const handlePracticeAreaSearch = (area) => {
-    // TODO(human): decide what happens when an attorney clicks a practice area chip.
-    // Inputs available: `area` (string, e.g. "Water Rights"), `userState` (string|null,
-    // e.g. "Texas"). You should navigate the user toward results AND record the
-    // selection so the dashboard's recent searches / topPracticeAreas analytics
-    // can pick it up on the next fetch. Consider: scoping to the attorney's state,
-    // URL param naming, and whether to fire-and-forget the analytics call.
+    if (!area) return;
+    const stateScope = jurisdictionState || userState || '';
+    const params = new URLSearchParams({ q: area });
+    if (stateScope) params.set('state', stateScope);
+    navigate(`/search?${params.toString()}`);
   };
 
   useEffect(() => {
