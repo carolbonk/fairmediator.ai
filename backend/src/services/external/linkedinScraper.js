@@ -30,6 +30,42 @@ class LinkedInScraper {
   }
 
   /**
+   * Validate and normalize LinkedIn profile URL to prevent SSRF
+   * @param {string} rawUrl
+   * @returns {string} normalized safe URL
+   */
+  _validateAndNormalizeLinkedInUrl(rawUrl) {
+    if (typeof rawUrl !== 'string' || !rawUrl.trim()) {
+      throw new Error('LinkedIn URL must be a non-empty string');
+    }
+
+    let parsed;
+    try {
+      parsed = new URL(rawUrl.trim());
+    } catch (error) {
+      throw new Error('Invalid LinkedIn URL format');
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+    const isAllowedHost = hostname === 'linkedin.com' || hostname === 'www.linkedin.com';
+    if (parsed.protocol !== 'https:' || !isAllowedHost) {
+      throw new Error('LinkedIn URL must use https://linkedin.com or https://www.linkedin.com');
+    }
+
+    const pathname = parsed.pathname || '';
+    if (!pathname.startsWith('/in/')) {
+      throw new Error('LinkedIn URL must be a public profile URL (/in/...)');
+    }
+
+    if (pathname.includes('..')) {
+      throw new Error('Invalid LinkedIn URL path');
+    }
+
+    // Normalize to canonical profile URL without query/hash
+    return `${parsed.origin}${pathname}`;
+  }
+
+  /**
    * Check robots.txt compliance before scraping
    * @param {string} url - LinkedIn profile URL
    * @returns {Promise<boolean>} True if allowed
@@ -64,22 +100,27 @@ class LinkedInScraper {
    */
   async scrapeProfile(linkedinUrl, opposingCounselUrl = null) {
     try {
+      const safeLinkedinUrl = this._validateAndNormalizeLinkedInUrl(linkedinUrl);
+      const safeOpposingCounselUrl = opposingCounselUrl
+        ? this._validateAndNormalizeLinkedInUrl(opposingCounselUrl)
+        : null;
+
       // Check robots.txt compliance
-      const allowed = await this.checkRobotsTxt(linkedinUrl);
+      const allowed = await this.checkRobotsTxt(safeLinkedinUrl);
       if (!allowed) {
         throw new Error('Scraping not permitted by robots.txt or invalid URL format');
       }
 
-      logger.info('Scraping LinkedIn profile (user-initiated)', { linkedinUrl });
+      logger.info('Scraping LinkedIn profile (user-initiated)', { linkedinUrl: safeLinkedinUrl });
 
       // Scrape mediator profile
-      const profileData = await this._scrapeProfileData(linkedinUrl);
+      const profileData = await this._scrapeProfileData(safeLinkedinUrl);
 
       // If opposing counsel URL provided, check mutual connections
-      if (opposingCounselUrl) {
+      if (safeOpposingCounselUrl) {
         const mutualConnectionsData = await this._scrapeMutualConnections(
-          linkedinUrl,
-          opposingCounselUrl
+          safeLinkedinUrl,
+          safeOpposingCounselUrl
         );
         profileData.mutualConnections = mutualConnectionsData;
       }
