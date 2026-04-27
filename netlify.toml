@@ -2,6 +2,9 @@
   base = "frontend"
   command = "npm install && npm run build"
   publish = "dist"
+  # Skip preview builds for bot-created branches (code-scanning auto-fixes and
+  # dependabot dep bumps) — they merge fast and don't need a preview deploy.
+  ignore = "bash -c '[[ \"$HEAD\" == alert-autofix-* || \"$HEAD\" == dependabot/* ]] && echo \"Skipping bot branch: $HEAD\"'"
 
 [build.environment]
   NODE_VERSION = "20"
