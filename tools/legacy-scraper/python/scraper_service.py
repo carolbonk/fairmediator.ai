@@ -10,6 +10,9 @@ import os
 import json
 import asyncio
 import re
+import socket
+import ipaddress
+from urllib.parse import urlparse
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -57,11 +60,50 @@ class BulkScrapeRequest(BaseModel):
 # Helper Functions
 # ============================================================================
 
+def is_safe_target_url(url: str) -> bool:
+    """Validate outbound URL to reduce SSRF risk."""
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+
+        lowered = hostname.lower()
+        if lowered in ("localhost",):
+            return False
+
+        addr_info = socket.getaddrinfo(hostname, None)
+        resolved_ips = {info[4][0] for info in addr_info}
+        if not resolved_ips:
+            return False
+
+        for ip_str in resolved_ips:
+            ip_obj = ipaddress.ip_address(ip_str)
+            if (
+                ip_obj.is_private
+                or ip_obj.is_loopback
+                or ip_obj.is_link_local
+                or ip_obj.is_multicast
+                or ip_obj.is_reserved
+                or ip_obj.is_unspecified
+            ):
+                return False
+
+        return True
+    except Exception:
+        return False
+
 async def fetch_page(url: str, timeout: int = 30) -> Dict[str, Any]:
     """Fetch webpage content"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
     }
+
+    if not is_safe_target_url(url):
+        return {"success": False, "error": "URL blocked by SSRF protection"}
 
     try:
         async with aiohttp.ClientSession() as session:
