@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { FaEye, FaStar, FaGavel, FaChartLine, FaUser, FaCheckCircle, FaPlus, FaMapMarkerAlt, FaBriefcase, FaInfoCircle, FaRobot, FaStore } from 'react-icons/fa';
+import { FaEye, FaStar, FaGavel, FaChartLine, FaUser, FaCheckCircle, FaPlus, FaMapMarkerAlt, FaBriefcase, FaInfoCircle, FaRobot, FaStore, FaTimes } from 'react-icons/fa';
 import StatCard from '../../components/dashboard/StatCard';
 import SimpleLineChart from '../../components/dashboard/SimpleLineChart';
 import SimpleBarChart from '../../components/dashboard/SimpleBarChart';
@@ -57,53 +57,74 @@ export default function MediatorDashboard() {
 
   // Practice-area selection + state-scoped custom areas
   const [selectedAreas, setSelectedAreas] = useState([]);
+  const [savedAreas, setSavedAreas] = useState([]); // last persisted snapshot — drives dirty/save-bar
   const [customAreas, setCustomAreas] = useState([]); // [{ state, name }]
   const [newAreaName, setNewAreaName] = useState('');
   const [newAreaState, setNewAreaState] = useState('');
   const [addError, setAddError] = useState('');
   const [adding, setAdding] = useState(false);
-
-  // Persistence wiring — `hydrated` gates the debounced save so the initial
-  // useEffect that copies profile -> selectedAreas doesn't fire a PUT.
-  const hydrated = useRef(false);
-  const saveTimer = useRef(null);
+  const [savingCoverage, setSavingCoverage] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     fetchMediatorData();
   }, [timeRange]);
 
-  // Hydrate practice-area UI when the profile loads
+  // Hydrate practice-area UI when the profile loads.
+  // Prefer canonical `specializations`; fall back to deprecated `practiceAreas` alias for one release.
   useEffect(() => {
-    if (profile?.practiceAreas) setSelectedAreas(profile.practiceAreas);
-    if (profile?.customPracticeAreas) setCustomAreas(profile.customPracticeAreas);
-    if (profile) hydrated.current = true;
+    if (!profile) return;
+    const initial = Array.isArray(profile.specializations)
+      ? profile.specializations
+      : Array.isArray(profile.practiceAreas)
+        ? profile.practiceAreas
+        : [];
+    setSelectedAreas(initial);
+    setSavedAreas(initial);
+    if (Array.isArray(profile.customPracticeAreas)) setCustomAreas(profile.customPracticeAreas);
   }, [profile]);
 
   const saveProfile = async (patch) => {
+    const token = localStorage.getItem('accessToken');
+    const res = await fetch('/api/mediators/my-profile', {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(patch)
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body?.error?.message || body?.message || `Save failed (${res.status})`);
+    }
+    return res.json();
+  };
+
+  // Dirty check — order-insensitive set comparison so toggle order doesn't matter.
+  const isCoverageDirty = (() => {
+    if (selectedAreas.length !== savedAreas.length) return true;
+    const savedSet = new Set(savedAreas);
+    return selectedAreas.some(a => !savedSet.has(a));
+  })();
+
+  const saveCoverage = async () => {
+    setSaveError('');
+    setSavingCoverage(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      await fetch('/api/mediators/my-profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(patch)
-      });
-    } catch (error) {
-      console.error('Practice-area persistence failed:', error);
+      await saveProfile({ specializations: selectedAreas });
+      setSavedAreas(selectedAreas);
+    } catch (err) {
+      setSaveError(err.message || 'Could not save coverage changes.');
+    } finally {
+      setSavingCoverage(false);
     }
   };
 
-  // Debounced PUT when selectedAreas changes (skips initial hydration)
-  useEffect(() => {
-    if (!hydrated.current) return;
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      saveProfile({ practiceAreas: selectedAreas });
-    }, 500);
-    return () => saveTimer.current && clearTimeout(saveTimer.current);
-  }, [selectedAreas]);
+  const discardCoverage = () => {
+    setSelectedAreas(savedAreas);
+    setSaveError('');
+  };
 
   const toggleArea = (area) => {
     setSelectedAreas(prev =>
@@ -135,12 +156,31 @@ export default function MediatorDashboard() {
     }
 
     setAdding(true);
+    const prev = customAreas;
     const next = [...customAreas, { state: newAreaState, name }];
     setCustomAreas(next);
     setNewAreaName('');
     setNewAreaState('');
-    await saveProfile({ customPracticeAreas: next });
-    setAdding(false);
+    try {
+      await saveProfile({ customPracticeAreas: next });
+    } catch (err) {
+      setCustomAreas(prev); // optimistic rollback on save failure
+      setAddError(err.message || 'Could not save the new practice area.');
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const removeCustomArea = async (idx) => {
+    const next = customAreas.filter((_, i) => i !== idx);
+    const prev = customAreas;
+    setCustomAreas(next);
+    try {
+      await saveProfile({ customPracticeAreas: next });
+    } catch (err) {
+      setCustomAreas(prev); // optimistic rollback on save failure
+      setAddError(err.message || 'Could not remove that practice area.');
+    }
   };
 
   const fetchMediatorData = async () => {
@@ -423,8 +463,48 @@ export default function MediatorDashboard() {
                       <FaMapMarkerAlt className="text-xs" />
                       {entry.name}
                       <span className="text-xs font-normal opacity-80">· {entry.state}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeCustomArea(idx, entry)}
+                        aria-label={`Remove ${entry.name} (${entry.state})`}
+                        className="ml-1 -mr-1 p-1 rounded-full hover:bg-dark-neu-400/15 focus:outline-none focus:ring-2 focus:ring-dark-neu-400/40 transition"
+                      >
+                        <FaTimes className="text-xs" />
+                      </button>
                     </span>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {(isCoverageDirty || saveError) && (
+              <div className="mt-6 pt-6 border-t border-neu-200 flex flex-wrap items-center gap-3 justify-between">
+                <div className="text-sm">
+                  {isCoverageDirty && (
+                    <span className="font-semibold text-neu-800">You have unsaved coverage changes.</span>
+                  )}
+                  {saveError && (
+                    <span className="block mt-1 text-red-700">{saveError}</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={discardCoverage}
+                    disabled={savingCoverage || !isCoverageDirty}
+                    className="px-4 py-2 rounded-neu-sm text-sm font-semibold text-neu-700 bg-neu-100 shadow-neu-sm hover:shadow-neu disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    Discard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveCoverage}
+                    disabled={savingCoverage || !isCoverageDirty}
+                    className="px-4 py-2 rounded-neu-sm text-sm font-semibold text-white shadow-neu-sm hover:shadow-neu disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    style={{ background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }}
+                  >
+                    {savingCoverage ? 'Saving…' : 'Save changes'}
+                  </button>
                 </div>
               </div>
             )}
