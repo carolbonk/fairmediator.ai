@@ -28,9 +28,16 @@ const rateLimitHandler = (req, res) => {
 };
 
 /**
- * Skip rate limiting in test mode
+ * Skip rate limiting only in automated tests. Dev and prod stay enforced.
  */
 const skipInTest = () => process.env.NODE_ENV === 'test';
+
+/**
+ * Pick a per-environment max. Dev gets a generous-but-finite cap so you can
+ * iterate without lockout, while still catching runaway loops. Prod stays strict.
+ */
+const envMax = (devMax, prodMax) =>
+  process.env.NODE_ENV === 'development' ? devMax : prodMax;
 
 /**
  * Global API rate limiter
@@ -51,8 +58,8 @@ const globalLimiter = rateLimit({
  * 5 requests per 15 minutes per IP (strict for login/register)
  */
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
+  windowMs: process.env.NODE_ENV === 'development' ? 10 * 60 * 1000 : 15 * 60 * 1000,
+  max: envMax(20, 5), // dev: 20/10min for local iteration; prod: 5/15min strict
   skipSuccessfulRequests: false, // Count all requests
   message: 'Too many authentication attempts, please try again later',
   standardHeaders: true,
