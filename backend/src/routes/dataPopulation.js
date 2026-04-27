@@ -77,7 +77,19 @@ router.get('/status', async (req, res) => {
  *   retryAt: ISO timestamp
  * }
  */
-router.post('/update', async (req, res) => {
+const requireInternalToken = (req, res, next) => {
+  const expected = process.env.INTERNAL_API_TOKEN;
+  if (!expected) {
+    logger.error('INTERNAL_API_TOKEN not set — rejecting all internal requests');
+    return res.status(503).json({ success: false, error: 'Internal auth not configured' });
+  }
+  if (req.headers['x-internal-token'] !== expected) {
+    return res.status(403).json({ success: false, error: 'Forbidden' });
+  }
+  next();
+};
+
+router.post('/update', requireInternalToken, async (req, res) => {
   try {
     const statusData = {
       ...req.body,
@@ -111,7 +123,7 @@ router.post('/update', async (req, res) => {
  * DELETE /api/data-population/status
  * Clear population status (when complete)
  */
-router.delete('/status', async (req, res) => {
+router.delete('/status', requireInternalToken, async (req, res) => {
   try {
     if (fs.existsSync(STATUS_FILE)) {
       fs.unlinkSync(STATUS_FILE);
