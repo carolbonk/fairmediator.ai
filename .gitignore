@@ -94,6 +94,13 @@ yarn-error.log*
 *.db
 
 # ==============================================================================
+# RUNTIME STATE FILES
+# ==============================================================================
+# Generated at runtime by data population services; not source-of-truth
+backend/data/population_status.json
+backend/data/runtime/
+
+# ==============================================================================
 # SENSITIVE DATA
 # ==============================================================================
 # Scraped mediator data (may contain PII)
