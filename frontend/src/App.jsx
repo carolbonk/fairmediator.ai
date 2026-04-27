@@ -31,10 +31,16 @@ const MediatorPortalEntry = lazy(() => import('./pages/app/MediatorPortalEntry')
 const AttorneyPortalEntry = lazy(() => import('./pages/app/AttorneyPortalEntry'));
 const PartyPortalEntry = lazy(() => import('./pages/app/PartyPortalEntry'));
 const MediatorDashboard = lazy(() => import('./pages/dashboard/MediatorDashboard'));
+const AttorneyDashboard = lazy(() => import('./pages/dashboard/AttorneyDashboard'));
+const PartyDashboard = lazy(() => import('./pages/dashboard/PartyDashboard'));
 const CrmCasesPage = lazy(() => import('./pages/app/mediator/CrmCasesPage'));
 const CaseWorkspacePage = lazy(() => import('./pages/app/mediator/CaseWorkspacePage'));
 const InboxPage = lazy(() => import('./pages/app/mediator/InboxPage'));
 const MarketplacePage = lazy(() => import('./pages/app/mediator/MarketplacePage'));
+const HowItWorksMediatorsPage = lazy(() => import('./pages/HowItWorksMediatorsPage'));
+const HowItWorksMediatorCrmPage = lazy(() => import('./pages/HowItWorksMediatorCrmPage'));
+const HowItWorksMediatorMarketplacePage = lazy(() => import('./pages/HowItWorksMediatorMarketplacePage'));
+const FaqMediatorsPage = lazy(() => import('./pages/FaqMediatorsPage'));
 
 function App() {
   return (
@@ -138,6 +144,78 @@ function App() {
             >
               <Route index element={<PartyPortalEntry />} />
             </Route>
+
+            {/* Role-scoped dashboards (semantic URLs) */}
+            <Route
+              path="/mediator/dashboard"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator">
+                    <MediatorDashboard />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mediator/how-it-works"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator">
+                    <HowItWorksMediatorsPage />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mediator/how-it-works/crm"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator">
+                    <HowItWorksMediatorCrmPage />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mediator/how-it-works/marketplace"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator">
+                    <HowItWorksMediatorMarketplacePage />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mediator/faq"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator">
+                    <FaqMediatorsPage />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/attorney/dashboard"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="attorney">
+                    <AttorneyDashboard />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/party/dashboard"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="party">
+                    <PartyDashboard />
+                  </RoleProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
