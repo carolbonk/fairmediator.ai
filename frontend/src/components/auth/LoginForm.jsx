@@ -5,9 +5,21 @@ import Footer from '../Footer';
 import logo from '../../images/Fair_Mediator_logoBlue.svg';
 
 const ROLES = [
-  { value: 'mediator',  label: 'Mediator' },
-  { value: 'attorney',  label: 'Attorney' },
-  { value: 'party',     label: 'Party' },
+  {
+    value: 'mediator',
+    label: 'Mediator',
+    description: 'Manage your practice with an AI-powered CRM and grow your visibility with the mediators marketplace.',
+  },
+  {
+    value: 'attorney',
+    label: 'Attorney',
+    description: 'Improve case efficiency with smart mediator matching and conflict screening.',
+  },
+  {
+    value: 'party',
+    label: 'Party',
+    description: 'Whether you have counsel or not, finding the right mediator for your case has never been easier. Our platform helps tailor conflict checks to your needs.',
+  },
 ];
 
 const LoginForm = () => {
@@ -71,7 +83,7 @@ const LoginForm = () => {
 
             {/* Logo */}
             <div className="flex justify-center mb-6">
-              <img src={logo} alt="FairMediator Logo" className="h-12 w-auto" />
+              <img src={logo} alt="FairMediator Logo" className="h-36 w-auto" />
             </div>
 
             {/* Heading */}
@@ -123,6 +135,11 @@ const LoginForm = () => {
                     );
                   })}
                 </div>
+                {formData.role && (
+                  <p className="mt-3 text-xs text-gray-600 leading-relaxed">
+                    {ROLES.find((r) => r.value === formData.role)?.description}
+                  </p>
+                )}
               </fieldset>
 
               {/* Email */}
