@@ -29,9 +29,13 @@ export default function SimpleLineChart({
   }
 
   const width = 600;
-  const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+  const padding = { top: 20, right: 20, bottom: 50, left: 40 };
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
+
+  // Cap visible x-axis labels to ~8 so dates stay legible regardless of data length
+  const maxLabels = 8;
+  const labelStep = Math.max(1, Math.ceil(data.length / maxLabels));
 
   // Find min/max values
   const values = data.map(d => d.value);
@@ -118,17 +122,21 @@ export default function SimpleLineChart({
           </g>
         ))}
 
-        {/* X-axis labels */}
+        {/* X-axis labels — sampled + rotated for legibility */}
         {data.map((item, index) => {
+          const isLast = index === data.length - 1;
+          if (index % labelStep !== 0 && !isLast) return null;
           const x = padding.left + (index / (data.length - 1)) * chartWidth;
+          const y = height - padding.bottom + 18;
           return (
             <text
               key={index}
               x={x}
-              y={height - padding.bottom + 20}
-              textAnchor="middle"
-              fontSize="12"
+              y={y}
+              textAnchor="end"
+              fontSize="11"
               fill="#6B7280"
+              transform={`rotate(-35 ${x} ${y})`}
             >
               {item.label}
             </text>
