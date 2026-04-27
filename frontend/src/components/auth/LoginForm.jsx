@@ -54,9 +54,9 @@ const LoginForm = () => {
 
     if (result.success) {
       const portalByAccountType = {
-        mediator: '/app/mediator',
-        attorney: '/app/attorney',
-        party: '/app/party',
+        mediator: '/mediator/dashboard',
+        attorney: '/attorney/dashboard',
+        party: '/party/dashboard',
       };
       const destination = portalByAccountType[result.user?.accountType] || '/dashboard';
       navigate(destination);
