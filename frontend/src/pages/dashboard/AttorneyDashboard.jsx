@@ -1,21 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { FaSearch, FaEye, FaBookmark, FaUsers, FaFileAlt, FaBalanceScale, FaStar } from 'react-icons/fa';
-import StatCard from '../../components/dashboard/StatCard';
+import { FaSearch, FaUsers, FaBalanceScale, FaStar, FaInfoCircle, FaMapMarkerAlt } from 'react-icons/fa';
 import SimpleLineChart from '../../components/dashboard/SimpleLineChart';
-import SimpleBarChart from '../../components/dashboard/SimpleBarChart';
+import { PRACTICE_AREA_CATEGORIES } from '../../data/practiceAreas';
+import { US_STATES } from '../../data/mockMediators';
 
-/**
- * AttorneyDashboard - Dashboard for attorneys
- * Shows search activity, saved mediators, cases, and research tools
- */
+// Brand palette (mirrors MediatorDashboard)
+const BRAND = {
+  blue: '#2563EB',
+  blueDark: '#1E3A8A',
+  blueDeep: '#1D4ED8',
+  golden: '#F5D15C',
+  graphite: '#252D3A',
+};
+
 export default function AttorneyDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [savedMediators, setSavedMediators] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState(30);
+  const [timeRange] = useState(30);
+
+  const [practiceFilter, setPracticeFilter] = useState('');
+  const [jurisdictionState, setJurisdictionState] = useState('');
+
+  const userState = user?.state || user?.profile?.state || null;
+
+  const filteredCategories = useMemo(() => {
+    const q = practiceFilter.trim().toLowerCase();
+    if (!q) return PRACTICE_AREA_CATEGORIES;
+    return PRACTICE_AREA_CATEGORIES
+      .map(c => ({
+        ...c,
+        areas: c.areas.filter(a => a.toLowerCase().includes(q)),
+      }))
+      .filter(c => c.areas.length > 0);
+  }, [practiceFilter]);
+
+  const handlePracticeAreaSearch = (area) => {
+    // TODO(human): decide what happens when an attorney clicks a practice area chip.
+    // Inputs available: `area` (string, e.g. "Water Rights"), `userState` (string|null,
+    // e.g. "Texas"). You should navigate the user toward results AND record the
+    // selection so the dashboard's recent searches / topPracticeAreas analytics
+    // can pick it up on the next fetch. Consider: scoping to the attorney's state,
+    // URL param naming, and whether to fire-and-forget the analytics call.
+  };
 
   useEffect(() => {
     fetchAttorneyData();
@@ -30,23 +60,19 @@ export default function AttorneyDashboard() {
         'Content-Type': 'application/json'
       };
 
-      // Fetch attorney stats
       const statsRes = await fetch(`/api/dashboard/stats?days=${timeRange}`, { headers });
       if (statsRes.ok) {
         const data = await statsRes.json();
         setStats(data.data);
       }
 
-      // Fetch saved mediators
       const savedRes = await fetch('/api/attorneys/saved-mediators', { headers });
       if (savedRes.ok) {
         const data = await savedRes.json();
-        // Extract mediator objects from the saved mediators wrapper
         const mediators = (data.data || []).map(saved => saved.mediator).filter(Boolean);
         setSavedMediators(mediators);
       }
 
-      // Fetch recent searches
       const searchesRes = await fetch('/api/attorneys/recent-searches?limit=5', { headers });
       if (searchesRes.ok) {
         const data = await searchesRes.json();
@@ -61,10 +87,10 @@ export default function AttorneyDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-lg font-semibold text-gray-900">Loading your dashboard...</p>
+          <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-lg font-semibold text-neu-800">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -75,152 +101,191 @@ export default function AttorneyDashboard() {
     value: day.count
   })) || [];
 
-  const practiceAreaData = stats?.topPracticeAreas?.map(area => ({
-    label: area._id,
-    value: area.count
-  })) || [];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-            Attorney Dashboard
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-700 to-dark-neu-300 bg-clip-text text-transparent mb-2">
+            Attorney Analytics Dashboard
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-neu-600">
             Find mediators, track cases, and access legal tools
           </p>
+        </div>
 
-          {/* Time Range Selector */}
-          <div className="flex gap-2 mt-4">
-            {[7, 30, 90].map(days => (
-              <button
-                key={days}
-                onClick={() => setTimeRange(days)}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                  timeRange === days
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                    : 'bg-neu-200 text-gray-700 shadow-neu'
-                }`}
-              >
-                {days === 7 ? '7 Days' : days === 30 ? '30 Days' : '90 Days'}
-              </button>
-            ))}
+        {/* Welcome Guide */}
+        <div className="bg-neu-100 rounded-neu-lg p-6 mb-8 shadow-neu border-l-4 border-accent-yellow">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100">
+              <FaInfoCircle className="text-blue-700 text-xl" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-neu-800 mb-2">Welcome to Fair Mediator</h3>
+              <p className="text-neu-700 mb-4">
+                We help you find neutral, qualified mediators to resolve your dispute efficiently and fairly.
+                Our platform screens for conflicts of interest and matches you with experienced professionals.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href="/how-it-works"
+                  className="px-4 py-2 rounded-neu-sm font-semibold text-sm text-white shadow-neu-sm hover:shadow-neu transition-all"
+                  style={{ background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }}
+                >
+                  How It Works
+                </a>
+                <a
+                  href="/faq"
+                  className="px-4 py-2 bg-neu-100 text-blue-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
+                >
+                  FAQs
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Mediator Searches"
-            value={stats?.byType?.search || 0}
-            subtitle={`Last ${timeRange} days`}
-            icon={FaSearch}
-            color="#3B82F6"
-          />
-          <StatCard
-            title="Profiles Viewed"
-            value={stats?.byType?.profileView || 0}
-            subtitle={`Last ${timeRange} days`}
-            icon={FaEye}
-            color="#06B6D4"
-          />
-          <StatCard
-            title="Saved Mediators"
-            value={savedMediators.length}
-            subtitle="Your shortlist"
-            icon={FaBookmark}
-            color="#8B5CF6"
-          />
-          <StatCard
-            title="Active Cases"
-            value={stats?.activeCases || 0}
-            subtitle="In mediation"
-            icon={FaFileAlt}
-            color="#10B981"
-          />
-        </div>
-
-        {/* Search Activity Chart */}
+        {/* Recent Searches */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Search Activity
+          <h2 className="text-2xl font-bold text-neu-800 mb-4">
+            Recent Searches
           </h2>
-          <SimpleLineChart
-            data={searchActivityData}
-            height={250}
-            lineColor="#3B82F6"
-            fillColor="#3B82F6"
-          />
+          <div className="bg-neu-100 rounded-neu-lg p-6 shadow-neu space-y-3">
+            {recentSearches.length > 0 ? (
+              recentSearches.map((search, idx) => (
+                <div key={search.id || idx} className="flex items-center justify-between py-2 border-b border-neu-200 last:border-0">
+                  <div>
+                    <p className="font-semibold text-neu-800">{search.query || 'General search'}</p>
+                    <p className="text-sm text-neu-600">
+                      {new Date(search.timestamp).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <a
+                    href={`/search?q=${encodeURIComponent(search.query || '')}`}
+                    className="text-blue-700 hover:text-blue-900 text-sm font-medium"
+                  >
+                    Repeat
+                  </a>
+                </div>
+              ))
+            ) : (
+              <p className="text-neu-500 text-center py-4">No recent searches</p>
+            )}
+          </div>
         </div>
 
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Practice Areas */}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Practice Areas Searched
+        {/* Search for Mediator's Practice Areas */}
+        <div className="mb-8">
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-2xl font-bold text-neu-800">
+              Search for Mediator's Practice Areas
             </h2>
-            <SimpleBarChart
-              data={practiceAreaData}
-              height={280}
-              horizontal={true}
-            />
+            {userState && (
+              <span className="text-sm text-neu-600">
+                Available in {userState}
+              </span>
+            )}
           </div>
 
-          {/* Recent Searches */}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Recent Searches
-            </h2>
-            <div className="bg-neu-200 rounded-2xl p-6 shadow-neu space-y-3">
-              {recentSearches.length > 0 ? (
-                recentSearches.map((search, idx) => (
-                  <div key={search.id || idx} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
-                    <div>
-                      <p className="font-semibold text-gray-900">{search.query || 'General search'}</p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(search.timestamp).toLocaleDateString()}
-                      </p>
+          <div className="bg-neu-100 rounded-neu-lg shadow-neu p-4 mb-4">
+            <label htmlFor="jurisdiction-select" className="flex items-center gap-2 text-sm font-semibold text-neu-700 mb-2">
+              <FaMapMarkerAlt style={{ color: BRAND.blueDark }} />
+              Mediation rules differ by jurisdiction.
+            </label>
+            <select
+              id="jurisdiction-select"
+              value={jurisdictionState}
+              onChange={(e) => setJurisdictionState(e.target.value)}
+              className="w-full px-4 py-3 rounded-neu-sm bg-neu-100 text-neu-800 text-sm font-medium shadow-neu-inset-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            >
+              <option value="">Select a state…</option>
+              {US_STATES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="bg-neu-100 rounded-neu-lg shadow-neu p-4">
+            <div className="relative mb-3">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neu-400 text-sm" />
+              <input
+                type="text"
+                value={practiceFilter}
+                onChange={(e) => setPracticeFilter(e.target.value)}
+                placeholder="Filter practice areas…"
+                className="w-full pl-9 pr-3 py-2 rounded-neu-sm bg-neu-100 text-sm text-neu-800 placeholder-neu-400 shadow-neu-inset focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                aria-label="Filter practice areas"
+              />
+            </div>
+            <div
+              className="overflow-y-auto pr-2 space-y-8 py-2"
+              style={{ maxHeight: '560px' }}
+            >
+              {filteredCategories.length === 0 ? (
+                <p className="text-neu-500 text-sm text-center py-6">
+                  No practice areas match “{practiceFilter}”.
+                </p>
+              ) : (
+                filteredCategories.map(({ category, areas }) => (
+                  <div key={category} className="pb-4 border-b border-neu-200 last:border-0 last:pb-0">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-neu-600 mb-3">
+                      {category}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {areas.map((area) => (
+                        <button
+                          key={area}
+                          type="button"
+                          onClick={() => handlePracticeAreaSearch(area)}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-neu-100 text-neu-800 shadow-neu-sm hover:shadow-neu hover:text-blue-700 transition-all"
+                          style={{ borderLeft: `3px solid ${BRAND.blue}33` }}
+                        >
+                          {area}
+                        </button>
+                      ))}
                     </div>
-                    <a
-                      href={`/search?q=${encodeURIComponent(search.query || '')}`}
-                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                    >
-                      Repeat
-                    </a>
                   </div>
                 ))
-              ) : (
-                <p className="text-gray-500 text-center py-4">No recent searches</p>
               )}
             </div>
           </div>
         </div>
 
+        {/* Search Activity Chart */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-neu-800 mb-4">
+            Search Activity
+          </h2>
+          <SimpleLineChart
+            data={searchActivityData}
+            height={250}
+            lineColor={BRAND.blue}
+            fillColor={BRAND.blue}
+          />
+        </div>
+
         {/* Saved Mediators */}
         {savedMediators.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-neu-800 mb-4">
               Saved Mediators
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {savedMediators.slice(0, 6).map((mediator) => (
-                <div key={mediator._id} className="bg-neu-200 rounded-2xl p-6 shadow-neu hover:shadow-neu-lg transition-all">
-                  <h3 className="font-bold text-gray-900 mb-1">{mediator.name}</h3>
-                  <p className="text-sm text-gray-600 mb-3">{mediator.specializations?.join(', ')}</p>
+                <div key={mediator._id} className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all">
+                  <h3 className="font-bold text-neu-800 mb-1">{mediator.name}</h3>
+                  <p className="text-sm text-neu-600 mb-3">{mediator.specializations?.join(', ')}</p>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="flex items-center">
-                      <FaStar className="text-yellow-500 text-sm" />
-                      <span className="ml-1 font-semibold text-gray-900">{mediator.rating?.toFixed(1)}</span>
+                      <FaStar className="text-accent-yellow text-sm" />
+                      <span className="ml-1 font-semibold text-neu-800">{mediator.rating?.toFixed(1)}</span>
                     </div>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-sm text-gray-600">{mediator.yearsExperience}+ years</span>
+                    <span className="text-neu-400">•</span>
+                    <span className="text-sm text-neu-600">{mediator.yearsExperience}+ years</span>
                   </div>
                   <a
                     href={`/mediators/${mediator._id}`}
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-blue-700 hover:text-blue-900 text-sm font-medium"
                   >
                     View Profile →
                   </a>
@@ -231,7 +296,7 @@ export default function AttorneyDashboard() {
               <div className="text-center mt-4">
                 <a
                   href="/attorneys/saved-mediators"
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-blue-700 hover:text-blue-900 font-medium"
                 >
                   View All Saved Mediators →
                 </a>
@@ -242,67 +307,67 @@ export default function AttorneyDashboard() {
 
         {/* Quick Tools */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Tools</h2>
+          <h2 className="text-2xl font-bold text-neu-800 mb-4">Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <a
               href="/search"
-              className="bg-neu-200 rounded-2xl p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+              className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }}>
                   <FaSearch className="text-white text-xl" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900">Find Mediators</h3>
-                  <p className="text-sm text-gray-600">Search & filter</p>
+                  <h3 className="font-bold text-neu-800">Find Mediators</h3>
+                  <p className="text-sm text-neu-600">Search & filter</p>
                 </div>
               </div>
             </a>
 
             <a
               href="/conflict-checker"
-              className="bg-neu-200 rounded-2xl p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+              className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-pink-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.graphite}, ${BRAND.blueDark})` }}>
                   <FaUsers className="text-white text-xl" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900">Conflict Checker</h3>
-                  <p className="text-sm text-gray-600">Verify neutrality</p>
+                  <h3 className="font-bold text-neu-800">Conflict Checker</h3>
+                  <p className="text-sm text-neu-600">Verify neutrality</p>
                 </div>
               </div>
             </a>
 
             <a
               href="/compare"
-              className="bg-neu-200 rounded-2xl p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+              className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <FaBalanceScale className="text-white text-xl" />
+                <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.golden}, #E0B83A)` }}>
+                  <FaBalanceScale className="text-dark-neu-400 text-xl" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900">Compare</h3>
-                  <p className="text-sm text-gray-600">Side-by-side</p>
+                  <h3 className="font-bold text-neu-800">Compare</h3>
+                  <p className="text-sm text-neu-600">Side-by-side</p>
                 </div>
               </div>
             </a>
           </div>
         </div>
 
-        {/* Upgrade CTA */}
+        {/* Upgrade CTA — graffiti dark with golden accent */}
         {user?.subscriptionTier === 'free' && (
-          <div className="rounded-2xl p-8 text-center bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xl">
+          <div className="rounded-neu-lg p-8 text-center bg-gradient-to-br from-dark-neu-300 to-dark-neu-500 shadow-dark-neu-lg">
             <h3 className="text-2xl font-bold text-white mb-2">
               Unlock Premium Tools
             </h3>
-            <p className="text-blue-100 mb-4">
+            <p className="text-neu-300 mb-4">
               Advanced conflict detection, unlimited searches, and AI-powered mediator matching
             </p>
             <button
               onClick={() => window.location.href = '/upgrade'}
-              className="px-8 py-3 bg-white text-blue-600 rounded-xl font-bold hover:scale-105 transition-transform"
+              className="px-8 py-3 bg-accent-yellow text-dark-neu-400 rounded-neu-sm font-bold shadow-neu-sm hover:shadow-neu transition-all"
             >
               Upgrade to Premium
             </button>
