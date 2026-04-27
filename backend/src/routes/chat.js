@@ -7,6 +7,7 @@
  */
 
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const chatService = require('../services/huggingface/chatService');
 const affiliationDetector = require('../services/huggingface/affiliationDetector');
@@ -93,8 +94,12 @@ router.post('/check-conflicts', asyncHandler(async (req, res) => {
 router.post('/analyze-ideology', asyncHandler(async (req, res) => {
   const { mediatorId } = req.body;
 
-  if (!mediatorId) {
-    return sendValidationError(res, 'mediatorId is required');
+  if (
+    !mediatorId ||
+    typeof mediatorId !== 'string' ||
+    !mongoose.Types.ObjectId.isValid(mediatorId)
+  ) {
+    return sendValidationError(res, 'mediatorId must be a valid MongoDB ObjectId string');
   }
 
   // Use llama ideology classifier with scraping

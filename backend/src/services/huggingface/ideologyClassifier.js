@@ -3,6 +3,7 @@
  */
 
 const hfClient = require('./hfClient');
+const mongoose = require('mongoose');
 const { config } = require('./utils');
 
 class IdeologyClassifier {
@@ -56,6 +57,13 @@ class IdeologyClassifier {
 
   // Alias for chat route compatibility - accepts mediatorId and returns full analysis
   async classifyMediator(mediatorId) {
+    if (
+      typeof mediatorId !== 'string' ||
+      !mongoose.Types.ObjectId.isValid(mediatorId)
+    ) {
+      throw new Error('Invalid mediatorId');
+    }
+
     const Mediator = require('../../models/Mediator');
     const mediator = await Mediator.findById(mediatorId);
 
