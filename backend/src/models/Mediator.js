@@ -39,6 +39,11 @@ const mediatorSchema = new mongoose.Schema({
   currentEmployer: String,
   previousEmployers: [String],
   specializations: [String],
+  customPracticeAreas: [{
+    state: { type: String, trim: true, uppercase: true },
+    name: { type: String, trim: true },
+    _id: false
+  }],
   yearsExperience: Number,
   barAdmissions: [String],
   certifications: [String],

@@ -115,9 +115,65 @@ router.get('/my-profile',
     successRate: mediator.successRate,
     location: mediator.location,
     dataQuality: mediator.dataQuality,
-    isVerified: mediator.isVerified
+    isVerified: mediator.isVerified,
+    customPracticeAreas: mediator.customPracticeAreas || []
   });
 }));
+
+/**
+ * PUT /api/mediators/my-profile
+ * Updates the current mediator's editable profile fields. Currently:
+ *   - practiceAreas: string[]   (writes to `specializations` — the canonical store)
+ *   - customPracticeAreas: { state, name }[]
+ * Other fields are intentionally not editable here (admin-only via PUT /:id).
+ */
+router.put('/my-profile',
+  authenticateWithRole(['mediator', 'admin']),
+  requirePermission('mediator.profile.write'),
+  asyncHandler(async (req, res) => {
+    const mediator = await getMediatorProfileByUserId(req.user._id);
+    if (!mediator) return sendNotFound(res, 'Mediator profile');
+
+    const { practiceAreas, customPracticeAreas } = req.body;
+
+    if (practiceAreas !== undefined) {
+      if (!Array.isArray(practiceAreas) || practiceAreas.some(a => typeof a !== 'string')) {
+        return sendValidationError(res, 'practiceAreas must be an array of strings');
+      }
+      mediator.specializations = practiceAreas.map(a => a.trim()).filter(Boolean);
+    }
+
+    if (customPracticeAreas !== undefined) {
+      if (!Array.isArray(customPracticeAreas)) {
+        return sendValidationError(res, 'customPracticeAreas must be an array');
+      }
+      const cleaned = [];
+      for (const entry of customPracticeAreas) {
+        if (!entry || typeof entry !== 'object') {
+          return sendValidationError(res, 'customPracticeAreas entries must be objects with {state, name}');
+        }
+        const state = String(entry.state || '').trim().toUpperCase();
+        const name = String(entry.name || '').trim();
+        if (!state || state.length !== 2) {
+          return sendValidationError(res, `customPracticeAreas: invalid state "${entry.state}" (expected 2-letter code)`);
+        }
+        if (!name) {
+          return sendValidationError(res, 'customPracticeAreas: name is required');
+        }
+        cleaned.push({ state, name });
+      }
+      mediator.customPracticeAreas = cleaned;
+    }
+
+    await mediator.save();
+    invalidateMediatorCache(mediator._id);
+
+    sendSuccess(res, {
+      practiceAreas: mediator.specializations,
+      customPracticeAreas: mediator.customPracticeAreas || []
+    });
+  })
+);
 
 /**
  * GET /api/mediators/my-stats
