@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { WorkspaceProvider } from './contexts/WorkspaceContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import OfflineDetector from './components/OfflineDetector';
@@ -26,6 +27,10 @@ const MediatorsPage = lazy(() => import('./pages/MediatorsPage'));
 const SettlementCalculatorPage = lazy(() => import('./pages/SettlementCalculatorPage'));
 const MediatorComparisonPage = lazy(() => import('./pages/MediatorComparisonPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const MediatorPortalEntry = lazy(() => import('./pages/app/MediatorPortalEntry'));
+const AttorneyPortalEntry = lazy(() => import('./pages/app/AttorneyPortalEntry'));
+const PartyPortalEntry = lazy(() => import('./pages/app/PartyPortalEntry'));
+const MediatorDashboard = lazy(() => import('./pages/dashboard/MediatorDashboard'));
 
 function App() {
   return (
@@ -91,6 +96,42 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Role-scoped portal groups */}
+            <Route
+              path="/app/mediator"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator" />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<MediatorPortalEntry />} />
+              <Route path="crm" element={<MediatorDashboard />} />
+              <Route path="marketplace" element={<MediatorDashboard />} />
+            </Route>
+
+            <Route
+              path="/app/attorney"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="attorney" />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AttorneyPortalEntry />} />
+            </Route>
+
+            <Route
+              path="/app/party"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="party" />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<PartyPortalEntry />} />
+            </Route>
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

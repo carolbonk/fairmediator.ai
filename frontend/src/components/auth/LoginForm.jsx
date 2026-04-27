@@ -53,7 +53,13 @@ const LoginForm = () => {
     const result = await login(formData.email, formData.password, formData.role);
 
     if (result.success) {
-      navigate('/dashboard');
+      const portalByAccountType = {
+        mediator: '/app/mediator',
+        attorney: '/app/attorney',
+        party: '/app/party',
+      };
+      const destination = portalByAccountType[result.user?.accountType] || '/dashboard';
+      navigate(destination);
     } else {
       setError(result.error || authError || 'Authentication failed. Please try again.');
     }

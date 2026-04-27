@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       setUser(user);
-      return { success: true };
+      return { success: true, user };
     } catch (err) {
       const message = err.response?.data?.error || 'Login failed';
       setError(message);
