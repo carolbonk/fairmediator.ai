@@ -31,6 +31,10 @@ const MediatorPortalEntry = lazy(() => import('./pages/app/MediatorPortalEntry')
 const AttorneyPortalEntry = lazy(() => import('./pages/app/AttorneyPortalEntry'));
 const PartyPortalEntry = lazy(() => import('./pages/app/PartyPortalEntry'));
 const MediatorDashboard = lazy(() => import('./pages/dashboard/MediatorDashboard'));
+const CrmCasesPage = lazy(() => import('./pages/app/mediator/CrmCasesPage'));
+const CaseWorkspacePage = lazy(() => import('./pages/app/mediator/CaseWorkspacePage'));
+const InboxPage = lazy(() => import('./pages/app/mediator/InboxPage'));
+const MarketplacePage = lazy(() => import('./pages/app/mediator/MarketplacePage'));
 
 function App() {
   return (
@@ -107,8 +111,10 @@ function App() {
               }
             >
               <Route index element={<MediatorPortalEntry />} />
-              <Route path="crm" element={<MediatorDashboard />} />
-              <Route path="marketplace" element={<MediatorDashboard />} />
+              <Route path="crm" element={<CrmCasesPage />} />
+              <Route path="crm/:caseId" element={<CaseWorkspacePage />} />
+              <Route path="inbox" element={<InboxPage />} />
+              <Route path="marketplace" element={<MarketplacePage />} />
             </Route>
 
             <Route

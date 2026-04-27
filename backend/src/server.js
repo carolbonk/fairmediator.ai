@@ -59,6 +59,11 @@ const scoringRoutes = require('./routes/scoring'); // Deterministic scoring pipe
 const notesRoutes = require('./routes/notes'); // Collaborative case notes
 const workspacesRoutes = require('./routes/workspaces'); // Team workspaces (enterprise collaboration)
 const sharedListsRoutes = require('./routes/sharedLists'); // Shared mediator lists (team curation)
+const casesRoutes = require('./routes/cases'); // Mediator-scoped case CRUD (Phase 1 CRM)
+const conversationsRoutes = require('./routes/conversations'); // Per-case conversations & messages (Phase 1 CRM)
+const invoicesRoutes = require('./routes/invoices'); // Mediator invoices + PDF (Phase 1 CRM)
+const inboxRoutes = require('./routes/inbox'); // Cross-case inbox feed (Phase 1 CRM)
+const gigsRoutes = require('./routes/gigs'); // Mediator marketplace gigs (Phase 1 Marketplace)
 
 // Import cron scheduler and free tier monitor
 const cronScheduler = require('./services/scraping/cronScheduler');
@@ -289,6 +294,11 @@ app.use('/api/scoring', scoringRoutes); // Deterministic scoring pipeline (leani
 app.use('/api/notes', notesRoutes); // Collaborative case notes (team knowledge sharing)
 app.use('/api/workspaces', workspacesRoutes); // Team workspaces (enterprise collaboration)
 app.use('/api/shared-lists', sharedListsRoutes); // Shared mediator lists (team curation)
+app.use('/api/cases', casesRoutes); // Mediator CRM: case list + per-case fetch
+app.use('/api/conversations', conversationsRoutes); // Mediator CRM: per-case messaging
+app.use('/api/invoices', invoicesRoutes); // Mediator CRM: invoices + PDF download
+app.use('/api/inbox', inboxRoutes); // Mediator CRM: cross-case inbox polling
+app.use('/api/gigs', gigsRoutes); // Mediator Marketplace: list + accept gigs
 
 // CSRF error handler
 app.use(csrfErrorHandler);
