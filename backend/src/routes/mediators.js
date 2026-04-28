@@ -148,15 +148,17 @@ router.put('/my-profile',
     const mediator = await getMediatorProfileByUserId(req.user._id);
     if (!mediator) return sendNotFound(res, 'Mediator profile');
 
-    const incomingSpecs = Array.isArray(req.body.specializations)
-      ? req.body.specializations
-      : Array.isArray(req.body.practiceAreas)  // DEPRECATED — remove after all callers migrate
-        ? req.body.practiceAreas
-        : undefined;
+    // Read whichever field is present; deprecated `practiceAreas` only used if `specializations` absent.
+    let incomingSpecs;
+    if (req.body.specializations !== undefined) {
+      incomingSpecs = req.body.specializations;
+    } else if (req.body.practiceAreas !== undefined) {
+      incomingSpecs = req.body.practiceAreas;  // DEPRECATED — remove after all callers migrate
+    }
     const { customPracticeAreas } = req.body;
 
     if (incomingSpecs !== undefined) {
-      if (incomingSpecs.some(a => typeof a !== 'string')) {
+      if (!Array.isArray(incomingSpecs) || incomingSpecs.some(a => typeof a !== 'string')) {
         return sendValidationError(res, 'specializations must be an array of strings');
       }
       mediator.specializations = incomingSpecs.map(a => a.trim()).filter(Boolean);
