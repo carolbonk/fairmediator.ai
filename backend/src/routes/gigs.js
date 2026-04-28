@@ -213,6 +213,13 @@ router.post('/:id/accept', async (req, res) => {
       if (!allowed) return res.status(403).json({ success: false, error: 'Not in recommended set' });
     }
 
+    // Atomic open → claimed → accepted. Marketplace UI is one-click Accept;
+    // `claimed` exists in the state machine as a future "soft hold" hook
+    // (concurrency-safe paperwork window) but isn't surfaced as a separate UX step today.
+    if (gig.status === 'open' && gig.canTransitionTo('claimed')) {
+      gig.status = 'claimed';
+      gig.claimedBy = { userId: req.user._id, claimedAt: new Date() };
+    }
     if (!gig.canTransitionTo('accepted')) {
       return res.status(409).json({
         success: false,
