@@ -16,6 +16,68 @@ const Case = require('../models/Case');
 const { authenticateWithRole } = require('../middleware/roleAuth');
 const logger = require('../config/logger');
 
+// Decisions encoded here (see context.md gigs matrix, 2026-04-27):
+//   1. auto_match with empty recommendedMediatorIds → downgrade to open_feed (logged), don't reject.
+//   2. budget.min > budget.max → 400. Negatives also 400.
+//   3. expiresAt absent → default now+30d. Cap at now+180d.
+//   4. recommendedMediatorIds settable only when caller is admin; attorney attempts → 400.
+//   5. parties[] may be empty at create — Accept-time validates parties present.
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+const ONE_EIGHTY_DAYS_MS = 180 * 24 * 60 * 60 * 1000;
+
+function validateGigPayload({ budget, distributionMode, recommendedMediatorIds, expiresAt, isAdmin }) {
+  if (budget && typeof budget === 'object') {
+    const { min, max } = budget;
+    if (min != null && (typeof min !== 'number' || min < 0)) {
+      return { error: 'budget.min must be a non-negative number' };
+    }
+    if (max != null && (typeof max !== 'number' || max < 0)) {
+      return { error: 'budget.max must be a non-negative number' };
+    }
+    if (min != null && max != null && min > max) {
+      return { error: 'budget.min cannot exceed budget.max' };
+    }
+  }
+
+  if (recommendedMediatorIds !== undefined) {
+    if (!Array.isArray(recommendedMediatorIds)) {
+      return { error: 'recommendedMediatorIds must be an array' };
+    }
+    if (recommendedMediatorIds.length > 0 && !isAdmin) {
+      return { error: 'Only admins may set recommendedMediatorIds; attorneys post open_feed by default.' };
+    }
+    if (recommendedMediatorIds.some(id => !mongoose.isValidObjectId(id))) {
+      return { error: 'recommendedMediatorIds entries must be valid ObjectIds' };
+    }
+  }
+
+  let resolvedRecommendedIds = recommendedMediatorIds || [];
+  let resolvedDistributionMode = distributionMode || 'open_feed';
+  if (resolvedDistributionMode === 'auto_match' && resolvedRecommendedIds.length === 0) {
+    logger.warn('[Gigs API] auto_match requested with empty recommendedMediatorIds — downgrading to open_feed');
+    resolvedDistributionMode = 'open_feed';
+  }
+
+  let resolvedExpiresAt;
+  if (expiresAt) {
+    const ts = new Date(expiresAt);
+    if (Number.isNaN(ts.getTime())) {
+      return { error: 'expiresAt must be a valid ISO date string' };
+    }
+    if (ts.getTime() > Date.now() + ONE_EIGHTY_DAYS_MS) {
+      return { error: 'expiresAt cannot be more than 180 days in the future' };
+    }
+    if (ts.getTime() <= Date.now()) {
+      return { error: 'expiresAt must be in the future' };
+    }
+    resolvedExpiresAt = ts;
+  } else {
+    resolvedExpiresAt = new Date(Date.now() + THIRTY_DAYS_MS);
+  }
+
+  return { error: null, resolvedRecommendedIds, resolvedDistributionMode, resolvedExpiresAt };
+}
+
 /**
  * POST /api/gigs
  * Posts a new gig to the marketplace. Attorneys post on behalf of clients;
@@ -45,10 +107,13 @@ router.post('/', authenticateWithRole(['attorney', 'admin']), async (req, res) =
       });
     }
 
-    // TODO(human): validation + recommendedMediatorIds resolution
-    // Return { error: string } to short-circuit, or { resolvedRecommendedIds: ObjectId[] } on success.
-    // See the Learn by Doing prompt for the design space.
-    const validation = { error: null, resolvedRecommendedIds: recommendedMediatorIds || [] };
+    const validation = validateGigPayload({
+      budget,
+      distributionMode,
+      recommendedMediatorIds,
+      expiresAt,
+      isAdmin: req.user.role === 'admin'
+    });
 
     if (validation.error) {
       return res.status(400).json({ success: false, error: validation.error });
@@ -61,10 +126,10 @@ router.post('/', authenticateWithRole(['attorney', 'admin']), async (req, res) =
       parties: parties || [],
       amountInDispute,
       budget,
-      distributionMode: distributionMode || 'open_feed',
+      distributionMode: validation.resolvedDistributionMode,
       recommendedMediatorIds: validation.resolvedRecommendedIds,
       postedBy: req.user._id,
-      expiresAt: expiresAt || undefined
+      expiresAt: validation.resolvedExpiresAt
     });
 
     res.status(201).json({ success: true, gig });
