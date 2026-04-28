@@ -264,3 +264,17 @@ N8N_WORKFLOW_TEMPLATE.json
 docs/
 **/docs/
 .env.production.template
+
+# ==============================================================================
+# MARKDOWN NOTES - ignore by default, allowlist the canonical project docs
+# ==============================================================================
+# Many root-level *.md files are operational/scratch notes (deployment guides,
+# auth status, migration walkthroughs) that contain credential placeholders or
+# internal infra detail. Default-ignore so a stray `git add -A` can't sweep them
+# into history; explicitly allowlist the project's intended public docs.
+*.md
+!README.md
+!CONTRIBUTING.md
+!SECURITY.md
+!CHANGELOG.md
+!**/README.md
