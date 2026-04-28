@@ -246,14 +246,14 @@ caseSchema.index({ 'attorneys.userId': 1 });
 caseSchema.index({ 'mediator.userId': 1 });
 caseSchema.index({ disputeType: 1, status: 1 });
 
-// Generate case number before saving
-caseSchema.pre('save', async function(next) {
+// Generate case number before validation runs (caseNumber is `required: true`,
+// so a `pre('save')` hook would fire too late — validate runs first and rejects).
+caseSchema.pre('validate', async function () {
   if (this.isNew && !this.caseNumber) {
     const year = new Date().getFullYear();
     const count = await mongoose.model('Case').countDocuments();
     this.caseNumber = `CASE-${year}-${String(count + 1).padStart(6, '0')}`;
   }
-  next();
 });
 
 module.exports = mongoose.model('Case', caseSchema);

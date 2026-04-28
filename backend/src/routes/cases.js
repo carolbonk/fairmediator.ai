@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
     const filter = { 'mediator.userId': userId };
     if (status === 'active') {
       filter.status = { $in: ACTIVE_STATUSES };
-    } else if (status) {
+    } else if (status && status !== 'all') {
       filter.status = status;
     }
 
