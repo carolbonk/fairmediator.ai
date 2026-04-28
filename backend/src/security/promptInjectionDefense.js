@@ -217,8 +217,10 @@ class PromptInjectionDefense {
 
     // 8. Handle markdown if not allowed
     if (!allowMarkdown) {
-      // Escape markdown special characters
-      const markdownEscaped = sanitized.replace(/([*_`~#\[\]()])/g, '\\$1');
+      // Escape backslashes first, then markdown special characters
+      const markdownEscaped = sanitized
+        .replace(/\\/g, '\\\\')
+        .replace(/([*_`~#\[\]()])/g, '\\$1');
       if (markdownEscaped !== sanitized) {
         sanitized = markdownEscaped;
         wasModified = true;
