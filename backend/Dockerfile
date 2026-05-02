@@ -24,6 +24,9 @@ COPY backend/ ./backend/
 # Stage 2: Production stage
 FROM node:20-alpine AS production
 
+# Patch base-image CVEs in one layer (CVE-2026-31789: openssl <3.5.6-r0)
+RUN apk upgrade --no-cache openssl libssl3 libcrypto3
+
 # Build arguments
 ARG BUILD_DATE
 ARG VCS_REF
