@@ -57,6 +57,8 @@ services:
         generateValue: true  # Render auto-generates
       - key: JWT_REFRESH_SECRET
         generateValue: true  # Render auto-generates
+      - key: JWT_ROLE_SECRET
+        generateValue: true  # Required by User.js + roleAuth.js for role-scoped tokens
       - key: SESSION_SECRET
         generateValue: true
       - key: CSRF_SECRET
