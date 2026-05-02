@@ -40,11 +40,13 @@ services:
     # Auto-deploy on push to main
     branch: main
 
-    # Skip PR preview builds (mirrors netlify.toml ignore rule for
-    # alert-autofix-*/dependabot-* branches that merge within seconds).
-    # Render Blueprint v2 syntax: previews.generation, not previewsEnabled.
-    previews:
-      generation: off
+    # PR preview builds are disabled for this service by omitting
+    # previews.generation. Per Render Blueprint v2 spec, service-scope
+    # only accepts "manual" or "automatic"; omitting the field disables
+    # previews for the service. (Earlier "generation: off" was invalid
+    # at service scope AND was YAML-coerced to boolean false, which
+    # caused the whole Blueprint sync to be rejected — meaning env-var
+    # changes like JWT_ROLE_SECRET in the same file never applied.)
 
     # Environment variables (set in Render dashboard)
     envVars:
