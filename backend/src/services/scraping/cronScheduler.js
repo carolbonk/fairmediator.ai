@@ -4,7 +4,6 @@ const affiliationDetector = require('./affiliationDetector');
 const Mediator = require('../../models/Mediator');
 const UsageLog = require('../../models/UsageLog');
 const ConflictAlert = require('../../models/ConflictAlert');
-// const SREAgent = require('../../../.ai/sre/agent'); // TODO: Implement SRE Agent
 const { monitor } = require('../../utils/freeTierMonitor');
 const logger = require('../../config/logger');
 
@@ -88,27 +87,6 @@ class CronScheduler {
 
     this.jobs.push({ name: 'weeklyAffiliationAnalysis', job });
     logger.info('Scheduled weekly affiliation analysis (Sunday 3:00 AM)');
-  }
-
-  /**
-   * Schedule weekly SRE agent scan and auto-fix
-   * Runs every Sunday at 2:00 AM
-   */
-  scheduleWeeklySREAgent() {
-    const job = cron.schedule('0 2 * * 0', async () => {
-      logger.info('Running weekly SRE agent scan and auto-fix');
-
-      try {
-        const agent = new SREAgent();
-        const result = await agent.run({ dryRun: false, backup: true });
-        logger.info('SRE agent complete', { fixed: result.results.fixed.length, needsReview: result.results.needsReview.length });
-      } catch (error) {
-        logger.error('SRE agent error', { error: error.message });
-      }
-    });
-
-    this.jobs.push({ name: 'weeklySREAgent', job });
-    logger.info('Scheduled weekly SRE agent (Sunday 2:00 AM)');
   }
 
   /**
@@ -224,7 +202,6 @@ class CronScheduler {
    */
   startAll() {
     this.scheduleDailyRefresh();
-    // this.scheduleWeeklySREAgent(); // TODO: Implement SRE Agent
     this.scheduleWeeklyAffiliationAnalysis();
     this.scheduleFreeTierReset();
     this.scheduleDailyConflictAlerts();
