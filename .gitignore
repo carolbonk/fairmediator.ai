@@ -143,9 +143,12 @@ config/
 
 # Deployment platform configs
 .vercel/
+# Netlify CLI scratch dir holds absolute-path netlify.toml — never commit it
 .netlify/
-netlify.toml
+**/.netlify/
+# Allow root netlify.toml so build config is version-controlled; ignore nested ones
 **/netlify.toml
+!/netlify.toml
 
 # Secret scanning baseline (reveals what we're hiding)
 .secrets.baseline
@@ -215,6 +218,8 @@ aws-credentials
 # Tooling credential files
 .npmrc
 .yarnrc
+# Allow root .npmrc as project-policy file (save-exact, audit) — must NEVER contain auth tokens
+!/.npmrc
 .pypirc
 .netrc
 .pgpass

@@ -1,7 +1,11 @@
 [build]
-  base = "frontend"
-  command = "npm install && npm run build"
-  publish = "dist"
+  # Run from repo root and scope install to the frontend workspace only.
+  # `cd frontend && npm install` triggers a full workspace install (root + frontend
+  # + backend), which fails on Netlify because backend deps (mongodb-memory-server,
+  # pdf-parse, mammoth, @huggingface/inference) have heavy postinstalls unneeded
+  # for a Vite build. Scoping with --workspace=frontend skips them entirely.
+  command = "npm ci --workspace=frontend --include-workspace-root && npm run build --workspace=frontend"
+  publish = "frontend/dist"
   # Skip preview builds for bot-created branches (code-scanning auto-fixes and
   # dependabot dep bumps) — they merge fast and don't need a preview deploy.
   ignore = "bash -c '[[ \"$HEAD\" == alert-autofix-* || \"$HEAD\" == dependabot/* ]] && echo \"Skipping bot branch: $HEAD\"'"
