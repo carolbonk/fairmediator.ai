@@ -44,7 +44,7 @@ services:
   # Security: Read-only filesystem, localhost-only port, isolated network
   # ===========================================================================
   mongodb:
-    image: mongo:7
+    image: mongo:7.0.32  # Pin to latest 7.0 patch (was floating mongo:7, audit flagged 62 CVEs). Re-check at https://hub.docker.com/_/mongo
     container_name: ${COMPOSE_PROJECT_NAME:-fairmediator}-mongodb
     restart: unless-stopped
     environment:
@@ -104,6 +104,7 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    env_file: .env
     environment:
       # Application
       NODE_ENV: ${NODE_ENV:-development}
@@ -191,6 +192,7 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    env_file: .env
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:4001}
     ports:
@@ -231,7 +233,6 @@ services:
       - ALL
     cap_add:
       - NET_BIND_SERVICE
-    read_only: true
     tmpfs:
       - /var/cache/nginx:noexec,nosuid,size=50m
       - /var/run:noexec,nosuid,size=10m
