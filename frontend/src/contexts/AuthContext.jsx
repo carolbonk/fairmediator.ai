@@ -30,53 +30,28 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load user from localStorage on mount
+  // Probe the cookie session on mount: if /auth/me succeeds, we're logged in.
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        try {
-          const response = await axios.get(`${API_URL}/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setUser(response.data.data.user);
-        } catch (err) {
-          console.error('Failed to load user:', err);
-          // Token might be expired, try to refresh
-          const refreshToken = localStorage.getItem('refreshToken');
-          if (refreshToken) {
-            try {
-              await refreshAccessToken(refreshToken);
-            } catch (refreshErr) {
-              // Refresh failed, clear everything
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
-            }
-          }
-        }
+      try {
+        const response = await axios.get(`${API_URL}/auth/me`);
+        setUser(response.data.data.user);
+      } catch {
+        // 401 (no/expired session) is the expected unauthenticated path — stay null.
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     loadUser();
   }, []);
 
-  const refreshAccessToken = async (refreshToken) => {
-    // Get CSRF token for refresh
+  const refreshAccessToken = async () => {
     const csrfToken = await getCsrfToken();
-
-    const response = await axios.post(`${API_URL}/auth/refresh`, {
-      refreshToken
-    }, {
+    await axios.post(`${API_URL}/auth/refresh`, {}, {
       headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
     });
-    const { accessToken } = response.data.data;
-    localStorage.setItem('accessToken', accessToken);
-
-    // Load user with new token
-    const userResponse = await axios.get(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
+    const userResponse = await axios.get(`${API_URL}/auth/me`);
     setUser(userResponse.data.data.user);
   };
 
@@ -96,10 +71,7 @@ export const AuthProvider = ({ children }) => {
         headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
       });
 
-      const { user, accessToken, refreshToken } = response.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      setUser(user);
+      setUser(response.data.data.user);
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.error || 'Registration failed';
@@ -123,9 +95,7 @@ export const AuthProvider = ({ children }) => {
         headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
       });
 
-      const { user, accessToken, refreshToken } = response.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      const { user } = response.data.data;
       setUser(user);
       return { success: true, user };
     } catch (err) {
@@ -137,29 +107,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-
-      if (accessToken) {
-        // Get CSRF token for logout
-        const csrfToken = await getCsrfToken();
-
-        await axios.post(
-          `${API_URL}/auth/logout`,
-          { refreshToken },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              ...(csrfToken && { 'x-csrf-token': csrfToken })
-            }
-          }
-        );
-      }
+      const csrfToken = await getCsrfToken();
+      await axios.post(`${API_URL}/auth/logout`, {}, {
+        headers: csrfToken ? { 'x-csrf-token': csrfToken } : {}
+      });
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
       setUser(null);
     }
   };
