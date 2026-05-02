@@ -41,8 +41,10 @@ services:
     branch: main
 
     # Skip PR preview builds (mirrors netlify.toml ignore rule for
-    # alert-autofix-*/dependabot-* branches that merge within seconds)
-    previewsEnabled: false
+    # alert-autofix-*/dependabot-* branches that merge within seconds).
+    # Render Blueprint v2 syntax: previews.generation, not previewsEnabled.
+    previews:
+      generation: off
 
     # Environment variables (set in Render dashboard)
     envVars:
