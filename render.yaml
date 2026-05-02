@@ -40,6 +40,10 @@ services:
     # Auto-deploy on push to main
     branch: main
 
+    # Skip PR preview builds (mirrors netlify.toml ignore rule for
+    # alert-autofix-*/dependabot-* branches that merge within seconds)
+    previewsEnabled: false
+
     # Environment variables (set in Render dashboard)
     envVars:
       # ===== REQUIRED: Database =====
