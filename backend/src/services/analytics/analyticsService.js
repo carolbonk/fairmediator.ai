@@ -19,8 +19,8 @@ class AnalyticsService {
 
     const logs = await UsageLog.find({
       user: userId,
-      createdAt: { $gte: startDate }
-    }).sort({ createdAt: -1 });
+      timestamp: { $gte: startDate }
+    }).sort({ timestamp: -1 });
 
     // Aggregate by event type
     const byType = {};
@@ -71,7 +71,7 @@ class AnalyticsService {
     const [totalUsers, premiumUsers, recentLogs, totalMediators] = await Promise.all([
       User.countDocuments(),
       User.countDocuments({ subscriptionTier: 'premium' }),
-      UsageLog.find({ createdAt: { $gte: startDate } }),
+      UsageLog.find({ timestamp: { $gte: startDate } }),
       Mediator.countDocuments()
     ]);
 
@@ -125,17 +125,17 @@ class AnalyticsService {
       upgrades
     ] = await Promise.all([
       User.countDocuments({ createdAt: { $gte: startDate } }),
-      UsageLog.countDocuments({ 
+      UsageLog.countDocuments({
         eventType: 'search',
-        createdAt: { $gte: startDate }
+        timestamp: { $gte: startDate }
       }),
       UsageLog.countDocuments({
-        eventType: 'profile_view',
-        createdAt: { $gte: startDate }
+        eventType: 'profileView',
+        timestamp: { $gte: startDate }
       }),
       UsageLog.countDocuments({
         eventType: 'upgrade_initiated',
-        createdAt: { $gte: startDate }
+        timestamp: { $gte: startDate }
       })
     ]);
 
@@ -165,7 +165,7 @@ class AnalyticsService {
 
     // Count logs per day
     logs.forEach(log => {
-      const key = log.createdAt.toISOString().split('T')[0];
+      const key = (log.timestamp || log.createdAt).toISOString().split('T')[0];
       if (dailyData.hasOwnProperty(key)) {
         dailyData[key]++;
       }
@@ -183,7 +183,7 @@ class AnalyticsService {
    */
   async getPopularMediators(limit = 10) {
     const profileViews = await UsageLog.aggregate([
-      { $match: { eventType: 'profile_view' } },
+      { $match: { eventType: 'profileView' } },
       { $group: {
         _id: '$metadata.mediatorId',
         views: { $sum: 1 },
@@ -210,7 +210,7 @@ class AnalyticsService {
 
     const searches = await UsageLog.find({
       eventType: 'search',
-      createdAt: { $gte: startDate }
+      timestamp: { $gte: startDate }
     });
 
     const trends = {

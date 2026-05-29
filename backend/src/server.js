@@ -24,8 +24,7 @@ const { errorMonitoringMiddleware, notFoundHandler } = require('./middleware/err
 // Import routes
 const authRoutes = require('./routes/auth');
 const mediatorRoutes = require('./routes/mediators');
-const partiesRoutes = require('./routes/parties');
-const attorneysRoutes = require('./routes/attorneys');
+const clientsRoutes = require('./routes/clients'); // merged attorneys + parties
 const chatRoutes = require('./routes/chat');
 const affiliationRoutes = require('./routes/affiliations');
 const subscriptionRoutes = require('./routes/subscription');
@@ -260,8 +259,7 @@ app.use('/', sitemapRoutes); // Serves /sitemap.xml
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/mediators', mediatorRoutes);
-app.use('/api/parties', partiesRoutes);
-app.use('/api/attorneys', attorneysRoutes);
+app.use('/api/clients', clientsRoutes); // Demand side: attorneys + parties (merged)
 app.use('/api/chat', chatRoutes);
 app.use('/api/affiliations', affiliationRoutes);
 app.use('/api/subscription', subscriptionRoutes);
@@ -286,7 +284,7 @@ app.use('/api/graph/admin', conflictRoutes); // Advanced graph admin routes (scr
 app.use('/api/settlement', settlementWrapperRoutes); // Simplified settlement predictor for general mediation
 app.use('/api/settlement/fca', settlementRoutes); // Advanced FCA settlement predictor (ML-based)
 app.use('/api/data-population', dataPopulationRoutes); // Data population status and progress tracking
-app.use('/api/keys', apiKeysRoutes); // B2B API key management (create, list, revoke)
+app.use('/api/keys', apiKeysRoutes); // B2B API key management (create, revoke)
 app.use('/api/v1', publicApiRoutes); // B2B Public API v1 (API key auth, CSRF-exempt)
 app.use('/api/automation', automationRoutes); // N8N automation workflows (trigger workflows)
 app.use('/api/logs', logsRoutes); // Log aggregation and analysis

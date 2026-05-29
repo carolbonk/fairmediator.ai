@@ -4,6 +4,10 @@
  */
 
 process.env.NODE_ENV = 'test';
+process.env.PORT = '4001';
+process.env.MONGODB_URI = 'mongodb://localhost:27017/fairmediator_test';
+process.env.CORS_ORIGIN = 'http://localhost:4010';
+process.env.FRONTEND_URL = 'http://localhost:4010';
 process.env.JWT_SECRET = 'test_jwt_secret_for_testing';
 process.env.JWT_REFRESH_SECRET = 'test_jwt_refresh_secret_for_testing';  // pragma: allowlist secret
 process.env.JWT_ROLE_SECRET = 'test_jwt_role_secret_for_testing';  // pragma: allowlist secret

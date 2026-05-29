@@ -131,6 +131,9 @@ export default {
         'dark-neu-lg': '12px 12px 24px rgba(0, 0, 0, 0.5), -12px -12px 24px rgba(74, 85, 104, 0.15)',
         'dark-neu-xl': '20px 20px 40px rgba(0, 0, 0, 0.6), -20px -20px 40px rgba(74, 85, 104, 0.2)',
         'dark-neu-inset': 'inset 4px 4px 8px rgba(0, 0, 0, 0.5), inset -4px -4px 8px rgba(74, 85, 104, 0.05)',
+        // 3D card shadows - directional depth, no white glow
+        'card-3d': '0 2px 4px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        'card-3d-hover': '0 6px 16px rgba(0, 0, 0, 0.18), 0 10px 28px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08)',
       },
       backgroundImage: {
         'neu-gradient': 'linear-gradient(145deg, #F0F2F5, #E4E7EB)',

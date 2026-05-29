@@ -60,13 +60,13 @@ const MediatorLoginPopup = ({ open, onClose }) => {
               icon={<FaBriefcase className="text-lg" />}
               title="Access CRM"
               blurb="Manage your practice — cases, contacts, and AI-assisted intake."
-              onClick={() => go('/app/mediator/crm', 'crm')}
+              onClick={() => go('/mediators-crm/cases', 'crm')}
             />
             <Card
               icon={<FaStore className="text-lg" />}
               title="Access Marketplace"
               blurb="Manage your public profile and the listings that drive new referrals."
-              onClick={() => go('/app/mediator/marketplace', 'marketplace')}
+              onClick={() => go('/mediators-crm/marketplace', 'marketplace')}
             />
           </div>
         </div>

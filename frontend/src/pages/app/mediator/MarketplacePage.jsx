@@ -79,7 +79,7 @@ export default function MarketplacePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-      navigate(`/app/mediator/crm/${data.case._id}`);
+      navigate(`/mediators-crm/cases/${data.case._id}`);
     } catch (err) {
       setError(err.message);
     } finally {

@@ -10,6 +10,8 @@ from typing import Tuple, List
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import logging
 
+from encoding_utils import encode_jurisdiction
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -229,32 +231,42 @@ class SettlementFeatureEngine:
         else:
             defendant_size = 2  # large
 
-        # Create base features
+        fraud_type_key = fraud_type.lower()
+        industry_key = industry.lower()
+
+        fraud_type_code = fraud_type_mapping.get(fraud_type_key, 7)
+        industry_code = industry_mapping.get(industry_key, 7)
+
+        if fraud_type_code == 7 and fraud_type_key not in fraud_type_mapping:
+            logger.warning(f"Unknown fraud_type '{fraud_type}' — encoded as 'other' (7)")
+        if industry_code == 7 and industry_key not in industry_mapping:
+            logger.warning(f"Unknown industry '{industry}' — encoded as 'other' (7)")
+
+        severity_weights = {
+            'healthcare': 1.2, 'defense': 1.5, 'covid': 1.3, 'procurement': 1.0,
+            'grant': 0.8, 'housing': 1.1, 'education': 0.9, 'other': 1.0,
+        }
+        weight = severity_weights.get(fraud_type_key, 1.0)
+
+        # Build the base row; transform_new_data → create_features derives the
+        # interaction columns from these, so we must not call create_features
+        # here separately — that would be a redundant double-call.
+        # jurisdiction_code MUST go through encode_jurisdiction so it matches
+        # the encoding clean_data.py uses at training time.
         data = pd.DataFrame([{
-            'fraud_type_code': fraud_type_mapping.get(fraud_type.lower(), 7),
-            'industry_code': industry_mapping.get(industry.lower(), 7),
-            'jurisdiction_code': hash(jurisdiction) % 50,  # Simple hash for jurisdiction
+            'fraud_type_code': fraud_type_code,
+            'industry_code': industry_code,
+            'jurisdiction_code': encode_jurisdiction(jurisdiction),
             'whistleblower': 1 if whistleblower_present else 0,
             'defendant_size': defendant_size,
             'settlement_year': settlement_year,
-            'log_amount': np.log1p(damages_claimed),  # Not used for prediction, just for feature engineering
+            'log_amount': np.log1p(damages_claimed),
+            'fraud_severity': np.log1p(damages_claimed) * weight,
         }])
 
-        # Calculate fraud severity
-        severity_weights = {
-            'healthcare': 1.2, 'defense': 1.5, 'covid': 1.3, 'procurement': 1.0,
-            'grant': 0.8, 'housing': 1.1, 'education': 0.9, 'other': 1.0
-        }
-        weight = severity_weights.get(fraud_type.lower(), 1.0)
-        data['fraud_severity'] = np.log1p(damages_claimed) * weight
-
-        # Create derived features
-        data = self.create_features(data)
-
-        # Transform using scaler
-        X = self.transform_new_data(data)
-
-        return X
+        # transform_new_data calls create_features internally to build derived
+        # columns, then applies the fitted scaler.
+        return self.transform_new_data(data)
 
     def save_scaler(self, filepath: str):
         """Save fitted scaler to file"""

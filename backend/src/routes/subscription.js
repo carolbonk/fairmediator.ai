@@ -9,6 +9,7 @@ const router = express.Router();
 const stripeService = require('../services/stripe/stripeService');
 const { authenticate } = require('../middleware/auth');
 const UsageLog = require('../models/UsageLog');
+const Subscription = require('../models/Subscription');
 const { sendSuccess, sendError, sendValidationError, asyncHandler } = require('../utils/responseHandlers');
 
 /**
@@ -92,6 +93,11 @@ router.post('/portal', authenticate, asyncHandler(async (req, res) => {
 router.post('/cancel', authenticate, asyncHandler(async (req, res) => {
   const { immediate = false } = req.body;
 
+  const activeSub = await Subscription.findOne({ user: req.user._id, status: 'active' });
+  if (!activeSub) {
+    return sendError(res, 404, 'No active subscription found');
+  }
+
   await stripeService.cancelSubscription(req.user._id, immediate);
 
   // Log cancellation for analytics
@@ -125,9 +131,11 @@ router.post('/webhook', express.raw({ type: 'application/json' }), asyncHandler(
     // Verify webhook signature
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-  } else {
-    // For development without webhook secret
+  } else if (Buffer.isBuffer(req.body)) {
     event = JSON.parse(req.body.toString());
+  } else {
+    // Body already parsed by express.json() middleware
+    event = req.body;
   }
 
   // Handle the event

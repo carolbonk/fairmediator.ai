@@ -75,7 +75,7 @@ export default function InboxPage() {
           {conversations.map(c => (
             <Link
               key={c._id}
-              to={`/app/mediator/crm/${c.caseId?._id || c.caseId}`}
+              to={`/mediators-crm/cases/${c.caseId?._id || c.caseId}`}
               className="block p-5 bg-neu-200 shadow-neu rounded-2xl hover:shadow-neu-lg transition-all"
             >
               <div className="flex justify-between gap-3 flex-wrap">

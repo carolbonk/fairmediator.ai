@@ -28,7 +28,7 @@ const Footer = () => {
           {/* Links - Right - Always Column */}
           <div className="flex flex-col items-center sm:items-end gap-1.5">
             <Link
-              to="/mediators/apply"
+              to="/mediators-marketplace/apply"
               className="text-white text-xs opacity-70 hover:opacity-100 transition-opacity underline"
             >
               Are you a Mediator? Join us!

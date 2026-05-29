@@ -37,20 +37,20 @@ const EarningsCalculator = ({ mediatorId }) => {
     growthRate: 5
   });
 
-  // Colors for charts
+  // Monochrome gray ramp for charts
   const COLORS = {
-    primary: '#3B82F6',    // Blue
-    secondary: '#10B981',  // Green
-    danger: '#EF4444',     // Red
-    warning: '#F59E0B',    // Amber
-    purple: '#8B5CF6',
-    indigo: '#6366F1'
+    primary: '#1F2937',    // neu-800
+    secondary: '#6B7280',  // neu-500
+    danger: '#9CA3AF',     // neu-400
+    warning: '#4B5563',    // neu-600
+    purple: '#374151',     // neu-700
+    indigo: '#D1D5DB'      // neu-300
   };
 
   const scenarioColors = {
     base: COLORS.primary,
     odr: COLORS.secondary,
-    collaboration: COLORS.purple
+    collaboration: COLORS.warning
   };
 
   useEffect(() => {
@@ -207,118 +207,116 @@ const EarningsCalculator = ({ mediatorId }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-neu-700 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Earnings & Profitability Calculator
-        </h1>
-        <p className="text-gray-600">
-          Plan your practice growth with intelligent projections and scenario modeling
-        </p>
-      </div>
-
+    <div>
       {/* Current Metrics Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="h-8 w-8 text-green-600" />
-            <span className="text-sm text-gray-500">Monthly</span>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-7">
+          <div className="flex items-center justify-between mb-3">
+            <span className="w-10 h-10 rounded-neu-sm flex items-center justify-center shadow-neu-inset-sm bg-neu-100">
+              <DollarSign className="h-5 w-5 text-neu-600" />
+            </span>
+            <span className="text-xs text-neu-500 font-semibold uppercase tracking-wide">Monthly</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-extrabold text-neu-800">
             {formatCurrency(currentMetrics.monthlyRevenue)}
           </div>
-          <p className="text-sm text-gray-600 mt-1">Revenue</p>
+          <p className="text-sm text-neu-600 mt-1">Revenue</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="h-8 w-8 text-blue-600" />
-            <span className="text-sm text-gray-500">Monthly</span>
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-7">
+          <div className="flex items-center justify-between mb-3">
+            <span className="w-10 h-10 rounded-neu-sm flex items-center justify-center shadow-neu-inset-sm bg-neu-100">
+              <TrendingUp className="h-5 w-5 text-neu-700" />
+            </span>
+            <span className="text-xs text-neu-500 font-semibold uppercase tracking-wide">Monthly</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-extrabold text-neu-800">
             {formatCurrency(currentMetrics.monthlyProfit)}
           </div>
-          <p className="text-sm text-gray-600 mt-1">Net Profit</p>
+          <p className="text-sm text-neu-600 mt-1">Net Profit</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-2">
-            <Activity className="h-8 w-8 text-purple-600" />
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-7">
+          <div className="flex items-center justify-between mb-3">
+            <span className="w-10 h-10 rounded-neu-sm flex items-center justify-center shadow-neu-inset-sm bg-neu-100">
+              <Activity className="h-5 w-5 text-dark-neu-300" />
+            </span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-extrabold text-neu-800">
             {formatPercent(currentMetrics.profitMargin)}
           </div>
-          <p className="text-sm text-gray-600 mt-1">Profit Margin</p>
+          <p className="text-sm text-neu-600 mt-1">Profit Margin</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-2">
-            <Target className="h-8 w-8 text-amber-600" />
-            <span className="text-sm text-gray-500">Annual</span>
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-7">
+          <div className="flex items-center justify-between mb-3">
+            <span className="w-10 h-10 rounded-neu-sm flex items-center justify-center shadow-neu-inset-sm bg-neu-100">
+              <Target className="h-5 w-5 text-neu-500" />
+            </span>
+            <span className="text-xs text-neu-500 font-semibold uppercase tracking-wide">Annual</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-extrabold text-neu-800">
             {formatCurrency(currentMetrics.annualRevenue)}
           </div>
-          <p className="text-sm text-gray-600 mt-1">Projected Revenue</p>
+          <p className="text-sm text-neu-600 mt-1">Projected Revenue</p>
         </div>
       </div>
 
       {/* Calculator Inputs */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Practice Metrics</h2>
+      <div className="bg-neu-100 rounded-neu-lg shadow-neu p-8 mb-12">
+        <h2 className="text-xl font-bold text-neu-800 mb-4">Practice Metrics</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neu-700 mb-2">
               Hourly Rate ($)
             </label>
             <input
               type="number"
               value={inputs.hourlyRate}
               onChange={(e) => handleInputChange('hourlyRate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-neu-200 rounded-neu-sm px-4 py-2.5 text-sm text-neu-800 shadow-neu-inset-sm outline-none focus:ring-2 focus:ring-neu-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neu-700 mb-2">
               Average Session Hours
             </label>
             <input
               type="number"
               value={inputs.averageSessionHours}
               onChange={(e) => handleInputChange('averageSessionHours', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-neu-200 rounded-neu-sm px-4 py-2.5 text-sm text-neu-800 shadow-neu-inset-sm outline-none focus:ring-2 focus:ring-neu-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neu-700 mb-2">
               Sessions Per Month
             </label>
             <input
               type="number"
               value={inputs.sessionsPerMonth}
               onChange={(e) => handleInputChange('sessionsPerMonth', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-neu-200 rounded-neu-sm px-4 py-2.5 text-sm text-neu-800 shadow-neu-inset-sm outline-none focus:ring-2 focus:ring-neu-400"
             />
           </div>
         </div>
 
         {/* Overhead Expenses */}
-        <div className="mt-6">
+        <div className="mt-8">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-medium">Monthly Overhead</h3>
+            <h3 className="text-lg font-bold text-neu-800">Monthly Overhead</h3>
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="text-blue-600 hover:text-blue-700 text-sm"
+              className="px-3 py-1.5 rounded-neu-sm bg-neu-100 text-neu-700 text-sm font-semibold shadow-neu-sm hover:shadow-neu transition-all"
             >
               {showAdvanced ? 'Hide' : 'Show'} Details
             </button>
@@ -328,14 +326,14 @@ const EarningsCalculator = ({ mediatorId }) => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {Object.entries(inputs.overhead).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-sm text-gray-600 mb-1">
+                  <label className="block text-sm text-neu-600 mb-1">
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </label>
                   <input
                     type="number"
                     value={value}
                     onChange={(e) => handleInputChange(`overhead.${key}`, e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded"
+                    className="w-full bg-neu-200 rounded-neu-sm px-3 py-2 text-sm text-neu-800 shadow-neu-inset-sm outline-none focus:ring-2 focus:ring-neu-400"
                   />
                 </div>
               ))}
@@ -344,31 +342,31 @@ const EarningsCalculator = ({ mediatorId }) => {
         </div>
 
         {/* Growth Scenarios */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-medium mb-3">Growth Scenarios</h3>
+        <div className="mt-8 p-6 bg-neu-100 rounded-neu-lg shadow-neu-inset">
+          <h3 className="text-lg font-bold text-neu-800 mb-3">Growth Scenarios</h3>
 
           <div className="space-y-3">
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={inputs.enableODR}
                 onChange={(e) => handleInputChange('enableODR', e.target.checked)}
-                className="mr-3 h-4 w-4 text-blue-600"
+                className="mr-3 h-4 w-4 accent-neu-700"
               />
-              <span className="text-gray-700">
-                Enable Online Dispute Resolution (ODR) - 20% more cases, 15% lower rate
+              <span className="text-neu-700 text-sm">
+                Enable Online Dispute Resolution (ODR) — 20% more cases, 15% lower rate
               </span>
             </label>
 
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={inputs.enableCollaboration}
                 onChange={(e) => handleInputChange('enableCollaboration', e.target.checked)}
-                className="mr-3 h-4 w-4 text-blue-600"
+                className="mr-3 h-4 w-4 accent-neu-700"
               />
-              <span className="text-gray-700">
-                Enable Lawyer Collaboration - 35% more cases, referral bonuses
+              <span className="text-neu-700 text-sm">
+                Enable Lawyer Collaboration — 35% more cases, referral bonuses
               </span>
             </label>
           </div>
@@ -376,10 +374,10 @@ const EarningsCalculator = ({ mediatorId }) => {
       </div>
 
       {/* Projections Chart */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Profit Projections</h2>
-          <div className="flex gap-2">
+      <div className="bg-neu-100 rounded-neu-lg shadow-neu p-8 mb-12">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h2 className="text-xl font-bold text-neu-800">Profit Projections</h2>
+          <div className="flex gap-2 flex-wrap">
             {['base', 'odr', 'collaboration'].map(scenario => (
               (scenario === 'base' ||
                (scenario === 'odr' && inputs.enableODR) ||
@@ -387,10 +385,10 @@ const EarningsCalculator = ({ mediatorId }) => {
                 <button
                   key={scenario}
                   onClick={() => setActiveScenario(scenario)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-1.5 rounded-neu-sm text-sm font-semibold transition-all ${
                     activeScenario === scenario
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-neu-600 to-neu-800 text-white shadow-neu'
+                      : 'bg-neu-100 text-neu-700 shadow-neu-sm hover:shadow-neu'
                   }`}
                 >
                   {scenario === 'base' ? 'Base' :
@@ -435,9 +433,9 @@ const EarningsCalculator = ({ mediatorId }) => {
       </div>
 
       {/* Expense Breakdown Pie Chart */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Expense Breakdown</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-8">
+          <h2 className="text-xl font-bold text-neu-800 mb-4">Expense Breakdown</h2>
           <ResponsiveContainer width="100%" height={250}>
             <RechartsPie>
               <Pie
@@ -460,38 +458,38 @@ const EarningsCalculator = ({ mediatorId }) => {
         </div>
 
         {/* ROI Comparison */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Return on Investment</h2>
+        <div className="bg-neu-100 rounded-neu-lg shadow-neu p-8">
+          <h2 className="text-xl font-bold text-neu-800 mb-4">Return on Investment</h2>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-neu-100 rounded-neu-sm shadow-neu-inset-sm border-l-4 border-neu-700">
               <div>
-                <p className="font-medium text-gray-900">Base Scenario</p>
-                <p className="text-sm text-gray-600">Traditional practice growth</p>
+                <p className="font-bold text-neu-800">Base Scenario</p>
+                <p className="text-sm text-neu-600">Traditional practice growth</p>
               </div>
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-extrabold text-neu-800">
                 {calculateROI('base')}%
               </div>
             </div>
 
             {inputs.enableODR && (
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-neu-100 rounded-neu-sm shadow-neu-inset-sm border-l-4 border-neu-500">
                 <div>
-                  <p className="font-medium text-gray-900">With ODR</p>
-                  <p className="text-sm text-gray-600">Online dispute resolution</p>
+                  <p className="font-bold text-neu-800">With ODR</p>
+                  <p className="text-sm text-neu-600">Online dispute resolution</p>
                 </div>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-extrabold text-neu-600">
                   {calculateROI('odr')}%
                 </div>
               </div>
             )}
 
             {inputs.enableCollaboration && (
-              <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-neu-100 rounded-neu-sm shadow-neu-inset-sm border-l-4 border-neu-400">
                 <div>
-                  <p className="font-medium text-gray-900">With Collaboration</p>
-                  <p className="text-sm text-gray-600">Lawyer partnership program</p>
+                  <p className="font-bold text-neu-800">With Collaboration</p>
+                  <p className="text-sm text-neu-600">Lawyer partnership program</p>
                 </div>
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl font-extrabold text-dark-neu-300">
                   {calculateROI('collaboration')}%
                 </div>
               </div>
@@ -501,14 +499,16 @@ const EarningsCalculator = ({ mediatorId }) => {
       </div>
 
       {/* Key Insights */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+      <div className="bg-neu-100 rounded-neu-lg shadow-neu border-l-4 border-neu-400 p-8 mb-12">
         <div className="flex items-start">
-          <AlertCircle className="h-6 w-6 text-blue-600 mr-3 mt-0.5" />
+          <span className="w-10 h-10 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100 mr-3">
+            <AlertCircle className="h-5 w-5 text-neu-700" />
+          </span>
           <div>
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">
+            <h3 className="text-lg font-bold text-neu-800 mb-2">
               Key Insights
             </h3>
-            <ul className="space-y-2 text-blue-800">
+            <ul className="space-y-2 text-neu-700 text-sm">
               <li>• Your current profit margin of {formatPercent(currentMetrics.profitMargin)} is
                   {currentMetrics.profitMargin > 50 ? ' above' : ' below'} the industry average of 50%</li>
               {inputs.enableODR && (
@@ -527,13 +527,13 @@ const EarningsCalculator = ({ mediatorId }) => {
       <div className="flex justify-end gap-4">
         <button
           onClick={() => window.print()}
-          className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+          className="px-6 py-2.5 rounded-neu-sm font-semibold text-sm bg-neu-100 text-neu-700 shadow-neu hover:shadow-neu-lg transition-all"
         >
           Export Report
         </button>
         <button
           onClick={handleSaveCalculation}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-6 py-2.5 rounded-neu-sm font-bold text-sm bg-gradient-to-r from-neu-600 to-neu-800 text-white shadow-neu hover:shadow-neu-lg transition-all"
         >
           Save Calculations
         </button>

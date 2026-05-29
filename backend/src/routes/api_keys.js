@@ -1,10 +1,14 @@
 /**
  * API Key Management Routes
- * Authenticated users create, list, and revoke their own API keys.
+ * Authenticated users create and revoke their own API keys.
  *
  * POST   /api/keys        — generate a new key (raw shown once)
- * GET    /api/keys        — list user's keys (prefix + stats only)
  * DELETE /api/keys/:id    — revoke a key
+ *
+ * The list endpoint was intentionally removed to keep the surface minimal:
+ * the raw key is only ever shown once at creation, and revocation is the
+ * security-critical operation worth keeping. Key metadata (prefix, usage)
+ * can be surfaced later via the monitoring/dashboard API if needed.
  */
 
 const express = require('express');
@@ -60,33 +64,6 @@ router.post('/', authenticate, asyncHandler(async (req, res) => {
     createdAt: apiKey.createdAt,
     warning: 'Save this key now — it will never be shown again.'
   }, 201, 'API key created');
-}));
-
-/**
- * GET /api/keys
- * List all API keys for the authenticated user.
- * Never returns the raw key or hash — prefix + stats only.
- */
-router.get('/', authenticate, asyncHandler(async (req, res) => {
-  const keys = await ApiKey.find({ userId: req.user._id })
-    .sort({ createdAt: -1 })
-    .select('-keyHash')
-    .lean();
-
-  sendSuccess(res, {
-    keys: keys.map(k => ({
-      id: k._id,
-      name: k.name,
-      prefix: k.prefix,
-      tier: k.tier,
-      isActive: k.isActive,
-      rateLimit: ApiKey.RATE_LIMITS[k.tier],
-      totalRequests: k.totalRequests,
-      lastUsedAt: k.lastUsedAt,
-      expiresAt: k.expiresAt,
-      createdAt: k.createdAt
-    }))
-  });
 }));
 
 /**

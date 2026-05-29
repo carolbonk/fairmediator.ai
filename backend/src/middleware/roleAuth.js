@@ -149,10 +149,9 @@ const authenticateWithRole = (expectedRoles = []) => {
       // Check if role is allowed for this endpoint
       const rolesArray = Array.isArray(expectedRoles) ? expectedRoles : [expectedRoles];
       if (rolesArray.length > 0 && !rolesArray.includes(decoded.role)) {
-        logger.security.unauthorized('ROLE_ACCESS_DENIED', decoded.userId, {
+        logger.security.accessDenied(decoded.userId, req.path, 'ROLE_ACCESS_DENIED', {
           required: rolesArray,
-          actual: decoded.role,
-          endpoint: req.path
+          actual: decoded.role
         });
 
         return res.status(403).json({
@@ -232,10 +231,9 @@ const requirePermission = (permission) => {
       return next();
     }
 
-    logger.security.unauthorized('PERMISSION_DENIED', req.user._id, {
+    logger.security.accessDenied(req.user._id, req.path, 'PERMISSION_DENIED', {
       required: permission,
-      available: req.auth.permissions,
-      endpoint: req.path
+      available: req.auth.permissions
     });
 
     return res.status(403).json({
@@ -255,10 +253,13 @@ const preventCrossRoleAccess = async (req, res, next) => {
     const path = req.path.toLowerCase();
     const userRole = req.auth?.role || 'guest';
 
+    // Attorneys and parties share /api/clients post-merge; per-endpoint
+    // requirePermission inside the clients router enforces attorney-vs-party
+    // gating, so /api/clients is intentionally absent from this denylist.
     const roleRouteMap = {
       mediator: ['/api/mediators', '/dashboard/mediator'],
-      attorney: ['/api/attorneys', '/api/cases', '/firm'],
-      party: ['/api/parties', '/case/']
+      attorney: ['/api/cases', '/firm'],
+      party: ['/case/']
     };
 
     // Check each role's routes

@@ -31,13 +31,13 @@ export default function PartyDashboard() {
         'Content-Type': 'application/json'
       };
 
-      const caseRes = await fetch('/api/parties/my-case', { headers });
+      const caseRes = await fetch('/api/clients/my-case', { headers });
       if (caseRes.ok) {
         const data = await caseRes.json();
         setCaseInfo(data.data);
       }
 
-      const mediatorRes = await fetch('/api/parties/recommended-mediators', { headers });
+      const mediatorRes = await fetch('/api/clients/recommended-mediators', { headers });
       if (mediatorRes.ok) {
         const data = await mediatorRes.json();
         setRecommendedMediators(data.data || []);
@@ -53,7 +53,7 @@ export default function PartyDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-16 h-16 border-4 border-neu-700 border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-lg font-semibold text-neu-800">Loading your dashboard...</p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function PartyDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-700 to-dark-neu-300 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-neu-700 to-neu-900 bg-clip-text text-transparent mb-2">
             Your Mediation Journey
           </h1>
           <p className="text-lg text-neu-600">
@@ -77,7 +77,7 @@ export default function PartyDashboard() {
         <div className="bg-neu-100 rounded-neu-lg p-6 mb-8 shadow-neu border-l-4 border-accent-yellow">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100">
-              <FaInfoCircle className="text-blue-700 text-xl" />
+              <FaInfoCircle className="text-neu-700 text-xl" />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-neu-800 mb-2">Welcome to FairMediator</h3>
@@ -95,7 +95,7 @@ export default function PartyDashboard() {
                 </a>
                 <a
                   href="/faq"
-                  className="px-4 py-2 bg-neu-100 text-blue-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
+                  className="px-4 py-2 bg-neu-100 text-neu-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
                 >
                   FAQs
                 </a>
@@ -157,7 +157,7 @@ export default function PartyDashboard() {
               <div className="mt-4">
                 <a
                   href="/parties/case-details"
-                  className="text-blue-700 hover:text-blue-900 font-medium text-sm"
+                  className="text-neu-700 hover:text-neu-900 font-medium text-sm"
                 >
                   View Full Case Details →
                 </a>

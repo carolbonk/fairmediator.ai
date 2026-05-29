@@ -486,7 +486,7 @@ const MediatorList = ({ parties }) => {
                               onClick={() => setModalPage(i + 1)}
                               className={`w-8 h-8 rounded-xl text-xs font-medium transition-all border ${
                                 modalPage === i + 1
-                                  ? 'bg-blue-600 text-white border-blue-500'
+                                  ? 'bg-neu-700 text-white border-neu-600'
                                   : 'bg-dark-neu-400 text-white/70 border-dark-neu-500 hover:bg-dark-neu-500'
                               }`}
                             >
@@ -533,7 +533,7 @@ const MediatorList = ({ parties }) => {
                   <div className="flex items-center gap-4">
                     <StarRating rating={selectedMediator.rating} totalMediations={selectedMediator.totalMediations} />
                     {selectedMediator.ideologyScore !== undefined && (
-                      <div className={`px-3 py-1 text-sm font-semibold rounded-lg shadow-neu ${
+                      <div className={`px-3 py-1 text-sm font-semibold rounded-lg shadow-card-3d ${
                         selectedMediator.ideologyScore <= -1 ? 'bg-blue-100 text-blue-700' :
                         selectedMediator.ideologyScore >= 1 ? 'bg-red-100 text-red-700' :
                         'bg-gray-100 text-gray-700'

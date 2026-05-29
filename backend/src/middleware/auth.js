@@ -29,8 +29,19 @@ const authenticate = async (req, res, next) => {
       });
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Reconstruct role-specific secret (matches generateAccessToken signing)
+    let verifySecret = process.env.JWT_SECRET;
+    if (process.env.JWT_ROLE_SECRET) {
+      const unverified = jwt.decode(token);
+      const namespace = unverified?.namespace || '';
+      const role = namespace.startsWith('fairmediator:')
+        ? namespace.replace('fairmediator:', '')
+        : 'user';
+      verifySecret = `${process.env.JWT_SECRET}:${process.env.JWT_ROLE_SECRET}:${role}`;
+    }
+
+    // Verify token with role-specific secret
+    const decoded = jwt.verify(token, verifySecret);
 
     // Get user from database
     const user = await User.findById(decoded.userId).select('-password');
@@ -93,7 +104,17 @@ const optionalAuth = async (req, res, next) => {
       return next();
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let verifySecret = process.env.JWT_SECRET;
+    if (process.env.JWT_ROLE_SECRET) {
+      const unverified = jwt.decode(token);
+      const namespace = unverified?.namespace || '';
+      const role = namespace.startsWith('fairmediator:')
+        ? namespace.replace('fairmediator:', '')
+        : 'user';
+      verifySecret = `${process.env.JWT_SECRET}:${process.env.JWT_ROLE_SECRET}:${role}`;
+    }
+
+    const decoded = jwt.verify(token, verifySecret);
 
     const user = await User.findById(decoded.userId).select('-password');
     if (user) {

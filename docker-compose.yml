@@ -136,9 +136,9 @@ services:
     ports:
       - "127.0.0.1:4001:4001"  # Backend API (FairMediator port range: 4000-4499)
     volumes:
-      - ./backend/src:/app/src:ro  # Read-only source code
-      - ./backend/logs:/app/logs  # Writable logs directory
-      - fairmediator_backend_node_modules:/app/node_modules
+      - ./backend/src:/monorepo/backend/src:ro  # Read-only source (matches container WORKDIR /monorepo/backend)
+      - ./backend/logs:/app/logs  # Writable logs directory (path matches image's logger config)
+      - fairmediator_backend_node_modules:/app/node_modules  # Named volume isolates host from container deps
     networks:
       - backend-network  # Can communicate with both frontend and database
       - db-network
@@ -222,7 +222,7 @@ services:
           cpus: '0.125'
           memory: 1G
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8080/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -234,9 +234,9 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     tmpfs:
-      - /var/cache/nginx:noexec,nosuid,size=50m
-      - /var/run:noexec,nosuid,size=10m
-      - /tmp:noexec,nosuid,size=50m
+      - /var/cache/nginx:noexec,nosuid,size=50m,uid=101,gid=101
+      - /var/run:noexec,nosuid,size=10m,uid=101,gid=101
+      - /tmp:noexec,nosuid,size=50m,uid=101,gid=101
 
 # ==============================================================================
 # PERSISTENT VOLUMES

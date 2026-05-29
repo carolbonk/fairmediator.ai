@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaComments, FaFileAlt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import BackLink from '../components/common/BackLink';
 import ChatPanel from '../components/ChatPanel';
 import MediatorList from '../components/MediatorList';
 import CaseIntakeForm from '../components/CaseIntakeForm';
@@ -17,6 +19,8 @@ import logger from '../utils/logger';
 
 const HomePage = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const isMarketplaceRoute = location.pathname === '/mediators-marketplace';
   const [parties, setParties] = useState([]);
   const [startOnboarding, setStartOnboarding] = useState(false);
   const [userStateCode, setUserStateCode] = useState('FL'); // Default to Florida, could come from user profile
@@ -106,6 +110,9 @@ const HomePage = () => {
       <WelcomePopup onClose={() => setStartOnboarding(true)} />
       <Onboarding shouldStart={startOnboarding} onComplete={() => setStartOnboarding(false)} />
       <Header />
+
+      {/* Back link — only shown when accessed as /mediators-marketplace */}
+      {isMarketplaceRoute && <BackLink to="/" />}
 
       {/* Responsive layout - content flows naturally with page scroll */}
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex-grow overflow-x-hidden w-full">

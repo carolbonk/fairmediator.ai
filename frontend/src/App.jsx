@@ -1,5 +1,16 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+
+// SPA-side fallback for legacy /app/mediator/<sub> links. Production traffic
+// hits Netlify's 301s in netlify.toml first; this only fires when a user types
+// an old URL directly in dev, or when SPA-internal nav races the edge rewrite.
+// Remaps the old "crm" segment to "cases"; other segments pass through.
+function LegacyCrmRedirect() {
+  const { '*': splat } = useParams();
+  if (!splat) return <Navigate to="/mediators-crm/cases" replace />;
+  const remapped = splat.replace(/^crm(\/|$)/, 'cases$1');
+  return <Navigate to={`/mediators-crm/${remapped}`} replace />;
+}
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { WorkspaceProvider } from './contexts/WorkspaceContext';
@@ -11,6 +22,7 @@ import OfflineDetector from './components/OfflineDetector';
 import './i18n/config';
 
 // Lazy load pages for code splitting and better performance
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -28,15 +40,15 @@ const SettlementCalculatorPage = lazy(() => import('./pages/SettlementCalculator
 const MediatorComparisonPage = lazy(() => import('./pages/MediatorComparisonPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const MediatorPortalEntry = lazy(() => import('./pages/app/MediatorPortalEntry'));
-const AttorneyPortalEntry = lazy(() => import('./pages/app/AttorneyPortalEntry'));
-const PartyPortalEntry = lazy(() => import('./pages/app/PartyPortalEntry'));
+const ClientPortalEntry = lazy(() => import('./pages/app/ClientPortalEntry'));
 const MediatorDashboard = lazy(() => import('./pages/dashboard/MediatorDashboard'));
-const AttorneyDashboard = lazy(() => import('./pages/dashboard/AttorneyDashboard'));
-const PartyDashboard = lazy(() => import('./pages/dashboard/PartyDashboard'));
+const ClientDashboard = lazy(() => import('./pages/dashboard/ClientDashboard'));
 const CrmCasesPage = lazy(() => import('./pages/app/mediator/CrmCasesPage'));
 const CaseWorkspacePage = lazy(() => import('./pages/app/mediator/CaseWorkspacePage'));
 const InboxPage = lazy(() => import('./pages/app/mediator/InboxPage'));
 const MarketplacePage = lazy(() => import('./pages/app/mediator/MarketplacePage'));
+const EarningsCalculatorPage = lazy(() => import('./pages/app/mediator/EarningsCalculatorPage'));
+const InvoicesPage = lazy(() => import('./pages/app/mediator/InvoicesPage'));
 const HowItWorksMediatorsPage = lazy(() => import('./pages/HowItWorksMediatorsPage'));
 const HowItWorksMediatorCrmPage = lazy(() => import('./pages/HowItWorksMediatorCrmPage'));
 const HowItWorksMediatorMarketplacePage = lazy(() => import('./pages/HowItWorksMediatorMarketplacePage'));
@@ -53,17 +65,19 @@ function App() {
               <Suspense fallback={<LoadingSpinner />}>
             <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/mediators-marketplace" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/mediators/apply" element={<MediatorApplicationPage />} />
+            <Route path="/mediators-marketplace/apply" element={<MediatorApplicationPage />} />
             <Route path="/ethics" element={<EthicsPage />} />
             <Route path="/safeguards" element={<SafeguardsPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/mediators" element={<MediatorsPage />} />
+            <Route path="/mediators" element={<Navigate to="/resources/mediators-safeguards" replace />} />
+            <Route path="/resources/mediators-safeguards" element={<MediatorsPage />} />
 
             {/* Protected Routes - Require Authentication */}
             <Route
@@ -107,6 +121,9 @@ function App() {
               }
             />
 
+            {/* Legacy CRM redirects: /app/mediator/* → /mediators-crm/* */}
+            <Route path="/app/mediator/*" element={<LegacyCrmRedirect />} />
+
             {/* Role-scoped portal groups */}
             <Route
               path="/app/mediator"
@@ -117,12 +134,26 @@ function App() {
               }
             >
               <Route index element={<MediatorPortalEntry />} />
-              <Route path="crm" element={<CrmCasesPage />} />
-              <Route path="crm/:caseId" element={<CaseWorkspacePage />} />
-              <Route path="inbox" element={<InboxPage />} />
-              <Route path="marketplace" element={<MarketplacePage />} />
             </Route>
 
+            {/* CRM routes — /mediators-crm/* */}
+            <Route
+              path="/mediators-crm"
+              element={
+                <ProtectedRoute>
+                  <RoleProtectedRoute allow="mediator" />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="cases" element={<CrmCasesPage />} />
+              <Route path="cases/:caseId" element={<CaseWorkspacePage />} />
+              <Route path="inbox" element={<InboxPage />} />
+              <Route path="marketplace" element={<MarketplacePage />} />
+              <Route path="earnings" element={<EarningsCalculatorPage />} />
+              <Route path="invoices" element={<InvoicesPage />} />
+            </Route>
+
+            {/* Demand-side portal — attorneys + parties share ClientPortalEntry */}
             <Route
               path="/app/attorney"
               element={
@@ -131,7 +162,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<AttorneyPortalEntry />} />
+              <Route index element={<ClientPortalEntry />} />
             </Route>
 
             <Route
@@ -142,7 +173,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<PartyPortalEntry />} />
+              <Route index element={<ClientPortalEntry />} />
             </Route>
 
             {/* Role-scoped dashboards (semantic URLs) */}
@@ -196,12 +227,15 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Demand-side dashboards — attorneys + parties share ClientDashboard
+                 (which selects the right view by accountType). Paths preserved so
+                 existing LoginForm redirects keep working. */}
             <Route
               path="/attorney/dashboard"
               element={
                 <ProtectedRoute>
                   <RoleProtectedRoute allow="attorney">
-                    <AttorneyDashboard />
+                    <ClientDashboard />
                   </RoleProtectedRoute>
                 </ProtectedRoute>
               }
@@ -211,7 +245,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <RoleProtectedRoute allow="party">
-                    <PartyDashboard />
+                    <ClientDashboard />
                   </RoleProtectedRoute>
                 </ProtectedRoute>
               }

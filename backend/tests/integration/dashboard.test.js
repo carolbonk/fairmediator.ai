@@ -22,6 +22,7 @@ describe('Dashboard API', () => {
       email: 'dashboard@example.com',
       password: 'SecurePass123!',
       name: 'Dashboard User',
+      accountType: 'attorney',
       emailVerified: true,
       subscriptionTier: 'free'
     });
@@ -46,6 +47,7 @@ describe('Dashboard API', () => {
       email: 'premium@example.com',
       password: 'SecurePass123!',
       name: 'Premium User',
+      accountType: 'attorney',
       emailVerified: true,
       subscriptionTier: 'premium'
     });
@@ -87,6 +89,8 @@ describe('Dashboard API', () => {
       expect(response.body.data).toHaveProperty('dailyActivity');
       expect(response.body.data).toHaveProperty('period');
       expect(response.body.data).toHaveProperty('topPracticeAreas');
+      expect(response.body.data.byType).toHaveProperty('search');
+      expect(response.body.data.byType.search).toBeGreaterThan(0);
     });
 
     it('should accept days query parameter', async () => {

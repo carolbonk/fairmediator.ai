@@ -16,7 +16,8 @@ describe('Authentication API', () => {
         .send({
           email: 'newuser@example.com',
           password: 'SecurePass123!',
-          name: 'New User'
+          name: 'New User',
+          accountType: 'attorney'
         });
 
       expectSuccess(response, 201);
@@ -47,6 +48,7 @@ describe('Authentication API', () => {
         email: 'duplicate@example.com',
         password: 'SecurePass123!',
         name: 'First User',
+        accountType: 'attorney',
         emailVerified: true
       });
 
@@ -56,7 +58,8 @@ describe('Authentication API', () => {
         .send({
           email: 'duplicate@example.com',
           password: 'AnotherPass123!',
-          name: 'Second User'
+          name: 'Second User',
+          accountType: 'attorney'
         });
 
       expectError(response, 409); // 409 Conflict for duplicate email
@@ -132,6 +135,7 @@ describe('Authentication API', () => {
         email: 'login@example.com',
         password: 'LoginPass123!',
         name: 'Login User',
+        accountType: 'attorney',
         emailVerified: true
       });
     });

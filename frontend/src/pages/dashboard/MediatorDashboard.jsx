@@ -7,17 +7,18 @@ import SimpleBarChart from '../../components/dashboard/SimpleBarChart';
 import { US_STATES } from '../../data/mockMediators';
 import { PRACTICE_AREA_CATEGORIES, ALL_PRACTICE_AREAS } from '../../data/practiceAreas';
 
-// Brand palette tokens
-const BRAND = {
-  blue: '#2563EB',
-  blueDark: '#1E3A8A',
-  blueDeep: '#1D4ED8',
-  golden: '#F5D15C',
-  graphite: '#252D3A',
+// Monochrome tone tokens (grays + white) — keeps the dashboard consistent
+// with the rest of the platform's neumorphic, accent-free design.
+const TONE = {
+  base: '#374151',     // neu-700 — primary accent
+  dark: '#1F2937',     // neu-800 — strong
+  mid: '#4B5563',      // neu-600
+  light: '#9CA3AF',    // neu-400 — light accent (replaces golden)
+  graphite: '#111827', // neu-900 — deepest
 };
 
-// Brand-only palette for chart bars (cycled in order)
-const CHART_PALETTE = [BRAND.blue, BRAND.blueDeep, BRAND.blueDark, BRAND.golden, BRAND.graphite];
+// Grayscale palette for chart bars (cycled in order)
+const CHART_PALETTE = [TONE.base, TONE.mid, TONE.dark, TONE.light, TONE.graphite];
 
 // Welcome-banner CTAs in display order. The first CTA whose `key` is returned
 // by `getPrimaryCta` is rendered with the filled/primary style; the rest are secondary.
@@ -214,7 +215,7 @@ export default function MediatorDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-16 h-16 border-4 border-neu-700 border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-lg font-semibold text-neu-800">Loading your dashboard...</p>
         </div>
       </div>
@@ -235,26 +236,26 @@ export default function MediatorDashboard() {
   const primaryCtaKey = getPrimaryCta(profile, stats);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 py-12 sm:py-16 px-6 sm:px-8 lg:px-10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-700 to-dark-neu-300 bg-clip-text text-transparent mb-2">
+        <div className="mb-12">
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-neu-600 to-neu-900 bg-clip-text text-transparent mb-3 tracking-tight">
             Mediator Analytics Dashboard
           </h1>
-          <p className="text-lg text-neu-600">
+          <p className="text-lg text-neu-600 leading-relaxed">
             Track your profile performance and case activity
           </p>
 
           {/* Time Range Selector */}
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-6">
             {[7, 30, 90].map(days => (
               <button
                 key={days}
                 onClick={() => setTimeRange(days)}
                 className={`px-4 py-2 rounded-neu-sm font-semibold text-sm transition-all ${
                   timeRange === days
-                    ? 'bg-gradient-to-r from-blue-700 to-blue-900 text-white shadow-neu-sm'
+                    ? 'bg-gradient-to-r from-neu-600 to-neu-800 text-white shadow-neu-sm'
                     : 'bg-neu-100 text-neu-700 shadow-neu-sm hover:shadow-neu'
                 }`}
               >
@@ -265,10 +266,10 @@ export default function MediatorDashboard() {
         </div>
 
         {/* Welcome Guide — Mediator-tailored */}
-        <div className="bg-neu-100 rounded-neu-lg p-6 mb-8 shadow-neu border-l-4 border-accent-yellow">
+        <div className="bg-neu-100 rounded-neu-lg p-8 mb-12 shadow-neu border-l-4 border-neu-400">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100">
-              <FaInfoCircle className="text-blue-700 text-xl" />
+              <FaInfoCircle className="text-neu-700 text-xl" />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-neu-800 mb-2">Welcome to FairMediator for Mediators</h3>
@@ -285,11 +286,11 @@ export default function MediatorDashboard() {
                       key={key}
                       href={href}
                       className={`px-4 py-2 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all inline-flex items-center gap-2 ${
-                        isPrimary ? 'text-white' : 'bg-neu-100 text-blue-700'
+                        isPrimary ? 'text-white' : 'bg-neu-100 text-neu-700'
                       }`}
                       style={
                         isPrimary
-                          ? { background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }
+                          ? { background: `linear-gradient(135deg, ${TONE.base}, ${TONE.mid})` }
                           : undefined
                       }
                     >
@@ -300,7 +301,7 @@ export default function MediatorDashboard() {
                 })}
                 <a
                   href="/mediator/faq"
-                  className="px-4 py-2 bg-neu-100 text-blue-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
+                  className="px-4 py-2 bg-neu-100 text-neu-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
                 >
                   FAQs
                 </a>
@@ -309,11 +310,11 @@ export default function MediatorDashboard() {
           </div>
         </div>
 
-        {/* Profile Completion Alert (golden) */}
+        {/* Profile Completion Alert */}
         {profile && profile.dataQuality?.completeness < 80 && (
-          <div className="bg-neu-100 rounded-neu-lg p-6 mb-8 flex items-start gap-4 shadow-neu border-l-4 border-accent-yellow">
+          <div className="bg-neu-100 rounded-neu-lg p-8 mb-12 flex items-start gap-4 shadow-neu border-l-4 border-neu-400">
             <div className="w-10 h-10 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100">
-              <FaUser className="text-accent-yellow" />
+              <FaUser className="text-neu-500" />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-neu-800 mb-1">Complete Your Profile</h3>
@@ -323,7 +324,7 @@ export default function MediatorDashboard() {
               </p>
               <a
                 href="/mediators/my-profile/edit"
-                className="inline-block px-4 py-2 bg-accent-yellow text-dark-neu-400 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
+                className="inline-block px-4 py-2 bg-gradient-to-r from-neu-600 to-neu-800 text-white rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
               >
                 Complete Profile
               </a>
@@ -332,53 +333,53 @@ export default function MediatorDashboard() {
         )}
 
         {/* Key Metrics — brand colors only */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <StatCard
             title="Profile Views"
             value={stats?.totalViews || 0}
             subtitle={`Last ${timeRange} days`}
             icon={FaEye}
-            color={BRAND.blue}
+            color={TONE.base}
           />
           <StatCard
             title="Average Rating"
             value={profile?.rating?.toFixed(1) || '5.0'}
             subtitle={`${profile?.totalMediations || 0} cases`}
             icon={FaStar}
-            color={BRAND.golden}
+            color={TONE.light}
           />
           <StatCard
             title="Active Cases"
             value={stats?.activeCases || 0}
             subtitle="In progress"
             icon={FaGavel}
-            color={BRAND.blueDark}
+            color={TONE.dark}
           />
           <StatCard
             title="Success Rate"
             value={`${stats?.successRate || 0}%`}
             subtitle="Settlement rate"
             icon={FaCheckCircle}
-            color={BRAND.blueDeep}
+            color={TONE.mid}
           />
         </div>
 
         {/* Profile Views Chart */}
-        <div className="mb-8">
+        <div className="mb-12">
           <h2 className="text-2xl font-bold text-neu-800 mb-4">
             Profile Views Over Time
           </h2>
           <SimpleLineChart
             data={profileViewsData}
             height={250}
-            lineColor={BRAND.blue}
-            fillColor={BRAND.blue}
+            lineColor={TONE.base}
+            fillColor={TONE.base}
           />
         </div>
 
         {/* Cases by Practice Area */}
         {casesByAreaData.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-12">
             <h2 className="text-2xl font-bold text-neu-800 mb-4">
               Cases by Practice Area
             </h2>
@@ -386,13 +387,13 @@ export default function MediatorDashboard() {
               data={casesByAreaData}
               height={280}
               horizontal={true}
-              barColor={BRAND.blue}
+              barColor={TONE.base}
             />
           </div>
         )}
 
         {/* My Practice Areas — full coverage list */}
-        <div className="mb-8">
+        <div className="mb-12">
           <div className="flex items-start justify-between gap-4 mb-4 flex-wrap">
             <div>
               <h2 className="text-2xl font-bold text-neu-800 mb-1">
@@ -403,12 +404,12 @@ export default function MediatorDashboard() {
               </p>
             </div>
             <div className="text-xs text-neu-600 bg-neu-100 rounded-neu-sm px-3 py-2 shadow-neu-inset-sm flex items-center gap-2">
-              <FaBriefcase style={{ color: BRAND.blue }} />
+              <FaBriefcase style={{ color: TONE.base }} />
               Coverage applies across all 50 states unless scoped below
             </div>
           </div>
 
-          <div className="bg-neu-100 rounded-neu-lg p-6 shadow-neu">
+          <div className="bg-neu-100 rounded-neu-lg p-8 shadow-neu">
             <div
               className="overflow-y-auto pr-2 space-y-8"
               style={{ maxHeight: '560px' }}
@@ -433,7 +434,7 @@ export default function MediatorDashboard() {
                           }`}
                           style={
                             active
-                              ? { background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }
+                              ? { background: `linear-gradient(135deg, ${TONE.base}, ${TONE.mid})` }
                               : undefined
                           }
                           aria-pressed={active}
@@ -450,7 +451,7 @@ export default function MediatorDashboard() {
             {customAreas.length > 0 && (
               <div className="mt-6 pt-6 border-t border-neu-200">
                 <h3 className="text-sm font-bold text-neu-700 mb-3 flex items-center gap-2">
-                  <FaMapMarkerAlt style={{ color: BRAND.blueDark }} />
+                  <FaMapMarkerAlt style={{ color: TONE.dark }} />
                   State-Specific Areas
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -458,7 +459,7 @@ export default function MediatorDashboard() {
                     <span
                       key={`${entry.state}-${entry.name}-${idx}`}
                       className="inline-flex items-center gap-2 px-3 py-2 rounded-neu-sm text-sm font-semibold text-dark-neu-400 shadow-neu-sm"
-                      style={{ background: BRAND.golden }}
+                      style={{ background: TONE.light }}
                     >
                       <FaMapMarkerAlt className="text-xs" />
                       {entry.name}
@@ -501,7 +502,7 @@ export default function MediatorDashboard() {
                     onClick={saveCoverage}
                     disabled={savingCoverage || !isCoverageDirty}
                     className="px-4 py-2 rounded-neu-sm text-sm font-semibold text-white shadow-neu-sm hover:shadow-neu disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                    style={{ background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }}
+                    style={{ background: `linear-gradient(135deg, ${TONE.base}, ${TONE.mid})` }}
                   >
                     {savingCoverage ? 'Saving…' : 'Save changes'}
                   </button>
@@ -513,13 +514,13 @@ export default function MediatorDashboard() {
 
         {/* Add State-Scoped Practice Area CTA */}
         <div
-          className="rounded-neu-lg p-6 mb-8 shadow-dark-neu-lg"
-          style={{ background: `linear-gradient(135deg, ${BRAND.blueDark}, ${BRAND.graphite})` }}
+          className="rounded-neu-lg p-8 mb-12 shadow-dark-neu-lg"
+          style={{ background: `linear-gradient(135deg, ${TONE.dark}, ${TONE.graphite})` }}
         >
           <div className="flex flex-col md:flex-row md:items-end gap-4">
             <div className="flex-1">
               <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-                <FaPlus style={{ color: BRAND.golden }} />
+                <FaPlus style={{ color: TONE.light }} />
                 Add a State-Specific Practice Area
               </h3>
               <p className="text-sm text-neu-300">
@@ -536,14 +537,14 @@ export default function MediatorDashboard() {
               onChange={(e) => setNewAreaName(e.target.value)}
               placeholder="e.g. Agricultural Land Disputes"
               className="px-4 py-3 rounded-neu-sm bg-neu-100 text-neu-800 text-sm font-medium shadow-neu-inset-sm focus:outline-none focus:ring-2 focus:ring-offset-0"
-              style={{ '--tw-ring-color': BRAND.golden }}
+              style={{ '--tw-ring-color': TONE.light }}
               disabled={adding}
             />
             <select
               value={newAreaState}
               onChange={(e) => setNewAreaState(e.target.value)}
               className="px-4 py-3 rounded-neu-sm bg-neu-100 text-neu-800 text-sm font-medium shadow-neu-inset-sm focus:outline-none focus:ring-2"
-              style={{ '--tw-ring-color': BRAND.golden }}
+              style={{ '--tw-ring-color': TONE.light }}
               disabled={adding}
             >
               <option value="">Select state…</option>
@@ -556,27 +557,27 @@ export default function MediatorDashboard() {
               onClick={handleAddPracticeArea}
               disabled={adding}
               className="px-6 py-3 rounded-neu-sm font-bold text-sm shadow-neu-sm hover:shadow-neu transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: BRAND.golden, color: BRAND.graphite }}
+              style={{ background: TONE.light, color: TONE.graphite }}
             >
               {adding ? 'Adding…' : 'Add Practice Area'}
             </button>
           </div>
 
           {addError && (
-            <p className="mt-3 text-sm font-semibold" style={{ color: BRAND.golden }}>
+            <p className="mt-3 text-sm font-semibold" style={{ color: TONE.light }}>
               {addError}
             </p>
           )}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           <a
             href="/mediators/my-profile/edit"
-            className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+            className="bg-neu-100 rounded-neu-lg p-8 shadow-neu hover:shadow-neu-lg transition-all group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.blue}, ${BRAND.blueDeep})` }}>
+              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${TONE.base}, ${TONE.mid})` }}>
                 <FaUser className="text-white text-xl" />
               </div>
               <div>
@@ -588,10 +589,10 @@ export default function MediatorDashboard() {
 
           <a
             href="/mediators/my-cases"
-            className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+            className="bg-neu-100 rounded-neu-lg p-8 shadow-neu hover:shadow-neu-lg transition-all group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.graphite}, ${BRAND.blueDark})` }}>
+              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${TONE.graphite}, ${TONE.dark})` }}>
                 <FaGavel className="text-white text-xl" />
               </div>
               <div>
@@ -603,10 +604,10 @@ export default function MediatorDashboard() {
 
           <a
             href="/mediators/analytics"
-            className="bg-neu-100 rounded-neu-lg p-6 shadow-neu hover:shadow-neu-lg transition-all group"
+            className="bg-neu-100 rounded-neu-lg p-8 shadow-neu hover:shadow-neu-lg transition-all group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${BRAND.golden}, #E0B83A)` }}>
+              <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center shadow-neu-sm group-hover:scale-105 transition-transform" style={{ background: `linear-gradient(135deg, ${TONE.light}, #6B7280)` }}>
                 <FaChartLine className="text-dark-neu-400 text-xl" />
               </div>
               <div>
@@ -617,7 +618,7 @@ export default function MediatorDashboard() {
           </a>
         </div>
 
-        {/* Upgrade CTA — graffiti dark with golden accent */}
+        {/* Upgrade CTA — dark panel */}
         {user?.subscriptionTier === 'free' && (
           <div className="rounded-neu-lg p-8 text-center bg-gradient-to-br from-dark-neu-300 to-dark-neu-500 shadow-dark-neu-lg">
             <h3 className="text-2xl font-bold text-white mb-2">
@@ -628,7 +629,7 @@ export default function MediatorDashboard() {
             </p>
             <button
               onClick={() => window.location.href = '/upgrade'}
-              className="px-8 py-3 bg-accent-yellow text-dark-neu-400 rounded-neu-sm font-bold shadow-neu-sm hover:shadow-neu transition-all"
+              className="px-8 py-3 bg-neu-100 text-neu-800 rounded-neu-sm font-bold shadow-neu-sm hover:shadow-neu transition-all"
             >
               Upgrade to Premium
             </button>

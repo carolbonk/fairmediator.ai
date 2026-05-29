@@ -111,9 +111,8 @@ const Header = () => {
               <p className="text-fluid-base text-white font-bold tracking-wide whitespace-nowrap">
                 {t('nav.brandName')}
               </p>
-              {/* Tagline - Desktop only */}
-              <p className="hidden lg:block text-sm text-white font-medium tracking-wide opacity-80 whitespace-nowrap">
-                {t('nav.tagline')}
+              <p className="hidden lg:block text-xs text-white/70 font-medium tracking-wide whitespace-nowrap">
+                AI Powered CRM and Marketplace
               </p>
             </div>
           </div>
@@ -157,7 +156,7 @@ const Header = () => {
                     {t('nav.mediators')}
                   </Link>
                   <Link
-                    to="/mediators/apply"
+                    to="/mediators-marketplace/apply"
                     onClick={() => setAboutOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >

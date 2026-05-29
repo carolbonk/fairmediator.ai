@@ -53,7 +53,7 @@ const MediatorCard = memo(({
     return (
       <div
         onClick={onClick}
-        className="bg-neu-200 rounded-lg p-2 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 w-full cursor-pointer"
+        className="bg-neu-200 rounded-lg p-2 shadow-card-3d hover:shadow-card-3d-hover hover:-translate-y-0.5 transition-all duration-200 border border-neu-300 w-full cursor-pointer"
       >
         <div className="flex items-center justify-between gap-2 w-full">
           <div className="flex-1 min-w-0">
@@ -156,7 +156,7 @@ const MediatorCard = memo(({
   return (
     <div
       onClick={onClick}
-      className="bg-neu-200 rounded-xl p-5 shadow-neu hover:shadow-neu-lg transition-all duration-200 border border-neu-300 cursor-pointer"
+      className="bg-neu-200 rounded-xl p-5 shadow-card-3d hover:shadow-card-3d-hover hover:-translate-y-1 transition-all duration-200 border border-neu-300 cursor-pointer"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
@@ -207,7 +207,7 @@ const MediatorCard = memo(({
 
         {/* Ideology Badge */}
         {mediator.ideologyScore !== undefined && (
-          <div className={`px-4 py-2 text-sm font-semibold rounded-xl whitespace-nowrap shadow-neu ${getIdeologyColor(mediator.ideologyScore)}`}>
+          <div className={`px-4 py-2 text-sm font-semibold rounded-xl whitespace-nowrap shadow-card-3d ${getIdeologyColor(mediator.ideologyScore)}`}>
             {getIdeologyLabel(mediator.ideologyScore)}
           </div>
         )}

@@ -121,7 +121,7 @@ export default function CrmCasesPage() {
             {filtered.map(c => (
               <Link
                 key={c._id}
-                to={`/app/mediator/crm/${c._id}`}
+                to={`/mediators-crm/cases/${c._id}`}
                 className="block p-5 bg-neu-200 shadow-neu rounded-2xl hover:shadow-neu-lg transition-all"
               >
                 <div className="flex items-start justify-between gap-3 flex-wrap">

@@ -516,7 +516,7 @@ export default function CaseWorkspacePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neu-100 via-neu-150 to-neu-200 py-8 px-4">
       <div className="max-w-5xl mx-auto">
-        <Link to="/app/mediator/crm" className="inline-flex items-center gap-2 text-sm text-purple-700 mb-4">
+        <Link to="/mediators-crm/cases" className="inline-flex items-center gap-2 text-sm text-blue-700 mb-4">
           <FaArrowLeft /> Back to cases
         </Link>
         <div className="mb-6">

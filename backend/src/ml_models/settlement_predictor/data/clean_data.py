@@ -9,9 +9,16 @@ import pandas as pd
 import numpy as np
 import json
 import logging
+import sys
+import os
 from typing import Tuple, Dict
 from datetime import datetime
 import re
+
+# Shared deterministic encoders live in training/.  Import directly so both
+# the cleaner and serving (feature_engineering) hit the exact same function.
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'training'))
+from encoding_utils import encode_jurisdiction
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -124,8 +131,33 @@ class SettlementDataCleaner:
         """Encode categorical features"""
         logger.info("Encoding categorical features...")
 
-        # Fraud type encoding
-        self.data['fraud_type'] = self.data['fraud_type'].fillna('other')
+        # Normalize raw fraud subtype strings to the high-level categories the
+        # model was trained on.  Raw data uses subtypes ("off_label_marketing",
+        # "kickbacks") while the mapping keys are categories ("healthcare",
+        # "defense").  Without this step every subtype maps to NaN, making
+        # fraud_type_code useless in training.
+        fraud_subtype_to_category = {
+            'off_label_marketing': 'healthcare',
+            'kickbacks':           'healthcare',
+            'upcoding':            'healthcare',
+            'admissions_fraud':    'healthcare',
+            'false_claims':        'healthcare',
+            'overbilling':         'healthcare',
+            'procurement_fraud':   'procurement',
+            'defective_pricing':   'defense',
+            'pricing_fraud':       'defense',
+            'grant_fraud':         'grant',
+            'housing_fraud':       'housing',
+            'education_fraud':     'education',
+            'covid_fraud':         'covid',
+        }
+
+        self.data['fraud_type'] = (
+            self.data['fraud_type']
+            .fillna('other')
+            .map(lambda x: fraud_subtype_to_category.get(x, x))
+        )
+
         fraud_type_mapping = {
             'healthcare': 0,
             'defense': 1,
@@ -134,27 +166,50 @@ class SettlementDataCleaner:
             'grant': 4,
             'housing': 5,
             'education': 6,
-            'other': 7
+            'other': 7,
         }
-        self.data['fraud_type_code'] = self.data['fraud_type'].map(fraud_type_mapping)
+        self.data['fraud_type_code'] = (
+            self.data['fraud_type'].map(fraud_type_mapping).fillna(7).astype(int)
+        )
 
-        # Industry encoding
+        unknown_types = self.data.loc[
+            self.data['fraud_type_code'] == 7, 'fraud_type'
+        ].unique()
+        if len(unknown_types):
+            logger.warning(f"fraud_type values mapped to 'other': {list(unknown_types)}")
+
+        # Industry encoding.  Raw data uses "defense" but the model's feature
+        # space uses code 1 for defense contractors; add the alias so those rows
+        # are not silently encoded as NaN → filled to 0 (healthcare) by fillna.
         self.data['industry'] = self.data['industry'].fillna('other')
         industry_mapping = {
-            'healthcare': 0,
+            'healthcare':        0,
             'defense_contractor': 1,
-            'pharmaceutical': 2,
-            'technology': 3,
-            'construction': 4,
-            'education': 5,
-            'financial': 6,
-            'other': 7
+            'defense':           1,   # alias: raw data uses "defense" not "defense_contractor"
+            'pharmaceutical':    2,
+            'technology':        3,
+            'construction':      4,
+            'education':         5,
+            'financial':         6,
+            'other':             7,
         }
-        self.data['industry_code'] = self.data['industry'].map(industry_mapping)
+        self.data['industry_code'] = (
+            self.data['industry'].map(industry_mapping).fillna(7).astype(int)
+        )
 
-        # Jurisdiction encoding (simplified - would use proper circuit mapping)
+        unknown_industries = self.data.loc[
+            self.data['industry_code'] == 7, 'industry'
+        ].unique()
+        if len(unknown_industries):
+            logger.warning(f"industry values mapped to 'other': {list(unknown_industries)}")
+
+        # Jurisdiction encoding — must use the same deterministic hash the
+        # prediction API uses (encode_jurisdiction).  pd.Categorical(...).codes
+        # would reorder whenever the training set changes, so a request for
+        # "Southern District of New York" at inference time would land on a
+        # different code than the trained model expects.
         self.data['jurisdiction'] = self.data['jurisdiction'].fillna('Unknown')
-        self.data['jurisdiction_code'] = pd.Categorical(self.data['jurisdiction']).codes
+        self.data['jurisdiction_code'] = self.data['jurisdiction'].map(encode_jurisdiction).astype(int)
 
         # Whistleblower indicator
         self.data['whistleblower'] = self.data['whistleblower'].fillna(False).astype(int)

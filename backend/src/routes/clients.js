@@ -1,8 +1,12 @@
 /**
- * Attorney Routes
- * API endpoints for attorney users
+ * Client Routes (attorneys + parties)
  *
- * All routes in this file are attorney-specific and require attorney accountType
+ * The demand side of the marketplace — lawyers and disputing parties — share a
+ * single router. The role guard admits both; per-endpoint `requirePermission`
+ * still segregates attorney-only vs party-only capabilities, so a party hitting
+ * an attorney endpoint (or vice-versa) is rejected by the permission layer.
+ *
+ * Mounted at /api/clients (replaces the former /api/attorneys + /api/parties).
  */
 
 const express = require('express');
@@ -14,12 +18,14 @@ const SavedMediator = require('../models/SavedMediator');
 const SearchHistory = require('../models/SearchHistory');
 const Case = require('../models/Case');
 
-// All routes require attorney or admin role
-router.use(authenticateWithRole(['attorney', 'admin']));
+// Both demand-side roles (plus admin) may reach this router.
+router.use(authenticateWithRole(['attorney', 'party', 'admin']));
+
+/* ───────────────────────── Attorney capabilities ───────────────────────── */
 
 /**
- * GET /api/attorneys/saved-mediators
- * Get attorney's saved/bookmarked mediators
+ * GET /api/clients/saved-mediators
+ * Attorney's saved/bookmarked mediators.
  */
 router.get('/saved-mediators', requirePermission('attorney.mediators.bookmark'), asyncErrorHandler(async (req, res) => {
   const savedMediators = await SavedMediator.find({ userId: req.user._id })
@@ -45,8 +51,8 @@ router.get('/saved-mediators', requirePermission('attorney.mediators.bookmark'),
 }));
 
 /**
- * GET /api/attorneys/recent-searches
- * Get attorney's recent mediator searches
+ * GET /api/clients/recent-searches
+ * Attorney's recent mediator searches.
  */
 router.get('/recent-searches', requirePermission('attorney.mediators.search'), asyncErrorHandler(async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
@@ -71,8 +77,8 @@ router.get('/recent-searches', requirePermission('attorney.mediators.search'), a
 }));
 
 /**
- * GET /api/attorneys/my-cases
- * Get attorney's active cases
+ * GET /api/clients/my-cases
+ * Attorney's active cases.
  */
 router.get('/my-cases', requirePermission('attorney.cases.write'), asyncErrorHandler(async (req, res) => {
   const { status: rawStatus, disputeType: rawDisputeType } = req.query;
@@ -107,6 +113,53 @@ router.get('/my-cases', requirePermission('attorney.cases.write'), asyncErrorHan
     success: true,
     data: cases,
     count: cases.length
+  });
+}));
+
+/* ────────────────────────── Party capabilities ─────────────────────────── */
+
+/**
+ * GET /api/clients/my-case
+ * The party's current (most recent active) case.
+ */
+router.get('/my-case', requirePermission('party.case.read'), asyncErrorHandler(async (req, res) => {
+  const userCase = await Case.findOne({
+    'parties.userId': req.user._id,
+    status: { $nin: ['settled', 'cancelled', 'failed'] } // Only active cases
+  })
+    .populate('mediator.mediatorId', 'name rating specializations location')
+    .populate('createdBy', 'name email')
+    .sort({ updatedAt: -1 });
+
+  if (!userCase) {
+    return res.json({
+      success: true,
+      data: null,
+      message: 'No active case found'
+    });
+  }
+
+  res.json({
+    success: true,
+    data: userCase
+  });
+}));
+
+/**
+ * GET /api/clients/recommended-mediators
+ * Recommended mediators for the party.
+ */
+router.get('/recommended-mediators', requirePermission('party.mediator.view'), asyncErrorHandler(async (req, res) => {
+  const mediators = await Mediator.find({
+    isActive: true
+  })
+    .sort({ rating: -1, totalCases: -1 })
+    .limit(6)
+    .select('name specializations rating yearsExperience location totalCases isVerified');
+
+  res.json({
+    success: true,
+    data: mediators
   });
 }));
 

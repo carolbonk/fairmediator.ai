@@ -7,11 +7,11 @@ const logger = require('../../config/logger');
 
 class HuggingFaceClient {
   constructor() {
-    validateApiKey();
     this.model = config.models.primary;
   }
 
   async chat(messages, options = {}) {
+    validateApiKey();
     const payload = {
       messages: messages,
       parameters: {
@@ -50,6 +50,9 @@ class HuggingFaceClient {
   }
 
   async healthCheck() {
+    if (!process.env.HUGGINGFACE_API_KEY) {
+      return { status: 'disabled', message: 'HUGGINGFACE_API_KEY not set' };
+    }
     try {
       await this.chat([{ role: 'user', content: 'Hello' }], { maxTokens: 10 });
       return { status: 'ok', message: 'Hugging Face API working', model: this.model };

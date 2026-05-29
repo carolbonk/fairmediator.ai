@@ -57,6 +57,7 @@ global.testUtils = {
       email: 'test@example.com',
       password: 'TestPassword123!',
       name: 'Test User',
+      accountType: 'attorney',
       emailVerified: true,
       ...overrides
     });
@@ -78,7 +79,7 @@ global.testUtils = {
       name: 'Test Mediator',
       email: 'mediator@example.com',
       phone: '555-0100',
-      practiceAreas: ['Family Law'],
+      specializations: ['Family Law'],
       yearsExperience: 10,
       location: { city: 'Test City', state: 'CA' },
       ...overrides

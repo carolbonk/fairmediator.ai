@@ -25,7 +25,9 @@ const usageLogSchema = new mongoose.Schema({
       'user_logout',
       'password_reset_requested',
       'password_reset_completed',
-      'subscription_check'
+      'subscription_check',
+      'upgrade_initiated',
+      'subscription_cancelled'
     ],
     required: true
     // Note: index defined in compound indexes below (lines 81-82)

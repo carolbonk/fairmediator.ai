@@ -117,7 +117,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             onClick={handleAiToggle}
             className={`relative w-9 sm:w-14 h-5 sm:h-8 rounded-full transition-all duration-300 ${
               aiMediatorsEnabled
-                ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu'
+                ? 'bg-gradient-to-br from-neu-500 to-neu-700 shadow-neu'
                 : 'bg-neu-200 shadow-neu-inset'
             }`}
             aria-label={aiMediatorsEnabled ? 'Disable AI-scored mediators' : 'Enable AI-scored mediators'}
@@ -131,7 +131,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
             >
               <div className="w-full h-full flex items-center justify-center">
                 <div className={`w-1.5 sm:w-2.5 h-1.5 sm:h-2.5 rounded-full ${
-                  aiMediatorsEnabled ? 'bg-blue-500' : 'bg-red-500'
+                  aiMediatorsEnabled ? 'bg-neu-600' : 'bg-red-500'
                 }`}></div>
               </div>
             </div>
@@ -247,7 +247,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
               animation: 'scaleIn 0.5s ease-out 0.9s both'
             }}
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 shadow-neu flex items-center justify-center">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-neu-500 to-neu-700 shadow-neu flex items-center justify-center">
               <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 9a1 1 0 112 0v4a1 1 0 11-2 0V9zm1-5a1 1 0 100 2 1 1 0 000-2z"/>
               </svg>
@@ -259,7 +259,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-3.5 h-3.5 rounded shadow-neu-sm bg-gradient-to-br from-blue-400 to-blue-600"></div>
+              <div className="w-3.5 h-3.5 rounded shadow-neu-sm bg-gradient-to-br from-neu-500 to-neu-700"></div>
               <span className="text-sm text-neu-600">Liberal</span>
             </div>
             <span className="text-sm font-semibold text-neu-800">{politicalDistribution.liberal}%</span>
@@ -554,7 +554,7 @@ const StatisticsPanel = ({ caseData, onIdeologyChange }) => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-neu-700 to-neu-800 text-white font-semibold rounded-xl hover:from-neu-800 hover:to-neu-900 transition-all duration-200 shadow-lg"
                   >
                     Join Waitlist
                   </button>

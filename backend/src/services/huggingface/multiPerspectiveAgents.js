@@ -171,6 +171,22 @@ Provide balanced, fair mediation while maintaining these values.`,
   }
 
   /**
+   * Compare all three perspectives side-by-side for a given question
+   */
+  async compareResponses(message, history = []) {
+    const allPerspectives = await this.getAllPerspectives(message, history);
+    return {
+      question: message,
+      summary: 'Perspectives from liberal, neutral, and conservative viewpoints',
+      perspectives: [
+        { name: 'liberal', icon: allPerspectives.liberal.icon, response: allPerspectives.liberal.message },
+        { name: 'neutral', icon: allPerspectives.neutral.icon, response: allPerspectives.neutral.message },
+        { name: 'conservative', icon: allPerspectives.conservative.icon, response: allPerspectives.conservative.message }
+      ]
+    };
+  }
+
+  /**
    * Get recommended mediator based on case type
    * DRY: Matches case characteristics to mediator ideology
    */

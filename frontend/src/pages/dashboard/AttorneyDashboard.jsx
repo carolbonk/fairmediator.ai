@@ -67,14 +67,14 @@ export default function AttorneyDashboard() {
         setStats(data.data);
       }
 
-      const savedRes = await fetch('/api/attorneys/saved-mediators', { headers });
+      const savedRes = await fetch('/api/clients/saved-mediators', { headers });
       if (savedRes.ok) {
         const data = await savedRes.json();
         const mediators = (data.data || []).map(saved => saved.mediator).filter(Boolean);
         setSavedMediators(mediators);
       }
 
-      const searchesRes = await fetch('/api/attorneys/recent-searches?limit=5', { headers });
+      const searchesRes = await fetch('/api/clients/recent-searches?limit=5', { headers });
       if (searchesRes.ok) {
         const data = await searchesRes.json();
         setRecentSearches(data.data || []);
@@ -90,7 +90,7 @@ export default function AttorneyDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-neu-100 to-neu-200 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-16 h-16 border-4 border-neu-700 border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-lg font-semibold text-neu-800">Loading your dashboard...</p>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function AttorneyDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-700 to-dark-neu-300 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-neu-700 to-neu-900 bg-clip-text text-transparent mb-2">
             Attorney Analytics Dashboard
           </h1>
           <p className="text-lg text-neu-600">
@@ -119,7 +119,7 @@ export default function AttorneyDashboard() {
         <div className="bg-neu-100 rounded-neu-lg p-6 mb-8 shadow-neu border-l-4 border-accent-yellow">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-neu-sm flex items-center justify-center flex-shrink-0 shadow-neu-inset-sm bg-neu-100">
-              <FaInfoCircle className="text-blue-700 text-xl" />
+              <FaInfoCircle className="text-neu-700 text-xl" />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-neu-800 mb-2">Welcome to Fair Mediator</h3>
@@ -137,7 +137,7 @@ export default function AttorneyDashboard() {
                 </a>
                 <a
                   href="/faq"
-                  className="px-4 py-2 bg-neu-100 text-blue-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
+                  className="px-4 py-2 bg-neu-100 text-neu-700 rounded-neu-sm font-semibold text-sm shadow-neu-sm hover:shadow-neu transition-all"
                 >
                   FAQs
                 </a>
@@ -163,7 +163,7 @@ export default function AttorneyDashboard() {
                   </div>
                   <a
                     href={`/search?q=${encodeURIComponent(search.query || '')}`}
-                    className="text-blue-700 hover:text-blue-900 text-sm font-medium"
+                    className="text-neu-700 hover:text-neu-900 text-sm font-medium"
                   >
                     Repeat
                   </a>
@@ -238,7 +238,7 @@ export default function AttorneyDashboard() {
                           key={area}
                           type="button"
                           onClick={() => handlePracticeAreaSearch(area)}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-neu-100 text-neu-800 shadow-neu-sm hover:shadow-neu hover:text-blue-700 transition-all"
+                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-neu-100 text-neu-800 shadow-neu-sm hover:shadow-neu hover:text-neu-700 transition-all"
                           style={{ borderLeft: `3px solid ${BRAND.blue}33` }}
                         >
                           {area}
@@ -286,7 +286,7 @@ export default function AttorneyDashboard() {
                   </div>
                   <a
                     href={`/mediators/${mediator._id}`}
-                    className="text-blue-700 hover:text-blue-900 text-sm font-medium"
+                    className="text-neu-700 hover:text-neu-900 text-sm font-medium"
                   >
                     View Profile →
                   </a>
@@ -297,7 +297,7 @@ export default function AttorneyDashboard() {
               <div className="text-center mt-4">
                 <a
                   href="/attorneys/saved-mediators"
-                  className="text-blue-700 hover:text-blue-900 font-medium"
+                  className="text-neu-700 hover:text-neu-900 font-medium"
                 >
                   View All Saved Mediators →
                 </a>

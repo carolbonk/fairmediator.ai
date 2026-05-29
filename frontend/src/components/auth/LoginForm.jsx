@@ -224,7 +224,7 @@ const LoginForm = () => {
               </p>
               <p>
                 Are you a mediator?{' '}
-                <Link to="/mediators/apply" className="font-semibold text-slate-800 hover:text-slate-600 transition-colors">
+                <Link to="/mediators-marketplace/apply" className="font-semibold text-slate-800 hover:text-slate-600 transition-colors">
                   Apply to join the FairMediator Marketplace
                 </Link>
               </p>

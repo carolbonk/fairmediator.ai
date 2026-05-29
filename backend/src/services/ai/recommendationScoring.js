@@ -227,6 +227,37 @@ class RecommendationScoring {
   }
 
   /**
+   * Rank mediators by score — returns a plain sorted array
+   */
+  async rankMediators(mediatorIds, caseContext, limit = null) {
+    if (!mediatorIds || mediatorIds.length === 0) return [];
+    const scores = await Promise.all(mediatorIds.map(id => this.scoreMediator(id, caseContext)));
+    scores.sort((a, b) => b.totalScore - a.totalScore);
+    return limit ? scores.slice(0, limit) : scores;
+  }
+
+  /**
+   * Query DB for matching mediators and return top-scored recommendations
+   */
+  async getTopRecommendations(caseContext, limit = 10) {
+    const query = {};
+    if (caseContext.practiceAreas && caseContext.practiceAreas.length > 0) {
+      query.specializations = { $in: caseContext.practiceAreas };
+    }
+    const candidates = await Mediator.find(query).limit(limit * 3);
+    if (candidates.length === 0) return [];
+    const scores = await Promise.all(candidates.map(m => this.scoreMediator(m._id, caseContext)));
+    scores.sort((a, b) => b.totalScore - a.totalScore);
+    const mediatorMap = Object.fromEntries(candidates.map(m => [m._id.toString(), m]));
+    return scores.slice(0, limit).map(s => ({
+      mediator: mediatorMap[s.mediatorId.toString()],
+      score: s.totalScore,
+      recommendation: s.recommendation,
+      breakdown: s.breakdown
+    }));
+  }
+
+  /**
    * Score and rank multiple mediators
    * DRY: Batch scoring with sorting
    */

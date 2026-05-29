@@ -12,3 +12,36 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Legacy CRM path 301s. Pre-rename outbound links (welcome emails, alert
+# digests, invoice PDF footers) still reference /app/mediator/(crm|inbox|
+# marketplace). Without these, those links 404 in production.
+[[redirects]]
+  from = "/app/mediator/crm"
+  to = "/mediators-crm/cases"
+  status = 301
+
+[[redirects]]
+  from = "/app/mediator/crm/*"
+  to = "/mediators-crm/cases/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/app/mediator/inbox"
+  to = "/mediators-crm/inbox"
+  status = 301
+
+[[redirects]]
+  from = "/app/mediator/inbox/*"
+  to = "/mediators-crm/inbox/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/app/mediator/marketplace"
+  to = "/mediators-crm/marketplace"
+  status = 301
+
+[[redirects]]
+  from = "/app/mediator/marketplace/*"
+  to = "/mediators-crm/marketplace/:splat"
+  status = 301
