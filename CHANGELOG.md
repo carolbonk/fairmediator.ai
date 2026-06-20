@@ -12,6 +12,18 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- **Doc-drift swarm** (`scripts/doc-swarm/`) — a deterministic detector plus
+  local-Ollama writer/verifier agents that keep the docs honest against the
+  repo. `npm run docs:detect` (free, also a CI gate) and `npm run docs:swarm`.
+- **Git hooks** (`scripts/git-hooks/`, via `core.hooksPath`) — pre-commit
+  blocks secrets, AI watermarks (footers + zero-width unicode), doc drift, and
+  vulnerable axios; commit-msg blocks emoji and AI attribution.
+- **CI doc-drift gate** — a `docs-drift` job in `security-scan.yml` runs the
+  detector on every push/PR to `main`.
+- **Cron observability** — `cronMonitor.runJob` adds a heartbeat
+  dead-man's-switch and failure-webhook alerting to all four scheduled jobs.
+- **Missing canonical docs** — `CODE_OF_CONDUCT.md`, `DEPLOYMENT.md`,
+  `TESTING.md` (previously linked but absent).
 - **`context.md` at repo root** (2026-06-05) — the missing "why" doc.
   Personas, core value prop, and the reasons behind every load-bearing
   design decision (FCA data, ideology scoring transparency, the 2-card
@@ -52,6 +64,9 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
   UX state.
 
 ### Fixed
+- **Docs reconciled with reality** — security score now consistently 90/100
+  (README had drifted to 100/100); removed a dead WAF-guide link; marked the
+  frontend test scaffold and the settlement-predictor retrain as shipped.
 - **Settlement predictor input-mapping bug** (audit Suggestion #1).
   - Replaced `hash(jurisdiction) % 50` in
     `feature_engineering.create_prediction_input` with the new

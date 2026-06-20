@@ -17,6 +17,11 @@
 const config = require('./config');
 const { read, exists } = require('./lib');
 
+// Strikethrough (~~...~~) conventionally marks a claim as no longer true, so it
+// must not trip staleness or contradiction checks (e.g. "~~not configured~~ —
+// resolved" should read as resolved, not as a live "not configured" claim).
+const deResolve = (s) => s.replace(/~~[^~]+~~/g, '');
+
 function detect() {
   const findings = [];
   const docs = {};
@@ -48,8 +53,9 @@ function detect() {
     const seen = {}; // value -> [docs]
     for (const [doc, body] of Object.entries(docs)) {
       const re = new RegExp(chk.pattern.source, chk.pattern.flags);
+      const text = deResolve(body);
       let m;
-      while ((m = re.exec(body)) !== null) {
+      while ((m = re.exec(text)) !== null) {
         (seen[m[1]] = seen[m[1]] || []).push(doc);
       }
     }
@@ -73,7 +79,7 @@ function detect() {
     if (!exists(g.resolvedIfExists)) continue; // genuinely still missing
     const re = new RegExp(g.stalePattern.source, g.stalePattern.flags);
     for (const [doc, body] of Object.entries(docs)) {
-      if (re.test(body)) {
+      if (re.test(deResolve(body))) {
         findings.push({
           doc, type: 'stale-gap', severity: 'medium',
           message: `claims "${g.name}" is missing/unbuilt, but ${g.resolvedIfExists} exists`,
@@ -90,7 +96,7 @@ function detect() {
     if (!ev || !ev.includes(b.resolvedEvidence.contains)) continue;
     const re = new RegExp(b.blockedPattern.source, b.blockedPattern.flags);
     for (const [doc, body] of Object.entries(docs)) {
-      if (re.test(body)) {
+      if (re.test(deResolve(body))) {
         findings.push({
           doc, type: 'stale-blocker', severity: 'high',
           message: `says "${b.name}" still blocks work, but ${b.resolvedEvidence.file} shows it is resolved`,

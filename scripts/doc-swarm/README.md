@@ -52,8 +52,8 @@ tells you how to enable the agents — it never fails silently.
 Writers never touch your docs. They write to `scripts/doc-swarm/proposed/<doc>`.
 
 ```bash
-git diff --no-index PROJECT_AUDIT.md scripts/doc-swarm/proposed/PROJECT_AUDIT.md
-cp scripts/doc-swarm/proposed/PROJECT_AUDIT.md PROJECT_AUDIT.md   # apply one
+git diff --no-index README.md scripts/doc-swarm/proposed/README.md
+cp scripts/doc-swarm/proposed/README.md README.md   # apply one
 ```
 
 The `proposed/` directory is disposable — safe to delete or gitignore.

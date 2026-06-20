@@ -23,8 +23,8 @@ pip install -r requirements.txt
 ## Data sources
 
 Public records only — FEC contributions, Senate LDA lobbying filings, PACER
-court records, and state-bar directories. No private or purchased data (see
-`../context.md`).
+court records, and state-bar directories. No private or purchased data —
+public-record sources only.
 
 ## Related
 

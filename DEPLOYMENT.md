@@ -56,6 +56,6 @@ Brings up MongoDB, backend, and frontend on the ports defined in
 ## Notes
 
 - No staging environment yet — deploys go straight to production. A second
-  Render service against a staging Atlas cluster is the planned fix
-  (`PROJECT_AUDIT.md`, Suggestion #8).
+  Render service against a staging Atlas cluster is the planned fix (known
+  gap, tracked internally).
 - Pre-deploy checks: `npm run audit`, `npm test`, and `npm run docs:detect`.
