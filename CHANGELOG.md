@@ -12,9 +12,15 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- **`context.md` at repo root** (2026-06-05) — the missing "why" doc.
+  Personas, core value prop, and the reasons behind every load-bearing
+  design decision (FCA data, ideology scoring transparency, the 2-card
+  landing hierarchy, the attorney+party merge, the six-language i18n
+  set, the deliberately small B2B API surface). Closes audit
+  Suggestion #10.
 - **Frontend vitest scaffold** — config, jsdom env, and a first
-  `BackLink` test. The "frontend tests: 0" gap is broken; suite is
-  still tiny.
+  `BackLink` test. The frontend test suite now exists (previously
+  none); it is still tiny.
 - **E2E scaffold (Playwright)** — config + smoke spec that visits `/`
   and asserts the 2-card landing renders. Runs against a local Vite
   dev server.

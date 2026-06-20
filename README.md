@@ -139,7 +139,7 @@ Data is aggregated from publicly available legal databases, professional directo
 
 ## 🔒 Security & Compliance
 
-**Security Score:** 100/100 ✅
+**Security Score:** 90/100 (A-)
 - 0 production vulnerabilities
 - OWASP Top 10 fully compliant
 - Enterprise-grade security features

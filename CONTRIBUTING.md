@@ -315,7 +315,6 @@ Before submitting your PR, verify:
 
 - **Security:** [SECURITY.md](SECURITY.md)
 - **Deployment:** [DEPLOYMENT.md](DEPLOYMENT.md)
-- **WAF Setup:** [WAF_INTEGRATION_GUIDE.md](WAF_INTEGRATION_GUIDE.md)
 
 ## License
 

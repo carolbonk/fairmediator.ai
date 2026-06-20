@@ -53,10 +53,16 @@ const apiKey = process.env.API_KEY
 
 #### Pre-commit Hooks
 
-The repository includes pre-commit hooks that:
-- Block commits containing AI watermarks (RULE 8)
+The repository includes git hooks (version-controlled in `scripts/git-hooks/`,
+activated via `core.hooksPath` by the `prepare` npm script) that:
+- Block high-confidence secrets (AWS/Stripe/Resend/HuggingFace/GitHub keys and
+  private keys) in staged changes
+- Block AI watermarks — attribution footers and zero-width/invisible unicode
+  markers (RULE 8)
 - Prevent emoji usage in commit messages
-- Will soon include secret detection (see below)
+- Gate documentation drift (`npm run docs:detect`) and vulnerable axios versions
+
+Bypass once with `git commit --no-verify` when genuinely needed.
 
 ### For Deployers
 
