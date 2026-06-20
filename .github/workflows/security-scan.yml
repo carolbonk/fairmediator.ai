@@ -44,3 +44,22 @@ jobs:
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{ matrix.language }}"
+
+  docs-drift:
+    name: Doc drift check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    # Deterministic, zero-AI, zero-dependency. Fails the build when a doc
+    # claims something that no longer matches the repo. See scripts/doc-swarm/.
+    - name: Detect documentation drift
+      run: npm run docs:detect

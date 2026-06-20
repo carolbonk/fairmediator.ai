@@ -8,6 +8,7 @@
     "backend"
   ],
   "scripts": {
+    "prepare": "git config core.hooksPath scripts/git-hooks || true",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd frontend && npm run dev",
@@ -21,7 +22,9 @@
     "test:coverage": "npm run test:coverage --prefix backend",
     "test:e2e": "npm run test:e2e --prefix backend",
     "audit": "npm audit && npm audit --prefix frontend && npm audit --prefix backend",
-    "audit:fix": "npm audit fix && npm audit fix --prefix frontend && npm audit fix --prefix backend"
+    "audit:fix": "npm audit fix && npm audit fix --prefix frontend && npm audit fix --prefix backend",
+    "docs:detect": "node scripts/doc-swarm/detect.js",
+    "docs:swarm": "node scripts/doc-swarm/orchestrate.js"
   },
   "keywords": [
     "mediation",

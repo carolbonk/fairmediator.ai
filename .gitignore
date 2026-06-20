@@ -282,4 +282,10 @@ docs/
 !CONTRIBUTING.md
 !SECURITY.md
 !CHANGELOG.md
+!CODE_OF_CONDUCT.md
+!DEPLOYMENT.md
+!TESTING.md
 !**/README.md
+
+# doc-swarm proposed rewrites (disposable, review-then-apply)
+scripts/doc-swarm/proposed/
