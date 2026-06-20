@@ -5,7 +5,18 @@ const Mediator = require('../../models/Mediator');
 const UsageLog = require('../../models/UsageLog');
 const ConflictAlert = require('../../models/ConflictAlert');
 const { monitor } = require('../../utils/freeTierMonitor');
+const { runJob } = require('../../utils/cronMonitor');
 const logger = require('../../config/logger');
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Per-job heartbeat URLs (dead-man's-switch). All optional — unset = no-op.
+const HEARTBEAT = {
+  dailyRefresh: process.env.HEALTHCHECK_DAILY_REFRESH_URL,
+  weeklyAffiliationAnalysis: process.env.HEALTHCHECK_WEEKLY_AFFILIATION_URL,
+  freeTierReset: process.env.HEALTHCHECK_FREE_TIER_RESET_URL,
+  dailyConflictAlerts: process.env.HEALTHCHECK_CONFLICT_ALERTS_URL,
+};
 
 class CronScheduler {
   constructor() {
@@ -13,14 +24,11 @@ class CronScheduler {
   }
 
   /**
-   * Schedule daily mediator data refresh
-   * Runs every day at 2:00 AM
+   * Schedule daily mediator data refresh — every day at 2:00 AM.
    */
   scheduleDailyRefresh() {
-    const job = cron.schedule('0 2 * * *', async () => {
-      logger.info('Running daily mediator data refresh');
-
-      try {
+    const job = cron.schedule('0 2 * * *', () => {
+      runJob('dailyRefresh', async () => {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -30,28 +38,26 @@ class CronScheduler {
 
         logger.info(`Found ${staleMediators.length} mediators to refresh`);
 
-        for (const mediator of staleMediators) {
-          if (mediator.sources?.length > 0) {
-            try {
-              const lastSource = mediator.sources[mediator.sources.length - 1];
-              await mediatorScraper.scrapeMediatorProfile(
-                lastSource.url,
-                lastSource.sourceType,
-                true
-              );
-              await new Promise(resolve => setTimeout(resolve, 3000));
-            } catch (error) {
-              logger.error(`Failed to refresh ${mediator.name}`, { error: error.message });
+        try {
+          for (const mediator of staleMediators) {
+            if (mediator.sources?.length > 0) {
+              try {
+                const lastSource = mediator.sources[mediator.sources.length - 1];
+                await mediatorScraper.scrapeMediatorProfile(
+                  lastSource.url,
+                  lastSource.sourceType,
+                  true
+                );
+                await sleep(3000);
+              } catch (error) {
+                logger.error(`Failed to refresh ${mediator.name}`, { error: error.message });
+              }
             }
           }
+        } finally {
+          await mediatorScraper.close();
         }
-
-        logger.info('Daily refresh complete');
-      } catch (error) {
-        logger.error('Daily refresh error', { error: error.message });
-      } finally {
-        await mediatorScraper.close();
-      }
+      }, { pingUrl: HEARTBEAT.dailyRefresh }).catch(() => {});
     });
 
     this.jobs.push({ name: 'dailyRefresh', job });
@@ -59,30 +65,23 @@ class CronScheduler {
   }
 
   /**
-   * Schedule weekly affiliation analysis
-   * Runs every Sunday at 3:00 AM
+   * Schedule weekly affiliation analysis — every Sunday at 3:00 AM.
    */
   scheduleWeeklyAffiliationAnalysis() {
-    const job = cron.schedule('0 3 * * 0', async () => {
-      logger.info('Running weekly affiliation analysis');
-
-      try {
+    const job = cron.schedule('0 3 * * 0', () => {
+      runJob('weeklyAffiliationAnalysis', async () => {
         const mediators = await Mediator.find({ isActive: true }).limit(100);
         logger.info(`Analyzing ${mediators.length} mediators`);
 
         for (const mediator of mediators) {
           try {
             await affiliationDetector.analyzeMediatorProfile(mediator._id);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await sleep(1000);
           } catch (error) {
             logger.error(`Failed to analyze ${mediator.name}`, { error: error.message });
           }
         }
-
-        logger.info('Weekly affiliation analysis complete');
-      } catch (error) {
-        logger.error('Affiliation analysis error', { error: error.message });
-      }
+      }, { pingUrl: HEARTBEAT.weeklyAffiliationAnalysis }).catch(() => {});
     });
 
     this.jobs.push({ name: 'weeklyAffiliationAnalysis', job });
@@ -90,19 +89,15 @@ class CronScheduler {
   }
 
   /**
-   * Schedule daily free tier counter reset
-   * Runs every day at midnight UTC
+   * Schedule daily free tier counter reset — every day at midnight UTC.
    */
   scheduleFreeTierReset() {
-    const job = cron.schedule('0 0 * * *', async () => {
-      try {
+    const job = cron.schedule('0 0 * * *', () => {
+      runJob('freeTierReset', async () => {
         const stats = monitor.getStats();
         logger.info('Resetting daily free tier counters', { stats });
         monitor.resetDaily();
-        logger.info('Free tier daily counters reset');
-      } catch (error) {
-        logger.error('Free tier reset error', { error: error.message });
-      }
+      }, { pingUrl: HEARTBEAT.freeTierReset }).catch(() => {});
     }, { timezone: 'UTC' });
 
     this.jobs.push({ name: 'freeTierReset', job });
@@ -110,15 +105,14 @@ class CronScheduler {
   }
 
   /**
-   * Daily conflict alert scan — runs at 6:00 AM UTC
+   * Daily conflict alert scan — runs at 6:00 AM UTC.
    * For each user who viewed a mediator in the last 30 days:
    *   - If that mediator has a high ideology score or flagged affiliations
    *     AND no alert was created in the last 7 days for that pair → create one.
    */
   scheduleDailyConflictAlerts() {
-    const job = cron.schedule('0 6 * * *', async () => {
-      logger.info('[AlertsCron] Starting daily conflict alert scan');
-      try {
+    const job = cron.schedule('0 6 * * *', () => {
+      runJob('dailyConflictAlerts', async () => {
         const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -188,9 +182,7 @@ class CronScheduler {
         }
 
         logger.info(`[AlertsCron] Done — ${created} new alerts created`);
-      } catch (error) {
-        logger.error('[AlertsCron] Error during conflict alert scan', { error: error.message });
-      }
+      }, { pingUrl: HEARTBEAT.dailyConflictAlerts }).catch(() => {});
     }, { timezone: 'UTC' });
 
     this.jobs.push({ name: 'dailyConflictAlerts', job });
