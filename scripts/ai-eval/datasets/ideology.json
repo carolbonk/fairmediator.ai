@@ -1,0 +1,11 @@
+{
+  "classes": ["liberal", "neutral", "conservative"],
+  "cases": [
+    { "id": "ideo_1", "text": "Long record advocating worker protections, equity, and environmental accountability.", "expected": "liberal" },
+    { "id": "ideo_2", "text": "Public statements favoring expanded civil-rights enforcement and consumer protection.", "expected": "liberal" },
+    { "id": "ideo_3", "text": "Applies precedent and weighs both parties' interests with no stated political lean.", "expected": "neutral" },
+    { "id": "ideo_4", "text": "Career focused on procedural fairness and evidence; declines to take public positions.", "expected": "neutral" },
+    { "id": "ideo_5", "text": "Strong advocate for corporate deregulation and strict contract enforcement.", "expected": "conservative" },
+    { "id": "ideo_6", "text": "Public writing favoring limited government and traditional business interests.", "expected": "conservative" }
+  ]
+}

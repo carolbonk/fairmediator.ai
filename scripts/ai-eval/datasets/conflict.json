@@ -1,0 +1,11 @@
+{
+  "classes": ["green", "yellow", "red"],
+  "cases": [
+    { "id": "conf_1", "scenario": "Mediator has no recorded ties to either party or their counsel.", "expected": "green" },
+    { "id": "conf_2", "scenario": "No affiliations, donations, or shared employment history found in public records.", "expected": "green" },
+    { "id": "conf_3", "scenario": "Mediator once co-presented at a CLE panel with opposing counsel's firm.", "expected": "yellow" },
+    { "id": "conf_4", "scenario": "Mediator's former colleague now works at a party's law firm.", "expected": "yellow" },
+    { "id": "conf_5", "scenario": "Mediator made political donations directly to a party's named executive.", "expected": "red" },
+    { "id": "conf_6", "scenario": "Mediator previously represented the opposing party in a related matter.", "expected": "red" }
+  ]
+}

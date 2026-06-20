@@ -1,0 +1,12 @@
+{
+  "bounds": { "min": 0, "max": 5000000000 },
+  "discrimination": [
+    { "a": "pharma_50m", "b": "defense_25m", "minRatio": 1.5 }
+  ],
+  "cases": [
+    { "id": "pharma_50m", "label": "$50M pharmaceutical off-label marketing" },
+    { "id": "defense_25m", "label": "$25M defense procurement fraud" },
+    { "id": "covid_10m", "label": "$10M COVID relief fraud" },
+    { "id": "procurement_15m", "label": "$15M grant procurement fraud" }
+  ]
+}

@@ -24,7 +24,8 @@
     "audit": "npm audit && npm audit --prefix frontend && npm audit --prefix backend",
     "audit:fix": "npm audit fix && npm audit fix --prefix frontend && npm audit fix --prefix backend",
     "docs:detect": "node scripts/doc-swarm/detect.js",
-    "docs:swarm": "node scripts/doc-swarm/orchestrate.js"
+    "docs:swarm": "node scripts/doc-swarm/orchestrate.js",
+    "ai:eval": "node scripts/ai-eval/run.js"
   },
   "keywords": [
     "mediation",

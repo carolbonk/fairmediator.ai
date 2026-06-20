@@ -63,3 +63,22 @@ jobs:
     # claims something that no longer matches the repo. See scripts/doc-swarm/.
     - name: Detect documentation drift
       run: npm run docs:detect
+
+  ai-eval:
+    name: AI eval
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    # Golden-set regression gate for the AI features (zero-dependency, scores
+    # committed snapshots; skips features with no snapshot). See scripts/ai-eval/.
+    - name: Run AI eval
+      run: npm run ai:eval

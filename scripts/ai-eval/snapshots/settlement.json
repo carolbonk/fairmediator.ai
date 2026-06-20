@@ -1,0 +1,10 @@
+{
+  "model": "settlement_model_20260605_141721",
+  "source": "seeded from proof_of_work.json (retrain 2026-06-05); refresh with the live model — see README",
+  "predictions": {
+    "pharma_50m": 105918802.16,
+    "defense_25m": 32903079.54,
+    "covid_10m": 7447576.53,
+    "procurement_15m": 14925510.29
+  }
+}
