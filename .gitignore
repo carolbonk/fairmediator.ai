@@ -289,3 +289,6 @@ docs/
 
 # doc-swarm proposed rewrites (disposable, review-then-apply)
 scripts/doc-swarm/proposed/
+
+# Internal docs — their own private repo, never tracked in the public repo
+internal/

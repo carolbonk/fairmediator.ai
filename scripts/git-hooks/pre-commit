@@ -43,17 +43,23 @@ else
   fail=1
 fi
 
+# Locate the repo root that holds scripts/ — works both from the public repo
+# and from the nested internal/ repo (which sits inside the public worktree).
+if [ -f scripts/doc-swarm/detect.js ]; then ROOT="."
+elif [ -f ../scripts/doc-swarm/detect.js ]; then ROOT=".."
+else ROOT=""; fi
+
 # 4. Documentation drift (free, deterministic).
-if [ -f scripts/doc-swarm/detect.js ]; then
-  if ! node scripts/doc-swarm/detect.js >/dev/null 2>&1; then
+if [ -n "$ROOT" ]; then
+  if ! ( cd "$ROOT" && node scripts/doc-swarm/detect.js >/dev/null 2>&1 ); then
     red "✗ pre-commit: documentation drift — run 'npm run docs:detect' to see details."
     fail=1
   fi
 fi
 
 # 5. Vulnerable axios guard (reuse the existing checker).
-if [ -f scripts/check-axios-version.js ]; then
-  if ! node scripts/check-axios-version.js >/dev/null 2>&1; then
+if [ -n "$ROOT" ] && [ -f "$ROOT/scripts/check-axios-version.js" ]; then
+  if ! ( cd "$ROOT" && node scripts/check-axios-version.js >/dev/null 2>&1 ); then
     red "✗ pre-commit: blocked axios version detected."
     fail=1
   fi

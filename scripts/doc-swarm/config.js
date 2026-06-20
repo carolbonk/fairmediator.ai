@@ -12,11 +12,13 @@ module.exports = {
     'README.md',
     'CONTRIBUTING.md',
     'SECURITY.md',
-    'context.md',
-    'PRODUCT_ARCHITECTURE.md',
-    'PROJECT_AUDIT.md',
-    'UX_FLOW.md',
     'CHANGELOG.md',
+    // Internal docs live in the private `internal/` repo (gitignored here).
+    // Scanned locally when present; absent in public CI checkouts (skipped).
+    'internal/context.md',
+    'internal/PRODUCT_ARCHITECTURE.md',
+    'internal/PROJECT_AUDIT.md',
+    'internal/UX_FLOW.md',
   ],
 
   // Docs that get linked/mentioned but must actually exist at the repo root.
