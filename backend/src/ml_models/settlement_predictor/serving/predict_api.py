@@ -103,23 +103,26 @@ async def load_model():
         # Initialize predictor
         predictor = SettlementPredictor()
 
-        # Load latest model (you would specify actual paths)
-        # For now, this is a placeholder - actual implementation would load from saved model
-        model_path = os.path.join(
-            os.path.dirname(__file__),
-            '../models/settlement_model_latest.joblib'
-        )
-        scaler_path = os.path.join(
-            os.path.dirname(__file__),
-            '../models/feature_scaler_latest.joblib'
-        )
+        models_dir = os.path.join(os.path.dirname(__file__), '../models')
 
-        if os.path.exists(model_path) and os.path.exists(scaler_path):
+        # Prefer explicit env-var path, then fall back to most-recent timestamped artifact
+        model_path = os.environ.get('SETTLEMENT_MODEL_PATH')
+        scaler_path = os.environ.get('SETTLEMENT_SCALER_PATH')
+
+        if not (model_path and scaler_path):
+            import glob
+            model_files = sorted(glob.glob(os.path.join(models_dir, 'settlement_model_*.joblib')))
+            scaler_files = sorted(glob.glob(os.path.join(models_dir, 'feature_scaler_*.joblib')))
+            if model_files and scaler_files:
+                model_path = model_files[-1]
+                scaler_path = scaler_files[-1]
+
+        if model_path and scaler_path and os.path.exists(model_path) and os.path.exists(scaler_path):
             predictor.load_model(model_path, scaler_path)
-            logger.info("✅ Model loaded successfully")
+            logger.info(f"✅ Model loaded: {os.path.basename(model_path)}")
         else:
             logger.warning("⚠️ No saved model found. Model will need to be trained first.")
-            logger.warning(f"Expected paths:\n  Model: {model_path}\n  Scaler: {scaler_path}")
+            logger.warning(f"Expected directory: {models_dir}")
 
     except Exception as e:
         logger.error(f"Failed to load model: {e}")
@@ -159,7 +162,7 @@ async def predict_settlement(request: PredictionRequest):
             )
 
         # Validate industry
-        valid_industries = ['healthcare', 'defense_contractor', 'pharmaceutical', 'technology', 'construction', 'education', 'financial', 'other']
+        valid_industries = ['healthcare', 'defense_contractor', 'defense', 'pharmaceutical', 'technology', 'construction', 'education', 'financial', 'other']
         if request.industry.lower() not in valid_industries:
             raise HTTPException(
                 status_code=400,

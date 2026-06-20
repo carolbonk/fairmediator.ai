@@ -1,13 +1,15 @@
 {
-  "test_date": "2026-04-14T13:14:49.232548",
+  "test_date": "2026-06-05T14:17:21.923163",
+  "model_file": "settlement_model_20260605_141721.joblib",
   "model_metadata": {
-    "r2_score": 0.9837559783333717,
-    "rmse": 0.23677516968431714,
-    "mae": 0.20318032755830018,
-    "mape": 22.731013705259354,
+    "r2_score": 0.9531654115416076,
+    "rmse": 0.4020432089211815,
+    "mae": 0.31680011965080446,
+    "mape": 41.59120599292675,
     "n_estimators": 100,
     "max_depth": 20
   },
+  "bug_fix_notes": "Retrained 2026-06-05 to fix input-mapping bug. Root causes: (1) fraud_type_code was null for all 31 rows in training CSV (sub-type names like off_label_marketing were not mapped to high-level codes). (2) industry_code was null for all defense rows (defence != defense_contractor). (3) jurisdiction_code used Python hash() at training time vs encode_jurisdiction() at serving time \u2014 now encoding_utils.py MD5 used in both paths. Model now discriminates: case-1/case-2 ratio = 3.219",
   "test_results": [
     {
       "test_case": "Large Pharmaceutical Healthcare Fraud",
@@ -20,9 +22,9 @@
         "settlement_year": 2024
       },
       "prediction": {
-        "predicted_low": 1195780042.7843418,
-        "predicted_mid": 1259342191.365268,
-        "predicted_high": 1319569145.11523,
+        "predicted_low": 40545242.53072392,
+        "predicted_mid": 105918802.16116007,
+        "predicted_high": 154729478.94904444,
         "confidence": 0.5,
         "input_damages": 50000000.0
       }
@@ -38,9 +40,9 @@
         "settlement_year": 2024
       },
       "prediction": {
-        "predicted_low": 1195780042.7843418,
-        "predicted_mid": 1259342191.365268,
-        "predicted_high": 1319569145.11523,
+        "predicted_low": 13644539.18223764,
+        "predicted_mid": 32903079.537676387,
+        "predicted_high": 67769462.16520429,
         "confidence": 0.5,
         "input_damages": 25000000.0
       }
@@ -56,15 +58,15 @@
         "settlement_year": 2024
       },
       "prediction": {
-        "predicted_low": 533893823.82362807,
-        "predicted_mid": 606808978.1766772,
-        "predicted_high": 666285996.3056929,
+        "predicted_low": 3217351.9844557294,
+        "predicted_mid": 7447576.5320635475,
+        "predicted_high": 25594292.981924336,
         "confidence": 0.5,
         "input_damages": 5000000.0
       }
     },
     {
-      "test_case": "Education Grant Fraud",
+      "test_case": "Grant Fraud (Education)",
       "input": {
         "fraud_type": "grant",
         "damages_claimed": 10000000,
@@ -74,9 +76,9 @@
         "settlement_year": 2024
       },
       "prediction": {
-        "predicted_low": 2663087.884817983,
-        "predicted_mid": 4460340.58786505,
-        "predicted_high": 9190008.114848165,
+        "predicted_low": 4460340.58786505,
+        "predicted_mid": 14925510.292806352,
+        "predicted_high": 34274799.883576594,
         "confidence": 0.5,
         "input_damages": 10000000.0
       }

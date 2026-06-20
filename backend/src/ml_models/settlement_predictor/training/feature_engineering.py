@@ -160,9 +160,9 @@ class SettlementFeatureEngine:
         # Handle missing values
         X = X.fillna(X.median())
 
-        # Scale using fitted scaler
+        # Scale using fitted scaler (pass values to avoid sklearn feature-name warnings)
         X_scaled = pd.DataFrame(
-            self.scaler.transform(X),
+            self.scaler.transform(X.values),
             columns=self.feature_columns,
             index=X.index
         )
@@ -218,9 +218,9 @@ class SettlementFeatureEngine:
         }
 
         industry_mapping = {
-            'healthcare': 0, 'defense_contractor': 1, 'pharmaceutical': 2,
-            'technology': 3, 'construction': 4, 'education': 5,
-            'financial': 6, 'other': 7
+            'healthcare': 0, 'defense_contractor': 1, 'defense': 1,
+            'pharmaceutical': 2, 'technology': 3, 'construction': 4,
+            'education': 5, 'financial': 6, 'other': 7
         }
 
         # Estimate defendant size from damages claimed
